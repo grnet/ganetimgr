@@ -1,0 +1,32 @@
+from django.conf.urls.defaults import *
+from django.views.generic.list_detail import object_list, object_detail
+from ganetimgr.cluster.models import *
+
+# Uncomment the next two lines to enable the admin:
+from django.contrib import admin
+admin.autodiscover()
+
+urlpatterns = patterns('',
+    # Example:
+    # (r'^ganetimgr/', include('ganetimgr.foo.urls')),
+    (r'^/?$', object_list, {
+        'queryset': GanetiCluster.objects.all(),
+        'paginate_by': 15, 
+        'template_name': 'index.html', },
+        'cluster_overview',
+    ),
+
+    (r'^cluster/(?P<slug>\w+)/?$', object_detail, {
+        'queryset': GanetiCluster.objects.all(),
+        'template_name': 'cluster.html',
+        }, 'cluster_detail'),
+
+    (r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/vnc/?$', 'ganetimgr.cluster.views.vnc'),
+
+    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
+    # to INSTALLED_APPS to enable admin documentation:
+    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
+    # Uncomment the next line to enable the admin:
+    (r'^admin/(.*)', admin.site.root),
+)
