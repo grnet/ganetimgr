@@ -28,7 +28,8 @@ class InstanceManager(object):
     def all(self):
         results = []
         for cluster in Cluster.objects.all():
-            results.extend([ Instance(cluster, info['name'], info) for info in cluster.get_cluster_instances_detail() ])
+            results.extend([Instance(cluster, info['name'], info)
+                            for info in cluster.get_cluster_instances_detail()])
         return results
 
     def filter(self, **kwargs):
@@ -52,18 +53,19 @@ class InstanceManager(object):
                         val = User.objects.get(username__iexact=val)
                     except:
                         return []
-                results = [ result for result in results if val in result.users ]
+                results = [result for result in results if val in result.users]
             elif arg == 'group':
                 if not isinstance(val, Group):
                     try:
                         val = Group.objects.get(name__iexact=val)
                     except:
                         return []
-                results = [ result for result in results if val in result.groups ]
+                results = [result for result in results if val in result.groups]
             elif arg == 'name':
-                results = [ result for result in results if result.name == val ]
+                results = [result for result in results if result.name == val]
             else:
-                results = [ result for result in results if '%s:%s' % (arg, val) in result.tags ] 
+                results = [result for result in results
+                           if '%s:%s' % (arg, val) in result.tags] 
 
         return results
 
@@ -96,13 +98,15 @@ class Instance(object):
 
         for tag in self.tags:
             if tag.startswith('group:'):
+                group = tag.replace('group:','')
                 try:
-                    self.groups.append(Group.objects.get(name__iexact=tag.replace('group:','')))
+                    self.groups.append(Group.objects.get(name__iexact=group))
                 except:
                     pass
             elif tag.startswith('user:'):
+                user = tag.replace('user:','')
                 try:
-                    self.users.append(User.objects.get(username__iexact=tag.replace('user:','')))
+                    self.users.append(User.objects.get(username__iexact=user))
                 except:
                     pass
         
@@ -154,7 +158,8 @@ class Cluster(models.Model):
         # Add the username and password.
         # If we knew the realm, we could use it instead of ``None``.
         top_level_url = 'https://%s:%d/2/' % (self.hostname, self.port)
-        password_mgr.add_password(None, top_level_url, self.username, self.password)
+        password_mgr.add_password(None, top_level_url,
+                                  self.username, self.password)
 
         handler = urllib2.HTTPBasicAuthHandler(password_mgr)
 
@@ -169,7 +174,9 @@ class Cluster(models.Model):
         if data is not None:
             headers["Content-Type"] = "application/json"
 
-        req = MethodRequest(method, 'https://%s:%d%s' % (self.hostname, self.port, resource),
+        req = MethodRequest(method,
+                            'https://%s:%d%s' % (self.hostname,
+                                                 self.port, resource),
                             data=data, headers=headers)
         response = urllib2.urlopen(req)
         if response.code != 200:
@@ -191,7 +198,8 @@ class Cluster(models.Model):
         return None
 
     def get_instances(self):
-        return [ Instance(self, info['name'], info) for info in self.get_cluster_instances_detail() ]
+        return [Instance(self, info['name'], info)
+                for info in self.get_cluster_instances_detail()]
 
     def get_cluster_info(self):
         info = self._get_resource('/2/info')
