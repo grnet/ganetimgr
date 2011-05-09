@@ -1,2 +1,4 @@
 settings.py
 urls.py
+ganeti.db
+*.pyc
