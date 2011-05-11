@@ -75,6 +75,8 @@ MIDDLEWARE_CLASSES = (
     'middleware.MobileDetectionMiddleware.MobileDetectionMiddleware',
 )
 
+STATIC_URL = '/home/leonidas/projects/ganetimgr/static'
+
 ROOT_URLCONF = 'ganetimgr.urls'
 
 TEMPLATE_DIRS = (
