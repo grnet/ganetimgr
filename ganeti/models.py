@@ -10,7 +10,7 @@ from time import sleep
 from ganetimgr.util.portforwarder import forward_port
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datetime import datetime
-from ganetimgr import vapclient
+import vapclient
 from socket import gethostbyname
 
 dec = JSONDecoder()
@@ -92,10 +92,8 @@ class Instance(object):
     def _update(self, info=None):
         if not info:
             info = self._cluster.get_instance_info(self.name)
-
         for attr in info:
             self.__dict__[attr] = info[attr]
-
         for tag in self.tags:
             if tag.startswith('group:'):
                 group = tag.replace('group:','')
@@ -114,7 +112,6 @@ class Instance(object):
             self.ctime = datetime.fromtimestamp(self.ctime)
         if getattr(self, 'mtime', None):
             self.mtime = datetime.fromtimestamp(self.mtime)
-
     def set_params(self, **kwargs):
         #params = urllib.urlencode(kwargs)
         #self._cluster._get_resource('/2/instances/' + self.name + '/modify?' + params, method='PUT')
@@ -188,7 +185,6 @@ class Cluster(models.Model):
 
         if contenttype != 'application/json':
             raise ValueError("Invalid response type '%s'" % contenttype)
-
         return dec.decode(response.read())
 
     def get_instance(self, name):
@@ -248,9 +244,8 @@ class Cluster(models.Model):
 
         port = info['network_port']
         node = info['pnode']
-	node_ip = gethostbyname(node)
-
-	res = vapclient.request_forwarding(0, node_ip, port, password)
+        node_ip = gethostbyname(node)
+        res = vapclient.request_forwarding(0, node_ip, port, password)
         #os.system("portforwarder.py %d %s:%d" % (port, node, port))
         return (res["source_port"], password)
 

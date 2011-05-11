@@ -7,7 +7,26 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response
 from ganetimgr.util.portforwarder import forward_port
+from django.core.context_processors import request
+from django.template.context import RequestContext
 
+def cluster_overview(request):
+    clusters = Cluster.objects.all()
+    if request.is_mobile:
+        return render_to_response('m_index.html', {'object_list': clusters}, context_instance=RequestContext(request))
+    return render_to_response('index.html', {'object_list': clusters}, context_instance=RequestContext(request))
+
+def cluster_detail(request, slug):
+    if slug:
+        object = Cluster.objects.get(slug=slug)
+    else:
+        object = Cluster.objects.all()
+    if request.is_mobile:
+        return render_to_response('m_cluster.html', {'object': object}, context_instance=RequestContext(request))
+    return render_to_response('cluster.html', {'object': object}, context_instance=RequestContext(request))
+
+def render_login(request):
+    return render_to_response('m_login.html', {'object': object}, context_instance=RequestContext(request))
 
 def check_instance_auth(request, cluster, instance):
     cluster = get_object_or_404(Cluster, slug=cluster)
@@ -173,7 +192,14 @@ def instance(request, cluster_slug, instance):
         else:
             instance.hvparams['cdrom_type'] = 'none'
         configform = InstanceConfigForm(instance.hvparams)
-    return render_to_response("instance.html",
+    if request.is_mobile:
+        return render_to_response("m_instance.html",
+                              {'cluster': cluster,
+                               'instance': instance,
+                               'configform': configform,
+                               'user': request.user})
+    else:
+        return render_to_response("instance.html",
                               {'cluster': cluster,
                                'instance': instance,
                                'configform': configform,

@@ -1,0 +1,26 @@
+{% extends "m_base.html" %}
+{% load truncatedchars %}
+{% block headerextras %}
+<a href="{% url cluster_detail cluster.slug %}" data-icon="arrow-l">{{ cluster.hostname|truncchar:10 }}</a>
+{% endblock %}
+
+{% block content %}
+
+<h3>{{ instance.name }}</h3>
+
+
+	{% if instance.oper_state %}
+	{% if instance.admin_state %}
+	<a data-role="button" href="{% url instance-shutdown cluster.slug instance.name %}">Shutdown</a>
+<a data-role="button" href="{% url instance-reboot cluster.slug instance.name %}">Reboot</a>
+	{% else %} 
+	<td><em>Instance is shutting down, no actions allowed</em></td>
+	{% endif %}
+{% else %}
+<a data-role="button" href="{% url instance-startup cluster.slug instance.name %}">Start</a>
+{% endif %}
+
+
+
+
+{% endblock %}

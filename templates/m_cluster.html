@@ -1,0 +1,20 @@
+{% extends "m_base.html" %}
+
+{% block headerextras %}
+<a href="/" data-icon="arrow-l">Clusters</a>
+{% endblock %}
+{% block content %}
+
+<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
+			<li data-role="list-divider">VMs@{{object.hostname}}</li>
+			{% for instance in object.get_instances %}
+{% for myuser in instance.users %}
+{% ifequal myuser user %}
+<li><a href="{% url instance-detail object.slug instance.name %}">{{ instance.name }}</a></li>
+{% endifequal %}
+{% endfor %}
+			
+			{% endfor %}
+		</ul>
+		
+{% endblock %}

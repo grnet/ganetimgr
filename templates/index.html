@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block extrahed %}
 <style type="text/css">
 * {
 	font-family: arial, tahoma, sans-serif;
@@ -51,18 +51,7 @@
 }
 
 
-h2, h3 {
-	text-align: center;
-}
 
-h3 {
-	font-size: 1.1em;
-}
-
-h3 a, a:visited {
-	text-decoration: none;
-	color: #559BD7;
-}
 
 td {
 	text-align: center;
@@ -72,37 +61,46 @@ tr.even {
 	background: #eaeaea;
 }
 
-
 </style>
-<h2>Overview</h2>
+{% endblock %}
+{% block content %}
+<p class="info_content_title">Clusters</p>
 
-<div id="clusterlist">
+<table class="instances_table" width="98%">
+	<tr><th class="table_top_header" colspan=3>Overview</th></tr>
+	<tr><td class="table_title">Cluster</th>
+	<td class="table_title">Details</th>
+	<td class="table_title">Nodes</th></tr>
 {% for cluster in object_list %}
-<div class="clusterinfo">
-<h2><a href="{% url cluster_detail cluster.slug %}">{{ cluster.hostname }}</a> -- {{ cluster.description }}</h2>
-{% with cluster.get_cluster_info as info %}
-<ul>
-<li>Hypervisors: {{ info.enabled_hypervisors|join:", " }}</li>
-<li>Default hypervisor: {{ info.default_hypervisor }}</li>
-<li>Master node: {{ info.master }}</li>
-<li>Ganeti version: {{ info.software_version }}</li>
-</ul>
-{% endwith %}
 
-<h3>Nodes</h3>
-{% with cluster.get_cluster_nodes as nodes %}
-{{ nodes|length }} node{{ nodes|pluralize }}
-<ul>
-{% for node in nodes %}
-<li>{{ node.id }}</li>
+	<tr>
+		<td>
+			<table><tr><td class="borderless"><a href="{% url cluster_detail cluster.slug %}">{{ cluster.hostname }}</a></td></tr></table>
+		</td>
+		<td class="inner_table_holder">
+				{% with cluster.get_cluster_info as info %}
+				<table class="inner_table">
+					<tr><td class="inner_category no_brd_top">Hypervisors</td><td class="no_brd_right no_brd_top">{{ info.enabled_hypervisors|join:", " }}</td></tr>
+					<tr><td class="inner_category">Default hypervisor</td><td class="no_brd_right">{{ info.default_hypervisor }}</td></tr>
+					<tr><td class="inner_category">Master node</td><td class="no_brd_right">{{ info.master }}</td></tr>
+					<tr><td class="inner_category no_brd_btm">Ganeti version</td><td class="no_brd_right no_brd_btm">{{ info.software_version }}</td></tr>
+				</table>
+				{% endwith %}
+		</td>
+		<td>
+				{% with cluster.get_cluster_nodes as nodes %}
+				<!--{{ nodes|length }} node{{ nodes|pluralize }}-->
+				
+				{% for node in nodes %}
+					<div>{{ node.id }}</div>
+				{% endfor %}
+				
+				{% endwith %}
+		</td>
+	</tr>
+
 {% endfor %}
-</ul>
-{% endwith %}
-
-</div>
-{% endfor %}
-</div>
-
+</table>
 <div id="pagelist">
 {% if is_paginated %}
 {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">&lt;</a>{% else %}&nbsp;{% endif %}
