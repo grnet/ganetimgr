@@ -3,7 +3,13 @@
 <ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
 			<li data-role="list-divider">Clusters</li>
 			{% for cluster in object_list %}
-			<li><a href="{% url cluster_detail cluster.slug %}">{{ cluster.hostname }}</a></li>
+			<li><a href="{% url cluster_detail cluster.slug %}">
+				<h3>{{ cluster.hostname }}</h3>
+				{% with cluster.get_cluster_info as info %}
+				<p><strong>Ganeti version</strong>: {{ info.software_version }}</p>
+				<p><strong>Master node</strong>: {{ info.master }}</p>
+				{% endwith %}
+				</a></li>
 			{% endfor %}
 		</ul>
 {% endblock %}

@@ -6,11 +6,20 @@
 {% block content %}
 
 <ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
-			<li data-role="list-divider">VMs@{{object.hostname}}</li>
+			<li data-role="list-divider">VMs at {{object.hostname}}</li>
 			{% for instance in object.get_instances %}
 {% for myuser in instance.users %}
 {% ifequal myuser user %}
-<li><a href="{% url instance-detail object.slug instance.name %}">{{ instance.name }}</a></li>
+<li><a href="{% url instance-detail object.slug instance.name %}">
+	<h3>{{ instance.name }}</h3>
+	<p><strong>Status</strong>:{% ifequal instance.admin_state instance.oper_state %}
+{{ instance.admin_state|yesno:"Running,Stopped" }}
+{% else %}
+{{ instance.oper_state|yesno:"Running,Stopped" }}, should be {{ instance.admin_state|yesno:"running,stopped" }}
+{% endifequal %}</p>
+<p><strong>Pnode</strong>:{{ instance.pnode }}</p>
+<p><strong>Mem</strong>:{{ instance.beparams.memory }}</p>
+	</a></li>
 {% endifequal %}
 {% endfor %}
 			
