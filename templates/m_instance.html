@@ -22,6 +22,29 @@
 
 </div><!-- /grid-a -->
 
+<!--<div id="configuration">
+{% ifnotequal instance.oper_state instance.admin_state %}
+<em>No configuration allowed at this time</em>
+{% else %}
+<form method="post" align="center">
+    {% for field in configform %}
+        <div data-role="fieldcontain">
+           {{ field.label_tag }}: {{ field }}
+        </div>
+    {% endfor %}
+
+		<div class="ui-body ui-body-b">
+		<fieldset class="ui-grid-a">
+				<div class="ui-block-a"><button type="submit" data-theme="d">Cancel</button></div>
+				<div class="ui-block-b"><button type="submit" data-theme="a">Submit</button></div>
+
+	    </fieldset>
+		</div>
+
+
+</form>
+{% endifnotequal %}
+</div>-->
 
 
 {% endblock %}
