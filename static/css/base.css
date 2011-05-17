@@ -1,69 +1,72 @@
 * {
-	font-family: helvetica,arial,freesans,clean,sans-serif;
-	font-size: 12px;
+    font-family: helvetica, arial, freesans, clean, sans-serif;
+    font-size: 12px;
 }
 
 html {
-	height: 100%
-	color: black;
+    height: 100% color: black;
 }
 
-#page_wrapper{
-	margin-left: auto;
+#page_wrapper {
+    margin-left: auto;
     margin-right: auto;
     width: 1000px;
-	padding-top: 1em;
+    padding-top: 1em;
 }
 
-a{
-	color: #4183C4;
-	text-decoration: none;
-	font-weight: bold;
+a {
+    color: #4183C4;
+    text-decoration: none;
+    font-weight: bold;
 }
+
 a:hover {
-	text-decoration: underline;
-	}
-#main{
-	    background: url("/static/background_grnet.png") repeat-x scroll 0 0 #FFFFFF;
-		padding: 0;
-		margin: 0;
+    text-decoration: underline;
+}
+
+#main {
+    background: url("/static/background_grnet.png") repeat-x scroll 0 0 #FFFFFF;
+    padding: 0;
+    margin: 0;
 }
 
 #header {
-	/*background: url('/static/header.png');*/
-	/*background: url('/static/grnet_logo.png');*/
-	height: 85px;
-	margin: 0 auto;
-	width: 990px;
-	
+    height: 85px;
+    margin: 0 auto;
+    width: 990px;
 }
-.logoimg{
-	border: 0 none;
-	position: absolute;
-	left: 0;
-	top: 0;
+
+.logoimg {
+    border: 0 none;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
-#header .grnetlogo{
-	left: 10px;
-	top: 18px;
-	position: relative;
+
+#header .grnetlogo {
+    left: 10px;
+    top: 18px;
+    position: relative;
 }
 
 .loginform {
     border-top: medium none;
     font-size: 12px;
     padding: 2px;
-	float: right;
-	-moz-border-radius: 5px 5px 5px 5px;
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
+    float: right;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	background-color: #ECECEC;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FCFCFC', endColorstr='#ECECEC'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); /* for webkit browsers */
-    background: -moz-linear-gradient(270deg, #FCFCFC, #ECECEC) repeat scroll 0 0 transparent;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    background-color: #ECECEC;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
+	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
     border-color: #E9E9E9 #E9E9E9 #F5F5F5;
     border-style: solid;
     border-width: 1px;
@@ -153,8 +156,8 @@ body {
 }
 
 #formcontent {
-		padding: 2px;
-		margin-bottom: 0;
+	padding: 2px;
+	margin-bottom: 0;
 }
 
 #formcontent a {
@@ -296,13 +299,17 @@ form.update textarea {
     padding: 4px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-            border-radius: 5px;
+	border-radius: 5px;
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#D8D8D8'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#D8D8D8)); /* for webkit browsers */
-    background: -moz-linear-gradient(270deg, #FFFFFF, #D8D8D8) repeat scroll 0 0 transparent;
+	background-color: #ECECEC; /* fallback color if gradients are not supported */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#D8D8D8)); 
+	background-image: -webkit-linear-gradient(top, #FFFFFF, #D8D8D8); 
+	background-image:    -moz-linear-gradient(top, #FFFFFF, #D8D8D8); 
+	background-image:     -ms-linear-gradient(top, #FFFFFF, #D8D8D8); 
+	background-image:      -o-linear-gradient(top, #FFFFFF, #D8D8D8); 
+	background-image:         linear-gradient(top, #FFFFFF, #D8D8D8); /* standard, but currently unimplemented */
     border-color: #E9E9E9 #E9E9E9 #F5F5F5;
 }
 .row_container{
@@ -323,9 +330,13 @@ form.update textarea {
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FCFCFC', endColorstr='#ECECEC'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); /* for webkit browsers */
-    background: -moz-linear-gradient(270deg, #FCFCFC, #ECECEC) repeat scroll 0 0 transparent;
+	background-color: #ECECEC; /* fallback color if gradients are not supported */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
+	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
     border-color: #E9E9E9 #E9E9E9 #F5F5F5;
     border-style: solid;
     border-width: 1px;
@@ -350,9 +361,13 @@ form.update textarea {
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FCFCFC', endColorstr='#ECECEC'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); /* for webkit browsers */
-    background: -moz-linear-gradient(270deg, #FCFCFC, #ECECEC) repeat scroll 0 0 transparent;
+	background-color: #ECECEC; /* fallback color if gradients are not supported */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
+	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
     border-color: #E9E9E9 #E9E9E9 #F5F5F5;
     border-style: solid;
     border-width: 1px;
@@ -393,30 +408,44 @@ form.update textarea {
 	text-decoration: none;
 }
 .table_title{
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FCFCFC', endColorstr='#ECECEC'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); /* for webkit browsers */
-    background: -moz-linear-gradient(270deg, #FCFCFC, #ECECEC) repeat scroll 0 0 transparent;
+	
+	background-color: #ECECEC; /* fallback color if gradients are not supported */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
+	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
 }
 .inner_table{
 	border-collapse: collapse;
 	width:100%;
+	height:100%;
 }
 .inner_table_holder{
 	padding: 0px !important;
 }
 .table_top_header{
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E7E7E7', endColorstr='#DbDbDb'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#E7E7E7), to(#DbDbDb)); /* for webkit browsers */
-    background: -moz-linear-gradient(270deg, #E7E7E7, #DbDbDb) repeat scroll 0 0 transparent;
+	background-color: #DbDbDb; /* fallback color if gradients are not supported */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#E7E7E7), to(#DbDbDb)); 
+	background-image: -webkit-linear-gradient(top, #E7E7E7, #DbDbDb); 
+	background-image:    -moz-linear-gradient(top, #E7E7E7, #DbDbDb); 
+	background-image:     -ms-linear-gradient(top, #E7E7E7, #DbDbDb); 
+	background-image:      -o-linear-gradient(top, #E7E7E7, #DbDbDb); 
+	background-image:         linear-gradient(top, #E7E7E7, #DbDbDb); /* standard, but currently unimplemented */
 }
 .borderless{
 	border: 0 none !important;
 }
 .inner_category{
 	width: 35%;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FCFCFC', endColorstr='#ECECEC'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); /* for webkit browsers */
-    background: -moz-linear-gradient(270deg, #FCFCFC, #ECECEC) repeat scroll 0 0 transparent;
+	background-color: #ECECEC; /* fallback color if gradients are not supported */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
+	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
 	border-left: 0 none !important;
 }
 .no_brd_right{
@@ -457,9 +486,13 @@ form.update textarea {
 }
 .conf_table th{
 	font-weight: normal;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FCFCFC', endColorstr='#ECECEC'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); /* for webkit browsers */
-    background: -moz-linear-gradient(270deg, #FCFCFC, #ECECEC) repeat scroll 0 0 transparent;
+	background-color: #ECECEC; /* fallback color if gradients are not supported */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
+	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
+	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
 }
 .conf_table{
 	float: right;
@@ -473,9 +506,13 @@ form.update textarea {
 }
 .conf_table .table_topper_header{
 	font-weight: bold;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E7E7E7', endColorstr='#DbDbDb'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#E7E7E7), to(#DbDbDb)); /* for webkit browsers */
-    background: -moz-linear-gradient(270deg, #E7E7E7, #DbDbDb) repeat scroll 0 0 transparent;
+	background-color: #DbDbDb; /* fallback color if gradients are not supported */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#E7E7E7), to(#DbDbDb)); 
+	background-image: -webkit-linear-gradient(top, #E7E7E7, #DbDbDb); 
+	background-image:    -moz-linear-gradient(top, #E7E7E7, #DbDbDb); 
+	background-image:     -ms-linear-gradient(top, #E7E7E7, #DbDbDb); 
+	background-image:      -o-linear-gradient(top, #E7E7E7, #DbDbDb); 
+	background-image:         linear-gradient(top, #E7E7E7, #DbDbDb); /* standard, but currently unimplemented */
 	
 }
 .instance_det_table{
