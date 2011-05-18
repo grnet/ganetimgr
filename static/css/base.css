@@ -143,6 +143,13 @@ body {
 	font-weight: bold;
 }
 
+.conf_table ul {
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+	display: inline;
+}
+
 #footer {
 	clear: both;
 	padding-top: 1em;
