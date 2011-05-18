@@ -60,13 +60,7 @@ a:hover {
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    background-color: #ECECEC;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
-	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
+	background: url("/static/css/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #E6E6E6;
     border-color: #E9E9E9 #E9E9E9 #F5F5F5;
     border-style: solid;
     border-width: 1px;
@@ -169,52 +163,6 @@ body {
 
 }
 
-.ticketitem {
-	padding-bottom: 0.5em;
-	margin-bottom: 2em;
-	border-top: 1px solid #aeaeae;
-}
-
-.ticketitem a {
-	font-weight: bold;
-	color: #559BD7;
-	text-decoration: none;
-}
-
-#queuelist {
-	float: left;
-	width: 180px;
-	padding-left: 1em;
-}
-
-#queuelist ul {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-}
-#queuelist ul li {
-	padding: 0;
-	padding-top: 0.7em;
-	margin: 0;
-}
-
-
-
-#ticketlist {
-	margin-left: 180px;
-	border-left: 1px solid #aeaeae;
-	padding-left: 1em;
-	padding-right: 1em;
-}
-
-.queuestats {
-	color: gray;
-	font-size: 0.9em;
-}
-
-.queuestats abbr {
-	font-style: italic;
-}
 
 #pagelist {
 	text-align: center;
@@ -235,16 +183,12 @@ body {
 }
 
 
-h2, h3 {
-
-}
-
 h3 {
-	font-size: 1.1em;
+	font-size: 1.2em;
 }
 
 td {
-	text-align: center;
+	text-align: left;
 }
 
 tr.even {
@@ -293,25 +237,6 @@ form.update textarea {
     width: 100%;
 }
 
-.clusterbutton{
-    border-top: medium none;
-    font-size: 12px;
-    padding: 4px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
-    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	background-color: #ECECEC; /* fallback color if gradients are not supported */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#D8D8D8)); 
-	background-image: -webkit-linear-gradient(top, #FFFFFF, #D8D8D8); 
-	background-image:    -moz-linear-gradient(top, #FFFFFF, #D8D8D8); 
-	background-image:     -ms-linear-gradient(top, #FFFFFF, #D8D8D8); 
-	background-image:      -o-linear-gradient(top, #FFFFFF, #D8D8D8); 
-	background-image:         linear-gradient(top, #FFFFFF, #D8D8D8); /* standard, but currently unimplemented */
-    border-color: #E9E9E9 #E9E9E9 #F5F5F5;
-}
 .row_container{
 	background-color: white;
 	clear: both;
@@ -330,13 +255,7 @@ form.update textarea {
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	background-color: #ECECEC; /* fallback color if gradients are not supported */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
-	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
+	background: url("/static/css/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #E6E6E6;
     border-color: #E9E9E9 #E9E9E9 #F5F5F5;
     border-style: solid;
     border-width: 1px;
@@ -361,13 +280,7 @@ form.update textarea {
     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	background-color: #ECECEC; /* fallback color if gradients are not supported */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
-	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
+	background: url("/static/css/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #E6E6E6;
     border-color: #E9E9E9 #E9E9E9 #F5F5F5;
     border-style: solid;
     border-width: 1px;
@@ -390,8 +303,10 @@ form.update textarea {
 }
 .instances_table{
 	border-collapse: collapse;
-	float: left;
-	margin: 5px;
+	float: right;
+	/*
+margin: 1px;
+*/
 }
 .instances_table td{
 	border: 1px solid #D9D9D9;
@@ -408,14 +323,7 @@ form.update textarea {
 	text-decoration: none;
 }
 .table_title{
-	
-	background-color: #ECECEC; /* fallback color if gradients are not supported */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
-	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
+	background: url("/static/css/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #E6E6E6;
 }
 .inner_table{
 	border-collapse: collapse;
@@ -426,26 +334,14 @@ form.update textarea {
 	padding: 0px !important;
 }
 .table_top_header{
-	background-color: #DbDbDb; /* fallback color if gradients are not supported */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#E7E7E7), to(#DbDbDb)); 
-	background-image: -webkit-linear-gradient(top, #E7E7E7, #DbDbDb); 
-	background-image:    -moz-linear-gradient(top, #E7E7E7, #DbDbDb); 
-	background-image:     -ms-linear-gradient(top, #E7E7E7, #DbDbDb); 
-	background-image:      -o-linear-gradient(top, #E7E7E7, #DbDbDb); 
-	background-image:         linear-gradient(top, #E7E7E7, #DbDbDb); /* standard, but currently unimplemented */
+	background: url("/static/css/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #CCCCCC;
 }
 .borderless{
 	border: 0 none !important;
 }
 .inner_category{
 	width: 35%;
-	background-color: #ECECEC; /* fallback color if gradients are not supported */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
-	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
+	background: url("/static/css/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #E6E6E6;
 	border-left: 0 none !important;
 }
 .no_brd_right{
@@ -487,12 +383,8 @@ form.update textarea {
 .conf_table th{
 	font-weight: normal;
 	background-color: #ECECEC; /* fallback color if gradients are not supported */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#FCFCFC), to(#ECECEC)); 
-	background-image: -webkit-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:    -moz-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:     -ms-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:      -o-linear-gradient(top, #FCFCFC, #ECECEC); 
-	background-image:         linear-gradient(top, #FCFCFC, #ECECEC); /* standard, but currently unimplemented */
+	background: url("/static/css/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png") repeat-x scroll 50% 50% #E6E6E6;
+	border-bottom: 1px solid #D9D9D9;
 }
 .conf_table{
 	float: right;
@@ -506,14 +398,7 @@ form.update textarea {
 }
 .conf_table .table_topper_header{
 	font-weight: bold;
-	background-color: #DbDbDb; /* fallback color if gradients are not supported */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#E7E7E7), to(#DbDbDb)); 
-	background-image: -webkit-linear-gradient(top, #E7E7E7, #DbDbDb); 
-	background-image:    -moz-linear-gradient(top, #E7E7E7, #DbDbDb); 
-	background-image:     -ms-linear-gradient(top, #E7E7E7, #DbDbDb); 
-	background-image:      -o-linear-gradient(top, #E7E7E7, #DbDbDb); 
-	background-image:         linear-gradient(top, #E7E7E7, #DbDbDb); /* standard, but currently unimplemented */
-	
+	background: url("/static/css/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #CCCCCC;	
 }
 .instance_det_table{
 	border-collapse: collapse;
@@ -528,4 +413,545 @@ form.update textarea {
 .instance_det_table th{
 	border: 1px solid #D9D9D9;
 	padding: 5px;
+}
+
+
+
+#cluster_overview_table_wrapper{
+	width: 100%;
+}
+
+
+.paging_two_button .ui-button {
+	float: left;
+	cursor: pointer;
+	* cursor: hand;
+}
+
+.paging_full_numbers .ui-button {
+	padding: 2px 6px;
+	margin: 0;
+	cursor: pointer;
+	* cursor: hand;
+}
+
+.dataTables_paginate .ui-button {
+	margin-right: -0.1em !important;
+}
+
+.paging_full_numbers {
+	width: 350px !important;
+}
+
+.dataTables_wrapper .ui-toolbar {
+	padding: 5px;
+}
+
+.dataTables_paginate {
+	width: auto;
+}
+
+.dataTables_info {
+	padding-top: 3px;
+}
+
+table.display thead th {
+	padding: 3px 0px 3px 10px;
+	cursor: pointer;
+	* cursor: hand;
+}
+
+div.dataTables_wrapper .ui-widget-header {
+	font-weight: normal;
+}
+
+
+/*
+ * Sort arrow icon positioning
+ */
+table.display thead th div.DataTables_sort_wrapper {
+	position: relative;
+	padding-right: 20px;
+	padding-right: 20px;
+}
+
+table.display thead th div.DataTables_sort_wrapper span {
+	position: absolute;
+	top: 50%;
+	margin-top: -8px;
+	right: 0;
+}
+
+
+.dataTables_wrapper {
+	position: relative;
+	min-height: 302px;
+	float: left;
+	clear: both;
+	_height: 302px;
+	width: 634px;
+	zoom: 1; /* Feeling sorry for IE */
+}
+
+.dataTables_processing {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 250px;
+	height: 30px;
+	margin-left: -125px;
+	margin-top: -15px;
+	padding: 14px 0 2px 0;
+	border: 1px solid #ddd;
+	text-align: center;
+	color: #999;
+	font-size: 14px;
+	background-color: white;
+}
+
+.dataTables_length {
+	width: 40%;
+	float: left;
+}
+
+.dataTables_filter {
+	width: 50%;
+	float: right;
+	text-align: right;
+}
+
+.dataTables_info {
+	width: 60%;
+	float: left;
+}
+
+.dataTables_paginate {
+	width: 44px;
+	* width: 50px;
+	float: right;
+	text-align: right;
+}
+
+/* Pagination nested */
+.paginate_disabled_previous, .paginate_enabled_previous, .paginate_disabled_next, .paginate_enabled_next {
+	height: 19px;
+	width: 19px;
+	margin-left: 3px;
+	float: left;
+}
+
+.paginate_disabled_previous {
+	background-image: url('../images/back_disabled.jpg');
+}
+
+.paginate_enabled_previous {
+	background-image: url('../images/back_enabled.jpg');
+}
+
+.paginate_disabled_next {
+	background-image: url('../images/forward_disabled.jpg');
+}
+
+.paginate_enabled_next {
+	background-image: url('../images/forward_enabled.jpg');
+}
+
+
+
+
+table.display {
+	margin: 0 auto;
+	clear: both;
+	width: 100%;
+	border-collapse: collapse;
+	
+}
+
+table.display thead th {
+	padding: 3px 18px 3px 10px;
+	font-weight: normal;
+	cursor: pointer;
+	* cursor: hand;
+}
+
+table.display tfoot th {
+	padding: 3px 18px 3px 10px;
+	border-top: 1px solid black;
+	font-weight: bold;
+}
+
+table.display tr.heading2 td {
+	border-bottom: 1px solid #aaa;
+}
+
+table.display td {
+	padding: 3px 10px;
+}
+
+table.display td a {
+	font-weight: normal;
+}
+
+table.display td.center {
+	text-align: center;
+}
+
+table.display tfoot th {
+	padding: 3px 0px 3px 10px;
+	font-weight: bold;
+	font-weight: normal;
+}
+
+table.display tr.heading2 td {
+	border-bottom: 1px solid #aaa;
+}
+
+table.display td {
+	padding: 3px 10px;
+}
+
+table.display td.center {
+	text-align: center;
+}
+
+.sorting_asc {
+	background: url('../images/sort_asc.png') no-repeat center right;
+}
+
+.sorting_desc {
+	background: url('../images/sort_desc.png') no-repeat center right;
+}
+
+.sorting {
+	background: url('../images/sort_both.png') no-repeat center right;
+}
+
+.sorting_asc_disabled {
+	background: url('../images/sort_asc_disabled.png') no-repeat center right;
+}
+
+.sorting_desc_disabled {
+	background: url('../images/sort_desc_disabled.png') no-repeat center right;
+}
+
+table.display tr.odd.gradeA {
+	background-color: #ddffdd;
+}
+
+table.display tr.even.gradeA {
+	background-color: #eeffee;
+}
+
+table.display tr.odd.gradeC {
+	background-color: #ddddff;
+}
+
+table.display tr.even.gradeC {
+	background-color: #eeeeff;
+}
+
+table.display tr.odd.gradeX {
+	background-color: #ffdddd;
+}
+
+table.display tr.even.gradeX {
+	background-color: #ffeeee;
+}
+
+table.display tr.odd.gradeU {
+	background-color: #ddd;
+}
+
+table.display tr.even.gradeU {
+	background-color: #eee;
+}
+
+
+tr.odd {
+	background-color: #E2E4FF;
+}
+
+tr.even {
+	background-color: white;
+}
+
+.dataTables_scroll {
+	clear: both;
+}
+
+.dataTables_scrollBody {
+	*margin-top: -1px;
+}
+
+.top, .bottom {
+	padding: 15px;
+	background-color: #F5F5F5;
+	border: 1px solid #CCCCCC;
+}
+
+.top .dataTables_info {
+	float: none;
+}
+
+.clear {
+	clear: both;
+}
+
+.dataTables_empty {
+	text-align: center;
+}
+
+tfoot input {
+	margin: 0.5em 0;
+	width: 100%;
+	color: #444;
+}
+
+tfoot input.search_init {
+	color: #999;
+}
+
+td.group {
+	background-color: #d1cfd0;
+	border-bottom: 2px solid #A19B9E;
+	border-top: 2px solid #A19B9E;
+}
+
+td.details {
+	background-color: #d1cfd0;
+	border: 2px solid #A19B9E;
+}
+
+
+.example_alt_pagination div.dataTables_info {
+	width: 40%;
+}
+
+.paging_full_numbers {
+	width: 400px;
+	height: 22px;
+	line-height: 22px;
+}
+
+.paging_full_numbers span.paginate_button,
+ 	.paging_full_numbers span.paginate_active {
+	border: 1px solid #aaa;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	padding: 2px 5px;
+	margin: 0 3px;
+	cursor: pointer;
+	*cursor: hand;
+}
+
+.paging_full_numbers span.paginate_button {
+	background-color: #ddd;
+}
+
+.paging_full_numbers span.paginate_button:hover {
+	background-color: #ccc;
+}
+
+.paging_full_numbers span.paginate_active {
+	background-color: #99B3FF;
+}
+
+table.display tr.even.row_selected td {
+	background-color: #B0BED9;
+}
+
+table.display tr.odd.row_selected td {
+	background-color: #9FAFD1;
+}
+
+tr.odd td.sorting_1 {
+	background-color: #D3D6FF;
+}
+
+tr.odd td.sorting_2 {
+	background-color: #DADCFF;
+}
+
+tr.odd td.sorting_3 {
+	background-color: #E0E2FF;
+}
+
+tr.even td.sorting_1 {
+	background-color: #EAEBFF;
+}
+
+tr.even td.sorting_2 {
+	background-color: #F2F3FF;
+}
+
+tr.even td.sorting_3 {
+	background-color: #F9F9FF;
+}
+
+tr.odd.gradeA td.sorting_1 {
+	background-color: #c4ffc4;
+}
+
+tr.odd.gradeA td.sorting_2 {
+	background-color: #d1ffd1;
+}
+
+tr.odd.gradeA td.sorting_3 {
+	background-color: #d1ffd1;
+}
+
+tr.even.gradeA td.sorting_1 {
+	background-color: #d5ffd5;
+}
+
+tr.even.gradeA td.sorting_2 {
+	background-color: #e2ffe2;
+}
+
+tr.even.gradeA td.sorting_3 {
+	background-color: #e2ffe2;
+}
+
+tr.odd.gradeC td.sorting_1 {
+	background-color: #c4c4ff;
+}
+
+tr.odd.gradeC td.sorting_2 {
+	background-color: #d1d1ff;
+}
+
+tr.odd.gradeC td.sorting_3 {
+	background-color: #d1d1ff;
+}
+
+tr.even.gradeC td.sorting_1 {
+	background-color: #d5d5ff;
+}
+
+tr.even.gradeC td.sorting_2 {
+	background-color: #e2e2ff;
+}
+
+tr.even.gradeC td.sorting_3 {
+	background-color: #e2e2ff;
+}
+
+tr.odd.gradeX td.sorting_1 {
+	background-color: #ffc4c4;
+}
+
+tr.odd.gradeX td.sorting_2 {
+	background-color: #ffd1d1;
+}
+
+tr.odd.gradeX td.sorting_3 {
+	background-color: #ffd1d1;
+}
+
+tr.even.gradeX td.sorting_1 {
+	background-color: #ffd5d5;
+}
+
+tr.even.gradeX td.sorting_2 {
+	background-color: #ffe2e2;
+}
+
+tr.even.gradeX td.sorting_3 {
+	background-color: #ffe2e2;
+}
+
+tr.odd.gradeU td.sorting_1 {
+	background-color: #c4c4c4;
+}
+
+tr.odd.gradeU td.sorting_2 {
+	background-color: #d1d1d1;
+}
+
+tr.odd.gradeU td.sorting_3 {
+	background-color: #d1d1d1;
+}
+
+tr.even.gradeU td.sorting_1 {
+	background-color: #d5d5d5;
+}
+
+tr.even.gradeU td.sorting_2 {
+	background-color: #e2e2e2;
+}
+
+tr.even.gradeU td.sorting_3 {
+	background-color: #e2e2e2;
+}
+
+.ex_highlight #example tbody tr.even:hover, #example tbody tr.even td.highlighted {
+	background-color: #ECFFB3;
+}
+
+.ex_highlight #example tbody tr.odd:hover, #example tbody tr.odd td.highlighted {
+	background-color: #E6FF99;
+}
+
+.ex_highlight_row #example tr.even:hover {
+	background-color: #ECFFB3;
+}
+
+.ex_highlight_row #example tr.even:hover td.sorting_1 {
+	background-color: #DDFF75;
+}
+
+.ex_highlight_row #example tr.even:hover td.sorting_2 {
+	background-color: #E7FF9E;
+}
+
+.ex_highlight_row #example tr.even:hover td.sorting_3 {
+	background-color: #E2FF89;
+}
+
+.ex_highlight_row #example tr.odd:hover {
+	background-color: #E6FF99;
+}
+
+.ex_highlight_row #example tr.odd:hover td.sorting_1 {
+	background-color: #D6FF5C;
+}
+
+.ex_highlight_row #example tr.odd:hover td.sorting_2 {
+	background-color: #E0FF84;
+}
+
+.ex_highlight_row #example tr.odd:hover td.sorting_3 {
+	background-color: #DBFF70;
+}
+
+table.KeyTable td {
+	border: 3px solid transparent;
+}
+
+table.KeyTable td.focus {
+	border: 3px solid #3366FF;
+}
+
+table.display tr.gradeA {
+	background-color: #eeffee;
+}
+
+table.display tr.gradeC {
+	background-color: #ddddff;
+}
+
+table.display tr.gradeX {
+	background-color: #ffdddd;
+}
+
+table.display tr.gradeU {
+	background-color: #ddd;
+}
+
+div.box {
+	height: 100px;
+	padding: 10px;
+	overflow: auto;
+	border: 1px solid #8080FF;
+	background-color: #E5E5FF;
 }

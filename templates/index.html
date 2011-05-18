@@ -1,91 +1,33 @@
 {% extends "base.html" %}
-
-{% block extrahed %}
-<style type="text/css">
-* {
-	font-family: arial, tahoma, sans-serif;
-}
-
-.ticketitem {
-	padding-bottom: 0.5em;
-	margin-bottom: 2em;
-	border-top: 1px solid #aeaeae;
-}
-
-.ticketitem a {
-	font-weight: bold;
-	color: #559BD7;
-	text-decoration: none;
-}
-
-
-#ticketlist {
-	margin-left: 200px;
-}
-
-.queuestats {
-	color: gray;
-	font-size: 0.9em;
-}
-
-.queuestats abbr {
-	font-style: italic;
-}
-
-#pagelist {
-	text-align: center;
-	font-weight: bold;
-	position: fixed;
-	bottom: 0px;
-	right: 0px;
-	background: white;
-	padding-left: 200px;
-	width: 100%;
-	padding-top: 0.5em;
-	border-top: 1px solid #333;
-}
-
-#pagelist a {
-	text-decoration: none;
-	color: gray;
-}
-
-
-
-
-td {
-	text-align: center;
-}
-
-tr.even {
-	background: #eaeaea;
-}
-
-</style>
+{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript">
+	$(document).ready( function(){
+			$('#cluster_overview_table').dataTable( {
+			"bJQueryUI": true,			
+	} );
+		});
+</script>
 {% endblock %}
 {% block content %}
 <p class="info_content_title">Clusters</p>
-
-<table class="instances_table" width="98%">
-	<tr><th class="table_top_header" colspan=3>Overview</th></tr>
-	<tr><td class="table_title">Cluster</th>
-	<td class="table_title">Details</th>
-	<td class="table_title">Nodes</th></tr>
+<h3>Clusters Overview</h3>
+<table class="display" width="100%" id="cluster_overview_table">
+	<thead>
+		<tr>
+			<th>Cluster</th>
+			<th>Nodes</th>
+			<th>Hypervisors</th>
+			<th>Default hypervisor</th>
+			<th>Master node</th>
+			<th>Ganeti version</th>	
+		</tr>
+	</thead>
+	<tbody>
 {% for cluster in object_list %}
-
-	<tr>
+	<tr class="GradeA">
 		<td>
-			<table><tr><td class="borderless"><a href="{% url cluster_detail cluster.slug %}">{{ cluster.hostname }}</a></td></tr></table>
-		</td>
-		<td class="inner_table_holder">
-				{% with cluster.get_cluster_info as info %}
-				<table class="inner_table">
-					<tr><td class="inner_category no_brd_top">Hypervisors</td><td class="no_brd_right no_brd_top">{{ info.enabled_hypervisors|join:", " }}</td></tr>
-					<tr><td class="inner_category">Default hypervisor</td><td class="no_brd_right">{{ info.default_hypervisor }}</td></tr>
-					<tr><td class="inner_category">Master node</td><td class="no_brd_right">{{ info.master }}</td></tr>
-					<tr><td class="inner_category no_brd_btm">Ganeti version</td><td class="no_brd_right no_brd_btm">{{ info.software_version }}</td></tr>
-				</table>
-				{% endwith %}
+			<a href="{% url cluster_detail cluster.slug %}">{{ cluster.hostname }}</a>
 		</td>
 		<td>
 				{% with cluster.get_cluster_nodes as nodes %}
@@ -97,18 +39,18 @@ tr.even {
 				
 				{% endwith %}
 		</td>
+
+		{% with cluster.get_cluster_info as info %}
+		<td>{{ info.enabled_hypervisors|join:", " }}</td>
+		<td>{{ info.default_hypervisor }}</td>
+		<td>{{ info.master }}</td>
+		<td>{{ info.software_version }}</td>
+		{% endwith %}
+
 	</tr>
 
 {% endfor %}
+</tbody>
 </table>
-<div id="pagelist">
-{% if is_paginated %}
-{% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">&lt;</a>{% else %}&nbsp;{% endif %}
-{% for page in paginator.page_range %}
-{% ifequal page page_obj.number %}{{ page }} {% else %}<a href="?page={{ page }}">{{ page }}</a> {% endifequal %}
-{% endfor %}
-{% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">&gt;</a>{% else %}&nbsp;{% endif %}
-{% endif %}
-</div>
 
 {% endblock %}

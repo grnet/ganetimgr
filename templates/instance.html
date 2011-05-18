@@ -43,7 +43,7 @@
 {% block content %}
 
 <p class="info_content_title"><a href="/">Clusters</a> :: <a href="{% url cluster_detail cluster.slug %}">{{ cluster.hostname }}</a> :: {{ instance.name }}</p>
-<h3>{{ instance.name }}</h3>
+<h3>Instance - {{ instance.name }}</h3>
 <div id="fl_l">
 <table class="actions_table">
 <tr><th class="table_top_header" colspan=3>VM Actions</th></tr>

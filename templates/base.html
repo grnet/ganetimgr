@@ -2,11 +2,9 @@
 <head>
 <title>{% block title %}{% endblock %} :: vima.grnet.gr</title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="/static/jquery.color.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+<link rel="stylesheet" type="text/css" href="/static/css/smoothness/jquery-ui-1.8.13.custom.css">
 <script type="text/javascript" src="/static/js/jquery-ui-1.8.12.custom.min.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/overcast/jquery-ui-1.8.12.custom.css">
-
 <script type="text/javascript">
 
 
@@ -25,8 +23,7 @@ $(document).ready( function(){
 	    var elemId = '#' + $(this).attr('href').split('#')[1];
 	    highlight(elemId);
 	});
-
-})
+});
 
 </script>
 {% block extrahead %}{% endblock %}
@@ -43,15 +40,6 @@ $(document).ready( function(){
 				<div id="title">
 					<a href="/">virtual machine hosting service</a>
 				</div>
-				<!--<div id="menu">
-					<ul>
-						<li><a>Στατιστικά</a></li>
-						{% if user.is_staff %}
-						<li><a>Διαχείριση</a></li>
-						{% endif %}
-						<li><a href="http://www.noc.grnet.gr">ΕΔΕΤ NOC</a></li>
-					</ul>
-				</div>-->
 				<div class="loginform">
 					{% if not user.is_authenticated %}
 					<form id="formcontent" method="post" action="{% url login %}">
