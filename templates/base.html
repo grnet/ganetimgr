@@ -49,7 +49,7 @@ $(document).ready( function(){
 					</form>
 					{% else %}
 					<div id="formcontent">
-						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span> <span class="topmenuaction"><a href="{% url logout %}">Log Out</a></span>
+						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span><span class="topmenuaction"><a href="{% url pass_change %}">Change Password</a></span> <span class="topmenuaction"><a href="{% url logout %}">Log Out</a></span>
 					</div>
 					{% endif %}
 				</div>
