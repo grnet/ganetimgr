@@ -24,6 +24,7 @@ $(function() {
 				}else if ($('#show_no_actions').size()==0){
 					$('#conf_form').show();
 				}
+				$("#status").html($("#instance_status").html());
                 setTimeout(load_data, timer);
             }
         });
@@ -40,7 +41,7 @@ $(function() {
 <div id="fl_l">
 <table class="instance_det_table">
 <tr><th class="table_top_header" colspan=2>Instance Details</th></tr>
-<tr><td class="table_title">Status</td><td>{{ instance.oper_state|yesno:"Running,Stopped" }}</td></tr>
+<tr><td class="table_title">Status</td><td id="status"></td></tr>
 <tr><td class="table_title">Autostart</td><td>{{ instance.admin_state }}</td></tr>
 <tr><td class="table_title">UUID</td><td>{{ instance.uuid }}</td></tr>
 <tr><td class="table_title">Primary node</td><td>{{ instance.pnode }}</td></tr>

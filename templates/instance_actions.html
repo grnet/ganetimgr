@@ -45,3 +45,5 @@
 {% endif %}
 </tr>
 </table>
+
+<div id="instance_status" style="display:none;">{{ instance.oper_state|yesno:"Running,Stopped" }}</div>
