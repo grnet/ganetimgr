@@ -316,10 +316,10 @@ form.update textarea {
 	background-color: #FFF0DF;
 	border-collapse: collapse;
 	border: 1px solid #D9D9D9;
-	float: left;
+	float: right;
 	margin: 5px;
 	min-width: 330px;
-	width: 400px;
+	width: 100%;
 }
 .actions_table td{
 	padding: 5px;
@@ -414,6 +414,7 @@ margin: 1px;
 	margin: 5px;
 	border: 1px solid #D9D9D9;
 	border-collapse: collapse;
+	width: 100%;
 }
 .conf_table td{
 	border-bottom: 1px solid #D9D9D9;

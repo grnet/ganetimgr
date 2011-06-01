@@ -30,9 +30,8 @@
 });
 </script>
 
-<table class="actions_table">
-<tr><th class="table_top_header" colspan=3>VM Actions</th></tr>
-<tr>
+<table>
+<tr id="actions_container_inner">
 	{% if instance.oper_state %}
 	{% if instance.admin_state %}
 	<td><a id="shutdown" href="{% url instance-shutdown cluster.slug instance.name %}">Shutdown</a></td>

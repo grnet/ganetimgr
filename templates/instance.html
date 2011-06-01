@@ -18,12 +18,12 @@ $(function() {
             url: '{% url instance-poll cluster.slug instance.name %}',
             dataType: 'html',
             success: function(data) {
-                $('#poll_instance_table').html(data);
+                $('#actions_container').html(data);
                 setTimeout(load_data, timer);
             }
         });
     }
-    load_data();
+    load_data(); 
 });
 
 </script>
@@ -33,9 +33,6 @@ $(function() {
 <p class="info_content_title"><a href="/">Clusters</a> :: <a href="{% url cluster_detail cluster.slug %}">{{ cluster.hostname }}</a> :: {{ instance.name }}</p>
 <h3>Instance - {{ instance.name }}</h3>
 <div id="fl_l">
-<div id="poll_instance_table">
-	<!-- Here a setTimeout jquery script populates the instance control every 5 seconds -->
-</div>
 <table class="instance_det_table">
 <tr><th class="table_top_header" colspan=2>Instance Details</th></tr>
 <tr><td class="table_title">Status</td><td>{{ instance.oper_state|yesno:"Running,Stopped" }}</td></tr>
@@ -65,6 +62,13 @@ $(function() {
 
 </form>
 {% endifnotequal %}
+<table class="actions_table">
+<tr><th class="table_top_header" colspan=3 style="text-align: center;">VM Actions</th></tr>
+<tr>
+	<td id="actions_container">&nbsp;</td>
+		<!-- Here a setTimeout jquery script populates the instance control every 5 seconds -->
+</tr>
+</table>
 </div>
 
 
