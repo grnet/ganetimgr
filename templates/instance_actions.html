@@ -38,7 +38,7 @@
 <td><a id="reboot" href="{% url instance-reboot cluster.slug instance.name %}">Reboot</a></td>
 <td><a id="console" href="{% url instance-vnc cluster.slug instance.name %}">Console</a></td>
 	{% else %} 
-	<td><em>Instance is shutting down, no actions allowed</em></td>
+	<td id="show_no_actions"><em>Instance is shutting down, no actions allowed</em></td>
 	{% endif %}
 {% else %}
 <td colspan=3><a id="start" href="{% url instance-startup cluster.slug instance.name %}">Start</a></td>

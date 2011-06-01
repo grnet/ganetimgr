@@ -19,6 +19,11 @@ $(function() {
             dataType: 'html',
             success: function(data) {
                 $('#actions_container').html(data);
+				if ($('#show_no_actions').size()==1){
+					$('#conf_form').hide();
+				}else if ($('#show_no_actions').size()==0){
+					$('#conf_form').show();
+				}
                 setTimeout(load_data, timer);
             }
         });
@@ -49,10 +54,8 @@ $(function() {
 
 
 <div id="configuration">
-{% ifnotequal instance.oper_state instance.admin_state %}
-<em>No configuration allowed at this time</em>
-{% else %}
-<form method="post" align="center">
+
+<form method="post" align="center" id="conf_form">
 <table class="conf_table">
 	<tr><th colspan="2" style="text-align:center;" class="table_topper_header">VM Configuration</th></tr>
 {{ configform.as_table }}
@@ -61,7 +64,7 @@ $(function() {
 </table>
 
 </form>
-{% endifnotequal %}
+
 <table class="actions_table">
 <tr><th class="table_top_header" colspan=3 style="text-align: center;">VM Actions</th></tr>
 <tr>
