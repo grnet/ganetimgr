@@ -204,3 +204,13 @@ def instance(request, cluster_slug, instance):
                                'instance': instance,
                                'configform': configform,
                                'user': request.user})
+
+def poll(request, cluster_slug, instance):
+        if not check_instance_auth(request, cluster_slug, instance):
+            return HttpResponseForbidden(content='You do not have sufficient privileges')
+        cluster = get_object_or_404(Cluster, slug=cluster_slug)
+        instance = cluster.get_instance(instance)
+        return render_to_response("instance_actions.html",
+                                  {'cluster':cluster,
+                                   'instance': instance,
+                                   })
