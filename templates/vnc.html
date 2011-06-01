@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Cluster {{ object.id }}: {{ object.hostname|safe }}{% endblock %}
+{% block title %}{{ instance.name }} :: Console{% endblock %}
 {% block content %}
-<p class="info_content_title"><a href="/">Clusters</a> :: <a href="{% url cluster_detail cluster.slug %}">{{ cluster.hostname }}</a> :: <a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a> :: VNC</p>
+<p class="info_content_title">:: <a href="/">My instances</a> :: <a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a> :: VNC</p>
+
 <h3>VNC session on {{ instance }}</h3>
 {% comment %}
 	<object id='Flashlight' width='100%' height='100%' type='application/x-shockwave-flash' data='/static/Flashlight.swf'>
