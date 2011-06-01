@@ -13,16 +13,11 @@ from datetime import datetime
 import vapclient
 from socket import gethostbyname
 
+from util.ganeti_client import GanetiRapiClient
+
 dec = JSONDecoder()
 enc = JSONEncoder()
 
-class MethodRequest(urllib2.Request):
-    def __init__(self, method, *args, **kwargs):
-        self._method = method
-        urllib2.Request.__init__(self, *args, **kwargs)
-
-    def get_method(self):
-        return self._method
 
 class InstanceManager(object):
     def all(self):
@@ -112,11 +107,9 @@ class Instance(object):
             self.ctime = datetime.fromtimestamp(self.ctime)
         if getattr(self, 'mtime', None):
             self.mtime = datetime.fromtimestamp(self.mtime)
+
     def set_params(self, **kwargs):
-        #params = urllib.urlencode(kwargs)
-        #self._cluster._get_resource('/2/instances/' + self.name + '/modify?' + params, method='PUT')
-        self._cluster._get_resource('/2/instances/' + self.name + '/modify',
-                                    data=enc.encode(kwargs), method='PUT')
+        self._cluster._client.ModifyInstance(self.name, **kwargs)
 
     def __repr__(self):
         return "<Instance: '%s'>" % self.name
@@ -134,6 +127,9 @@ class Cluster(models.Model):
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
+        self._client = GanetiRapiClient(host=self.hostname,
+                                        username=self.username,
+                                        password=self.password)
         if self.id:
             self._update()
 
@@ -145,60 +141,16 @@ class Cluster(models.Model):
         for attr in self._info:
             self.__dict__[attr] = self._info[attr]
 
-    def _get_resource(self, resource, method='GET', data=None):
-        # Strip trailing slashes, as ganeti-rapi doesn't like them
-        resource = resource.rstrip('/')
-
-        # create a password manager
-        password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-
-        # Add the username and password.
-        # If we knew the realm, we could use it instead of ``None``.
-        top_level_url = 'https://%s:%d/2/' % (self.hostname, self.port)
-        password_mgr.add_password(None, top_level_url,
-                                  self.username, self.password)
-
-        handler = urllib2.HTTPBasicAuthHandler(password_mgr)
-
-        # create "opener" (OpenerDirector instance)
-        opener = urllib2.build_opener(handler)
-
-        # Install the opener.
-        # Now all calls to urllib2.urlopen use our opener.
-        urllib2.install_opener(opener)
-
-        headers = {}
-        if data is not None:
-            headers["Content-Type"] = "application/json"
-
-        req = MethodRequest(method,
-                            'https://%s:%d%s' % (self.hostname,
-                                                 self.port, resource),
-                            data=data, headers=headers)
-        response = urllib2.urlopen(req)
-        if response.code != 200:
-            raise ValueError("'%s' is not a valid resource" % resource)
-        try:
-            contenttype = response.info()['Content-Type']
-        except:
-            contenttype = None
-
-        if contenttype != 'application/json':
-            raise ValueError("Invalid response type '%s'" % contenttype)
-        return dec.decode(response.read())
-
     def get_instance(self, name):
-        for inst in self.get_instances():
-            if inst.name == name:
-                return inst
-        return None
+        info = self._client.GetInstance(name)
+        return Instance(self, info["name"], info)
 
     def get_instances(self):
         return [Instance(self, info['name'], info)
-                for info in self.get_cluster_instances_detail()]
+                for info in self._client.GetInstances(bulk=True)]
 
     def get_cluster_info(self):
-        info = self._get_resource('/2/info')
+        info = self._client.GetInfo()
         if 'ctime' in info and info['ctime']:
             info['ctime'] = datetime.fromtimestamp(info['ctime'])
         if 'mtime' in info and info['mtime']:
@@ -206,39 +158,21 @@ class Cluster(models.Model):
         return info
 
     def get_cluster_nodes(self):
-        return self._get_resource('/2/nodes')
+        return self._client.GetNodes()
 
     def get_cluster_instances(self):
-        return self._get_resource('/2/instances')
+        return self._client.GetInstances()
 
     def get_cluster_instances_detail(self):
-        return self._get_resource('/2/instances?bulk=1')
+        return self._client.GetInstances(bulk=True)
 
     def get_node_info(self, node):
-        return self._get_resource('/2/nodes/' + node.strip())
+        return self._client.GetNode(node)
 
     def get_instance_info(self, instance):
-        return self._get_resource('/2/instances/' + instance.strip())
-
-    def set_random_vnc_password(self, instance):
-        jobid = self._get_resource('/2/instances/' + instance.strip() + '/randomvncpass', method="POST")
-        tries = 0
-        jobinfo = {}
-        while tries < 10:
-            jobinfo = self._get_resource('/2/jobs/' + str(jobid))
-            if jobinfo['status'] == "error":
-                return None
-            elif jobinfo['status'] == "success":
-                break
-            tries += 1
-            sleep(0.5)
-        if jobinfo:
-            return jobinfo['opresult'][0]
-        else:
-            return None
+        return self._client.GetInstance(instance)
         
     def setup_vnc_forwarding(self, instance):
-        #password = self.set_random_vnc_password(instance)
         password = User.objects.make_random_password(length=8)
         info = self.get_instance_info(instance)
 
@@ -246,14 +180,13 @@ class Cluster(models.Model):
         node = info['pnode']
         node_ip = gethostbyname(node)
         res = vapclient.request_forwarding(0, node_ip, port, password)
-        #os.system("portforwarder.py %d %s:%d" % (port, node, port))
         return (res["source_port"], password)
 
     def shutdown_instance(self, instance):
-        return self._get_resource('/2/instances/' + instance.strip() + '/shutdown', method='PUT')
+        return self._client.ShutdownInstance(instance)
 
     def startup_instance(self, instance):
-        return self._get_resource('/2/instances/' + instance.strip() + '/startup', method='PUT')
+        return self._client.StartupInstance(instance)
 
     def reboot_instance(self, instance):
-        return self._get_resource('/2/instances/' + instance.strip() + '/reboot', method='POST')
+        return self._client.RebootInstance(instance)
