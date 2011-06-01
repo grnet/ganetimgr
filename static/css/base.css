@@ -514,7 +514,7 @@ table.display thead th div.DataTables_sort_wrapper span {
 	float: left;
 	clear: both;
 	_height: 302px;
-	width: 634px;
+	width: 100%;
 	zoom: 1; /* Feeling sorry for IE */
 }
 
