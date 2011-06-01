@@ -63,6 +63,15 @@ def login_view(request):
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
+def user_index(request):
+    instances = []
+    for cluster in Cluster.objects.all():
+        instances.extend(cluster.get_user_instances(request.user))
+    #if request.is_mobile:
+    #    return render_to_response('m_cluster.html', {'object': object}, context_instance=RequestContext(request))
+    return render_to_response('user_instances.html', {'instances': instances},
+                              context_instance=RequestContext(request))
+
 def vnc(request, cluster_slug, instance):
     if not check_instance_auth(request, cluster_slug, instance):
         return HttpResponseForbidden(content='You do not have sufficient privileges')

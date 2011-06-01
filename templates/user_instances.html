@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript">
+	$(document).ready( function(){
+			$('#vm_instance_table').dataTable( {
+			"bJQueryUI": true,
+			"oLanguage": {
+				"sLengthMenu": 'Display <select><option value="25">25</option><option value="50">50</option><option value="-1">All</option></select> instances'
+			}
+	} );
+		});
+</script>
+{% endblock %}
+{% block title %}Homepage{% endblock %}
+{% block content %}
+
+<p class="info_content_title">:: <a href="/">My instances</a></p>
+<h3>My instances</h3>
+
+<table class="display" width="100%" id="vm_instance_table">
+<thead>
+<tr><th>Name</th><th>Cluster</th>
+<th>Memory</th><th>CPUs</th><th>Operating System</th><th>Status</th></tr>
+</thead>
+<tbody>
+{% for instance in instances %}
+
+<tr {% if instance.admin_state %} class="GradeA" {% else %} class="GradeX" {% endif %}><td><a href="{% url instance-detail instance.cluster.slug instance.name %}">{{ instance.name }}</a></td>
+<td>{{ instance.cluster.description }}</td><td>{{ instance.beparams.memory }}</td><td>{{ instance.beparams.vcpus }}</td><td>{{ instance.os }}</td>
+<td>{% ifequal instance.admin_state instance.oper_state %}
+{{ instance.admin_state|yesno:"Running,Stopped" }}
+{% else %}
+{{ instance.oper_state|yesno:"Running,Stopped" }}, should be {{ instance.admin_state|yesno:"running,stopped" }}
+{% endifequal %}
+</td></tr>
+
+{% endfor %}
+</tbody>
+</table>
+{% comment %}
+		{% with object.get_cluster_info as info %}
+<table class="instances_table" width="35%">
+<tr><th class="table_top_header" colspan=2>Cluster Details</th></tr>
+<tr><td class="table_title">Architecture</td><td>{{ info.architecture.0 }}</td></tr>
+<tr><td class="table_title">Default hypervisor</td><td>{{ info.default_hypervisor }}</td></tr>
+<tr><td class="table_title">Available hypervisors</td><td>{{ info.enabled_hypervisors|join:", " }}</td></tr>
+<tr><td class="table_title">Master node</td><td>{{ info.master }}</td></tr>
+<tr><td class="table_title">Created</td><td>{% if info.ctime %}{{ info.ctime|date }}{% else %}<em>unknown</em>{% endif %}</td></tr>
+<tr><td class="table_title">Last modified</td><td>{{ info.mtime|date }}</td></tr>
+</table>
+{% endwith %}
+{% endcomment %}
+
+{% endblock %}

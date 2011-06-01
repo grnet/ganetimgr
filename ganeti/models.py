@@ -78,7 +78,7 @@ class Instance(object):
     objects = InstanceManager()
 
     def __init__(self, cluster, name, info=None):
-        self._cluster = cluster
+        self.cluster = cluster
         self.name = name
         self.users = []
         self.groups = []
@@ -86,9 +86,9 @@ class Instance(object):
 
     def _update(self, info=None):
         if not info:
-            info = self._cluster.get_instance_info(self.name)
+            info = self.cluster.get_instance_info(self.name)
         for attr in info:
-            self.__dict__[attr] = info[attr]
+            self.__dict__[attr.replace(".", "_")] = info[attr]
         for tag in self.tags:
             if tag.startswith('group:'):
                 group = tag.replace('group:','')
@@ -109,7 +109,7 @@ class Instance(object):
             self.mtime = datetime.fromtimestamp(self.mtime)
 
     def set_params(self, **kwargs):
-        self._cluster._client.ModifyInstance(self.name, **kwargs)
+        self.cluster._client.ModifyInstance(self.name, **kwargs)
 
     def __repr__(self):
         return "<Instance: '%s'>" % self.name
@@ -148,6 +148,11 @@ class Cluster(models.Model):
     def get_instances(self):
         return [Instance(self, info['name'], info)
                 for info in self._client.GetInstances(bulk=True)]
+
+    def get_user_instances(self, user):
+        instances = self.get_instances()
+        return [i for i in instances if (user in i.users or
+                user.groups.filter(id__in=[g.id for g in i.groups]))]
 
     def get_cluster_info(self):
         info = self._client.GetInfo()
