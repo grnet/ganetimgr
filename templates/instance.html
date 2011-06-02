@@ -35,7 +35,7 @@ $(function() {
 </script>
 {% endblock %}
 {% block content %}
-
+{% load disksizes %}
 <p class="info_content_title">:: <a href="/">My instances</a> :: {{ instance.name }}</p>
 <h3>Instance - {{ instance.name }}</h3>
 <div id="fl_l">
@@ -45,7 +45,7 @@ $(function() {
 <tr><td class="table_title">Memory</td><td>{{ instance.beparams.memory }}</td></tr>
 <tr><td class="table_title">CPUs</td><td>{{ instance.beparams.vcpus }}</td></tr>
 <tr><td class="table_title">Network cards</td><td>{{ instance.nic_macs|length }}</td></tr>
-<tr><td class="table_title">Hard disks</td><td>{{ instance.disk_sizes|length }}</td></tr>
+<tr><td class="table_title">Hard disks</td><td>{{ instance.disk_sizes|disksizes|join:", " }}</td></tr>
 <tr><td class="table_title">UUID</td><td>{{ instance.uuid }}</td></tr>
 <tr><td class="table_title">Cluster</td><td>{{ instance.cluster.description }}</td></tr>
 <tr><td class="table_title">Created on</td><td>{{ instance.ctime|date }}</td></tr>
