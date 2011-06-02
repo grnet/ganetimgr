@@ -15,7 +15,7 @@
 {% endblock %}
 {% block title %}Homepage{% endblock %}
 {% block content %}
-
+{% if not user.is_authenticated %}<div style="position:absolute; top:20px; z-index:100;"><img src="/static/login_show.png"/></div>{% endif %}
 <p class="info_content_title"><a href="/">My instances</a></p>
 <h3>My VM instances</h3>
 
