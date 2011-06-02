@@ -94,3 +94,6 @@ INSTALLED_APPS = (
     'ganetimgr.cluster',
     'django_extensions',
 )
+
+RAPI_CONNECT_TIMEOUT = 3
+RAPI_RESPONSE_TIMEOUT = 5

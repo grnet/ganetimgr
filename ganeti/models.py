@@ -14,7 +14,8 @@ from datetime import datetime
 import vapclient
 from socket import gethostbyname
 
-from util.ganeti_client import GanetiRapiClient
+from util.ganeti_client import GanetiRapiClient, GenericCurlConfig
+from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT
 
 
 dec = JSONDecoder()
@@ -129,9 +130,12 @@ class Cluster(models.Model):
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
+        curl_config = GenericCurlConfig(connect_timeout=RAPI_CONNECT_TIMEOUT,
+                                        timeout=RAPI_RESPONSE_TIMEOUT)
         self._client = GanetiRapiClient(host=self.hostname,
                                         username=self.username,
-                                        password=self.password)
+                                        password=self.password,
+                                        curl_config_fn=curl_config)
         if self.id:
             self._update()
 
