@@ -5,21 +5,13 @@
 <p class="info_content_title">:: <a href="/">My instances</a> :: <a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a> :: VNC</p>
 
 <h3>VNC session on {{ instance }}</h3>
-{% comment %}
-	<object id='Flashlight' width='100%' height='100%' type='application/x-shockwave-flash' data='/static/Flashlight.swf'>
-		<param name='movie' value='/static/Flashlight.swf'/>
-		<param name='allowScriptAccess' value='always'/>
-		<param name='wmode' value='opaque'/>
-		<param name="allowFullScreen" value="true" />
-		<param name='flashvars' value='host={{ host }}&port={{ port }}&securityPort=1234&hideControls=true&autoConnect=true&password={{ password }}' />
-
-	</object>
-{% endcomment %}
 <applet archive="/static/javavnc/VncViewer.jar" code="VncViewer.class" width="99%" height="790px" align="middle">
 <param name="PORT" value="{{ port }}">
 <param name="PASSWORD" value="{{ password }}">
-<!-- <param name="Open new window" value="yes">
-<param name="Scaling factor" value="auto"> -->
+<!--
+<param name="Open new window" value="yes">
+<param name="Scaling factor" value="auto">
+-->
 </applet>
 
 {% endblock %}
