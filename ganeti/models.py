@@ -4,6 +4,7 @@ import urllib
 import urllib2
 
 from django.db import models
+from django.core.cache import cache
 from django.contrib.auth.models import User, Group
 from simplejson import JSONEncoder, JSONDecoder
 from time import sleep
@@ -14,6 +15,7 @@ import vapclient
 from socket import gethostbyname
 
 from util.ganeti_client import GanetiRapiClient
+
 
 dec = JSONDecoder()
 enc = JSONEncoder()
@@ -141,13 +143,20 @@ class Cluster(models.Model):
         for attr in self._info:
             self.__dict__[attr] = self._info[attr]
 
+    def _instance_cache_key(self, instance):
+        return "cluster:%s:instance:%s" % (self.slug, instance)
+
     def get_instance(self, name):
-        info = self._client.GetInstance(name)
+        info = self.get_instance_info(name)
         return Instance(self, info["name"], info)
 
     def get_instances(self):
-        return [Instance(self, info['name'], info)
-                for info in self._client.GetInstances(bulk=True)]
+        instances = cache.get("cluster:%s:instances" % self.slug)
+        if instances is None:
+            instances = self._client.GetInstances(bulk=True)
+            cache.set("cluster:%s:instances" % self.slug, instances, 30)
+
+        return [Instance(self, info['name'], info) for info in instances]
 
     def get_user_instances(self, user):
         instances = self.get_instances()
@@ -155,11 +164,16 @@ class Cluster(models.Model):
                 user.groups.filter(id__in=[g.id for g in i.groups]))]
 
     def get_cluster_info(self):
-        info = self._client.GetInfo()
-        if 'ctime' in info and info['ctime']:
-            info['ctime'] = datetime.fromtimestamp(info['ctime'])
-        if 'mtime' in info and info['mtime']:
-            info['mtime'] = datetime.fromtimestamp(info['mtime'])
+        info = cache.get("cluster:%s:info" % self.slug)
+
+        if info is None:
+            info = self._client.GetInfo()
+            if 'ctime' in info and info['ctime']:
+                info['ctime'] = datetime.fromtimestamp(info['ctime'])
+            if 'mtime' in info and info['mtime']:
+                info['mtime'] = datetime.fromtimestamp(info['mtime'])
+            cache.set("cluster:%s:info" % self.slug, info, 180)
+
         return info
 
     def get_cluster_nodes(self):
@@ -175,7 +189,14 @@ class Cluster(models.Model):
         return self._client.GetNode(node)
 
     def get_instance_info(self, instance):
-        return self._client.GetInstance(instance)
+        cache_key = self._instance_cache_key(instance)
+        info = cache.get(cache_key)
+
+        if info is None:
+            info = self._client.GetInstance(instance)
+            cache.set(cache_key, info, 3)
+
+        return info
         
     def setup_vnc_forwarding(self, instance):
         password = User.objects.make_random_password(length=8)
@@ -188,10 +209,16 @@ class Cluster(models.Model):
         return (res["source_port"], password)
 
     def shutdown_instance(self, instance):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
         return self._client.ShutdownInstance(instance)
 
     def startup_instance(self, instance):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
         return self._client.StartupInstance(instance)
 
     def reboot_instance(self, instance):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
         return self._client.RebootInstance(instance)

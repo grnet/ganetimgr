@@ -3,6 +3,7 @@ import os
 import socket
 from models import *
 from django import forms
+from django.core.cache import cache
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response
@@ -32,14 +33,25 @@ def cluster_detail(request, slug):
 def render_login(request):
     return render_to_response('m_login.html', {'object': object}, context_instance=RequestContext(request))
 
-def check_instance_auth(request, cluster, instance):
-    cluster = get_object_or_404(Cluster, slug=cluster)
-    instance = cluster.get_instance(instance)
+def check_instance_auth(request, cluster_slug, instance_name):
+    cache_key = "cluster:%s:instance:%s:user:%s" % (cluster_slug, instance_name,
+                                                    request.user.username)
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    cluster = get_object_or_404(Cluster, slug=cluster_slug)
+    instance = cluster.get_instance(instance_name)
+    res = False
+
     if (request.user.is_superuser or
         request.user in instance.users or
         set.intersection(set(request.user.groups.all()), set(instance.groups))):
-        return True
-    return False
+        res = True
+
+    cache.set(cache_key, res, 60)
+
+    return res
 
 
 class LoginForm(forms.Form):
