@@ -1,6 +1,5 @@
 <script type="text/javascript">
 	$(function(){
-		console.log(polltimer);
 		$( "#start" )
 		.button({
 			icons: {
@@ -46,7 +45,6 @@
         success: function(data) {
 			$("#actions_container_inner").empty();
 			$("#actions_container_inner").html("<td>"+data.action+"<td>");
-			console.log("STOPPING...");
 			setTimeout(load_data, 2000);
 
         }
@@ -63,7 +61,6 @@
         success: function(data) {
 			$("#actions_container_inner").empty();
 			$("#actions_container_inner").html("<td>"+data.action+"<td>");
-			console.log("STARTING...");
 			setTimeout(load_data, 2000);
 			
         }
@@ -80,7 +77,6 @@
         success: function(data) {
 			$("#actions_container_inner").empty();
 			$("#actions_container_inner").html("<td>"+data.action+"<td>");
-			console.log("rebooting...");
 			setTimeout(load_data, 2000);
 
         }
