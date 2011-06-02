@@ -42,16 +42,14 @@ $(function() {
 <table class="instance_det_table">
 <tr><th class="table_top_header" colspan=2>Instance Details</th></tr>
 <tr><td class="table_title">Status</td><td id="status"></td></tr>
-<tr><td class="table_title">Memory</td><td>{{ instance.beparams.memory }}</td></tr>
+<tr><td class="table_title">Memory</td><td>{{ instance.beparams.memory|memsize }}</td></tr>
 <tr><td class="table_title">CPUs</td><td>{{ instance.beparams.vcpus }}</td></tr>
+<tr><td class="table_title">Hard disk{{ instance.disk_sizes|pluralize }}</td><td>{{ instance.disk_sizes|disksizes|join:", " }}</td></tr>
 <tr><td class="table_title">Network cards</td><td>{{ instance.nic_macs|length }}</td></tr>
-<tr><td class="table_title">Hard disks</td><td>{{ instance.disk_sizes|disksizes|join:", " }}</td></tr>
-<tr><td class="table_title">UUID</td><td>{{ instance.uuid }}</td></tr>
+<Tr><td class="table_title">MAC address{{ instance.nic_macs|pluralize:"es" }}</td><td>{{ instance.nic_macs|join:", " }}</td></tr>
 <tr><td class="table_title">Cluster</td><td>{{ instance.cluster.description }}</td></tr>
 <tr><td class="table_title">Created on</td><td>{{ instance.ctime|date }}</td></tr>
 <tr><td class="table_title">Last modified</td><td>{{ instance.mtime|date }}</td></tr>
-<tr><td class="table_title">NIC type</td><td>{{ instance.hvparams.nic_type }}</td></tr>
-<tr><td class="table_title">Disk type</td><td>{{ instance.hvparams.disk_type }}</td></tr>
 </table>
 </div>
 
