@@ -15,7 +15,7 @@ import vapclient
 from socket import gethostbyname
 
 from util.ganeti_client import GanetiRapiClient, GenericCurlConfig
-from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT
+from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
 
 
 dec = JSONDecoder()
@@ -93,14 +93,16 @@ class Instance(object):
         for attr in info:
             self.__dict__[attr.replace(".", "_")] = info[attr]
         for tag in self.tags:
-            if tag.startswith('group:'):
-                group = tag.replace('group:','')
+            group_pfx = "%s:group:" % GANETI_TAG_PREFIX
+            user_pfx = "%s:user:" % GANETI_TAG_PREFIX
+            if tag.startswith(group_pfx):
+                group = tag.replace(group_pfx,'')
                 try:
                     self.groups.append(Group.objects.get(name__iexact=group))
                 except:
                     pass
-            elif tag.startswith('user:'):
-                user = tag.replace('user:','')
+            elif tag.startswith(user_pfx):
+                user = tag.replace(user_pfx,'')
                 try:
                     self.users.append(User.objects.get(username__iexact=user))
                 except:

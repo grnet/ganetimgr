@@ -103,3 +103,5 @@ DATE_FORMAT = "d/m/Y H:i"
 DATETIME_FORMAT = "d/m/Y H:i"
 
 CACHE_BACKEND = "redis_cache.cache://127.0.0.1:6379/?timeout=1500"
+
+GANETI_TAG_PREFIX = "ganetimgr"
