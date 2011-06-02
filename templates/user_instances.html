@@ -25,10 +25,11 @@
 <th>Memory</th><th>CPUs</th><th>Operating System</th><th>Status</th></tr>
 </thead>
 <tbody>
+{% load disksizes %}
 {% for instance in instances %}
 
 <tr {% if instance.admin_state %} class="GradeA" {% else %} class="GradeX" {% endif %}><td><a href="{% url instance-detail instance.cluster.slug instance.name %}">{{ instance.name }}</a></td>
-<td>{{ instance.cluster.description }}</td><td>{{ instance.beparams.memory }}</td><td>{{ instance.beparams.vcpus }}</td><td>{{ instance.os }}</td>
+<td>{{ instance.cluster.description }}</td><td>{{ instance.beparams.memory|memsize }}</td><td>{{ instance.beparams.vcpus }}</td><td>{{ instance.os }}</td>
 <td>{% ifequal instance.admin_state instance.oper_state %}
 {{ instance.admin_state|yesno:"Running,Stopped" }}
 {% else %}
