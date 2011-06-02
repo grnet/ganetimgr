@@ -2,11 +2,13 @@
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 
 import os, sys
+import pycurl
 sys.path.append('/srv/')
 sys.path.append('/srv/ganetimgr/')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'ganetimgr.settings'
 
+pycurl.global_init(pycurl.GLOBAL_ALL)
 import django.core.handlers.wsgi
 
 application = django.core.handlers.wsgi.WSGIHandler()
