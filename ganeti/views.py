@@ -10,6 +10,10 @@ from ganetimgr.util.portforwarder import forward_port
 from django.core.context_processors import request
 from django.template.context import RequestContext
 
+from gevent.pool import Pool
+from gevent.timeout import Timeout
+
+
 def cluster_overview(request):
     clusters = Cluster.objects.all()
     if request.is_mobile:
@@ -64,11 +68,16 @@ def login_view(request):
 
 
 def user_index(request):
+    p = Pool(20)
     instances = []
-    for cluster in Cluster.objects.all():
+
+    def _get_instances(cluster):
         instances.extend(cluster.get_user_instances(request.user))
-    #if request.is_mobile:
-    #    return render_to_response('m_cluster.html', {'object': object}, context_instance=RequestContext(request))
+
+    with Timeout(10, False):
+        p.imap(_get_instances, Cluster.objects.all())
+    p.join()
+
     return render_to_response('user_instances.html', {'instances': instances},
                               context_instance=RequestContext(request))
 
