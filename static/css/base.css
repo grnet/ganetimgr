@@ -166,9 +166,10 @@ body {
 	display: inline;
 }
 
-#footer {
+#footer, #footer a {
 	clear: both;
 	padding-top: 1em;
+	font-size: 0.9em;
 	text-align: center;
 }
 
