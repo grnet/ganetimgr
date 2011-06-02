@@ -1,5 +1,6 @@
 import urllib2
 import os
+import re
 import socket
 from models import *
 from django import forms
@@ -176,7 +177,7 @@ class InstanceConfigForm(forms.Form):
     def clean_cdrom_image_path(self):
         data = self.cleaned_data['cdrom_image_path']
         if data:
-            if not (data == 'none' or data.startswith('http://')):
+            if not (data == 'none' or re.match(r'(https?|ftp)://', data)):
                 raise forms.ValidationError('Only HTTP URLs are allowed')
 
             elif data != 'none':
