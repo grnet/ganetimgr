@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from ganetimgr.util.portforwarder import forward_port
 from django.core.context_processors import request
 from django.template.context import RequestContext
+from django.template.loader import get_template
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
@@ -58,7 +59,8 @@ def check_instance_auth(view_fn):
             cache.set(cache_key, res, 60)
 
         if not res:
-            return HttpResponseForbidden(content='You do not have sufficient privileges')
+            t = get_template("403.html")
+            return HttpResponseForbidden(content=t.render(RequestContext(request)))
         else:
             return view_fn(request, *args, **kwargs)
     return check_auth
