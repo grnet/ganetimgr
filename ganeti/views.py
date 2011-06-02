@@ -33,25 +33,35 @@ def cluster_detail(request, slug):
 def render_login(request):
     return render_to_response('m_login.html', {'object': object}, context_instance=RequestContext(request))
 
-def check_instance_auth(request, cluster_slug, instance_name):
-    cache_key = "cluster:%s:instance:%s:user:%s" % (cluster_slug, instance_name,
-                                                    request.user.username)
-    cached = cache.get(cache_key)
-    if cached is not None:
-        return cached
+def check_instance_auth(view_fn):
+    def check_auth(request, *args, **kwargs):
+        try:
+            cluster_slug = kwargs["cluster_slug"]
+            instance_name = kwargs["instance"]
+        except KeyError:
+            cluster_slug = args[0]
+            instance_name = args[1]
 
-    cluster = get_object_or_404(Cluster, slug=cluster_slug)
-    instance = cluster.get_instance(instance_name)
-    res = False
+        cache_key = "cluster:%s:instance:%s:user:%s" % (cluster_slug, instance_name,
+                                                        request.user.username)
+        res = cache.get(cache_key)
+        if res is None:
+            cluster = get_object_or_404(Cluster, slug=cluster_slug)
+            instance = cluster.get_instance(instance_name)
+            res = False
 
-    if (request.user.is_superuser or
-        request.user in instance.users or
-        set.intersection(set(request.user.groups.all()), set(instance.groups))):
-        res = True
+            if (request.user.is_superuser or
+                request.user in instance.users or
+                set.intersection(set(request.user.groups.all()), set(instance.groups))):
+                res = True
 
-    cache.set(cache_key, res, 60)
+            cache.set(cache_key, res, 60)
 
-    return res
+        if not res:
+            return HttpResponseForbidden(content='You do not have sufficient privileges')
+        else:
+            return view_fn(request, *args, **kwargs)
+    return check_auth
 
 
 class LoginForm(forms.Form):
@@ -93,10 +103,8 @@ def user_index(request):
     return render_to_response('user_instances.html', {'instances': instances},
                               context_instance=RequestContext(request))
 
+@check_instance_auth
 def vnc(request, cluster_slug, instance):
-    if not check_instance_auth(request, cluster_slug, instance):
-        return HttpResponseForbidden(content='You do not have sufficient privileges')
-
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     port, password = cluster.setup_vnc_forwarding(instance)
 
@@ -109,30 +117,22 @@ def vnc(request, cluster_slug, instance):
                                'user': request.user})
 
 
+@check_instance_auth
 def shutdown(request, cluster_slug, instance):
-    if not check_instance_auth(request, cluster_slug, instance):
-        return HttpResponseForbidden(content='You do not have'
-                                             ' sufficient privileges')
-
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.shutdown_instance(instance)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
+@check_instance_auth
 def startup(request, cluster_slug, instance):
-    if not check_instance_auth(request, cluster_slug, instance):
-        return HttpResponseForbidden(content='You do not have'
-                                             ' sufficient privileges')
-
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.startup_instance(instance)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
+@check_instance_auth
 def reboot(request, cluster_slug, instance):
-    if not check_instance_auth(request, cluster_slug, instance):
-        return HttpResponseForbidden(content='You do not have sufficient privileges')
-
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.reboot_instance(instance)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
@@ -189,10 +189,8 @@ class InstanceConfigForm(forms.Form):
         return data
 
 
+@check_instance_auth
 def instance(request, cluster_slug, instance):
-    if not check_instance_auth(request, cluster_slug, instance):
-        return HttpResponseForbidden(content='You do not have sufficient privileges')
-
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     instance = cluster.get_instance(instance)
     if request.method == 'POST':
@@ -235,9 +233,8 @@ def instance(request, cluster_slug, instance):
                                'configform': configform,
                                'user': request.user})
 
+@check_instance_auth
 def poll(request, cluster_slug, instance):
-        if not check_instance_auth(request, cluster_slug, instance):
-            return HttpResponseForbidden(content='You do not have sufficient privileges')
         cluster = get_object_or_404(Cluster, slug=cluster_slug)
         instance = cluster.get_instance(instance)
         return render_to_response("instance_actions.html",
