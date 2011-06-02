@@ -9,10 +9,9 @@
 
 </style>
 <script type="text/javascript">
-
-$(function() {
-    var timer = 5000;
-    function load_data() {
+var polltimer;
+var timer = 5000;
+var load_data = function () {
         $.ajax({
             type: 'POST',
             url: '{% url instance-poll cluster.slug instance.name %}',
@@ -25,11 +24,12 @@ $(function() {
 					$('#conf_form').show();
 				}
 				$("#status").html($("#instance_status").html());
-                setTimeout(load_data, timer);
+                polltimer = setTimeout(load_data, timer);
             }
         });
     }
-    load_data(); 
+$(function() {
+    load_data();
 });
 
 </script>

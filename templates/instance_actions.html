@@ -1,58 +1,27 @@
 <script type="text/javascript">
 	$(function(){
+		console.log(polltimer);
 		$( "#start" )
 		.button({
 			icons: {
 				secondary: "ui-icon-play"
 			}
-		})
-		.click(function() {
-			$.ajax({
-            type: 'POST',
-            url: "{% url instance-startup cluster.slug instance.name %}",
-            dataType: 'json',
-            success: function(data) {
-				$("#actions_container_inner").empty();
-				$("#actions_container_inner").html("<td>"+data.action+"<td>");
-            }
-        });	 
-			return false; });
+		});
 			
 		$( "#shutdown" )
 		.button({
 			icons: {
 				secondary: "ui-icon-power"
 			}
-		})
-		.click(function() {
-			$.ajax({
-            type: 'POST',
-            url: "{% url instance-shutdown cluster.slug instance.name %}",
-            dataType: 'json',
-            success: function(data) {
-				$("#actions_container_inner").empty();
-				$("#actions_container_inner").html("<td>"+data.action+"<td>");
-            }
-        });	 
-			return false; });
+		});
 			
 		$( "#reboot" )
 		.button({
 			icons: {
 				secondary: "ui-icon-arrowrefresh-1-s"
 			}
-		})
-		.click(function() {
-			$.ajax({
-            type: 'POST',
-            url: "{% url instance-reboot cluster.slug instance.name %}",
-            dataType: 'json',
-            success: function(data) {
-				$("#actions_container_inner").empty();
-				$("#actions_container_inner").html("<td>"+data.action+"<td>");
-            }
-        });	 
-			return false; });
+		});
+
 			
 		$( "#console" )
 		.button({
@@ -65,7 +34,58 @@
 			icons: {
 				secondary: "ui-icon-check"
 			}
-		});		
+		});
+		
+	$( "#start" )
+	.click(function() {
+		clearTimeout(polltimer);
+		$.ajax({
+        type: 'POST',
+        url: "{% url instance-startup cluster.slug instance.name %}",
+        dataType: 'json',
+        success: function(data) {
+			$("#actions_container_inner").empty();
+			$("#actions_container_inner").html("<td>"+data.action+"<td>");
+			console.log("STOPPING...");
+			setTimeout(load_data, 2000);
+
+        }
+    });	 
+		return false; });
+		
+	$( "#shutdown" )
+	.click(function() {
+		clearTimeout(polltimer);
+		$.ajax({
+        type: 'POST',
+        url: "{% url instance-shutdown cluster.slug instance.name %}",
+        dataType: 'json',
+        success: function(data) {
+			$("#actions_container_inner").empty();
+			$("#actions_container_inner").html("<td>"+data.action+"<td>");
+			console.log("STARTING...");
+			setTimeout(load_data, 2000);
+			
+        }
+    });	 
+		return false; });
+		
+	$( "#reboot" )
+	.click(function() {
+		clearTimeout(polltimer);
+		$.ajax({
+        type: 'POST',
+        url: "{% url instance-reboot cluster.slug instance.name %}",
+        dataType: 'json',
+        success: function(data) {
+			$("#actions_container_inner").empty();
+			$("#actions_container_inner").html("<td>"+data.action+"<td>");
+			console.log("rebooting...");
+			setTimeout(load_data, 2000);
+
+        }
+    });	 
+		return false; });	
 			
 });
 </script>
