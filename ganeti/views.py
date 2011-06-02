@@ -101,9 +101,10 @@ def user_index(request):
     def _get_instances(cluster):
         instances.extend(cluster.get_user_instances(request.user))
 
-    with Timeout(10, False):
-        p.imap(_get_instances, Cluster.objects.all())
-    p.join()
+    if not request.user.is_anonymous():
+        with Timeout(10, False):
+            p.imap(_get_instances, Cluster.objects.all())
+        p.join()
 
     return render_to_response('user_instances.html', {'instances': instances},
                               context_instance=RequestContext(request))
