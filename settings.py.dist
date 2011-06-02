@@ -91,9 +91,15 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'ganetimgr.cluster',
+    #'django.contrib.admin',
+    'ganetimgr.ganeti',
     'django_extensions',
 )
 
 RAPI_CONNECT_TIMEOUT = 3
 RAPI_RESPONSE_TIMEOUT = 5
+
+DATE_FORMAT = "d/m/Y H:i"
+DATETIME_FORMAT = "d/m/Y H:i"
+
+CACHE_BACKEND = "redis_cache.cache://127.0.0.1:6379/?timeout=1500"
