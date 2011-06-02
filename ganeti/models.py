@@ -160,8 +160,11 @@ class Cluster(models.Model):
 
     def get_user_instances(self, user):
         instances = self.get_instances()
-        return [i for i in instances if (user in i.users or
-                user.groups.filter(id__in=[g.id for g in i.groups]))]
+        if user.is_superuser:
+            return instances
+        else:
+            return [i for i in instances if (user in i.users or
+                    user.groups.filter(id__in=[g.id for g in i.groups]))]
 
     def get_cluster_info(self):
         info = cache.get("cluster:%s:info" % self.slug)
