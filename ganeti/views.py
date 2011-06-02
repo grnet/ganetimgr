@@ -5,7 +5,7 @@ from models import *
 from django import forms
 from django.core.cache import cache
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from ganetimgr.util.portforwarder import forward_port
 from django.core.context_processors import request
@@ -14,6 +14,8 @@ from django.template.loader import get_template
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
+
+from django.utils import simplejson
 
 
 def cluster_overview(request):
@@ -123,21 +125,23 @@ def vnc(request, cluster_slug, instance):
 def shutdown(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.shutdown_instance(instance)
-    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    action = {'action': "Please wait... shutting-down"}
+    return HttpResponse(simplejson.dumps(action))
 
 
 @check_instance_auth
 def startup(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.startup_instance(instance)
-    return HttpResponseRedirect(request.META['HTTP_REFERER'])
-
+    action = {'action': "Please wait... starting-up"}
+    return HttpResponse(simplejson.dumps(action))
 
 @check_instance_auth
 def reboot(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.reboot_instance(instance)
-    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    action = {'action': "Please wait... rebooting"}
+    return HttpResponse(simplejson.dumps(action))
 
 
 class InstanceConfigForm(forms.Form):

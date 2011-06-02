@@ -1,27 +1,67 @@
 <script type="text/javascript">
 	$(function(){
-//		$('a', ".instances_table").button();
-		$( "#start" ).button({
+		$( "#start" )
+		.button({
 			icons: {
 				secondary: "ui-icon-play"
 			}
-		});
-		$( "#shutdown" ).button({
+		})
+		.click(function() {
+			$.ajax({
+            type: 'POST',
+            url: "{% url instance-startup cluster.slug instance.name %}",
+            dataType: 'json',
+            success: function(data) {
+				$("#actions_container_inner").empty();
+				$("#actions_container_inner").html("<td>"+data.action+"<td>");
+            }
+        });	 
+			return false; });
+			
+		$( "#shutdown" )
+		.button({
 			icons: {
 				secondary: "ui-icon-power"
 			}
-		});
-		$( "#reboot" ).button({
+		})
+		.click(function() {
+			$.ajax({
+            type: 'POST',
+            url: "{% url instance-shutdown cluster.slug instance.name %}",
+            dataType: 'json',
+            success: function(data) {
+				$("#actions_container_inner").empty();
+				$("#actions_container_inner").html("<td>"+data.action+"<td>");
+            }
+        });	 
+			return false; });
+			
+		$( "#reboot" )
+		.button({
 			icons: {
 				secondary: "ui-icon-arrowrefresh-1-s"
 			}
-		});
-		$( "#console" ).button({
+		})
+		.click(function() {
+			$.ajax({
+            type: 'POST',
+            url: "{% url instance-reboot cluster.slug instance.name %}",
+            dataType: 'json',
+            success: function(data) {
+				$("#actions_container_inner").empty();
+				$("#actions_container_inner").html("<td>"+data.action+"<td>");
+            }
+        });	 
+			return false; });
+			
+		$( "#console" )
+		.button({
 			icons: {
 				secondary: "ui-icon-image"
 			}
 		});
-		$( "#update" ).button({
+		$( "#update" )
+		.button({
 			icons: {
 				secondary: "ui-icon-check"
 			}
@@ -31,19 +71,24 @@
 </script>
 
 <table>
-<tr id="actions_container_inner">
 	{% if instance.oper_state %}
-	{% if instance.admin_state %}
-	<td><a id="shutdown" href="{% url instance-shutdown cluster.slug instance.name %}">Shutdown</a></td>
-<td><a id="reboot" href="{% url instance-reboot cluster.slug instance.name %}">Reboot</a></td>
-<td><a id="console" href="{% url instance-vnc cluster.slug instance.name %}">Console</a></td>
-	{% else %} 
-	<td id="show_no_actions"><em>Instance is shutting down, no actions allowed</em></td>
+		{% if instance.admin_state %}
+		<tr id="actions_container_inner">
+			<td><a id="shutdown" href="#">Shutdown</a></td>
+			<td><a id="reboot" href="#">Reboot</a></td>
+			<td><a id="console" href="{% url instance-vnc cluster.slug instance.name %}">Console</a></td>
+		</tr>
+		{% else %}
+		<tr id="actions_container_inner"> 
+			<td id="show_no_actions"><em>Instance is shutting down, no actions allowed</em></td>
+		</tr>
+		{% endif %}
+	{% else %}
+		<tr id="actions_container_inner">
+		<td colspan=3><a id="start" href="#">Start</a></td>
+		</tr>
 	{% endif %}
-{% else %}
-<td colspan=3><a id="start" href="{% url instance-startup cluster.slug instance.name %}">Start</a></td>
-{% endif %}
-</tr>
+
 </table>
 
 <div id="instance_status" style="display:none;">{{ instance.oper_state|yesno:"Running,Stopped" }}</div>
