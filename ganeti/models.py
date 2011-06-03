@@ -1,25 +1,12 @@
-import os
-import sys
-import urllib
-import urllib2
-
 from django.db import models
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
-from simplejson import JSONEncoder, JSONDecoder
-from time import sleep
-from ganetimgr.util.portforwarder import forward_port
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datetime import datetime
 import vapclient
 from socket import gethostbyname
-
 from util.ganeti_client import GanetiRapiClient, GenericCurlConfig
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
-
-
-dec = JSONDecoder()
-enc = JSONEncoder()
 
 
 class InstanceManager(object):
