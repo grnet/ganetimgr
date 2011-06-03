@@ -17,7 +17,7 @@
 {% block content %}
 
 <p class="info_content_title"><a href="/">Clusters</a> :: {{object.hostname}}</p>
-<h3>VM Instances - {{object.hostname}}</h3>
+<h3>Cluster {{ object.hostname }}</h3>
 
 <table class="display" width="100%" id="vm_instance_table">
 <thead>
@@ -43,7 +43,7 @@
 {% endfor %}
 </tbody>
 </table>
-		{% with object.get_cluster_info as info %}
+{% with object.get_cluster_info as info %}
 <table class="instances_table" width="35%">
 <tr><th class="table_top_header" colspan=2>Cluster Details</th></tr>
 <tr><td class="table_title">Architecture</td><td>{{ info.architecture.0 }}</td></tr>
