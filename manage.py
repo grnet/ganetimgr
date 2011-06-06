@@ -1,4 +1,6 @@
 #!/usr/bin/python
+from gevent import monkey
+monkey.patch_all()
 from django.core.management import execute_manager
 try:
     import settings # Assumed to be in the same directory.
