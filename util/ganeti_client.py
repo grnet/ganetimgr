@@ -95,6 +95,9 @@ class GanetiApiError(Error):
 class GanetiRapiRequest(urllib2.Request):
   def __init__(self, url, data=None, headers={},
                origin_req_host=None, unverifiable=False, method=None):
+     headers["Accept"] = HTTP_APP_JSON
+     headers["Content-type"] = HTTP_APP_JSON
+
      urllib2.Request.__init__(self, url, data, headers,
                               origin_req_host, unverifiable)
      self.method = method
@@ -221,6 +224,17 @@ class GanetiRapiClient(object): # pylint: disable-msg=R0904
 
     req = GanetiRapiRequest(str(url), data=str(encoded_content),
                             method=method)
+
+    if self._username is not None:
+      # create a password manager
+      password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+      password_mgr.add_password(None, str(url), self._username, self._password)
+      handler = urllib2.HTTPBasicAuthHandler(password_mgr)
+      opener = urllib2.build_opener(handler)
+
+      # Now all calls to urllib2.urlopen use our opener.
+      urllib2.install_opener(opener)
+
     try:
       resp = urllib2.urlopen(req)
     except IOError, err:
