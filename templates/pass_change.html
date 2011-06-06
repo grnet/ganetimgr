@@ -2,7 +2,7 @@
 {% block title %}Change Password{% endblock %}
 {% block content %}
 
-<p class="info_content_title"><a href="{% url cluster_overview %}">Home</a> :: change password</p>
+<p class="info_content_title"><a href="{% url user-instances %}">My instances</a> :: change password</p
 <strong>{{user}}</strong>, please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly.
 <form method="post" align="left" id="password_change_form">{% csrf_token %}
 {{form.as_p}}

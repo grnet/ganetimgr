@@ -1,25 +1,13 @@
-import os
-import sys
-import urllib
-import urllib2
-
 from django.db import models
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
-from simplejson import JSONEncoder, JSONDecoder
-from time import sleep
-from ganetimgr.util.portforwarder import forward_port
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datetime import datetime
 import vapclient
 from socket import gethostbyname
 
-from util.ganeti_client import GanetiRapiClient, GenericCurlConfig
+from util.ganeti_client import GanetiRapiClient
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
-
-
-dec = JSONDecoder()
-enc = JSONEncoder()
 
 
 class InstanceManager(object):
@@ -132,12 +120,9 @@ class Cluster(models.Model):
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
-        curl_config = GenericCurlConfig(connect_timeout=RAPI_CONNECT_TIMEOUT,
-                                        timeout=RAPI_RESPONSE_TIMEOUT)
         self._client = GanetiRapiClient(host=self.hostname,
                                         username=self.username,
-                                        password=self.password,
-                                        curl_config_fn=curl_config)
+                                        password=self.password)
         if self.id:
             self._update()
 

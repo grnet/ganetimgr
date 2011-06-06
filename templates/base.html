@@ -38,7 +38,7 @@ $(document).ready( function(){
 					<img class="logoimg" src="/static/grnet_logo.png">
 				</a>
 				<div id="title">
-					<a href="/">virtual machine hosting service</a>
+					<a href="/">virtual private servers</a>
 				</div>
 				<div class="loginform">
 					{% if not user.is_authenticated %}
@@ -49,7 +49,7 @@ $(document).ready( function(){
 					</form>
 					{% else %}
 					<div id="formcontent">
-						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span><span class="topmenuaction"><a href="{% url pass_change %}">Change Password</a></span> <span class="topmenuaction"><a href="{% url logout %}">Log Out</a></span>
+						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span><span class="topmenuaction"><a href="{% url pass_change %}">Change password</a></span> <span class="topmenuaction"><a href="{% url logout %}">Logout</a></span>
 					</div>
 					{% endif %}
 				</div>
