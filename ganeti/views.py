@@ -1,22 +1,21 @@
 import urllib2
-import os
 import re
 import socket
-from models import *
 from django import forms
 from django.core.cache import cache
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
-from ganetimgr.util.portforwarder import forward_port
 from django.core.context_processors import request
 from django.template.context import RequestContext
 from django.template.loader import get_template
+from django.utils import simplejson
+
+from ganetimgr.ganeti.models import *
+from ganetimgr.util.portforwarder import forward_port
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
-
-from django.utils import simplejson
 
 
 def cluster_overview(request):
