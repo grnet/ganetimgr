@@ -12,7 +12,6 @@ from django.template.loader import get_template
 from django.utils import simplejson
 
 from ganetimgr.ganeti.models import *
-from ganetimgr.util.portforwarder import forward_port
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
