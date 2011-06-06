@@ -15,21 +15,22 @@
 {% endblock %}
 {% block title %}Homepage{% endblock %}
 {% block content %}
+{% if not user.is_authenticated %}<div style="position:absolute; top:20px; z-index:100;"><img src="/static/login_show.png"/></div>{% endif %}
 <p class="info_content_title"><a href="/">My instances</a></p>
 <h3>My instances</h3>
 
 <table class="display" width="100%" id="vm_instance_table">
 <thead>
 <tr><th>Name</th><th>Cluster</th>
-<th>Memory</th><th>CPUs</th><th>Operating System</th><th>Status</th></tr>
+<th style="text-align: center;">Memory</th><th style="text-align: center;">CPUs</th><th style="text-align: center;">Operating System</th><th style="text-align: center;">Status</th></tr>
 </thead>
 <tbody>
 {% load disksizes %}
 {% for instance in instances %}
 
 <tr {% if instance.admin_state %} class="GradeA" {% else %} class="GradeX" {% endif %}><td><a href="{% url instance-detail instance.cluster.slug instance.name %}">{{ instance.name }}</a></td>
-<td>{{ instance.cluster.description }}</td><td>{{ instance.beparams.memory|memsize }}</td><td>{{ instance.beparams.vcpus }}</td><td>{{ instance.os }}</td>
-<td>{% ifequal instance.admin_state instance.oper_state %}
+<td>{{ instance.cluster.description }}</td><td style="text-align: center;">{{ instance.beparams.memory|memsize }}</td><td style="text-align: center;">{{ instance.beparams.vcpus }}</td><td style="text-align: center;">{{ instance.os }}</td>
+<td style="text-align: center;">{% ifequal instance.admin_state instance.oper_state %}
 {{ instance.admin_state|yesno:"Running,Stopped" }}
 {% else %}
 {{ instance.oper_state|yesno:"Running,Stopped" }}, should be {{ instance.admin_state|yesno:"running,stopped" }}
