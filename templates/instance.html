@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ instance.name }} on {{ cluster }}{% endblock %}
+{% block title %}{{ instance.name }} on {{ instance.cluster.description }}{% endblock %}
 {% block extrahead %}
 <style type="text/css">
 		#toolbar {
@@ -34,10 +34,13 @@ $(function() {
 
 </script>
 {% endblock %}
+
+{% block breadcrumbs %}:: {{ instance.name }} {% endblock %}
+
 {% block content %}
 {% load disksizes %}
 
-<p class="info_content_title"><a href="/">My instances</a> :: {{ instance.name }}</p>
+
 <h3>{{ instance.name }}</h3>
 <div id="fl_l">
 <table class="instance_det_table">

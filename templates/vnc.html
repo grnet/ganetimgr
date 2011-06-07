@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
 {% block title %}{{ instance.name }} :: Console{% endblock %}
+{% block breadcrumbs %}:: <a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a> :: VNC</p>{% endblock %}
+
 {% block content %}
-<p class="info_content_title">:: <a href="/">My instances</a> :: <a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a> :: VNC</p>
 
 <h3>VNC session on {{ instance }}</h3>
 <applet archive="/static/javavnc/VncViewer.jar" code="VncViewer.class" width="99%" height="790px" align="middle">
