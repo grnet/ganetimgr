@@ -94,6 +94,7 @@ INSTALLED_APPS = (
     #'django.contrib.admin',
     'south',
     'ganetimgr.ganeti',
+    'ganetimgr.apply',
     'django_extensions',
 )
 

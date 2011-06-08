@@ -50,7 +50,7 @@ $(document).ready( function(){
 					{% else %}
 					<div id="formcontent">
 						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span>
-						<span class="topmenuaction"><a href="#">Create Instance</a><sup style="color: red; font-size:0.7em;">New!</sup></span>
+						<span class="topmenuaction"><a href="{% url apply %}">Create Instance</a><sup style="color: red; font-size:0.7em;">New!</sup></span>
 						<span class="topmenuaction"><a href="{% url pass_change %}">Change password</a></span>
 						<span class="topmenuaction"><a href="{% url logout %}">Logout</a></span>
 					</div>
