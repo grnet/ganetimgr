@@ -3,9 +3,9 @@ from django.core.cache import cache
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datetime import datetime
-import vapclient
 from socket import gethostbyname
 
+from util import vapclient
 from util.ganeti_client import GanetiRapiClient
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
 
