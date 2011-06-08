@@ -216,3 +216,28 @@ class Cluster(models.Model):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         return self._client.RebootInstance(instance)
+
+    def create_instance(self, name=None, disk_template=None, disks=None,
+                        nics=None, os=None, memory=None, vcpus=None, tags=None):
+        beparams = {}
+        if memory is not None:
+            beparams["memory"] = memory
+        if vcpus is not None:
+            beparams["vcpus"] = vcpus
+
+        if nics is None:
+            nics = []
+
+        if tags is None:
+            tags = []
+
+        return self._client.CreateInstance(mode="create", name=name, os=os,
+                                           disk_template=disk_template,
+                                           disks=disks, nics=nics,
+                                           start=False, ip_check=False,
+                                           name_check=False,
+                                           beparams=beparams, no_install=True,
+                                           tags=tags)
+
+    def get_job_status(self, job_id):
+        return self._client.GetJobStatus(job_id)
