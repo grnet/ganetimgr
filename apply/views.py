@@ -83,6 +83,7 @@ class InstanceApplicationForm(forms.ModelForm):
         return " ".join(fields)
 
 
+@login_required
 def apply(request):
     user_organizations = request.user.organization_set.all()
     InstanceApplicationForm.base_fields["organization"] = \
