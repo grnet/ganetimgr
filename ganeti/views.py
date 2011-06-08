@@ -3,6 +3,7 @@ import re
 import socket
 from django import forms
 from django.core.cache import cache
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
@@ -96,6 +97,7 @@ def vnc(request, cluster_slug, instance):
 
 
 @login_required
+@csrf_exempt
 @check_instance_auth
 def shutdown(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
@@ -105,6 +107,7 @@ def shutdown(request, cluster_slug, instance):
 
 
 @login_required
+@csrf_exempt
 @check_instance_auth
 def startup(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
@@ -113,6 +116,7 @@ def startup(request, cluster_slug, instance):
     return HttpResponse(simplejson.dumps(action))
 
 @login_required
+@csrf_exempt
 @check_instance_auth
 def reboot(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
