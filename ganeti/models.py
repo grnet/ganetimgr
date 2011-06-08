@@ -117,6 +117,12 @@ class Cluster(models.Model):
     description = models.CharField(max_length=128, blank=True, null=True)
     username = models.CharField(max_length=64, blank=True, null=True)
     password = models.CharField(max_length=64, blank=True, null=True)
+    fast_create = models.BooleanField(default=False,
+                                      verbose_name="Enable fast instance"
+                                                   " creation",
+                                      help_text="Allow fast instance creations"
+                                                " on this cluster using the"
+                                                " admin interface")
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
