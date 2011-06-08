@@ -1,10 +1,15 @@
+import re
 import json
+import base64
+
 from django.db import models
 from ganetimgr.ganeti.models import Cluster
 from django.contrib.auth.models import User
 from ganetimgr.settings import GANETI_TAG_PREFIX
 
 from util import beanstalkc
+from paramiko import RSAKey, DSSKey
+from paramiko.util import hexlify
 
 
 (STATUS_PENDING,
@@ -54,7 +59,6 @@ class InstanceApplication(models.Model):
     vcpus = models.IntegerField()
     operating_system = models.CharField(max_length=255,
                                         choices=OPERATING_SYSTEMS)
-    ssh_pubkey = models.TextField(null=True, blank=True)
     hosts_mail_server = models.BooleanField(default=False)
     comments = models.TextField(null=True, blank=True)
     admin_contact_name = models.CharField(max_length=255, null=True, blank=True)
@@ -101,3 +105,23 @@ class InstanceApplication(models.Model):
         b = beanstalkc.Connection()
         b.put(json.dumps({"type": "CREATE",
                "application_id": self.id}))
+
+
+class SshPublicKey(models.Model):
+    key_type = models.CharField(max_length=12)
+    key = models.TextField()
+    comment = models.CharField(max_length=255, null=True, blank=True)
+    owner = models.ForeignKey(User)
+    fingerprint = models.CharField(max_length=255, null=True, blank=True)
+
+    def __unicode__(self):
+        return "%s: %s" % (self.fingerprint, self.owner.username)
+
+    def compute_fingerprint(self):
+        data = base64.b64decode(self.key)
+        if self.key_type == "ssh-rsa":
+            pkey = RSAKey(data=data)
+        elif self.key_type == "ssh-dss":
+            pkey = DSSKey(data=data)
+
+        return ":".join(re.findall(r"..", hexlify(pkey.get_fingerprint())))

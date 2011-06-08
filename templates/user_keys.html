@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Apply{% endblock %}
+{% block content %}
+<div align="center">
+<h3>SSH keys</h3>
+<style type="text/css">
+.fingerprint {
+	font-family: monospace;
+}
+</style>
+{% if keys %}
+<table>
+<tr><th>Fingerprint</th><th>Comment</th></tr>
+{% for key in keys %}
+<tr><td class="fingerprint">{{ key.fingerprint }}</td><td>{{ key.comment }}</td><td><a href="{% url delete-key key.id %}">Delete</a></tr>
+{% endfor %}
+</table>
+{% endif %}
+<h2>Add new key</h2>
+{% if msg %}
+<div class="error">{{msg}}</div>
+{% endif %}
+<form method="POST">
+{% csrf_token %}
+{% if form.ssh_pubkey.errors %}
+<div class="error">{{ form.ssh_pubkey.errors }}</div>
+{% endif %}
+{{ form.ssh_pubkey }}<br />
+<input type="submit" value="Add" />
+</form>
+</div>
+{% endblock %}
