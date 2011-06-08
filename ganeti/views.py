@@ -117,8 +117,8 @@ def vnc(request, cluster_slug, instance):
                                'instance': instance,
                                'host': request.META['HTTP_HOST'],
                                'port': port,
-                               'password': password,
-                               'user': request.user})
+                               'password': password},
+                               context_instance=RequestContext(request))
 
 
 @check_instance_auth
@@ -236,8 +236,8 @@ def instance(request, cluster_slug, instance):
     return render_to_response("instance.html",
                               {'cluster': cluster,
                                'instance': instance,
-                               'configform': configform,
-                               'user': request.user})
+                               'configform': configform},
+                              context_instance=RequestContext(request))
 
 @check_instance_auth
 def poll(request, cluster_slug, instance):
@@ -246,4 +246,5 @@ def poll(request, cluster_slug, instance):
         return render_to_response("instance_actions.html",
                                   {'cluster':cluster,
                                    'instance': instance,
-                                   })
+                                   },
+                                  context_instance=RequestContext(request))
