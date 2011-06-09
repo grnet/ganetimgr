@@ -224,7 +224,8 @@ class Cluster(models.Model):
         return self._client.RebootInstance(instance)
 
     def create_instance(self, name=None, disk_template=None, disks=None,
-                        nics=None, os=None, memory=None, vcpus=None, tags=None):
+                        nics=None, os=None, memory=None, vcpus=None, tags=None,
+                        osparams=None):
         beparams = {}
         if memory is not None:
             beparams["memory"] = memory
@@ -237,13 +238,16 @@ class Cluster(models.Model):
         if tags is None:
             tags = []
 
+        if osparams is None:
+            osparams = {}
+
         return self._client.CreateInstance(mode="create", name=name, os=os,
                                            disk_template=disk_template,
                                            disks=disks, nics=nics,
                                            start=False, ip_check=False,
                                            name_check=False,
-                                           beparams=beparams, no_install=True,
-                                           tags=tags)
+                                           beparams=beparams,
+                                           tags=tags, osparams=osparams)
 
     def get_job_status(self, job_id):
         return self._client.GetJobStatus(job_id)
