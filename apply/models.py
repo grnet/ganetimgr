@@ -6,7 +6,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from ganetimgr.ganeti.models import Cluster
 from django.contrib.auth.models import User
-from ganetimgr.settings import GANETI_TAG_PREFIX
+from ganetimgr.settings import GANETI_TAG_PREFIX, OPERATING_SYSTEMS
 
 from util import beanstalkc
 from paramiko import RSAKey, DSSKey
@@ -29,13 +29,6 @@ APPLICATION_CODES = (
     (STATUS_FAILED, "failed"),
     (STATUS_SUCCESS, "created successfully"),
     (STATUS_REFUSED, "refused"),
-)
-
-OPERATING_SYSTEMS = (
-    ("squeeze", "Debian squeeze 64 bit"),
-    ("ubuntu", "Ubuntu 64 bit"),
-    ("fedora", "Fedora 15"),
-    ("centos", "CentOS 5.x 64 bit"),
 )
 
 

@@ -111,3 +111,10 @@ GANETI_TAG_PREFIX = "ganetimgr"
 
 LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
+
+# List of operating system images
+OPERATING_SYSTEMS = (
+    ("debian-squeeze", "Debian Squeeze 64 bit"),
+    ("ubuntu-lucid", "Ubuntu Lucid Lynx 64 bit"),
+    ("centos-5.5", "CentOS 5.5 64 bit"),
+)
