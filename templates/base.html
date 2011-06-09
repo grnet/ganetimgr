@@ -7,23 +7,22 @@
 <script type="text/javascript" src="/static/js/jquery-ui-1.8.12.custom.min.js"></script>
 <script type="text/javascript">
 
-
-function highlight(elemId){
-    var elem = $(elemId);
-    elem.css("background-color", "#ffffbb");
-    setTimeout(function() { $(elemId).animate({ backgroundColor: "white" }, 2000)}, 1500);
-}
-
-   
-$(document).ready( function(){
-	if (document.location.hash) {
-	    highlight(document.location.hash);
-	}
-	$('a[href*=#]').click(function(){
-	    var elemId = '#' + $(this).attr('href').split('#')[1];
-	    highlight(elemId);
-	});
-});
+//function highlight(elemId){
+//    var elem = $(elemId);
+//    elem.css("background-color", "#ffffbb");
+//    setTimeout(function() { $(elemId).animate({ backgroundColor: "white" }, 2000)}, 1500);
+//}
+//
+//   
+//$(document).ready( function(){
+//	if (document.location.hash) {
+//	    highlight(document.location.hash);
+//	}
+//	$('a[href*=#]').click(function(){
+//	    var elemId = '#' + $(this).attr('href').split('#')[1];
+//	    highlight(elemId);
+//	});
+//});
 
 </script>
 {% block extrahead %}{% endblock %}
@@ -59,7 +58,7 @@ $(document).ready( function(){
 				</div>
 			</div>
 			<div id="content">
-				<p class="info_content_title"><a href="/">My instances</a>{% block breadcrumbs %}{% endblock %}</p>
+				{% block brcrmb_container %}<p class="info_content_title"><a href="/">My instances</a>{% block breadcrumbs %}{% endblock %}</p>{% endblock %}
 				{% block content %}
 				{% endblock %}
 

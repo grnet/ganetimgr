@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block extrahead %}
+	<script>
+$(document).ready(function () {
+    $('#accordion').accordion({
+		active: false,
+		collapsible: true,
+        autoHeight: false,
+        create: function () {
+//			load password change form
+            $('#pass_change_placeholder').load("{% url pass_change %}");
+//			load ssh keys manager
+			$('#manage_sshkeys_placeholder').load("{% url user-keys %}");
+//			change user mail
+			$('#change_email_placeholder').load("{% url mail_change %}");
+			
+        }
+    });
+});
+
+	</script>
+
+{% endblock %}
+{% block title %}My profile{% endblock %}
+{% block content %}
+<h3>My profile</h3>
+
+<div id="accordion">
+	<h3><a href="#" style="color: #4183C4;">Change Password</a></h3>
+	<div id="pass_change_placeholder"></div>
+	<h3><a href="#" style="color: #4183C4;">Change Email</a></h3>
+	<div id="change_email_placeholder"></div>
+	<h3><a href="#" style="color: #4183C4;">Manage SSH Keys</a></h3>
+	<div id="manage_sshkeys_placeholder"></div>
+</div>
+
+
+
+{% endblock %}
