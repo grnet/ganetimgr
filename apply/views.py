@@ -36,7 +36,7 @@ class InstanceApplicationForm(forms.ModelForm):
                                                      " the virtual machine"
                                                      " will be receiving"
                                                      " e-mail")
-    comments = forms.CharField(widget=forms.Textarea,
+    comments = forms.CharField(widget=forms.Textarea, required=False,
                                help_text="Additional comments you would like"
                                          " the service administrators to see")
 
