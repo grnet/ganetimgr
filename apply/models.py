@@ -38,6 +38,11 @@ OPERATING_SYSTEMS = (
 )
 
 
+def generate_cookie():
+    """Generate a randomized cookie"""
+    return User.objects.make_random_password(length=10)
+
+
 class ApplicationError(Exception):
     pass
 
@@ -70,6 +75,8 @@ class InstanceApplication(models.Model):
     job_id = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(choices=APPLICATION_CODES)
     backend_message = models.TextField(blank=True, null=True)
+    cookie = models.CharField(max_length=255, editable=False,
+                              default=generate_cookie)
     filed = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
