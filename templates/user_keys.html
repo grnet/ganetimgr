@@ -38,7 +38,12 @@
 });
 
 	$(function() {
-	$('.remove_btn').button();
+	$('.remove_btn').button({
+            icons: {
+                primary: "ui-icon-circle-close"
+            },
+            text: false
+        })
 	$('#add_ssh_key_btn').button();
 	$('#add_ssh_key_btn').click(function() {
 			str = $('#sshkeyform').serialize();
@@ -58,7 +63,6 @@
 			var $this = $(this);
 			var id = $this.attr("id");
 			var key_id = id.replace("remove_key_", "")
-			console.log(key_id);
             $.ajax({
                 type: "GET",
                 url: "{% url delete-key %}"+key_id,
