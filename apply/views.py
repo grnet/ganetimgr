@@ -1,11 +1,12 @@
 import re
 import base64
+from cStringIO import StringIO
 from paramiko import RSAKey, DSSKey, SSHException
 
 from django import forms
 from django.core import urlresolvers
 from django.core.mail import mail_admins
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.template.loader import render_to_string, get_template
@@ -205,3 +206,15 @@ def mail_change(request):
             changed = True
             form = EmailChangeForm()
     return render_to_response("mail_change.html", {'mail':usermail, 'form':form, 'changed':changed}, context_instance=RequestContext(request))
+
+
+def instance_ssh_keys(request, application_id, cookie):
+    app = get_object_or_404(InstanceApplication, pk=application_id)
+    if cookie != app.cookie:
+        t = get_template("403.html")
+        return HttpResponseForbidden(content=t.render(RequestContext(request)))
+
+    output = StringIO()
+    output.writelines([k.key_line() for k in
+                       app.applicant.sshpublickey_set.all()])
+    return HttpResponse(output.getvalue(), mimetype="text/plain")

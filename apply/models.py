@@ -3,6 +3,7 @@ import json
 import base64
 
 from django.db import models
+from django.core.urlresolvers import reverse
 from ganetimgr.ganeti.models import Cluster
 from django.contrib.auth.models import User
 from ganetimgr.settings import GANETI_TAG_PREFIX
@@ -113,6 +114,13 @@ class InstanceApplication(models.Model):
         b.put(json.dumps({"type": "CREATE",
                "application_id": self.id}))
 
+    def get_ssh_keys_url(self, prefix=None):
+        if prefix is None:
+            prefix = ""
+        return prefix.rstrip("/") + reverse("instance-ssh-keys",
+                                            kwargs={"application_id": self.id,
+                                                    "cookie": self.cookie})
+
 
 class SshPublicKey(models.Model):
     key_type = models.CharField(max_length=12)
@@ -132,3 +140,6 @@ class SshPublicKey(models.Model):
             pkey = DSSKey(data=data)
 
         return ":".join(re.findall(r"..", hexlify(pkey.get_fingerprint())))
+
+    def key_line(self):
+        return " ".join((self.key_type, self.key, self.comment)) + "\n"
