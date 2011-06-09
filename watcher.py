@@ -3,7 +3,14 @@
 import time
 import json
 
+from gevent import monkey
+monkey.patch_all()
+
 from util import beanstalkc
+import settings
+
+from django.core.management import setup_environ
+setup_environ(settings)
 
 from apply.models import *
 from django.utils.encoding import smart_str
@@ -55,3 +62,6 @@ def run():
 
             job.touch()
             time.sleep(2)
+
+if __name__ == "__main__":
+    run()
