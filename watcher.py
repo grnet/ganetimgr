@@ -32,7 +32,7 @@ def run():
                     application.backend_message = smart_str(status["opresult"])
                     mail_admins("Instance creation failure for %s on %s" %
                                  (application.hostname, application.cluster),
-                                str(status))
+                                 json.dumps(status, indent=2))
                 else:
                     application.status = STATUS_SUCCESS
                     application.backend_message = None
