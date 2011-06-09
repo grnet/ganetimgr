@@ -43,7 +43,7 @@
 			str = $('#change_email_form').serialize();
             $.ajax({
                 type: "POST",
-                url: "{% url mail_change %}",
+                url: "{% url mail-change %}",
                 data: str,
                 success: function(response){
 //					console.log(response);
