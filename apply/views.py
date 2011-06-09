@@ -23,17 +23,28 @@ MEMORY_CHOICES = [(m, filesizeformat(int(m) * 1024**2))
 
 
 class InstanceApplicationForm(forms.ModelForm):
+    hostname = forms.CharField(help_text="A fully qualified domain name,"
+                                         " e.g. host.domain.com")
     memory = forms.ChoiceField(choices=MEMORY_CHOICES)
     vcpus = forms.ChoiceField(choices=[(x, x) for x in range(1,5)],
                                label="Virtual CPUs")
     disk_size = forms.IntegerField(min_value=2, max_value=100,
-                                   initial=5, label="Disk size (GB)")
+                                   initial=5, label="Disk size (GB)",
+                                   help_text="Specify a size from 2 to 100 GB")
+    hosts_mail_server = forms.BooleanField(required=False,
+                                           help_text="Check this option if"
+                                                     " the virtual machine"
+                                                     " will be receiving"
+                                                     " e-mail")
+    comments = forms.CharField(widget=forms.Textarea,
+                               help_text="Additional comments you would like"
+                                         " the service administrators to see")
 
     class Meta:
         model = InstanceApplication
         fields = ('hostname', 'memory', 'vcpus', 'disk_size',
                   'organization', 'hosts_mail_server',
-                  'operating_system')
+                  'operating_system', 'comments')
 
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"]
