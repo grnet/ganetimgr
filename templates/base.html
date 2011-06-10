@@ -1,29 +1,28 @@
 <html>
 <head>
-<title>vima.grnet.gr :: {% block title %}{% endblock %} </title>
+<title>ViMa :: {% block title %}{% endblock %} </title>
 <script src="/static/js/jquery.min.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/base.css">
 <link rel="stylesheet" type="text/css" href="/static/css/smoothness/jquery-ui-1.8.13.custom.css">
 <script type="text/javascript" src="/static/js/jquery-ui-1.8.12.custom.min.js"></script>
 <script type="text/javascript">
 
-
-function highlight(elemId){
-    var elem = $(elemId);
-    elem.css("background-color", "#ffffbb");
-    setTimeout(function() { $(elemId).animate({ backgroundColor: "white" }, 2000)}, 1500);
-}
-
-   
-$(document).ready( function(){
-	if (document.location.hash) {
-	    highlight(document.location.hash);
-	}
-	$('a[href*=#]').click(function(){
-	    var elemId = '#' + $(this).attr('href').split('#')[1];
-	    highlight(elemId);
-	});
-});
+//function highlight(elemId){
+//    var elem = $(elemId);
+//    elem.css("background-color", "#ffffbb");
+//    setTimeout(function() { $(elemId).animate({ backgroundColor: "white" }, 2000)}, 1500);
+//}
+//
+//   
+//$(document).ready( function(){
+//	if (document.location.hash) {
+//	    highlight(document.location.hash);
+//	}
+//	$('a[href*=#]').click(function(){
+//	    var elemId = '#' + $(this).attr('href').split('#')[1];
+//	    highlight(elemId);
+//	});
+//});
 
 </script>
 {% block extrahead %}{% endblock %}
@@ -41,20 +40,18 @@ $(document).ready( function(){
 					<a href="/">virtual private servers</a>
 				</div>
 				<div class="loginform">
-					{% if not user.is_authenticated %}
-					<form id="formcontent" method="post" action="{% url login %}">
-						<label for="username">username </label><input name="username" type="text"></input> 
-						<label for="password">password </label><input name="password" type="password"></input>
-						<input type="submit" value="login" />
-					</form>
-					{% else %}
+					{% if user.is_authenticated %}
 					<div id="formcontent">
-						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span><span class="topmenuaction"><a href="{% url pass_change %}">Change password</a></span> <span class="topmenuaction"><a href="{% url logout %}">Logout</a></span>
+						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span>
+						<span class="topmenuaction"><a href="{% url apply %}">Create Instance</a><sup style="color: red; font-size:0.7em;">New!</sup></span>
+						<span class="topmenuaction"><a href="{% url profile %}">My profile</a><sup style="color: red; font-size:0.7em;">New!</sup></span>
+						<span class="topmenuaction"><a href="{% url logout %}">Logout</a></span>
 					</div>
 					{% endif %}
 				</div>
 			</div>
 			<div id="content">
+				{% block brcrmb_container %}<p class="info_content_title"><a href="/">My instances</a>{% block breadcrumbs %}{% endblock %}</p>{% endblock %}
 				{% block content %}
 				{% endblock %}
 

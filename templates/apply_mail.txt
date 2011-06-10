@@ -1,0 +1,8 @@
+The user {{user.username}} ({{user.firstname}} {{user.lastname}}) has filed the
+following application:
+
+{% for field in form %}
+{{field.label}}: {{field.data}}
+{% endfor %}
+
+To review the application, visit {{url}}

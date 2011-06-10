@@ -1,4 +1,4 @@
-<div id="pass_form_placeholder">
+<div id="sshkeys_placeholder">
 <script>
 	$(document).ajaxSend(function(event, xhr, settings) {
     function getCookie(name) {
@@ -38,15 +38,38 @@
 });
 
 	$(function() {
-	$('#passformbtn').button();
-	$('#passformbtn').click(function() {
-			str = $('#password_change_form').serialize();
+	$('.remove_btn').button({
+            icons: {
+                primary: "ui-icon-circle-close"
+            },
+            text: false
+        })
+	$('#add_ssh_key_btn').button();
+	$('#add_ssh_key_btn').click(function() {
+			str = $('#sshkeyform').serialize();
             $.ajax({
                 type: "POST",
-                url: "{% url pass_change %}?csrf_token={{csrf_token}}",
+                url: "{% url user-keys %}",
                 data: str,
-                success: function(msg){
-                	$("#pass_form_placeholder").html(msg);
+                success: function(response){
+//					var $response=$(response);
+//					var resdata =  $response.filter("#sshkeys_placeholder").html();
+                	$("#sshkeys_placeholder").html(response);
+                        }
+        });
+    return false;
+        });
+		$('a[id^="remove_key_"]').click(function() {
+			var $this = $(this);
+			var id = $this.attr("id");
+			var key_id = id.replace("remove_key_", "")
+            $.ajax({
+                type: "GET",
+                url: "{% url delete-key %}"+key_id,
+                success: function(response){
+//					var $response=$(response);
+//					var resdata =  $response.filter("#sshkeys_placeholder").html();
+                	$("#sshkeys_placeholder").html(response);
                         }
         });
     return false;
@@ -54,9 +77,31 @@
 	});
 	</script>
 
-<strong>{{user}}</strong>, please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly.
-<form method="post" align="left" id="password_change_form">{% csrf_token %}
-{{form.as_p}}
-<button id="passformbtn">Change</button>
+<style type="text/css">
+.fingerprint {
+	font-family: monospace;
+}
+</style>
+
+{% if keys %}
+<table>
+<tr><th>Fingerprint</th><th>Comment</th></tr>
+{% for key in keys %}
+<tr><td class="fingerprint">{{ key.fingerprint }}</td><td>{{ key.comment }}</td><td><a class="remove_btn" id="remove_key_{{key.id}}" href="#">Delete</a></tr>
+{% endfor %}
+</table>
+{% endif %}
+<h2>Add new key</h2>
+{% if msg %}
+<div class="error">{{msg}}</div>
+{% endif %}
+<form method="POST" id="sshkeyform">
+{% csrf_token %}
+{% if form.ssh_pubkey.errors %}
+<div class="error">{{ form.ssh_pubkey.errors }}</div>
+{% endif %}
+{{ form.ssh_pubkey }}<br />
+<button id="add_ssh_key_btn">Add key</button>
 </form>
 </div>
+

@@ -3,9 +3,10 @@ from django.core.cache import cache
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datetime import datetime
-import vapclient
 from socket import gethostbyname
-from util.ganeti_client import GanetiRapiClient, GenericCurlConfig
+
+from util import vapclient
+from util.ganeti_client import GanetiRapiClient
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
 
 
@@ -116,15 +117,18 @@ class Cluster(models.Model):
     description = models.CharField(max_length=128, blank=True, null=True)
     username = models.CharField(max_length=64, blank=True, null=True)
     password = models.CharField(max_length=64, blank=True, null=True)
+    fast_create = models.BooleanField(default=False,
+                                      verbose_name="Enable fast instance"
+                                                   " creation",
+                                      help_text="Allow fast instance creations"
+                                                " on this cluster using the"
+                                                " admin interface")
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
-        curl_config = GenericCurlConfig(connect_timeout=RAPI_CONNECT_TIMEOUT,
-                                        timeout=RAPI_RESPONSE_TIMEOUT)
         self._client = GanetiRapiClient(host=self.hostname,
                                         username=self.username,
-                                        password=self.password,
-                                        curl_config_fn=curl_config)
+                                        password=self.password)
         if self.id:
             self._update()
 
@@ -218,3 +222,28 @@ class Cluster(models.Model):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         return self._client.RebootInstance(instance)
+
+    def create_instance(self, name=None, disk_template=None, disks=None,
+                        nics=None, os=None, memory=None, vcpus=None, tags=None):
+        beparams = {}
+        if memory is not None:
+            beparams["memory"] = memory
+        if vcpus is not None:
+            beparams["vcpus"] = vcpus
+
+        if nics is None:
+            nics = []
+
+        if tags is None:
+            tags = []
+
+        return self._client.CreateInstance(mode="create", name=name, os=os,
+                                           disk_template=disk_template,
+                                           disks=disks, nics=nics,
+                                           start=False, ip_check=False,
+                                           name_check=False,
+                                           beparams=beparams, no_install=True,
+                                           tags=tags)
+
+    def get_job_status(self, job_id):
+        return self._client.GetJobStatus(job_id)

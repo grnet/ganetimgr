@@ -1,4 +1,4 @@
-<div id="pass_form_placeholder">
+<div id="usermailchange_placeholder">
 <script>
 	$(document).ajaxSend(function(event, xhr, settings) {
     function getCookie(name) {
@@ -38,25 +38,32 @@
 });
 
 	$(function() {
-	$('#passformbtn').button();
-	$('#passformbtn').click(function() {
-			str = $('#password_change_form').serialize();
+	$('#change_email_btn').button();
+	$('#change_email_btn').click(function() {
+			str = $('#change_email_form').serialize();
             $.ajax({
                 type: "POST",
-                url: "{% url pass_change %}?csrf_token={{csrf_token}}",
+                url: "{% url mail-change %}",
                 data: str,
-                success: function(msg){
-                	$("#pass_form_placeholder").html(msg);
+                success: function(response){
+//					console.log(response);
+//					var $response=$(response);
+//					var resdata =  $response.filter("#sshkeys_placeholder").html();
+                	$("#usermailchange_placeholder").html(response);
                         }
         });
     return false;
         });
 	});
 	</script>
-
-<strong>{{user}}</strong>, please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly.
-<form method="post" align="left" id="password_change_form">{% csrf_token %}
-{{form.as_p}}
-<button id="passformbtn">Change</button>
+<div>{{user}} enter your new mail address twice so we can verify you typed it in correctly.</div> 
+<div>Your e-mail {% if changed %} has successfully changed to {% endif %}: <strong>{% ifequal mail|length 0 %} you have not registered an address yet {% else %}{{mail}}{% endifequal %}</strong></div>
+<form method="POST" id="change_email_form">
+{% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+<button id="change_email_btn">Change email</button>
 </form>
+
 </div>

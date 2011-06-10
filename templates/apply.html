@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Apply{% endblock %}
+{% block breadcrumbs %}:: Create Instance{% endblock %}
+{% block content %}
+<style type="text/css">
+th {
+	text-align: right;
+	padding-right: 0.5em;
+	vertical-align: top;
+}
+
+.help {
+	font-style: italic;
+
+}
+</style>
+
+<div align="center">
+<h3>Apply for a new instance</h3>
+<form method="POST">
+{% csrf_token %}
+<table>
+{% for field in form %}
+<tr><th>{{ field.label_tag }}</th><td>{{ field }}<span class="error">{{ field.errors|join:", " }}</span></td></tr>
+{% if field.help_text %}
+<tr class="help"><th></th><td>{{ field.help_text }}</td><td></td></tr>
+{% endif %}
+{% endfor %}
+</table>
+<input type="submit" value="Apply" />
+</form>
+</div>
+{% endblock %}

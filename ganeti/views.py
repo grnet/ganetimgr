@@ -3,16 +3,17 @@ import re
 import socket
 from django import forms
 from django.core.cache import cache
-from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import request
 from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.utils import simplejson
+from django.core.urlresolvers import reverse
 
 from ganetimgr.ganeti.models import *
-from ganetimgr.util.portforwarder import forward_port
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
@@ -33,8 +34,6 @@ def cluster_detail(request, slug):
 #        return render_to_response('m_cluster.html', {'object': object}, context_instance=RequestContext(request))
     return render_to_response('cluster.html', {'object': object}, context_instance=RequestContext(request))
 
-def render_login(request):
-    return render_to_response('m_login.html', {'object': object}, context_instance=RequestContext(request))
 
 def check_instance_auth(view_fn):
     def check_auth(request, *args, **kwargs):
@@ -68,32 +67,9 @@ def check_instance_auth(view_fn):
     return check_auth
 
 
-class LoginForm(forms.Form):
-    username = forms.CharField(max_length=255)
-    password = forms.CharField(max_length=255,
-                               widget=forms.widgets.PasswordInput)
-
-
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect('/')
-
-
-def login_view(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            user = authenticate(username=form.cleaned_data['username'],
-                                password=form.cleaned_data['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                else:
-                    return HttpResponseForbidden(content='Your account is disabled')
-    return HttpResponseRedirect(request.META['HTTP_REFERER'])
-
-
 def user_index(request):
+    if request.user.is_anonymous():
+        return HttpResponseRedirect(reverse('login'))
     p = Pool(20)
     instances = []
 
@@ -108,6 +84,7 @@ def user_index(request):
     return render_to_response('user_instances.html', {'instances': instances},
                               context_instance=RequestContext(request))
 
+@login_required
 @check_instance_auth
 def vnc(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
@@ -118,10 +95,12 @@ def vnc(request, cluster_slug, instance):
                                'instance': instance,
                                'host': request.META['HTTP_HOST'],
                                'port': port,
-                               'password': password,
-                               'user': request.user})
+                               'password': password},
+                               context_instance=RequestContext(request))
 
 
+@login_required
+@csrf_exempt
 @check_instance_auth
 def shutdown(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
@@ -130,6 +109,8 @@ def shutdown(request, cluster_slug, instance):
     return HttpResponse(simplejson.dumps(action))
 
 
+@login_required
+@csrf_exempt
 @check_instance_auth
 def startup(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
@@ -137,6 +118,8 @@ def startup(request, cluster_slug, instance):
     action = {'action': "Please wait... starting-up"}
     return HttpResponse(simplejson.dumps(action))
 
+@login_required
+@csrf_exempt
 @check_instance_auth
 def reboot(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
@@ -195,7 +178,8 @@ class InstanceConfigForm(forms.Form):
                     raise forms.ValidationError('Invalid URL')
         return data
 
-
+    
+@login_required
 @check_instance_auth
 def instance(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
@@ -237,9 +221,10 @@ def instance(request, cluster_slug, instance):
     return render_to_response("instance.html",
                               {'cluster': cluster,
                                'instance': instance,
-                               'configform': configform,
-                               'user': request.user})
+                               'configform': configform},
+                              context_instance=RequestContext(request))
 
+@login_required
 @check_instance_auth
 def poll(request, cluster_slug, instance):
         cluster = get_object_or_404(Cluster, slug=cluster_slug)
@@ -247,4 +232,5 @@ def poll(request, cluster_slug, instance):
         return render_to_response("instance_actions.html",
                                   {'cluster':cluster,
                                    'instance': instance,
-                                   })
+                                   },
+                                  context_instance=RequestContext(request))

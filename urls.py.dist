@@ -7,17 +7,21 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     url(r'^/?$', 'ganetimgr.ganeti.views.user_index', name="user-instances"),
-    url(r'^loginpage/?$', 'ganetimgr.ganeti.views.render_login', name='loginpage'),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/poll/?$', 'ganetimgr.ganeti.views.poll', name="instance-poll"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/vnc/?$', 'ganetimgr.ganeti.views.vnc', name="instance-vnc"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/shutdown/?$', 'ganetimgr.ganeti.views.shutdown', name="instance-shutdown"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/startup/?$', 'ganetimgr.ganeti.views.startup', name="instance-startup"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/reboot/?$', 'ganetimgr.ganeti.views.reboot', name="instance-reboot"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/?', 'ganetimgr.ganeti.views.instance', name="instance-detail"),
-    url(r'^user/login/?', 'ganetimgr.ganeti.views.login_view', name="login"),
-    url(r'^user/logout/?', 'ganetimgr.ganeti.views.logout_view', name="logout"),
+    url(r'^user/profile/?$', 'ganetimgr.apply.views.profile', name="profile"),
+    url(r'^user/mail_change/?$', 'ganetimgr.apply.views.mail_change', name="mail-change"),
+    url(r'^user/keys/?$', 'ganetimgr.apply.views.user_keys', name="user-keys"),
+    url(r'^user/keys/delete/(?P<key_id>\d+)?$', 'ganetimgr.apply.views.delete_key', name="delete-key"),
+    url(r'^user/login/?', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name="login"),
+    url(r'^user/logout/?', 'django.contrib.auth.views.logout', {'next_page': '/'}, name="logout"),
     url(r'^user/pass_change/$', 'django.contrib.auth.views.password_change', {'template_name':'pass_change.html', 'post_change_redirect':'done'}, name="pass_change"),
     url(r'^user/pass_change/done/$',  'django.contrib.auth.views.password_change_done', {'template_name':'pass_change_done.html'}, name="pass_change_done" ),
+    url(r'^user/mail_change/$', 'ganetimgr.ganeti.views.mail_change', name="mail_change"),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
