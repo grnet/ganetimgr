@@ -100,6 +100,20 @@ class SshKeyForm(forms.Form):
         return [key_type, key, comment]
 
 
+class EmailChangeForm(forms.Form):
+    email1 = forms.EmailField(label="Email", required=True)
+    email2 = forms.EmailField(label="Email (verify)", required=True)
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        email1 = cleaned_data.get("email1")
+        email2 = cleaned_data.get("email2")
+        if email1 and email2:
+            if email1 != email2:
+                raise forms.ValidationError("Mail fields do not match.")
+        return cleaned_data
+
+
 @login_required
 def apply(request):
     user_organizations = request.user.organization_set.all()
@@ -168,3 +182,26 @@ def delete_key(request, key_id):
         return HttpResponseForbidden(content=t.render(RequestContext(request)))
     key.delete()
     return HttpResponseRedirect(urlresolvers.reverse("user-keys"))
+
+
+@login_required
+def profile(request):
+        return render_to_response("profile.html", context_instance=RequestContext(request))
+
+
+@login_required
+def mail_change(request):
+    changed = False
+    usermail = request.user.email
+    if request.method == "GET":
+        form = EmailChangeForm()
+    elif request.method == "POST":
+        form = EmailChangeForm(request.POST)
+        if form.is_valid():
+            usermail = form.cleaned_data['email1']
+            user = User.objects.get(username=request.user)
+            user.email = usermail
+            user.save()
+            changed = True
+            form = EmailChangeForm()
+    return render_to_response("mail_change.html", {'mail':usermail, 'form':form, 'changed':changed}, context_instance=RequestContext(request))
