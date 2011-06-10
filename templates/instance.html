@@ -55,7 +55,6 @@ $(function() {
 {% if instance.nic_ips %}
 <tr><td class="table_title">IP address{{ instance.nic_ips|pluralize:"es" }}</td><td>{{ instance.nic_ips|join:", " }}</td></tr>
 {% endif %}
-<tr><td class="table_title">Cluster</td><td>{{ instance.cluster.description }}</td></tr>
 <tr><td class="table_title">Created on</td><td>{{ instance.ctime|date }}</td></tr>
 <tr><td class="table_title">Last modified</td><td>{{ instance.mtime|date }}</td></tr>
 </table>
