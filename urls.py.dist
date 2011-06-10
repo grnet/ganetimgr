@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     url(r'^user/logout/?', 'django.contrib.auth.views.logout', {'next_page': '/'}, name="logout"),
     url(r'^user/pass_change/$', 'django.contrib.auth.views.password_change', {'template_name':'pass_change.html', 'post_change_redirect':'done'}, name="pass_change"),
     url(r'^user/pass_change/done/$',  'django.contrib.auth.views.password_change_done', {'template_name':'pass_change_done.html'}, name="pass_change_done" ),
-    url(r'^user/mail_change/$', 'ganetimgr.ganeti.views.mail_change', name="mail_change"),
+    url(r'^apply/?$', 'ganetimgr.apply.views.apply', name="apply"),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
