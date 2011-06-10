@@ -11,6 +11,7 @@ from django.core.context_processors import request
 from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.utils import simplejson
+from django.core.urlresolvers import reverse
 
 from ganetimgr.ganeti.models import *
 
@@ -67,6 +68,8 @@ def check_instance_auth(view_fn):
 
 
 def user_index(request):
+    if request.user.is_anonymous():
+        return HttpResponseRedirect(reverse('login'))
     p = Pool(20)
     instances = []
 
