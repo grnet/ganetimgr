@@ -12,11 +12,14 @@ from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 
 from ganetimgr.ganeti.models import *
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
+
+from util.ganeti_client import GanetiApiError
 
 
 def cluster_overview(request):
@@ -72,14 +75,27 @@ def user_index(request):
         return HttpResponseRedirect(reverse('login'))
     p = Pool(20)
     instances = []
+    bad_clusters = []
 
     def _get_instances(cluster):
-        instances.extend(cluster.get_user_instances(request.user))
+        t = Timeout(5)
+        t.start()
+        try:
+            instances.extend(cluster.get_user_instances(request.user))
+        except (GanetiApiError, Timeout):
+            bad_clusters.append(cluster)
+        finally:
+            t.cancel()
 
     if not request.user.is_anonymous():
-        with Timeout(10, False):
-            p.imap(_get_instances, Cluster.objects.all())
+        p.imap(_get_instances, Cluster.objects.all())
         p.join()
+
+    if bad_clusters:
+        messages.add_message(request, messages.WARNING,
+                             "Some instances may be missing because the"
+                             " following clusters are unreachable: " +
+                             ", ".join([c.description for c in bad_clusters]))
 
     return render_to_response('user_instances.html', {'instances': instances},
                               context_instance=RequestContext(request))
