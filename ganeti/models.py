@@ -123,6 +123,7 @@ class Cluster(models.Model):
                                       help_text="Allow fast instance creations"
                                                 " on this cluster using the"
                                                 " admin interface")
+    default_disk_template = models.CharField(max_length=255, default="plain")
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
@@ -240,6 +241,9 @@ class Cluster(models.Model):
 
         if osparams is None:
             osparams = {}
+
+        if disk_template is None:
+            disk_template = self.default_disk_template
 
         return self._client.CreateInstance(mode="create", name=name, os=os,
                                            disk_template=disk_template,

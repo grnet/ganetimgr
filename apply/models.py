@@ -110,7 +110,6 @@ class InstanceApplication(models.Model):
                                            os="debootstrap+default",
                                            vcpus=self.vcpus,
                                            memory=self.memory,
-                                           disk_template="sharedfile",
                                            disks=[{"size": self.disk_size * 1000}],
                                            nics=[nic_dict],
                                            tags=tags)
