@@ -4,6 +4,7 @@ from cStringIO import StringIO
 from paramiko import RSAKey, DSSKey, SSHException
 
 from django import forms
+from django.contrib import messages
 from django.core import urlresolvers
 from django.core.mail import mail_admins, send_mail
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
@@ -221,18 +222,17 @@ def review_application(request, application_id):
                 send_mail("Application for %s rejected" % application.hostname,
                           mail_body, SERVICE_MAIL,
                           [application.applicant.email])
-                return render_to_response('application_rejected.html',
-                                          {'form': form,
-                                           'application': application},
-                                          context_instance=RequestContext(request))
+                messages.add_message(request, messages.INFO,
+                                     "Application #%d rejected, user %s has"
+                                     " been notified" % (app.pk, request.user))
             else:
                 application.status = STATUS_APPROVED
                 application.save()
                 application.submit()
-                return render_to_response('application_submitted.html',
-                                          {'form': form,
-                                           'application': application},
-                                          context_instance=RequestContext(request))
+                messages.add_message(request, messages.INFO,
+                                     "Application #%d accepted and submitted"
+                                     " to %s" % (app.pk, application.cluster))
+            return HttpResponseRedirect(urlresolvers.reverse("application-list"))
         else:
             return render_to_response('review.html',
                                       {'application': app,
