@@ -188,7 +188,7 @@ def apply(request):
                                       context_instance=RequestContext(request))
 
 
-@permission_required("apply.change_instance_application")
+@permission_required("apply.change_instanceapplication")
 def application_list(request):
     applications = InstanceApplication.objects.all()
     pending = applications.filter(status=STATUS_PENDING)
@@ -201,7 +201,7 @@ def application_list(request):
                               context_instance=RequestContext(request))
 
 
-@permission_required("apply.change_instance_application")
+@permission_required("apply.change_instanceapplication")
 def review_application(request, application_id):
     app = get_object_or_404(InstanceApplication, pk=application_id)
     fast_clusters = Cluster.objects.filter(fast_create=True)
