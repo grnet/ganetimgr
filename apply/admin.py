@@ -1,6 +1,5 @@
 from django.contrib import admin
-from models import *
-from django.forms import PasswordInput
+from ganetimgr.apply.models import *
 from ganetimgr.ganeti.models import Cluster
 
 def make_fast_create_actions():
@@ -27,10 +26,24 @@ def make_fast_create_actions():
 
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ["hostname", "applicant", "organization", "cluster",
-                    "status", "backend_message", "filed"]
-    list_filter = ["status", "cluster", "organization"]
+                    "network", "status", "filed"]
+    list_filter = ["status", "network", "organization"]
+    list_editable = ["organization", "network"]
+    readonly_fields = ["job_id", "backend_message"]
     ordering = ["-filed", "hostname"]
     actions = make_fast_create_actions()
+    fieldsets = [
+        ('Instance Information', {'fields': ('hostname', 'memory', 'disk_size',
+                                             'vcpus', 'operating_system',
+                                             'hosts_mail_server') }),
+        ('Placement', {'fields': ('network',)}),
+        ('Owner Information', {'fields': ('applicant', 'organization',
+                                          'admin_contact_name',
+                                          'admin_contact_phone',
+                                          'admin_contact_email')}),
+        ('Backend Information', {'fields': ('status', 'job_id',
+                                            'backend_message')})
+    ]
 
 admin.site.register(Organization)
 admin.site.register(InstanceApplication, ApplicationAdmin)
