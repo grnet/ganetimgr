@@ -118,3 +118,5 @@ OPERATING_SYSTEMS = (
     ("ubuntu-lucid", "Ubuntu Lucid Lynx 64 bit"),
     ("centos-5.5", "CentOS 5.5 64 bit"),
 )
+
+SERVICE_MAIL = "noreply@domain.com"

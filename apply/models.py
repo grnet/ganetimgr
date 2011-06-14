@@ -86,6 +86,9 @@ class InstanceApplication(models.Model):
     def cluster(self, c):
         self.network = c.get_default_network()
 
+    def is_pending(self):
+        return self.status == STATUS_PENDING
+
     def approve(self):
         assert self.status < STATUS_APPROVED
         self.status = STATUS_APPROVED

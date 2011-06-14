@@ -1,0 +1,6 @@
+Η αίτησή σας #{{ application.pk }} για τη δημιουργία εικονικής μηχανής με όνομα
+{{ application.hostname }} απορρίφθηκε για τους παρακάτω λόγους:
+
+{{ application.admin_comments }}
+
+Για το ΚΕΔ ΕΔΕΤ

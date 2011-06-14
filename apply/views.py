@@ -5,15 +5,17 @@ from paramiko import RSAKey, DSSKey, SSHException
 
 from django import forms
 from django.core import urlresolvers
-from django.core.mail import mail_admins
+from django.core.mail import mail_admins, send_mail
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.template.loader import render_to_string, get_template
 from django.template.defaultfilters import filesizeformat
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+
 from ganetimgr.apply.models import *
 from ganetimgr.ganeti.models import Cluster, Network
+from ganetimgr.settings import SERVICE_MAIL
 
 
 _VALID_NAME_RE = re.compile("^[a-z0-9._-]{1,255}$") # taken from ganeti
@@ -59,6 +61,27 @@ class InstanceApplicationForm(forms.ModelForm):
             hostname.startswith(".")):
             raise forms.ValidationError("Invalid hostname %s" % hostname)
         return hostname
+
+
+class InstanceApplicationReviewForm(InstanceApplicationForm):
+    class Meta:
+        model = InstanceApplication
+        fields = InstanceApplicationForm.Meta.fields + ('admin_comments',)
+
+    def clean_comments(self):
+        return self.instance.comments
+
+    def clean_admin_comments(self):
+        if self.data and "reject" in self.data and not \
+            self.cleaned_data["admin_comments"]:
+            raise forms.ValidationError("Please specify a reason for"
+                                        " rejection")
+        return self.cleaned_data["admin_comments"]
+
+    def clean(self):
+        if not self.instance.is_pending:
+            raise forms.ValidationError("Application already handled")
+        return self.cleaned_data
 
 
 class SshKeyForm(forms.Form):
@@ -157,6 +180,64 @@ def apply(request):
                                       context_instance=RequestContext(request))
         else:
             return render_to_response('apply.html', {'form': form},
+                                      context_instance=RequestContext(request))
+
+
+@permission_required("apply.change_instance_application")
+def application_list(request):
+    applications = InstanceApplication.objects.all()
+    pending = applications.filter(status=STATUS_PENDING)
+    completed = applications.exclude(status=STATUS_PENDING)
+
+    return render_to_response("application_list.html",
+                              {'applications': applications,
+                               'pending': pending,
+                               'completed': completed},
+                              context_instance=RequestContext(request))
+
+
+@permission_required("apply.change_instance_application")
+def review_application(request, application_id):
+    app = get_object_or_404(InstanceApplication, pk=application_id)
+    fast_clusters = Cluster.objects.filter(fast_create=True)
+
+    if request.method == "GET":
+        form = InstanceApplicationReviewForm(instance=app)
+        return render_to_response('review.html',
+                                  {'application': app,
+                                   'appform': form,
+                                   'fast_clusters': fast_clusters},
+                                  context_instance=RequestContext(request))
+
+    else:
+        form = InstanceApplicationReviewForm(request.POST, instance=app)
+        if form.is_valid():
+            application = form.save(commit=False)
+            if "reject" in request.POST:
+                application.status = STATUS_REFUSED
+                application.save()
+                mail_body = render_to_string("application_rejected_mail.txt",
+                                             {"application": application})
+                send_mail("Application for %s rejected" % application.hostname,
+                          mail_body, SERVICE_MAIL,
+                          [application.applicant.email])
+                return render_to_response('application_rejected.html',
+                                          {'form': form,
+                                           'application': application},
+                                          context_instance=RequestContext(request))
+            else:
+                application.status = STATUS_APPROVED
+                application.save()
+                application.submit()
+                return render_to_response('application_submitted.html',
+                                          {'form': form,
+                                           'application': application},
+                                          context_instance=RequestContext(request))
+        else:
+            return render_to_response('review.html',
+                                      {'application': app,
+                                       'appform': form,
+                                       'fast_clusters': fast_clusters},
                                       context_instance=RequestContext(request))
 
 
