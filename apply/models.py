@@ -6,7 +6,9 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from ganetimgr.ganeti.models import Cluster, Network
 from django.contrib.auth.models import User
-from ganetimgr.settings import GANETI_TAG_PREFIX, OPERATING_SYSTEMS
+from django.contrib.sites.models import Site
+from ganetimgr.settings import GANETI_TAG_PREFIX, OPERATING_SYSTEMS, \
+                               OPERATING_SYSTEM_CHOICES
 
 from util import beanstalkc
 from paramiko import RSAKey, DSSKey
@@ -57,7 +59,7 @@ class InstanceApplication(models.Model):
     disk_size = models.IntegerField()
     vcpus = models.IntegerField()
     operating_system = models.CharField(max_length=255,
-                                        choices=OPERATING_SYSTEMS)
+                                        choices=OPERATING_SYSTEM_CHOICES)
     hosts_mail_server = models.BooleanField(default=False)
     comments = models.TextField(null=True, blank=True)
     admin_comments = models.TextField(null=True, blank=True)
@@ -109,13 +111,25 @@ class InstanceApplication(models.Model):
         if self.network.mode == "routed":
             nic_dict.update(ip="pool")
 
+        os = OPERATING_SYSTEMS[self.operating_system]
+        provider = os["provider"]
+        osparams = {}
+
+        if "osparams" in os:
+            osparams.update(os["osparams"])
+        if "ssh_key_param" in os:
+            fqdn = Site.objects.get_current().domain
+            key_url = self.get_ssh_keys_url(fqdn)
+            osparams[os["ssh_key_param"]] = key_url
+
         job = self.cluster.create_instance(name=self.hostname,
-                                           os="debootstrap+default",
+                                           os=provider,
                                            vcpus=self.vcpus,
                                            memory=self.memory,
                                            disks=[{"size": self.disk_size * 1000}],
                                            nics=[nic_dict],
-                                           tags=tags)
+                                           tags=tags,
+                                           osparams=osparams)
         self.status = STATUS_SUBMITTED
         self.job_id = job
         self.save()

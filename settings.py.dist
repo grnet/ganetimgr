@@ -113,10 +113,37 @@ LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
 
 # List of operating system images
-OPERATING_SYSTEMS = (
-    ("debian-squeeze", "Debian Squeeze 64 bit"),
-    ("ubuntu-lucid", "Ubuntu Lucid Lynx 64 bit"),
-    ("centos-5.5", "CentOS 5.5 64 bit"),
-)
+OPERATING_SYSTEMS = {
+    "debian-squeeze": {
+        "description": "Debian Squeeze 64 bit",
+        "provider": "image+default",
+        "osparams": {
+            "img_id": "debian-squeeze",
+            "img_format": "tarball",
+        },
+        "ssh_key_param": "img_ssh_key_url",
+    },
+    "ubuntu-lucid": {
+        "description": "Ubuntu 10.04 LTS 64 bit",
+        "provider": "image+default",
+        "osparams": {
+            "img_id": "ubuntu-lucid",
+            "img_format": "tarball",
+        },
+        "ssh_key_param": "img_ssh_key_url",
+    },
+    "centos-5.5": {
+        "description": "CentOS 5.5 64 bit",
+        "provider": "image+default",
+        "osparams": {
+            "img_id": "centos-5.5",
+            "img_format": "tarball",
+        },
+        "ssh_key_param": "img_ssh_key_url",
+    },
+}
+
+OPERATING_SYSTEM_CHOICES = \
+    [(x, y["description"]) for (x, y) in OPERATING_SYSTEMS.items()]
 
 SERVICE_MAIL = "noreply@domain.com"
