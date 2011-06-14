@@ -13,6 +13,7 @@ from django.template.loader import render_to_string, get_template
 from django.template.defaultfilters import filesizeformat
 from django.contrib.auth.decorators import login_required
 from ganetimgr.apply.models import *
+from ganetimgr.ganeti.models import Cluster, Network
 
 
 _VALID_NAME_RE = re.compile("^[a-z0-9._-]{1,255}$") # taken from ganeti
@@ -45,7 +46,7 @@ class InstanceApplicationForm(forms.ModelForm):
         model = InstanceApplication
         fields = ('hostname', 'memory', 'vcpus', 'disk_size',
                   'organization', 'hosts_mail_server',
-                  'operating_system', 'comments')
+                  'operating_system', 'comments', 'network')
 
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"]
@@ -118,8 +119,18 @@ class EmailChangeForm(forms.Form):
 @login_required
 def apply(request):
     user_organizations = request.user.organization_set.all()
+    user_networks = Network.objects.filter(groups__in=request.user.groups.all())
     InstanceApplicationForm.base_fields["organization"] = \
         forms.ModelChoiceField(queryset=user_organizations)
+
+    if user_networks:
+        InstanceApplicationForm.base_fields["network"] = \
+            forms.ModelChoiceField(queryset=user_networks, required=False)
+    else:
+        try:
+            del InstanceApplicationForm.base_fields["network"]
+        except KeyError:
+            pass
 
     if request.method == "GET":
         form = InstanceApplicationForm()

@@ -4,7 +4,7 @@ import base64
 
 from django.db import models
 from django.core.urlresolvers import reverse
-from ganetimgr.ganeti.models import Cluster
+from ganetimgr.ganeti.models import Cluster, Network
 from django.contrib.auth.models import User
 from ganetimgr.settings import GANETI_TAG_PREFIX, OPERATING_SYSTEMS
 
@@ -64,7 +64,7 @@ class InstanceApplication(models.Model):
     admin_contact_phone = models.CharField(max_length=64, null=True, blank=True)
     admin_contact_email = models.EmailField(null=True, blank=True)
     organization = models.ForeignKey(Organization)
-    cluster = models.ForeignKey(Cluster, null=True, blank=True)
+    network = models.ForeignKey(Network, null=True, blank=True)
     applicant = models.ForeignKey(User)
     job_id = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(choices=APPLICATION_CODES)
@@ -76,6 +76,14 @@ class InstanceApplication(models.Model):
 
     def __unicode__(self):
         return self.hostname
+
+    @property
+    def cluster(self):
+        return self.network.cluster
+
+    @cluster.setter
+    def cluster(self, c):
+        self.network = c.get_default_network()
 
     def approve(self):
         assert self.status < STATUS_APPROVED
@@ -91,13 +99,19 @@ class InstanceApplication(models.Model):
         tags.append("%s:user:%s" %
                     (GANETI_TAG_PREFIX, self.applicant.username))
 
+        nic_dict = dict(link=self.network.link,
+                        mode=self.network.mode)
+
+        if self.network.mode == "routed":
+            nic_dict.update(ip="pool")
+
         job = self.cluster.create_instance(name=self.hostname,
                                            os="debootstrap+default",
                                            vcpus=self.vcpus,
                                            memory=self.memory,
                                            disk_template="sharedfile",
                                            disks=[{"size": self.disk_size * 1000}],
-                                           nics=[{"ip": "pool"}],
+                                           nics=[nic_dict],
                                            tags=tags)
         self.status = STATUS_SUBMITTED
         self.job_id = job

@@ -251,3 +251,36 @@ class Cluster(models.Model):
 
     def get_job_status(self, job_id):
         return self._client.GetJobStatus(job_id)
+
+    def get_default_network(self):
+        try:
+            return self.network_set.get(cluster_default=True)
+        except Network.DoesNotExist:
+            return None
+
+
+class Network(models.Model):
+    description = models.CharField(max_length=255)
+    cluster = models.ForeignKey(Cluster)
+    link = models.CharField(max_length=255)
+    mode = models.CharField(max_length=64,
+                            choices=(("bridged", "Bridged"),
+                                     ("routed", "Routed")))
+    cluster_default = models.BooleanField(default=False)
+    groups = models.ManyToManyField(Group, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.description
+
+    def save(self, *args, **kwargs):
+        # Ensure that only one cluster_default exists per cluster
+        if self.cluster_default:
+            try:
+                other = Network.objects.get(cluster=self.cluster,
+                                            cluster_default=True)
+                if other != self:
+                    other.cluster_default = False
+                    other.save(*args, **kwargs)
+            except Network.DoesNotExist:
+                pass
+        super(Network, self).save()
