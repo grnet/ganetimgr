@@ -13,6 +13,7 @@ from django.template.context import RequestContext
 from django.template.loader import render_to_string, get_template
 from django.template.defaultfilters import filesizeformat
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.sites.models import Site
 
 from ganetimgr.apply.models import *
 from ganetimgr.ganeti.models import Cluster, Network
@@ -168,8 +169,11 @@ def apply(request):
             application.applicant = request.user
             application.status = STATUS_PENDING
             application.save()
-            admin_url = request.build_absolute_uri(
-                urlresolvers.reverse("admin:apply_instanceapplication_changelist"))
+            fqdn = Site.objects.get_current().domain
+            admin_url = "https://%s%s" % \
+               (fqdn,
+                urlresolvers.reverse("application-review",
+                                     kwargs={"application_id": application.pk}))
             mail_body = render_to_string("apply_mail.txt",
                                          {"form": form,
                                           "user": request.user,
