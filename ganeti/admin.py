@@ -10,4 +10,11 @@ class ClusterAdmin(admin.ModelAdmin):
     #        kwargs['widget'] = PasswordInput
     #    return db_field.formfield(**kwargs)
 
+
+class NetworkAdmin(admin.ModelAdmin):
+    list_display = ('description', 'cluster', 'cluster_default', 'mode', 'link')
+    list_filter = ('cluster',)
+
+
 admin.site.register(Cluster, ClusterAdmin)
+admin.site.register(Network, NetworkAdmin)
