@@ -47,7 +47,7 @@
 						<span class="topmenuaction"><a href="{% url profile %}">My profile</a></span>
 {% if user.is_superuser %}
 						<span class="topmenuaction"><a href="{% url admin:index %}">Admin</a></span>
-						<span class="topmenuaction"><a href="{% url application-list %}">Applications</a></span>
+						<span class="topmenuaction"><a href="{% url application-list %}">Applications{% if pending_count %} ({{ pending_count }}){% endif %}</a></span>
 {% endif %}
 						<span class="topmenuaction"><a href="{% url logout %}">Logout</a></span>
 					</div>
