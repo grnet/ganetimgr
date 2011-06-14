@@ -6,7 +6,7 @@ from paramiko import RSAKey, DSSKey, SSHException
 from django import forms
 from django.contrib import messages
 from django.core import urlresolvers
-from django.core.mail import mail_admins, send_mail
+from django.core.mail import send_mail, mail_managers
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
@@ -178,9 +178,9 @@ def apply(request):
                                          {"form": form,
                                           "user": request.user,
                                           "url": admin_url})
-            mail_admins("New instance request by %s: %s" %
-                        (request.user, application.hostname),
-                        mail_body)
+            mail_managers("New instance request by %s: %s" %
+                         (request.user, application.hostname),
+                         mail_body)
             return render_to_response('apply_success.html',
                                       context_instance=RequestContext(request))
         else:
