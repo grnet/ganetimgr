@@ -60,6 +60,7 @@ class InstanceApplication(models.Model):
                                         choices=OPERATING_SYSTEMS)
     hosts_mail_server = models.BooleanField(default=False)
     comments = models.TextField(null=True, blank=True)
+    admin_comments = models.TextField(null=True, blank=True)
     admin_contact_name = models.CharField(max_length=255, null=True, blank=True)
     admin_contact_phone = models.CharField(max_length=64, null=True, blank=True)
     admin_contact_email = models.EmailField(null=True, blank=True)
