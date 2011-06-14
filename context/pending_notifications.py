@@ -9,11 +9,7 @@ def notify(request):
     res = {}
     if (request.user and
         request.user.has_perm("apply.change_instance_application")):
+        res.update(can_handle_applications=True)
         pend = InstanceApplication.objects.filter(status=STATUS_PENDING)
-        if pend:
-            count = pend.count()
-            msg = "There are <a href=\"%s\">%d pending" \
-                  " applications</a>." % (reverse("application-list"), count)
-            messages.add_message(request, messages.INFO, mark_safe(msg))
-            res.update(pending_count=count)
+        res.update(pending_count=pend.count())
     return res
