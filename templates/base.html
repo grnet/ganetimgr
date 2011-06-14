@@ -55,7 +55,10 @@
 				</div>
 			</div>
 			<div id="content">
-				{% block brcrmb_container %}<p class="info_content_title"><a href="/">My instances</a>{% block breadcrumbs %}{% endblock %}</p>{% endblock %}
+				{% block brcrmb_container %}
+				<div class="info_content_title"><a href="/">My instances</a>
+				{% block breadcrumbs %}{% endblock %}
+				</div>
 				{% if messages %}
 				<div id="messages">
 				{% for message in messages %}
@@ -63,6 +66,7 @@
 				{% endfor %}
 				</div>
 				{% endif %}
+				{% endblock %}
 				{% block content %}
 				{% endblock %}
 
