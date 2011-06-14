@@ -130,16 +130,9 @@ class Cluster(models.Model):
         self._client = GanetiRapiClient(host=self.hostname,
                                         username=self.username,
                                         password=self.password)
-        if self.id:
-            self._update()
 
     def __unicode__(self):
         return self.hostname
-
-    def _update(self):
-        self._info = self.get_cluster_info()
-        for attr in self._info:
-            self.__dict__[attr] = self._info[attr]
 
     def _instance_cache_key(self, instance):
         return "cluster:%s:instance:%s" % (self.slug, instance)
