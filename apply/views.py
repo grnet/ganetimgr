@@ -181,8 +181,11 @@ def apply(request):
             mail_managers("New instance request by %s: %s" %
                          (request.user, application.hostname),
                          mail_body)
-            return render_to_response('apply_success.html',
-                                      context_instance=RequestContext(request))
+            messages.add_message(request, messages.INFO,
+                                 "Your request has been filed with id #%d and"
+                                 " will be processed shortly." %
+                                 application.id)
+            return HttpResponseRedirect(urlresolvers.reverse("user-instances"))
         else:
             return render_to_response('apply.html', {'form': form},
                                       context_instance=RequestContext(request))
