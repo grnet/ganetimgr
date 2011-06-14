@@ -981,3 +981,14 @@ div.box {
 	border: 1px solid #8080FF;
 	background-color: #E5E5FF;
 }
+
+#messages {
+	text-align: center;
+	border: 1px solid #777777;
+	max-width: 20em;
+	padding-top: 0.4em;
+	padding-bottom: 0.4em;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #d5ffd5;
+}
