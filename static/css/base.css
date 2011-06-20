@@ -22,6 +22,10 @@ html {
 	list-style: none outside none;
 }
 
+.error{
+	color: red;
+}
+
 #password_change_form label{
 	display: block;
     float: left;

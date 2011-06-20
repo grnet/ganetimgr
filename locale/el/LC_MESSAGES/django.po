@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-20 13:12+0300\n"
+"POT-Creation-Date: 2011-06-20 14:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -26,6 +26,156 @@ msgstr "Ελληνικά"
 msgid "English"
 msgstr "Αγγλικά"
 
+#: apply/views.py:34
+msgid "A fully qualified domain name, e.g. host.domain.com"
+msgstr ""
+
+#: apply/views.py:35 templates/application_list.html:9
+#: templates/application_list.html.py:18
+msgid "Hostname"
+msgstr "Όνομα"
+
+#: apply/views.py:36 templates/application_list.html:9
+#: templates/application_list.html.py:18 templates/instance.html:50
+#: templates/user_instances.html:24
+msgid "Memory"
+msgstr "Μνήμη"
+
+#: apply/views.py:40
+msgid "Disk size (GB)"
+msgstr "Μέγεθος δίσκου (GB)"
+
+#: apply/views.py:41
+msgid "Specify a size from 2 to 100 GB"
+msgstr "Καθορίστε μέγεθος μεταξύ 2 και 100 GB"
+
+#: apply/views.py:43
+msgid "Check this option if the virtual machine will be receiving e-mail"
+msgstr ""
+"Ενεργοποιήστε αυτή την επιλογή εάν το virual machine πρόκειται να δέχεται e-"
+"mails"
+
+#: apply/views.py:46
+msgid "Hosts mail server"
+msgstr "Φιλοξενία mail server"
+
+#: apply/views.py:48
+msgid "Additional comments you would like the service administrators to see"
+msgstr ""
+"Πρόσθετα σχόλια ή παρατηρήσεις που θα θέλατε να λάβουν υπόψιν τους οι "
+"διαχειριστές της υπηρεσίας"
+
+#: apply/views.py:49 templates/review.html:46 templates/review.html.py:90
+msgid "Comments"
+msgstr "Σχόλια"
+
+#: apply/views.py:66
+#, python-format
+msgid "Invalid hostname %s"
+msgstr "Εσφαλμένο όνομα %s"
+
+#: apply/views.py:81
+msgid "Please specify a reason for rejection"
+msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
+
+#: apply/views.py:87
+msgid "Application already handled"
+msgstr ""
+
+#: apply/views.py:101
+msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
+msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
+
+#: apply/views.py:114
+msgid "Malformed SSH key"
+msgstr "Εσφαλμένη μορφή SSH κλειδιού"
+
+#: apply/views.py:121
+msgid "Invalid RSA SSH key"
+msgstr "Λανθασμένο RSA SSH key"
+
+#: apply/views.py:126
+msgid "Invalid DSS SSH key"
+msgstr "Λανθασμένο DSS SSH key"
+
+#: apply/views.py:128
+#, python-format
+msgid "Unknown key type '%s'"
+msgstr "Άγνωστος τύπος κλειδιού '%s'"
+
+#: apply/views.py:134
+msgid "Email"
+msgstr ""
+
+#: apply/views.py:135
+msgid "Email (verify)"
+msgstr "Email (επιβεβαίωση)"
+
+#: apply/views.py:143
+msgid "Mail fields do not match."
+msgstr "Τα πεδία e-mail δεν ταιριάζουν"
+
+#: apply/views.py:188
+#, python-format
+msgid "Your request has been filed with id #%d and will be processed shortly."
+msgstr ""
+"Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
+"ξεκινήσει σύντομα."
+
+#: apply/views.py:272
+#, python-format
+msgid "A key with the same fingerprint exists: %s"
+msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
+
+#: ganeti/views.py:128
+msgid "Please wait... shutting-down"
+msgstr "Παρακαλώ περιμένετε... απενεργοποίηση"
+
+#: ganeti/views.py:138
+msgid "Please wait... starting-up"
+msgstr "Παρακαλώ περιμένετε... εκκίνηση"
+
+#: ganeti/views.py:147
+msgid "Please wait... rebooting"
+msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
+
+#: ganeti/views.py:152
+msgid "Network adapter model"
+msgstr "Τύπος κάρτας δικτύου"
+
+#: ganeti/views.py:158
+msgid "Hard disk type"
+msgstr "Τύπος σκληρού δίσκου"
+
+#: ganeti/views.py:163
+msgid "Boot device"
+msgstr "Συσκευή εκκίνησης"
+
+#: ganeti/views.py:167
+msgid "CD-ROM Drive"
+msgstr "Συσκευή CD-ROM"
+
+#: ganeti/views.py:174
+msgid "ISO Image URL (http)"
+msgstr ""
+
+#: ganeti/views.py:176
+msgid "Hardware clock uses local time instead of UTC"
+msgstr ""
+
+#: ganeti/views.py:184
+msgid "Only HTTP URLs are allowed"
+msgstr "Μόνο URLs συμβατά με τη μορφή HTTP επιτρέπονται"
+
+#: ganeti/views.py:195
+#, python-format
+msgid "%(url)s is not a valid URL"
+msgstr "%(url)s δεν είναι αποδεκτή μορφή URL"
+
+#: ganeti/views.py:198
+msgid "Invalid URL"
+msgstr "Λανθασμένο URL"
+
 #: templates/application_list.html:3
 msgid "Application submitted"
 msgstr "Η αίτηση υποβλήθηκε"
@@ -35,17 +185,8 @@ msgid "Pending applications"
 msgstr "Αιτήσεις που εκκρεμούν"
 
 #: templates/application_list.html:9 templates/application_list.html.py:18
-msgid "Hostname"
-msgstr "Όνομα"
-
-#: templates/application_list.html:9 templates/application_list.html.py:18
 msgid "User"
 msgstr "Χρήστης"
-
-#: templates/application_list.html:9 templates/application_list.html.py:18
-#: templates/instance.html:50 templates/user_instances.html:24
-msgid "Memory"
-msgstr "Μνήμη"
 
 #: templates/application_list.html:9 templates/application_list.html.py:18
 msgid "vCPUs"
@@ -74,7 +215,7 @@ msgstr "Δημιουργία VM"
 
 #: templates/apply.html:20
 msgid "Apply for a new instance"
-msgstr ""
+msgstr "Αίτηση για νέο instance"
 
 #: templates/base.html:51
 msgid "Welcome"
@@ -254,10 +395,6 @@ msgstr "Έχει υποβληθεί στις"
 msgid "Instance information"
 msgstr "Πληροφορίες instance"
 
-#: templates/review.html:46 templates/review.html.py:90
-msgid "Comments"
-msgstr "Σχόλια"
-
 #: templates/review.html:53 templates/review.html.py:97
 msgid "Placement"
 msgstr "Τοποθέτηση"
@@ -283,6 +420,14 @@ msgstr "Σχόλια προς το χρήστη"
 #: templates/review.html:98
 msgid "The instance has been placed on"
 msgstr "Το instance έχει τοποθετηθεί στο"
+
+#: templates/user_instances.html:10
+msgid "Display"
+msgstr "Προβολή"
+
+#: templates/user_instances.html:10
+msgid "All"
+msgstr "Όλων"
 
 #: templates/user_instances.html:23
 msgid "Name"

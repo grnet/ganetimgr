@@ -7,7 +7,7 @@
 			$('#vm_instance_table').dataTable( {
 			"bJQueryUI": true,
 			"oLanguage": {
-				"sLengthMenu": 'Display <select><option value="25">25</option><option value="50">50</option><option value="-1">All</option></select> instances'
+				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> instances'
 			},
 			"iDisplayLength": 25,
 	} );

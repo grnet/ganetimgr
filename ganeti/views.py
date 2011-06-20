@@ -20,6 +20,10 @@ from gevent.pool import Pool
 from gevent.timeout import Timeout
 
 from util.ganeti_client import GanetiApiError
+from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext as _
+
+from time import sleep
 
 
 def cluster_overview(request):
@@ -121,7 +125,7 @@ def vnc(request, cluster_slug, instance):
 def shutdown(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.shutdown_instance(instance)
-    action = {'action': "Please wait... shutting-down"}
+    action = {'action': _("Please wait... shutting-down")}
     return HttpResponse(simplejson.dumps(action))
 
 
@@ -131,7 +135,7 @@ def shutdown(request, cluster_slug, instance):
 def startup(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.startup_instance(instance)
-    action = {'action': "Please wait... starting-up"}
+    action = {'action': _("Please wait... starting-up")}
     return HttpResponse(simplejson.dumps(action))
 
 @login_required
@@ -140,44 +144,44 @@ def startup(request, cluster_slug, instance):
 def reboot(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.reboot_instance(instance)
-    action = {'action': "Please wait... rebooting"}
+    action = {'action': _("Please wait... rebooting")}
     return HttpResponse(simplejson.dumps(action))
 
 
 class InstanceConfigForm(forms.Form):
-    nic_type = forms.ChoiceField(label="Network adapter model",
+    nic_type = forms.ChoiceField(label=ugettext_lazy("Network adapter model"),
                                  choices=(('paravirtual', 'Paravirtualized'),
                                           ('rtl8139', 'Realtek 8139+'),
                                           ('e1000', 'Intel PRO/1000'),
                                           ('ne2k_pci', 'NE2000 PCI')))
 
-    disk_type = forms.ChoiceField(label="Hard disk type",
+    disk_type = forms.ChoiceField(label=ugettext_lazy("Hard disk type"),
                                   choices=(('paravirtual', 'Paravirtualized'),
                                            ('scsi', 'SCSI'),
                                            ('ide', 'IDE')))
 
-    boot_order = forms.ChoiceField(label="Boot device",
+    boot_order = forms.ChoiceField(label=ugettext_lazy("Boot device"),
                                    choices=(('disk', 'Hard disk'),
                                             ('cdrom', 'CDROM')))
 
-    cdrom_type = forms.ChoiceField(label="CD-ROM Drive",
+    cdrom_type = forms.ChoiceField(label=ugettext_lazy("CD-ROM Drive"),
                                    choices=(('none', 'Disabled'),
                                             ('iso',
                                              'ISO Image over HTTP (see below)')),
                                    widget=forms.widgets.RadioSelect())
 
     cdrom_image_path = forms.CharField(required=False,
-                                       label="ISO Image URL (http)")
+                                       label=ugettext_lazy("ISO Image URL (http)"))
 
-    use_localtime = forms.BooleanField(label="Hardware clock uses local time"
-                                             " instead of UTC",
+    use_localtime = forms.BooleanField(label=ugettext_lazy("Hardware clock uses local time"
+                                             " instead of UTC"),
                                        required=False)
 
     def clean_cdrom_image_path(self):
         data = self.cleaned_data['cdrom_image_path']
         if data:
             if not (data == 'none' or re.match(r'(https?|ftp)://', data)):
-                raise forms.ValidationError('Only HTTP URLs are allowed')
+                raise forms.ValidationError(_('Only HTTP URLs are allowed'))
 
             elif data != 'none':
                 # Check if the image is there
@@ -188,10 +192,10 @@ class InstanceConfigForm(forms.Form):
                     socket.setdefaulttimeout(oldtimeout)
                 except ValueError:
                     socket.setdefaulttimeout(oldtimeout)
-                    raise forms.ValidationError('%s is not a valid URL' % data)
+                    raise forms.ValidationError(_('%(url)s is not a valid URL') % { 'url': data})
                 except: # urllib2 HTTP errors
                     socket.setdefaulttimeout(oldtimeout)
-                    raise forms.ValidationError('Invalid URL')
+                    raise forms.ValidationError(_('Invalid URL'))
         return data
 
     
