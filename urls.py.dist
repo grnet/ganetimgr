@@ -3,6 +3,10 @@ from ganetimgr.ganeti.models import *
 from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+
+from ganetimgr.registration.views import register
+from recap.forms import RecaptchaRegistrationForm
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -27,6 +31,11 @@ urlpatterns = patterns('',
     url(r'^user/pass_change/done/$',  'django.contrib.auth.views.password_change_done', {'template_name':'pass_change_done.html'}, name="pass_change_done" ),
     url(r'^apply/?$', 'ganetimgr.apply.views.apply', name="apply"),
     (r'^setlang/?$', 'django.views.i18n.set_language'),
+    
+    url(r'^accounts/register/$','ganetimgr.registration.views.register', {'form_class': RecaptchaRegistrationForm, 
+                                                                          'backend':'ganetimgr.registration.backends.default.DefaultBackend'}, 
+                                                                          name='registration.views.register'),
+    (r'^accounts/', include('ganetimgr.registration.urls')),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),

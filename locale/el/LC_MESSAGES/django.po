@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-20 14:43+0300\n"
+"POT-Creation-Date: 2011-06-21 01:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -105,7 +105,7 @@ msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
 #: apply/views.py:134
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: apply/views.py:135
 msgid "Email (verify)"
@@ -175,6 +175,91 @@ msgstr "%(url)s δεν είναι αποδεκτή μορφή URL"
 #: ganeti/views.py:198
 msgid "Invalid URL"
 msgstr "Λανθασμένο URL"
+
+#: recap/field.py:12
+msgid "Invalid captcha"
+msgstr "Λανθασμένη αντιστοίχιση"
+
+#: recap/forms.py:7
+msgid "Verify"
+msgstr "Αντιστοίχιση"
+
+#: registration/admin.py:27
+msgid "Activate users"
+msgstr "Ενεργοποίηση χρηστών"
+
+#: registration/admin.py:47
+msgid "Re-send activation emails"
+msgstr ""
+
+#: registration/forms.py:35
+msgid "Username"
+msgstr "Όνομα Χρήστη"
+
+#: registration/forms.py:36
+msgid "This value must contain only letters, numbers and underscores."
+msgstr ""
+"Αυτό το πεδίο μπορεί να περιέχει μόνο γράμματα, αριθμούς και underscores "
+
+#: registration/forms.py:39
+msgid "Email address"
+msgstr "Διεύθυνση email"
+
+#: registration/forms.py:41
+msgid "Password"
+msgstr "Κωδικός"
+
+#: registration/forms.py:43
+msgid "Password (again)"
+msgstr "Κωδικός (ξανά)"
+
+#: registration/forms.py:55
+msgid "A user with that username already exists."
+msgstr "Βρέθηκε ένας χρήστης με το ίδιο όνομα χρήστη"
+
+#: registration/forms.py:67
+msgid "The two password fields didn't match."
+msgstr "Τα πεδία κωδικού δεν ταιριάζουν"
+
+#: registration/forms.py:78
+msgid "I have read and agree to the Terms of Service"
+msgstr ""
+
+#: registration/forms.py:79
+msgid "You must agree to the terms to register"
+msgstr "Πρέπει να συμφωνείτε με τους όρους για να εγγραφείτε"
+
+#: registration/forms.py:95
+msgid ""
+"This email address is already in use. Please supply a different email "
+"address."
+msgstr ""
+"Η συγκεκριμένη διεύθυνση ηλεκτρονικού ταχυδρομείου χρησιμοποιείται ήδη. "
+"Παρακαλώ δώστε κάποια άλλη."
+
+#: registration/forms.py:122
+msgid ""
+"Registration using free email addresses is prohibited. Please supply a "
+"different email address."
+msgstr ""
+"Η εγγραφή μέσω δωρεάν διευθύνσεων ηλεκτρονικού ταχυδρομείου απαγορεύεται. "
+"Παρακαλώ δώστε κάποια άλλη."
+
+#: registration/models.py:174
+msgid "user"
+msgstr "χρήστης"
+
+#: registration/models.py:175
+msgid "activation key"
+msgstr "κλειδί ενεργοποίησης"
+
+#: registration/models.py:180
+msgid "registration profile"
+msgstr "προφίλ εγγραφής"
+
+#: registration/models.py:181
+msgid "registration profiles"
+msgstr "προφίλ εγγραφής"
 
 #: templates/application_list.html:3
 msgid "Application submitted"
@@ -324,6 +409,14 @@ msgstr "Είσοδος"
 msgid "Your username and password didn't match. Please try again."
 msgstr "Ο συνδυασμός ονόματος χρήστη και κωδικού δεν είναι έγκυρος"
 
+#: templates/login.html:29
+msgid "Forgot password?"
+msgstr "Ξεχάσατε τον κωδικό σας;"
+
+#: templates/login.html:30
+msgid "Not a member?"
+msgstr "Δεν έχετε εγγραφεί;"
+
 #: templates/mail_change.html:60
 msgid ""
 "enter your new mail address twice so we can verify you typed it in correctly."
@@ -368,6 +461,7 @@ msgid "successfully"
 msgstr "επιτυχώς"
 
 #: templates/profile.html:30
+#: templates/registration/password_change_form.html:5
 msgid "Change Password"
 msgstr "Αλλαγή κωδικού"
 
@@ -470,3 +564,115 @@ msgstr "Προσθήκη κλειδιού"
 #: templates/vnc.html:8
 msgid "VNC session on"
 msgstr "VNC σύνδεση στο"
+
+#: templates/registration/activate.html:3
+#: templates/registration/activate.html:11
+#: templates/registration/activation_complete.html:3
+#: templates/registration/activation_complete.html:7
+msgid "Activation Complete"
+msgstr "Η ενεργοποίηση ολοκληρώθηκε"
+
+#: templates/registration/activate.html:8
+msgid "Activation Failed"
+msgstr "Η ενεργοποίηση απέτυχε"
+
+#: templates/registration/activate.html:12
+#: templates/registration/password_reset_complete.html:8
+msgid "here"
+msgstr "εδώ"
+
+#: templates/registration/activation_complete.html:8
+msgid "The user will be notified about his/her account activation"
+msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίηση του λογαριασμού"
+
+#: templates/registration/password_change_form.html:11
+#: templates/registration/password_reset_confirm.html:15
+msgid "Submit"
+msgstr "Υποβολή"
+
+#: templates/registration/password_reset_complete.html:3
+#: templates/registration/password_reset_complete.html:7
+msgid "Password Reset Complete"
+msgstr "Η αλλαγή του κωδικού ολοκληρώθηκε"
+
+#: templates/registration/password_reset_complete.html:8
+msgid "Your password was successfully reset. You may login"
+msgstr "Ο κωδικός σας έχει αλλάξει επιτυχώς. Μπορείτε να εισέρθετε"
+
+#: templates/registration/password_reset_confirm.html:3
+#: templates/registration/password_reset_confirm.html:9
+msgid "Reset Password"
+msgstr "Αλλαγή κωδικού"
+
+#: templates/registration/password_reset_confirm.html:19
+msgid "Error"
+msgstr "Σφάλμα"
+
+#: templates/registration/password_reset_confirm.html:20
+msgid "There was an error processing your password change request."
+msgstr "Παρουσιάστηκε ένα σφάλμα κατά το αίτημα αλλαγής του κωδικού σας"
+
+#: templates/registration/password_reset_done.html:3
+msgid "Email sent"
+msgstr "Το email στάλθηκε"
+
+#: templates/registration/password_reset_done.html:8
+msgid "Email Sent"
+msgstr "Αποστολή Email"
+
+#: templates/registration/password_reset_done.html:9
+msgid ""
+"An email has been sent containing instructions on resetting your password. "
+"Please check your inbox."
+msgstr ""
+"Ένα email έχει σταλεί στη διεύθυνσή σας με οδηγίες αλλαγής/επαναφοράς του "
+"κωδικού σας"
+
+#: templates/registration/password_reset_form.html:3
+msgid "Password reset"
+msgstr "Ο κωδικός άλλαξε"
+
+#: templates/registration/password_reset_form.html:8
+msgid "Password Reset"
+msgstr "Αλλαγή Κωδικού"
+
+#: templates/registration/password_reset_form.html:15
+msgid "Reset"
+msgstr "Αλλαγή"
+
+#: templates/registration/registration_complete.html:3
+#: templates/registration/registration_form.html:3
+msgid "Register"
+msgstr "Εγγραφή"
+
+#: templates/registration/registration_complete.html:8
+msgid "Registration Email Sent"
+msgstr "Στάλθηκε Email Εγγραφής"
+
+#: templates/registration/registration_complete.html:9
+msgid ""
+"An email has been sent to the system administrator. You will be soon "
+"notified about the activation of your account."
+msgstr ""
+"Ένα email έχει αποσταλλεί στο διαχειριστή του συστήματος. Θα ειδοποιηθείτε "
+"σύντομα για την ενεργοποίηση του λογαριασμού σας"
+
+#: templates/registration/registration_complete.html:10
+msgid "Back to"
+msgstr "Πίσω στην"
+
+#: templates/registration/registration_complete.html:10
+msgid "login"
+msgstr "είσοδο"
+
+#: templates/registration/registration_complete.html:10
+msgid "page"
+msgstr ".."
+
+#: templates/registration/registration_form.html:8
+msgid "Register new user"
+msgstr "Εγγραφή νέου χρήστη"
+
+#: templates/registration/registration_form.html:14
+msgid "Create"
+msgstr "Δημιουργία"

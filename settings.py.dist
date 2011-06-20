@@ -106,6 +106,8 @@ INSTALLED_APPS = (
     'south',
     'ganetimgr.ganeti',
     'ganetimgr.apply',
+    'ganetimgr.registration',
+    'ganetimgr.recap',
     'django_extensions',
 )
 
@@ -166,3 +168,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "ganetimgr.context.pending_notifications.notify",
     "django.contrib.messages.context_processors.messages"
 )
+
+
+RECAPTCHA_PUBLIC_KEY = '<key>'
+RECAPTCHA_PRIVATE_KEY = '<key>'

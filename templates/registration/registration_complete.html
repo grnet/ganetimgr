@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Register" %}{% endblock %}
+{% block brcrmb_container %}{% endblock %}
+{% block content %}
+<div align="center" id="registration">
+
+<h3>{% trans "Registration Email Sent" %}</h3>
+   <p>{% trans "An email has been sent to the system administrator. You will be soon notified about the activation of your account." %}</p>
+   <p>{% trans "Back to" %} <a href="{% url login %}">{% trans "login" %}</a> {% trans "page" %}.</p>
+</div>
+{% endblock %}
