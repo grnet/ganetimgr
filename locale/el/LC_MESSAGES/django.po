@@ -1,0 +1,67 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# LEONIDAS POULOPOULOS <leopoul@noc.grnet.gr>, 2011.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-20 11:26+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
+"Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
+"Language: Greek \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: settings.py:29
+msgid "Greek"
+msgstr "Ελληνικά"
+
+#: settings.py:30
+msgid "English"
+msgstr "Αγγλικά"
+
+#: templates/base.html:46
+msgid "Create Instance"
+msgstr "Δημιουργία VM"
+
+#: templates/base.html:47
+msgid "My profile"
+msgstr "Το προφίλ μου"
+
+#: templates/base.html:49
+msgid "Admin"
+msgstr "Διαχειριστής"
+
+#: templates/base.html:52
+msgid "Applications"
+msgstr "Αιτήσεις"
+
+#: templates/base.html:54
+msgid "Logout"
+msgstr "Έξοδος"
+
+#: templates/base.html:61
+msgid "My instances"
+msgstr ""
+
+#: templates/base.html:77
+msgid "Developed by"
+msgstr "Αναπτύχθηκε από"
+
+#: templates/base.html:77
+msgid "using"
+msgstr "χρησιμοποιώντας"
+
+#: templates/base.html:77
+msgid "provided by"
+msgstr "που παρέχεται από"
+
+#: templates/base.html:77
+msgid "running on"
+msgstr "λειτουργεί σε"

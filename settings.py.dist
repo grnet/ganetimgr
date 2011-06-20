@@ -23,6 +23,13 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 # system time zone.
 TIME_ZONE = 'Europe/Athens'
 
+_ = lambda s: s
+
+LANGUAGES = (
+    ('el', _('Greek')),
+    ('en', _('English')),
+)
+
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'

@@ -43,22 +43,22 @@
 					{% if user.is_authenticated %}
 					<div id="formcontent">
 						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span>
-						<span class="topmenuaction"><a href="{% url apply %}">Create Instance</a></span>
-						<span class="topmenuaction"><a href="{% url profile %}">My profile</a></span>
+						<span class="topmenuaction"><a href="{% url apply %}">{% trans "Create Instance" %}</a></span>
+						<span class="topmenuaction"><a href="{% url profile %}">{% trans "My profile" %}</a></span>
 {% if user.is_superuser %}
-						<span class="topmenuaction"><a href="{% url admin:index %}">Admin</a></span>
+						<span class="topmenuaction"><a href="{% url admin:index %}">{% trans "Admin" %}</a></span>
 {% endif %}
 {% if can_handle_applications %}
-						<span class="topmenuaction"><a href="{% url application-list %}">Applications{% if pending_count %} ({{ pending_count }}){% endif %}</a></span>
+						<span class="topmenuaction"><a href="{% url application-list %}">{% trans "Applications" %}{% if pending_count %} ({{ pending_count }}){% endif %}</a></span>
 {% endif %}
-						<span class="topmenuaction"><a href="{% url logout %}">Logout</a></span>
+						<span class="topmenuaction"><a href="{% url logout %}">{% trans "Logout" %}</a></span>
 					</div>
 					{% endif %}
 				</div>
 			</div>
 			<div id="content">
 				{% block brcrmb_container %}
-				<div class="info_content_title"><a href="/">My instances</a>
+				<div class="info_content_title"><a href="/">{% trans "My instances" %}</a>
 				{% block breadcrumbs %}{% endblock %}
 				</div>
 				{% if messages %}
@@ -74,7 +74,7 @@
 
 			</div>
 			<div id="footer">
-				Developed by <a href="http://www.noc.grnet.gr">GRNET NOC</a> using <a href="http://www.djangoproject.com/">Django</a>, provided by <a href="http://code.google.com/p/ganeti/">Ganeti</a> running on <a href="http://www.debian.org">Debian GNU/Linux</a>
+				{% trans "Developed by" %} <a href="http://www.noc.grnet.gr">GRNET NOC</a> {% trans "using" %} <a href="http://www.djangoproject.com/">Django</a>, {% trans "provided by" %} <a href="http://code.google.com/p/ganeti/">Ganeti</a> {% trans "running on" %} <a href="http://www.debian.org">Debian GNU/Linux</a>
 			</div>
 	</div>
 </body>
