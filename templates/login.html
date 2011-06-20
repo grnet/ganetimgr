@@ -1,11 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Login" %}{% endblock %}
 {% block brcrmb_container %}{% endblock %}
 {% block content %}
 <div align="center">
-<h3>Login</h3>
+
+<h3>{% trans "Login" %}</h3>
 {% if form.errors %}
-<p  class="error" style="color:red">Your username and password didn't match. Please try again.</p>
+<p  class="error" style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>
 {% endif %}
 
 <form method="post" action="{% url login %}">
@@ -21,7 +23,7 @@
 </tr>
 </table>
 
-<input type="submit" value="login" />
+<input type="submit" value="{% trans "Login" %}" />
 <input type="hidden" name="next" value="{% url user-instances %}" />
 </form>
 </div>

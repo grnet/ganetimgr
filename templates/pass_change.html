@@ -53,10 +53,10 @@
         });
 	});
 	</script>
-
-<strong>{{user}}</strong>, please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly.
+{% load i18n %}
+<strong>{{user}}</strong>, {% trans "please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly." %}
 <form method="post" align="left" id="password_change_form">{% csrf_token %}
 {{form.as_p}}
-<button id="passformbtn">Change</button>
+<button id="passformbtn">{% trans "Change" %}</button>
 </form>
 </div>

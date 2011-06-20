@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-20 11:26+0300\n"
+"POT-Creation-Date: 2011-06-20 13:12+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -26,42 +26,302 @@ msgstr "Ελληνικά"
 msgid "English"
 msgstr "Αγγλικά"
 
-#: templates/base.html:46
+#: templates/application_list.html:3
+msgid "Application submitted"
+msgstr "Η αίτηση υποβλήθηκε"
+
+#: templates/application_list.html:7
+msgid "Pending applications"
+msgstr "Αιτήσεις που εκκρεμούν"
+
+#: templates/application_list.html:9 templates/application_list.html.py:18
+msgid "Hostname"
+msgstr "Όνομα"
+
+#: templates/application_list.html:9 templates/application_list.html.py:18
+msgid "User"
+msgstr "Χρήστης"
+
+#: templates/application_list.html:9 templates/application_list.html.py:18
+#: templates/instance.html:50 templates/user_instances.html:24
+msgid "Memory"
+msgstr "Μνήμη"
+
+#: templates/application_list.html:9 templates/application_list.html.py:18
+msgid "vCPUs"
+msgstr ""
+
+#: templates/application_list.html:9 templates/application_list.html.py:18
+#: templates/review.html:61
+msgid "Network"
+msgstr "Δίκτυο"
+
+#: templates/application_list.html:9 templates/application_list.html.py:18
+msgid "Filed"
+msgstr ""
+
+#: templates/application_list.html:16
+msgid "Completed applications"
+msgstr "Περατωθείσες Αιτήσεις"
+
+#: templates/apply.html:3 templates/apply.html.py:31
+msgid "Apply"
+msgstr "Εφαρμογή"
+
+#: templates/apply.html:4 templates/base.html:63
 msgid "Create Instance"
 msgstr "Δημιουργία VM"
 
-#: templates/base.html:47
+#: templates/apply.html:20
+msgid "Apply for a new instance"
+msgstr ""
+
+#: templates/base.html:51
+msgid "Welcome"
+msgstr "Καλώσήρθες"
+
+#: templates/base.html:64 templates/profile.html:25
+#: templates/profile.html.py:27
 msgid "My profile"
 msgstr "Το προφίλ μου"
 
-#: templates/base.html:49
+#: templates/base.html:66
 msgid "Admin"
 msgstr "Διαχειριστής"
 
-#: templates/base.html:52
+#: templates/base.html:69
 msgid "Applications"
 msgstr "Αιτήσεις"
 
-#: templates/base.html:54
+#: templates/base.html:71
 msgid "Logout"
 msgstr "Έξοδος"
 
-#: templates/base.html:61
+#: templates/base.html:79 templates/user_instances.html:17
+#: templates/user_instances.html.py:19
 msgid "My instances"
+msgstr "Τα instances μου"
+
+#: templates/base.html:95
+msgid "Developed by"
+msgstr "Αναπτύχθηκε από το"
+
+#: templates/base.html:95
+msgid "using"
+msgstr "χρησιμοποιώντας το framework"
+
+#: templates/base.html:95
+msgid "provided by"
+msgstr "με λογισμικό που παρέχεται από το"
+
+#: templates/base.html:95
+msgid "running on"
+msgstr "και λειτουργεί σε"
+
+#: templates/instance.html:47
+msgid "Details"
+msgstr "Λεπτομέρειες"
+
+#: templates/instance.html:48 templates/user_instances.html:24
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: templates/instance.html:49 templates/user_instances.html:23
+msgid "Cluster"
 msgstr ""
 
-#: templates/base.html:77
-msgid "Developed by"
-msgstr "Αναπτύχθηκε από"
+#: templates/instance.html:51
+msgid "CPUs"
+msgstr ""
 
-#: templates/base.html:77
-msgid "using"
-msgstr "χρησιμοποιώντας"
+#: templates/instance.html:53
+msgid "Network cards"
+msgstr "Κάρτες δικτύου"
 
-#: templates/base.html:77
-msgid "provided by"
-msgstr "που παρέχεται από"
+#: templates/instance.html:58
+msgid "Created on"
+msgstr "Δημιουργήθηκε"
 
-#: templates/base.html:77
-msgid "running on"
-msgstr "λειτουργεί σε"
+#: templates/instance.html:59
+msgid "Last modified"
+msgstr "Τελευταία τροποποίηση"
+
+#: templates/instance.html:69
+msgid "Configuration"
+msgstr "Διαμόρφωση"
+
+#: templates/instance.html:78
+msgid "Actions"
+msgstr "Ενέργειες"
+
+#: templates/instance_actions.html:93
+msgid "Shutdown"
+msgstr "Απενεργοποίηση"
+
+#: templates/instance_actions.html:94
+msgid "Reboot"
+msgstr "Επανεκκίνηση"
+
+#: templates/instance_actions.html:95 templates/vnc.html:3
+msgid "Console"
+msgstr "Κονσόλα"
+
+#: templates/instance_actions.html:99
+msgid "Instance is shutting down, no actions allowed"
+msgstr ""
+"To instance απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη φάση"
+
+#: templates/instance_actions.html:104
+msgid "Start"
+msgstr "Εκκίνηση"
+
+#: templates/login.html:3 templates/login.html.py:8 templates/login.html:26
+msgid "Login"
+msgstr "Είσοδος"
+
+#: templates/login.html:10
+msgid "Your username and password didn't match. Please try again."
+msgstr "Ο συνδυασμός ονόματος χρήστη και κωδικού δεν είναι έγκυρος"
+
+#: templates/mail_change.html:60
+msgid ""
+"enter your new mail address twice so we can verify you typed it in correctly."
+msgstr ""
+"εισάγετε το e-mail σας δύο φορές ώστε να βεβαιωθούμε ότι έχει αποτυπωθεί ορθά"
+
+#: templates/mail_change.html:61
+msgid "Your e-mail"
+msgstr "Το e-mail σας"
+
+#: templates/mail_change.html:61
+msgid "has successfully changed to"
+msgstr "έχει αλλάξει με επιτυχία σε"
+
+#: templates/mail_change.html:61
+msgid "you have not registered an address yet"
+msgstr "δεν έχετε καταχωρήσει κάποια διεύθυνση e-mail"
+
+#: templates/mail_change.html:67
+msgid "Change email"
+msgstr "Αλλαγή e-mail"
+
+#: templates/pass_change.html:57
+msgid ""
+"please enter your old password, for security's sake, and then enter your new "
+"password twice so we can verify you typed it in correctly."
+msgstr ""
+"Παρακαλώ εισάγετε τον τρέχοντα κωδικό σας, για λόγους ασφαλείας, και στη "
+"συνέχεια εισάγετε το νέο σας κωδικό δύο φορές ώστε να βεβαιωθούμε ότι έχει "
+"αποτυπωθεί ορθά"
+
+#: templates/pass_change.html:60
+msgid "Change"
+msgstr "Αλλαγή"
+
+#: templates/pass_change_done.html:2
+msgid "Password changed"
+msgstr "Ο κωδικός άλλαξε"
+
+#: templates/pass_change_done.html:2
+msgid "successfully"
+msgstr "επιτυχώς"
+
+#: templates/profile.html:30
+msgid "Change Password"
+msgstr "Αλλαγή κωδικού"
+
+#: templates/profile.html:32
+msgid "Change Email"
+msgstr "Αλλαγή e-mail"
+
+#: templates/profile.html:34
+msgid "Manage SSH Keys"
+msgstr "Διαχείριση SSH κλειδιών"
+
+#: templates/review.html:3 templates/review.html.py:27
+msgid "Review application"
+msgstr "Ανασκόπηση αίτησης"
+
+#: templates/review.html:27
+msgid "by"
+msgstr "από"
+
+#: templates/review.html:28
+msgid "Submitted"
+msgstr "Έχει υποβληθεί στις"
+
+#: templates/review.html:33 templates/review.html.py:77
+msgid "Instance information"
+msgstr "Πληροφορίες instance"
+
+#: templates/review.html:46 templates/review.html.py:90
+msgid "Comments"
+msgstr "Σχόλια"
+
+#: templates/review.html:53 templates/review.html.py:97
+msgid "Placement"
+msgstr "Τοποθέτηση"
+
+#: templates/review.html:56
+msgid "The user has requested explicit network placement on"
+msgstr "Ο χρήστης έχει αιτηθεί ρητή δικτυακή τοποθέτηση στο"
+
+#: templates/review.html:60
+msgid ""
+"Choose either a network, or a cluster from the quick list to use the "
+"cluster's default network."
+msgstr "Επιλέξτε είτε ένα δίκτυο είτε ένα cluster από τη λίστα"
+
+#: templates/review.html:66
+msgid "Decision"
+msgstr "Απόφαση"
+
+#: templates/review.html:67
+msgid "Comments to the user"
+msgstr "Σχόλια προς το χρήστη"
+
+#: templates/review.html:98
+msgid "The instance has been placed on"
+msgstr "Το instance έχει τοποθετηθεί στο"
+
+#: templates/user_instances.html:23
+msgid "Name"
+msgstr "Όνομα"
+
+#: templates/user_instances.html:24
+msgid "Operating System"
+msgstr "Λειτουργικό Σύστημα"
+
+#: templates/user_keys.html:86
+msgid ""
+"Upload your SSH public keys and have them automatically installed on all "
+"newly-created instances. Keys must be in OpenSSH format, either RSA, or DSA, "
+"with or without a trailing comment."
+msgstr ""
+"Ανεβάστε τα SSH public κλειδιά σας και εγκαταστήστε τα αυτόματα σε όλα τα "
+"instances που δημιουργούνται εφ' εξής. Τα κλειδιά πρέπει να είναι συμβατά με "
+"OpenSSH format, είτε RSA, ή DSA, με ή χωρίς σχόλιο στο τέλος"
+
+#: templates/user_keys.html:90
+msgid "Fingerprint"
+msgstr "Αποτύπωμα"
+
+#: templates/user_keys.html:90
+msgid "Comment"
+msgstr "Σχόλιο"
+
+#: templates/user_keys.html:92
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: templates/user_keys.html:96
+msgid "Add new key"
+msgstr "Προσθήκη νέου κλειδιού"
+
+#: templates/user_keys.html:106
+msgid "Add key"
+msgstr "Προσθήκη κλειδιού"
+
+#: templates/vnc.html:8
+msgid "VNC session on"
+msgstr "VNC σύνδεση στο"

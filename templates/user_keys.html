@@ -82,18 +82,18 @@
 	font-family: monospace;
 }
 </style>
-
-<p>Upload your SSH public keys and have them automatically installed on all newly-created instances. Keys must be in OpenSSH format, either RSA, or DSA, with or without a trailing comment.</p>
+{% load i18n %}
+<p>{% trans "Upload your SSH public keys and have them automatically installed on all newly-created instances. Keys must be in OpenSSH format, either RSA, or DSA, with or without a trailing comment." %}</p>
 
 {% if keys %}
 <table>
-<tr><th>Fingerprint</th><th>Comment</th></tr>
+<tr><th>{% trans "Fingerprint" %}</th><th>{% trans "Comment" %}</th></tr>
 {% for key in keys %}
-<tr><td class="fingerprint">{{ key.fingerprint }}</td><td>{{ key.comment }}</td><td><a class="remove_btn" id="remove_key_{{key.id}}" href="#">Delete</a></tr>
+<tr><td class="fingerprint">{{ key.fingerprint }}</td><td>{{ key.comment }}</td><td><a class="remove_btn" id="remove_key_{{key.id}}" href="#">{% trans "Delete" %}</a></tr>
 {% endfor %}
 </table>
 {% endif %}
-<h2>Add new key</h2>
+<h2>{% trans "Add new key" %}</h2>
 {% if msg %}
 <div class="error">{{msg}}</div>
 {% endif %}
@@ -103,7 +103,7 @@
 <div class="error">{{ form.ssh_pubkey.errors }}</div>
 {% endif %}
 {{ form.ssh_pubkey }}<br />
-<button id="add_ssh_key_btn">Add key</button>
+<button id="add_ssh_key_btn">{% trans "Add key" %}</button>
 </form>
 </div>
 

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Review application #{{ application.pk }}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Review application" %} #{{ application.pk }}{% endblock %}
 {% block content %}
 <style type="text/css">
 .comments {
@@ -23,13 +24,13 @@
 	}
 </script>
 <div align="center" id="review">
-<h2>Review application #{{ application.pk }} by {{ application.applicant }}</h2>
-<p>Submitted {{ application.filed|date }}</p>
+<h2>{% trans "Review application" %} #{{ application.pk }} {% trans "by" %} {{ application.applicant }}</h2>
+<p>{% trans "Submitted" %} {{ application.filed|date }}</p>
 {% if application.is_pending %}
 <form method="POST" id="appform">
 {% csrf_token %}
 <fieldset>
-<legend>Instance information</legend>
+<legend>{% trans "Instance information" %}</legend>
 <table>
 <tr><th>{{ appform.hostname.label_tag }}</th><td>{{ appform.hostname }}<span class="error">{{ appform.hostname.errors|join:", " }}</span></td></tr>
 <tr><th>{{ appform.memory.label_tag }}</th><td>{{ appform.memory }}<span class="error">{{ appform.memory.errors|join:", " }}</span></td></tr>
@@ -42,28 +43,28 @@
 </fieldset>
 
 <fieldset>
-<legend>Comments</legend>
+<legend>{% trans "Comments" %}</legend>
 <div class="comments">
 {{ application.comments }}
 </div>
 </fieldset>
 
 <fieldset>
-<legend>Placement</legend>
+<legend>{% trans "Placement" %}</legend>
 {% if application.network %}
 <div class="notice">
-The user has requested explicit network placement on {{ application.network }} ({{ application.network.cluster.description }})
+{% trans "The user has requested explicit network placement on" %} {{ application.network }} ({{ application.network.cluster.description }})
 </div>
 {% endif %}
 
-<p>Choose either a network, or a cluster from the quick list to use the cluster's default network.</p>
-<p>Network: {{ appform.network }}</p>
+<p>{% trans "Choose either a network, or a cluster from the quick list to use the cluster's default network." %}</p>
+<p>{% trans "Network" %}: {{ appform.network }}</p>
 <p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }}</a> {% endfor %}</p>
 </fieldset>
 
 <fieldset>
-<legend>Decision</legend>
-<p>Comments to the user:</p>
+<legend>{% trans "Decision" %}</legend>
+<p>{% trans "Comments to the user" %}:</p>
 {% if appform.admin_comments.errors %}
 <p><span class="error">{{ appform.admin_comments.errors }}</span></p>
 {% endif %}
@@ -73,7 +74,7 @@ The user has requested explicit network placement on {{ application.network }} (
 </form>
 {% else %}
 <fieldset>
-<legend>Instance information</legend>
+<legend>{% trans "Instance information" %}</legend>
 <table>
 <tr><th>{{ appform.hostname.label_tag }}</th><td>{{ application.hostname }}</td></tr>
 <tr><th>{{ appform.memory.label_tag }}</th><td>{{ application.memory }}</td></tr>
@@ -86,15 +87,15 @@ The user has requested explicit network placement on {{ application.network }} (
 </fieldset>
 
 <fieldset>
-<legend>Comments</legend>
+<legend>{% trans "Comments" %}</legend>
 <div class="comments">
 {{ application.comments }}
 </div>
 </fieldset>
 
 <fieldset>
-<legend>Placement</legend>
-<p>The instance has been placed on {{ application.network }} ({{ application.cluster.description }})</p>
+<legend>{% trans "Placement" %}</legend>
+<p>{% trans "The instance has been placed on" %} {{ application.network }} ({{ application.cluster.description }})</p>
 </fieldset>
 {% endif %}
 

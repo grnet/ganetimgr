@@ -56,14 +56,15 @@
         });
 	});
 	</script>
-<div>{{user}} enter your new mail address twice so we can verify you typed it in correctly.</div> 
-<div>Your e-mail {% if changed %} has successfully changed to {% endif %}: <strong>{% ifequal mail|length 0 %} you have not registered an address yet {% else %}{{mail}}{% endifequal %}</strong></div>
+	{% load i18n %}
+<div>{{user}} {% trans "enter your new mail address twice so we can verify you typed it in correctly." %}</div> 
+<div>{% trans "Your e-mail" %} {% if changed %} {% trans "has successfully changed to" %} {% endif %}: <strong>{% ifequal mail|length 0 %} {% trans "you have not registered an address yet" %} {% else %}{{mail}}{% endifequal %}</strong></div>
 <form method="POST" id="change_email_form">
 {% csrf_token %}
         <table>
             {{ form.as_table }}
         </table>
-<button id="change_email_btn">Change email</button>
+<button id="change_email_btn">{% trans "Change email" %}</button>
 </form>
 
 </div>

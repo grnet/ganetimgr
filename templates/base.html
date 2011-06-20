@@ -1,3 +1,4 @@
+{% load i18n %}
 <html>
 <head>
 <title>ViMa :: {% block title %}{% endblock %} </title>
@@ -6,6 +7,11 @@
 <link rel="stylesheet" type="text/css" href="/static/css/smoothness/jquery-ui-1.8.13.custom.css">
 <script type="text/javascript" src="/static/js/jquery-ui-1.8.12.custom.min.js"></script>
 <script type="text/javascript">
+
+  	function setlang(lang){
+		$("#langsel").val(lang);
+		$("#langform").submit();
+	}
 
 //function highlight(elemId){
 //    var elem = $(elemId);
@@ -40,9 +46,20 @@
 					<a href="/">virtual private servers</a>
 				</div>
 				<div class="loginform">
-					{% if user.is_authenticated %}
 					<div id="formcontent">
-						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span>
+						{% if user.is_authenticated %}
+						<span class="topmenuuser">{% trans "Welcome" %} <strong>{{user}}</strong></span>
+						{% endif %}
+						<span {% if user.is_authenticated %}class="topmenuaction"{% else %}class="topmenuuser"{% endif %} >
+							<form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform">
+								{% csrf_token %}
+								<input name="next" type="hidden" value="{{ next }}" />
+								<input id="langsel" name="language" type="hidden" value="" />
+								{% for lang in LANGUAGES %}<a class="select_lang" href="#" onclick="setlang('{{ lang.0 }}'); return false;" title="{{lang.1}}">{% ifnotequal LANGUAGE_CODE lang.0 %}<font style="font-weight:normal;">{% endifnotequal %}{% trans lang.1 %}{% ifnotequal LANGUAGE_CODE lang.0 %}</font>{% endifnotequal %}</a>{% if not forloop.last %} -{% endif %}
+								{% endfor %}
+							</form>
+						</span>
+						{% if user.is_authenticated %}
 						<span class="topmenuaction"><a href="{% url apply %}">{% trans "Create Instance" %}</a></span>
 						<span class="topmenuaction"><a href="{% url profile %}">{% trans "My profile" %}</a></span>
 {% if user.is_superuser %}
@@ -52,8 +69,9 @@
 						<span class="topmenuaction"><a href="{% url application-list %}">{% trans "Applications" %}{% if pending_count %} ({{ pending_count }}){% endif %}</a></span>
 {% endif %}
 						<span class="topmenuaction"><a href="{% url logout %}">{% trans "Logout" %}</a></span>
+						{% endif %}
 					</div>
-					{% endif %}
+					
 				</div>
 			</div>
 			<div id="content">

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Apply{% endblock %}
-{% block breadcrumbs %}:: Create Instance{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Apply" %}{% endblock %}
+{% block breadcrumbs %}:: {% trans "Create Instance" %}{% endblock %}
 {% block content %}
 <style type="text/css">
 th {
@@ -16,7 +17,7 @@ th {
 </style>
 
 <div align="center">
-<h3>Apply for a new instance</h3>
+<h3>{% trans "Apply for a new instance" %}</h3>
 <form method="POST">
 {% csrf_token %}
 <table>
@@ -27,7 +28,7 @@ th {
 {% endif %}
 {% endfor %}
 </table>
-<input type="submit" value="Apply" />
+<input type="submit" value="{% trans "Apply" %}" />
 </form>
 </div>
 {% endblock %}

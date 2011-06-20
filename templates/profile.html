@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block extrahead %}
 	<script>
 $(document).ready(function () {
@@ -21,16 +22,16 @@ $(document).ready(function () {
 	</script>
 
 {% endblock %}
-{% block title %}My profile{% endblock %}
+{% block title %}{% trans "My profile" %}{% endblock %}
 {% block content %}
-<h3>My profile</h3>
+<h3>{% trans "My profile" %}</h3>
 
 <div id="accordion">
-	<h3><a href="#" style="color: #4183C4;">Change Password</a></h3>
+	<h3><a href="#" style="color: #4183C4;">{% trans "Change Password" %}</a></h3>
 	<div id="pass_change_placeholder"></div>
-	<h3><a href="#" style="color: #4183C4;">Change Email</a></h3>
+	<h3><a href="#" style="color: #4183C4;">{% trans "Change Email" %}</a></h3>
 	<div id="change_email_placeholder"></div>
-	<h3><a href="#" style="color: #4183C4;">Manage SSH Keys</a></h3>
+	<h3><a href="#" style="color: #4183C4;">{% trans "Manage SSH Keys" %}</a></h3>
 	<div id="manage_sshkeys_placeholder"></div>
 </div>
 

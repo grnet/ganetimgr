@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
 <script type="text/javascript">
@@ -13,14 +14,14 @@
 		});
 </script>
 {% endblock %}
-{% block title %}My instances{% endblock %}
+{% block title %}{% trans "My instances" %}{% endblock %}
 {% block content %}
-<h3>My instances</h3>
+<h3>{% trans "My instances" %}</h3>
 
 <table class="display" width="100%" id="vm_instance_table">
 <thead>
-<tr><th>Name</th><th>Cluster</th>
-<th style="text-align: center;">Memory</th><th style="text-align: center;">CPUs</th><th style="text-align: center;">Operating System</th><th style="text-align: center;">Status</th></tr>
+<tr><th>{% trans "Name" %}</th><th>{% trans "Cluster" %}</th>
+<th style="text-align: center;">{% trans "Memory" %}</th><th style="text-align: center;">CPUs</th><th style="text-align: center;">{% trans "Operating System" %}</th><th style="text-align: center;">{% trans "Status" %}</th></tr>
 </thead>
 <tbody>
 {% load disksizes %}

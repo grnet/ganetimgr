@@ -26,7 +26,7 @@ urlpatterns = patterns('',
     url(r'^user/pass_change/$', 'django.contrib.auth.views.password_change', {'template_name':'pass_change.html', 'post_change_redirect':'done'}, name="pass_change"),
     url(r'^user/pass_change/done/$',  'django.contrib.auth.views.password_change_done', {'template_name':'pass_change_done.html'}, name="pass_change_done" ),
     url(r'^apply/?$', 'ganetimgr.apply.views.apply', name="apply"),
-
+    (r'^setlang/?$', 'django.views.i18n.set_language'),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
