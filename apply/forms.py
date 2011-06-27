@@ -36,12 +36,15 @@ class InstanceApplicationForm(forms.ModelForm):
     comments = forms.CharField(widget=forms.Textarea, required=False,
                                help_text=ugettext_lazy("Additional comments you would like"
                                          " the service administrators to see"), label=ugettext_lazy("Comments"))
+    accept_tos = forms.BooleanField()
 
     class Meta:
         model = InstanceApplication
         fields = ('hostname', 'memory', 'vcpus', 'disk_size',
                   'organization', 'hosts_mail_server',
-                  'operating_system', 'comments', 'network')
+                  'operating_system', 'network',
+                  'admin_contact_name', 'admin_contact_email',
+                  'admin_contact_phone', 'comments')
 
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"]
@@ -54,6 +57,20 @@ class InstanceApplicationForm(forms.ModelForm):
             hostname.startswith(".")):
             raise forms.ValidationError(_("Invalid hostname %s") % hostname)
         return hostname
+
+    def clean(self):
+        super(InstanceApplicationForm, self).clean()
+
+        organization = self.cleaned_data.get("organization", None)
+
+        if not (organization or
+                (self.cleaned_data["admin_contact_name"] and
+                 self.cleaned_data["admin_contact_email"] and
+                 self.cleaned_data["admin_contact_phone"] and
+                 self.cleaned_data["comments"])):
+            raise forms.ValidationError(_("Choose either an organization or"
+                                          " fill in the contact information"))
+        return self.cleaned_data
 
 
 class InstanceApplicationReviewForm(InstanceApplicationForm):

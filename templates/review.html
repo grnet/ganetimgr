@@ -42,6 +42,17 @@
 </table>
 </fieldset>
 
+{% if application.admin_contact_name %}
+<fieldset>
+<legend>{% trans "Administrative contact" %}</legend>
+<table>
+<tr><th>{% trans "Name" %}</th><td>{{ application.admin_contact_name }}</td></tr>
+<tr><th>{% trans "Email" %}</th><td>{{ application.admin_contact_email }}</td></tr>
+<tr><th>{% trans "Phone" %}</th><td>{{ application.admin_contact_phone }}</td></tr>
+</table>
+</fieldset>
+{% endif %}
+
 <fieldset>
 <legend>{% trans "Comments" %}</legend>
 <div class="comments">
@@ -59,7 +70,7 @@
 
 <p>{% trans "Choose either a network, or a cluster from the quick list to use the cluster's default network." %}</p>
 <p>{% trans "Network" %}: {{ appform.network }}</p>
-<p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }}</a> {% endfor %}</p>
+<p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }} ({{ cl.slug }})</a> {% if not forloop.last %}| {% endif %}{% endfor %}</p>
 </fieldset>
 
 <fieldset>
@@ -85,6 +96,17 @@
 <tr><th>{{ appform.operating_system.label_tag }}</th><td>{{ application.operating_system }}</td></tr>
 </table>
 </fieldset>
+
+{% if application.admin_contact_name %}
+<fieldset>
+<legend>{% trans "Administrative contact" %}</legend>
+<table>
+<tr><th>{% trans "Name" %}</th><td>{{ application.admin_contact_name }}</td></tr>
+<tr><th>{% trans "Email" %}</th><td>{{ application.admin_contact_email }}</td></tr>
+<tr><th>{% trans "Phone" %}</th><td>{{ application.admin_contact_phone }}</td></tr>
+</table>
+</fieldset>
+{% endif %}
 
 <fieldset>
 <legend>{% trans "Comments" %}</legend>
