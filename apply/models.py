@@ -47,6 +47,8 @@ class ApplicationError(Exception):
 class Organization(models.Model):
     title = models.CharField(max_length=255)
     website = models.CharField(max_length=255, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    tag = models.SlugField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     users = models.ManyToManyField(User, blank=True, null=True)
 
