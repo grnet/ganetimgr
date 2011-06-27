@@ -69,6 +69,8 @@
 						<span class="topmenuaction"><a href="{% url application-list %}">{% trans "Applications" %}{% if pending_count %} ({{ pending_count }}){% endif %}</a></span>
 {% endif %}
 						<span class="topmenuaction"><a href="{% url logout %}">{% trans "Logout" %}</a></span>
+						{% else %}
+						<span class="topmenuaction"><a href="{% url login %}">{% trans "Login" %}</a></span>
 						{% endif %}
 					</div>
 					
@@ -76,7 +78,7 @@
 			</div>
 			<div id="content">
 				{% block brcrmb_container %}
-				<div class="info_content_title"><a href="/">{% trans "My instances" %}</a>
+				<div class="info_content_title">{% if user.is_authenticated %}<a href="/">{% trans "My instances" %}</a>{% endif %}
 				{% block breadcrumbs %}{% endblock %}
 				</div>
 				{% if messages %}
@@ -92,7 +94,8 @@
 
 			</div>
 			<div id="footer">
-				{% trans "Developed by" %} <a href="http://www.noc.grnet.gr">GRNET NOC</a> {% trans "using" %} <a href="http://www.djangoproject.com/">Django</a>, {% trans "provided by" %} <a href="http://code.google.com/p/ganeti/">Ganeti</a> {% trans "running on" %} <a href="http://www.debian.org">Debian GNU/Linux</a>
+				{% trans "Developed by" %} <a href="http://www.noc.grnet.gr">GRNET NOC</a> {% trans "using" %} <a href="http://www.djangoproject.com/">Django</a>, {% trans "provided by" %} <a href="http://code.google.com/p/ganeti/">Ganeti</a> {% trans "running on" %} <a href="http://www.debian.org">Debian GNU/Linux</a><br />
+			<a href="/about/info/">{% trans "Info" %}</a> | <a href="/about/terms-of-service">{% trans "Service Terms" %}</a>
 			</div>
 	</div>
 </body>

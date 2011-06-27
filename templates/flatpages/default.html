@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ flatpage.title }}{% endblock %}
+{% block breadcrumbs %}:: {% trans flatpage.title %}{% endblock %}
+
+{% block content %}
+{{ flatpage.content|linebreaks }}
+{% endblock %}
