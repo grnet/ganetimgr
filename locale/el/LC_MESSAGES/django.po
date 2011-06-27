@@ -151,7 +151,7 @@ msgid ""
 "Optionally, select a network to connect the virtual machine to if you have a "
 "special requirement"
 msgstr ""
-"Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση του VM.\n"
+"Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής.\n"
 "Διαφορετικά, θα χρησιμοποιηθεί το κανονικό δίκτυο της υπηρεσίας."
 
 #: apply/views.py:69
@@ -330,16 +330,16 @@ msgstr "Εφαρμογή"
 
 #: templates/apply.html:4 templates/base.html:63
 msgid "Create Instance"
-msgstr "Δημιουργία VM"
+msgstr "Δημιουργία εικονικής μηχανής"
 
 #: templates/apply.html:20
 msgid "Apply for a new instance"
-msgstr "Αίτηση για νέο VM"
+msgstr "Αίτηση για νέα εικονική μηχανή"
 
 #: templates/apply.html:24 templates/review.html:33
 #: templates/review.html.py:88
 msgid "Instance information"
-msgstr "Πληροφορίες VM"
+msgstr "Στοιχεία εικονικής μηχανής"
 
 #: templates/apply.html:43 templates/apply.html.py:59 templates/review.html:47
 #: templates/review.html.py:102
@@ -357,7 +357,7 @@ msgstr ""
 "<p>Αν κάνετε αίτηση για λογαριασμό του NOC κάποιου από τους Φορείς του ΕΔΕΤ, "
 "τότε παρακαλούμε να επιλέξετε τον αντίστοιχο φορέα. Σε διαφορετική "
 "περίπτωση, παρακαλούμε συμπληρώστε τα στοιχεία επικοινωνίας του "
-"διαχειριστικού υπεύθυνου και δηλώστε τη χρήση του VM και το Φορέα για τον "
+"διαχειριστικού υπεύθυνου και δηλώστε τη χρήση της εικονικής μηχανής και το Φορέα για τον "
 "οποίο προορίζεται στο πεδίο «Σχόλια».</p>\n"
 
 #: templates/apply.html:56
@@ -376,7 +376,7 @@ msgstr "Τηλέφωνο"
 
 #: templates/apply.html:68
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Λοιπά"
 
 #: templates/apply.html:69
 msgid ""
@@ -392,10 +392,10 @@ msgstr ""
 "\n"
 "<p>Θα θέλαμε να σας υπενθυμίσουμε τα ακόλουθα:</p>\n"
 "<ul align=\"left\">\n"
-"<li>Είστε αποκλειστικά υπεύθυνοι για τα δεδομένα που βρίσκονται στο VM σας. "
-"Θα πρέπει να μεριμνήσετε μόνοι σας για τη λήψη αντιγράφων ασφαλείας κλπ.</"
-"li>\n"
-"<li>Διατηρούμε το δικαίωμα προσωρινής παύσης λειτουργίας του VM σας σε "
+"<li>Είστε αποκλειστικά υπεύθυνοι για τα δεδομένα που βρίσκονται στην εικονική "
+"μηχανή σας. Θα πρέπει να μεριμνήσετε μόνοι σας για τη λήψη αντιγράφων "
+"ασφαλείας κλπ.</li>\n"
+"<li>Διατηρούμε το δικαίωμα προσωρινής παύσης λειτουργίας της εικονικής μηχανής σας σε "
 "περίπτωση που η λειτουργία του προκαλεί προβλήματα στην υποδομή μας.</li>\n"
 "</ul>\n"
 
@@ -440,7 +440,7 @@ msgstr "Είσοδος"
 #: templates/base.html:81 templates/user_instances.html:17
 #: templates/user_instances.html.py:19
 msgid "My instances"
-msgstr "Τα VMs μου"
+msgstr "Οι εικονικές μηχανές μου"
 
 #: templates/base.html:97
 msgid "Developed by"
@@ -516,7 +516,7 @@ msgstr "Κονσόλα"
 
 #: templates/instance_actions.html:99
 msgid "Instance is shutting down, no actions allowed"
-msgstr "Το VM απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη φάση"
+msgstr "Η εικονική μηχανή απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη φάση"
 
 #: templates/instance_actions.html:104
 msgid "Start"
@@ -644,7 +644,7 @@ msgstr "Σχόλια προς το χρήστη"
 
 #: templates/review.html:120
 msgid "The instance has been placed on"
-msgstr "Το VM έχει τοποθετηθεί στο"
+msgstr "Η εικονική μηχανή έχει τοποθετηθεί στο"
 
 #: templates/user_instances.html:10
 msgid "Display"
