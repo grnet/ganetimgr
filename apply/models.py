@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from ganetimgr.ganeti.models import Cluster, Network
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.utils.translation import ugettext_lazy as _
 from ganetimgr.settings import GANETI_TAG_PREFIX, OPERATING_SYSTEMS, \
                                OPERATING_SYSTEM_CHOICES
 
@@ -49,6 +50,10 @@ class Organization(models.Model):
     phone = models.CharField(max_length=255, null=True, blank=True)
     users = models.ManyToManyField(User, blank=True, null=True)
 
+    class Meta:
+        verbose_name = _("organization")
+        verbose_name_plural = _("organizations")
+
     def __unicode__(self):
         return self.title
 
@@ -58,7 +63,8 @@ class InstanceApplication(models.Model):
     memory = models.IntegerField()
     disk_size = models.IntegerField()
     vcpus = models.IntegerField()
-    operating_system = models.CharField(max_length=255,
+    operating_system = models.CharField(_("operating system"),
+                                        max_length=255,
                                         choices=OPERATING_SYSTEM_CHOICES)
     hosts_mail_server = models.BooleanField(default=False)
     comments = models.TextField(null=True, blank=True)
@@ -66,8 +72,9 @@ class InstanceApplication(models.Model):
     admin_contact_name = models.CharField(max_length=255, null=True, blank=True)
     admin_contact_phone = models.CharField(max_length=64, null=True, blank=True)
     admin_contact_email = models.EmailField(null=True, blank=True)
-    organization = models.ForeignKey(Organization)
-    network = models.ForeignKey(Network, null=True, blank=True)
+    organization = models.ForeignKey(Organization, null=True, blank=True)
+    network = models.ForeignKey(Network, related_name=_("network"),
+                                null=True, blank=True)
     applicant = models.ForeignKey(User)
     job_id = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(choices=APPLICATION_CODES)

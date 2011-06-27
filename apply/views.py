@@ -17,6 +17,7 @@ from ganetimgr.ganeti.models import Cluster, Network
 from ganetimgr.settings import SERVICE_MAIL
 
 from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 
 
 @login_required
@@ -24,11 +25,16 @@ def apply(request):
     user_organizations = request.user.organization_set.all()
     user_networks = Network.objects.filter(groups__in=request.user.groups.all())
     InstanceApplicationForm.base_fields["organization"] = \
-        forms.ModelChoiceField(queryset=user_organizations)
+        forms.ModelChoiceField(queryset=user_organizations, required=False,
+                               label=ugettext_lazy("Organization"))
 
     if user_networks:
         InstanceApplicationForm.base_fields["network"] = \
-            forms.ModelChoiceField(queryset=user_networks, required=False)
+            forms.ModelChoiceField(queryset=user_networks, required=False,
+                                   label=ugettext_lazy("Network"),
+                                   help_text=ugettext_lazy("Optionally, select"
+                                    " a network to connect the virtual machine"
+                                    " to if you have a special requirement"))
     else:
         try:
             del InstanceApplicationForm.base_fields["network"]

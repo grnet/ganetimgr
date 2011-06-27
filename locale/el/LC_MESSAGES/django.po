@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-21 01:45+0300\n"
+"POT-Creation-Date: 2011-06-27 12:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -18,111 +18,150 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: settings.py:29
+#: settings.py:173
 msgid "Greek"
 msgstr "Ελληνικά"
 
-#: settings.py:30
+#: settings.py:174
 msgid "English"
 msgstr "Αγγλικά"
 
-#: apply/views.py:34
+#: apply/forms.py:23
 msgid "A fully qualified domain name, e.g. host.domain.com"
-msgstr ""
+msgstr "Ένα κανονικό όνομα DNS, π.χ. host.domain.com"
 
-#: apply/views.py:35 templates/application_list.html:9
+#: apply/forms.py:24 templates/application_list.html:9
 #: templates/application_list.html.py:18
 msgid "Hostname"
 msgstr "Όνομα"
 
-#: apply/views.py:36 templates/application_list.html:9
+#: apply/forms.py:25 templates/application_list.html:9
 #: templates/application_list.html.py:18 templates/instance.html:50
 #: templates/user_instances.html:24
 msgid "Memory"
 msgstr "Μνήμη"
 
-#: apply/views.py:40
+#: apply/forms.py:29
 msgid "Disk size (GB)"
 msgstr "Μέγεθος δίσκου (GB)"
 
-#: apply/views.py:41
+#: apply/forms.py:30
 msgid "Specify a size from 2 to 100 GB"
 msgstr "Καθορίστε μέγεθος μεταξύ 2 και 100 GB"
 
-#: apply/views.py:43
+#: apply/forms.py:32
 msgid "Check this option if the virtual machine will be receiving e-mail"
 msgstr ""
 "Ενεργοποιήστε αυτή την επιλογή εάν το virual machine πρόκειται να δέχεται e-"
 "mails"
 
-#: apply/views.py:46
+#: apply/forms.py:35
 msgid "Hosts mail server"
 msgstr "Φιλοξενία mail server"
 
-#: apply/views.py:48
+#: apply/forms.py:37
 msgid "Additional comments you would like the service administrators to see"
 msgstr ""
 "Πρόσθετα σχόλια ή παρατηρήσεις που θα θέλατε να λάβουν υπόψιν τους οι "
 "διαχειριστές της υπηρεσίας"
 
-#: apply/views.py:49 templates/review.html:46 templates/review.html.py:90
+#: apply/forms.py:38 templates/review.html:57 templates/review.html.py:112
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: apply/views.py:66
+#: apply/forms.py:58
 #, python-format
 msgid "Invalid hostname %s"
 msgstr "Εσφαλμένο όνομα %s"
 
-#: apply/views.py:81
+#: apply/forms.py:71
+msgid "Choose either an organization or fill in the contact information"
+msgstr ""
+"Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
+"επικοινωνίας του διαχειριστικού υπεύθυνου"
+
+#: apply/forms.py:87
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/views.py:87
+#: apply/forms.py:93
 msgid "Application already handled"
 msgstr ""
 
-#: apply/views.py:101
+#: apply/forms.py:107
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/views.py:114
+#: apply/forms.py:120
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/views.py:121
+#: apply/forms.py:127
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/views.py:126
+#: apply/forms.py:132
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/views.py:128
+#: apply/forms.py:134
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/views.py:134
+#: apply/forms.py:140 templates/review.html:50 templates/review.html.py:105
 msgid "Email"
 msgstr "Email"
 
-#: apply/views.py:135
+#: apply/forms.py:141
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/views.py:143
+#: apply/forms.py:149
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
-#: apply/views.py:188
+#: apply/models.py:54
+msgid "organization"
+msgstr "φορέας"
+
+#: apply/models.py:55
+msgid "organizations"
+msgstr "φορείς"
+
+#: apply/models.py:66
+msgid "operating system"
+msgstr "λειτουργικό σύστημα"
+
+#: apply/models.py:76
+msgid "network"
+msgstr "δίκτυο"
+
+#: apply/views.py:29
+msgid "Organization"
+msgstr "Φορέας"
+
+#: apply/views.py:34 templates/application_list.html:9
+#: templates/application_list.html.py:18 templates/review.html:72
+msgid "Network"
+msgstr "Δίκτυο"
+
+#: apply/views.py:35
+msgid ""
+"Optionally, select a network to connect the virtual machine to if you have a "
+"special requirement"
+msgstr ""
+"Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση του VM.\n"
+"Διαφορετικά, θα χρησιμοποιηθεί το κανονικό δίκτυο της υπηρεσίας."
+
+#: apply/views.py:69
 #, python-format
 msgid "Your request has been filed with id #%d and will be processed shortly."
 msgstr ""
 "Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
 "ξεκινήσει σύντομα."
 
-#: apply/views.py:272
+#: apply/views.py:153
 #, python-format
 msgid "A key with the same fingerprint exists: %s"
 msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
@@ -223,7 +262,7 @@ msgstr "Τα πεδία κωδικού δεν ταιριάζουν"
 
 #: registration/forms.py:78
 msgid "I have read and agree to the Terms of Service"
-msgstr ""
+msgstr "Διάβασα και συμφωνώ με τους Όρους Χρήσης της υπηρεσίας"
 
 #: registration/forms.py:79
 msgid "You must agree to the terms to register"
@@ -278,11 +317,6 @@ msgid "vCPUs"
 msgstr ""
 
 #: templates/application_list.html:9 templates/application_list.html.py:18
-#: templates/review.html:61
-msgid "Network"
-msgstr "Δίκτυο"
-
-#: templates/application_list.html:9 templates/application_list.html.py:18
 msgid "Filed"
 msgstr ""
 
@@ -290,7 +324,7 @@ msgstr ""
 msgid "Completed applications"
 msgstr "Περατωθείσες Αιτήσεις"
 
-#: templates/apply.html:3 templates/apply.html.py:31
+#: templates/apply.html:3 templates/apply.html.py:86
 msgid "Apply"
 msgstr "Εφαρμογή"
 
@@ -300,7 +334,82 @@ msgstr "Δημιουργία VM"
 
 #: templates/apply.html:20
 msgid "Apply for a new instance"
-msgstr "Αίτηση για νέο instance"
+msgstr "Αίτηση για νέο VM"
+
+#: templates/apply.html:24 templates/review.html:33
+#: templates/review.html.py:88
+msgid "Instance information"
+msgstr "Πληροφορίες VM"
+
+#: templates/apply.html:43 templates/apply.html.py:59 templates/review.html:47
+#: templates/review.html.py:102
+msgid "Administrative contact"
+msgstr "Διαχειριστικός υπεύθυνος"
+
+#: templates/apply.html:44
+msgid ""
+"\n"
+"<p>If you are applying on behalf of a NOC under GRNET's constituency, please "
+"select the appropriate organization. Otherwise, fill-in the admin contact "
+"information below.</p>\n"
+msgstr ""
+"\n"
+"<p>Αν κάνετε αίτηση για λογαριασμό του NOC κάποιου από τους Φορείς του ΕΔΕΤ, "
+"τότε παρακαλούμε να επιλέξετε τον αντίστοιχο φορέα. Σε διαφορετική "
+"περίπτωση, παρακαλούμε συμπληρώστε τα στοιχεία επικοινωνίας του "
+"διαχειριστικού υπεύθυνου και δηλώστε τη χρήση του VM και το Φορέα για τον "
+"οποίο προορίζεται στο πεδίο «Σχόλια».</p>\n"
+
+#: templates/apply.html:56
+msgid "OR"
+msgstr "Ή"
+
+#: templates/apply.html:60 templates/review.html:49
+#: templates/review.html.py:104 templates/user_instances.html:23
+msgid "Name"
+msgstr "Όνομα"
+
+#: templates/apply.html:62 templates/review.html:51
+#: templates/review.html.py:106
+msgid "Phone"
+msgstr "Τηλέφωνο"
+
+#: templates/apply.html:68
+msgid "Miscellaneous"
+msgstr ""
+
+#: templates/apply.html:69
+msgid ""
+"\n"
+"<p>We kindly remind you of the following:</p>\n"
+"<ul align=\"left\">\n"
+"<li>You are solely responsible for the data on your VM. You have to take "
+"care of back-ups etc.</li>\n"
+"<li>We reserve the right to temporarily suspend the operation of your VM in "
+"case it causes malfunctions to our infrastructure</li>\n"
+"</ul>\n"
+msgstr ""
+"\n"
+"<p>Θα θέλαμε να σας υπενθυμίσουμε τα ακόλουθα:</p>\n"
+"<ul align=\"left\">\n"
+"<li>Είστε αποκλειστικά υπεύθυνοι για τα δεδομένα που βρίσκονται στο VM σας. "
+"Θα πρέπει να μεριμνήσετε μόνοι σας για τη λήψη αντιγράφων ασφαλείας "
+"κλπ.</li>\n"
+"<li>Διατηρούμε το δικαίωμα προσωρινής παύσης λειτουργίας του VM σας σε "
+"περίπτωση που η λειτουργία του προκαλεί προβλήματα στην υποδομή μας.</li>\n"
+"</ul>\n"
+
+#: templates/apply.html:76
+msgid "I have read the above and accept them, along with the"
+msgstr "Διάβασα τα παραπάνω και τα αποδέχομαι μαζί με τους"
+
+#: templates/apply.html:76
+msgid "Terms of Service"
+msgstr "Όρους Χρήσης της Υπηρεσίας"
+
+#: templates/apply.html:79
+msgid "You must accept the terms of service before continuing."
+msgstr "Πρέπει να αποδεχθείτε τους Όρους Χρήσης πρoτού συνεχίσετε."
 
 #: templates/base.html:51
 msgid "Welcome"
@@ -326,7 +435,7 @@ msgstr "Έξοδος"
 #: templates/base.html:79 templates/user_instances.html:17
 #: templates/user_instances.html.py:19
 msgid "My instances"
-msgstr "Τα instances μου"
+msgstr "Τα VMs μου"
 
 #: templates/base.html:95
 msgid "Developed by"
@@ -394,8 +503,7 @@ msgstr "Κονσόλα"
 
 #: templates/instance_actions.html:99
 msgid "Instance is shutting down, no actions allowed"
-msgstr ""
-"To instance απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη φάση"
+msgstr "Το VM απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη φάση"
 
 #: templates/instance_actions.html:104
 msgid "Start"
@@ -485,35 +593,31 @@ msgstr "από"
 msgid "Submitted"
 msgstr "Έχει υποβληθεί στις"
 
-#: templates/review.html:33 templates/review.html.py:77
-msgid "Instance information"
-msgstr "Πληροφορίες instance"
-
-#: templates/review.html:53 templates/review.html.py:97
+#: templates/review.html:64 templates/review.html.py:119
 msgid "Placement"
 msgstr "Τοποθέτηση"
 
-#: templates/review.html:56
+#: templates/review.html:67
 msgid "The user has requested explicit network placement on"
 msgstr "Ο χρήστης έχει αιτηθεί ρητή δικτυακή τοποθέτηση στο"
 
-#: templates/review.html:60
+#: templates/review.html:71
 msgid ""
 "Choose either a network, or a cluster from the quick list to use the "
 "cluster's default network."
 msgstr "Επιλέξτε είτε ένα δίκτυο είτε ένα cluster από τη λίστα"
 
-#: templates/review.html:66
+#: templates/review.html:77
 msgid "Decision"
 msgstr "Απόφαση"
 
-#: templates/review.html:67
+#: templates/review.html:78
 msgid "Comments to the user"
 msgstr "Σχόλια προς το χρήστη"
 
-#: templates/review.html:98
+#: templates/review.html:120
 msgid "The instance has been placed on"
-msgstr "Το instance έχει τοποθετηθεί στο"
+msgstr "Το VM έχει τοποθετηθεί στο"
 
 #: templates/user_instances.html:10
 msgid "Display"
@@ -522,10 +626,6 @@ msgstr "Προβολή"
 #: templates/user_instances.html:10
 msgid "All"
 msgstr "Όλων"
-
-#: templates/user_instances.html:23
-msgid "Name"
-msgstr "Όνομα"
 
 #: templates/user_instances.html:24
 msgid "Operating System"
