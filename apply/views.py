@@ -59,7 +59,7 @@ def apply(request):
                 urlresolvers.reverse("application-review",
                                      kwargs={"application_id": application.pk}))
             mail_body = render_to_string("apply_mail.txt",
-                                         {"form": form,
+                                         {"application": application,
                                           "user": request.user,
                                           "url": admin_url})
             mail_managers("New instance request by %s: %s" %
