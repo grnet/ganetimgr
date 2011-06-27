@@ -55,6 +55,7 @@ class Organization(models.Model):
     class Meta:
         verbose_name = _("organization")
         verbose_name_plural = _("organizations")
+        ordering = ["title"]
 
     def __unicode__(self):
         return self.title
