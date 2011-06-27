@@ -37,6 +37,8 @@ class InstanceApplicationForm(forms.ModelForm):
                                help_text=ugettext_lazy("Additional comments you would like"
                                          " the service administrators to see"), label=ugettext_lazy("Comments"))
     accept_tos = forms.BooleanField()
+    organization = forms.ModelChoiceField(queryset=Organization.objects.all(), required=False,
+                   label=ugettext_lazy("Organization"))
 
     class Meta:
         model = InstanceApplication
