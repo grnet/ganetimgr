@@ -22,11 +22,7 @@ from django.utils.translation import ugettext_lazy
 
 @login_required
 def apply(request):
-    user_organizations = request.user.organization_set.all()
     user_networks = Network.objects.filter(groups__in=request.user.groups.all())
-    InstanceApplicationForm.base_fields["organization"] = \
-        forms.ModelChoiceField(queryset=user_organizations, required=False,
-                               label=ugettext_lazy("Organization"))
 
     if user_networks:
         InstanceApplicationForm.base_fields["network"] = \
