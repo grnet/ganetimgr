@@ -31,7 +31,7 @@ class InstanceApplicationForm(forms.ModelForm):
     hosts_mail_server = forms.BooleanField(required=False,
                                            help_text=ugettext_lazy("Check this option if"
                                                      " the virtual machine"
-                                                     " will be receiving"
+                                                     " will be sending"
                                                      " e-mail"), label=ugettext_lazy("Hosts mail server"))
     comments = forms.CharField(widget=forms.Textarea, required=False,
                                help_text=ugettext_lazy("Additional comments you would like"

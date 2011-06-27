@@ -50,9 +50,9 @@ msgid "Specify a size from 2 to 100 GB"
 msgstr "Καθορίστε μέγεθος μεταξύ 2 και 100 GB"
 
 #: apply/forms.py:32
-msgid "Check this option if the virtual machine will be receiving e-mail"
+msgid "Check this option if the virtual machine will be sending e-mail"
 msgstr ""
-"Ενεργοποιήστε αυτή την επιλογή εάν η εικονική μηχανή πρόκειται να δέχεται e-"
+"Ενεργοποιήστε αυτή την επιλογή εάν η εικονική μηχανή πρόκειται να στέλνει e-"
 "mails"
 
 #: apply/forms.py:35
