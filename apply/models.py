@@ -128,7 +128,7 @@ class InstanceApplication(models.Model):
         if "osparams" in os:
             osparams.update(os["osparams"])
         if "ssh_key_param" in os:
-            fqdn = Site.objects.get_current().domain
+            fqdn = "http://" + Site.objects.get_current().domain
             key_url = self.get_ssh_keys_url(fqdn)
             osparams[os["ssh_key_param"]] = key_url
 
