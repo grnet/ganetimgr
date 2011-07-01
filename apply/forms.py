@@ -19,7 +19,7 @@ MEMORY_CHOICES = [(m, filesizeformat(int(m) * 1024**2))
                   for m in VALID_MEMORY_VALUES]
 
 
-class InstanceApplicationForm(forms.ModelForm):
+class InstanceForm(forms.ModelForm):
     hostname = forms.CharField(help_text=ugettext_lazy("A fully qualified domain name,"
                                          " e.g. host.domain.com"), label=ugettext_lazy("Hostname"))
     memory = forms.ChoiceField(choices=MEMORY_CHOICES, label=ugettext_lazy("Memory"))
@@ -33,10 +33,6 @@ class InstanceApplicationForm(forms.ModelForm):
                                                      " the virtual machine"
                                                      " will be sending"
                                                      " e-mail"), label=ugettext_lazy("Hosts mail server"))
-    comments = forms.CharField(widget=forms.Textarea, required=False,
-                               help_text=ugettext_lazy("Additional comments you would like"
-                                         " the service administrators to see"), label=ugettext_lazy("Comments"))
-    accept_tos = forms.BooleanField()
     organization = forms.ModelChoiceField(queryset=Organization.objects.all(), required=False,
                    label=ugettext_lazy("Organization"))
 
@@ -44,9 +40,7 @@ class InstanceApplicationForm(forms.ModelForm):
         model = InstanceApplication
         fields = ('hostname', 'memory', 'vcpus', 'disk_size',
                   'organization', 'hosts_mail_server',
-                  'operating_system', 'network',
-                  'admin_contact_name', 'admin_contact_email',
-                  'admin_contact_phone', 'comments')
+                  'operating_system', 'network')
 
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"]
@@ -59,6 +53,20 @@ class InstanceApplicationForm(forms.ModelForm):
             hostname.startswith(".")):
             raise forms.ValidationError(_("Invalid hostname %s") % hostname)
         return hostname
+
+
+class InstanceApplicationForm(InstanceForm):
+    comments = forms.CharField(widget=forms.Textarea, required=False,
+                               help_text=ugettext_lazy("Additional comments you would like"
+                                         " the service administrators to see"), label=ugettext_lazy("Comments"))
+    accept_tos = forms.BooleanField()
+
+    class Meta:
+        model = InstanceApplication
+        fields = InstanceForm.Meta.fields + ('admin_contact_name',
+                                             'admin_contact_email',
+                                             'admin_contact_phone',
+                                             'comments')
 
     def clean(self):
         super(InstanceApplicationForm, self).clean()
@@ -75,13 +83,10 @@ class InstanceApplicationForm(forms.ModelForm):
         return self.cleaned_data
 
 
-class InstanceApplicationReviewForm(InstanceApplicationForm):
+class InstanceApplicationReviewForm(InstanceForm):
     class Meta:
         model = InstanceApplication
-        fields = InstanceApplicationForm.Meta.fields + ('admin_comments',)
-
-    def clean_comments(self):
-        return self.instance.comments
+        fields = InstanceForm.Meta.fields + ('admin_comments',)
 
     def clean_admin_comments(self):
         if self.data and "reject" in self.data and not \
