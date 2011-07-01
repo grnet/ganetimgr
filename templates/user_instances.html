@@ -21,14 +21,14 @@
 <table class="display" width="100%" id="vm_instance_table">
 <thead>
 <tr><th>{% trans "Name" %}</th><th>{% trans "Cluster" %}</th>
-<th style="text-align: center;">{% trans "Memory" %}</th><th style="text-align: center;">CPUs</th><th style="text-align: center;">{% trans "Operating System" %}</th><th style="text-align: center;">{% trans "Status" %}</th></tr>
+<th style="text-align: center;">{% trans "Memory" %}</th><th style="text-align: center;">CPUs</th><th style="text-align: center;">{% trans "IP address" %}</th><th style="text-align: center;">{% trans "Status" %}</th></tr>
 </thead>
 <tbody>
 {% load disksizes %}
 {% for instance in instances %}
 
 <tr {% if instance.admin_state %} class="GradeA" {% else %} class="GradeX" {% endif %}><td><a href="{% url instance-detail instance.cluster.slug instance.name %}">{{ instance.name }}</a></td>
-<td>{{ instance.cluster.description }}</td><td style="text-align: center;">{{ instance.beparams.memory|memsize }}</td><td style="text-align: center;">{{ instance.beparams.vcpus }}</td><td style="text-align: center;">{{ instance.os }}</td>
+<td>{{ instance.cluster.description }}</td><td style="text-align: center;">{{ instance.beparams.memory|memsize }}</td><td style="text-align: center;">{{ instance.beparams.vcpus }}</td><td style="text-align: center;">{{ instance.nic_ips.0|default:"&mdash;" }}</td>
 <td style="text-align: center;">{% ifequal instance.admin_state instance.oper_state %}
 {{ instance.admin_state|yesno:"Running,Stopped" }}
 {% else %}
