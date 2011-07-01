@@ -64,8 +64,9 @@ def monitor_jobs():
                 mail_body = render_to_string("instance_created_mail.txt",
                                              {"application": application,
                                               "instance_url": instance_url})
-                send_mail("Instance %s is ready" % application.hostname,
-                          mail_body, settings.SERVICE_MAIL,
+                send_mail(settings.EMAIL_SUBJECT_PREFIX +
+                          "Instance %s is ready" % application.hostname,
+                          mail_body, settings.SERVER_EMAIL,
                           [application.applicant.email])
             application.save()
             job.delete()

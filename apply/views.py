@@ -14,7 +14,7 @@ from django.contrib.sites.models import Site
 from ganetimgr.apply.models import *
 from ganetimgr.apply.forms import *
 from ganetimgr.ganeti.models import Cluster, Network
-from ganetimgr.settings import SERVICE_MAIL
+from ganetimgr.settings import SERVER_EMAIL, EMAIL_SUBJECT_PREFIX
 
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
@@ -106,8 +106,9 @@ def review_application(request, application_id):
                 application.save()
                 mail_body = render_to_string("application_rejected_mail.txt",
                                              {"application": application})
-                send_mail("Application for %s rejected" % application.hostname,
-                          mail_body, SERVICE_MAIL,
+                send_mail(EMAIL_SUBJECT_PREFIX + "Application for %s rejected" %
+                          application.hostname,
+                          mail_body, SERVER_EMAIL,
                           [application.applicant.email])
                 messages.add_message(request, messages.INFO,
                                      "Application #%d rejected, user %s has"

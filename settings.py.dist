@@ -160,7 +160,8 @@ OPERATING_SYSTEMS = {
 OPERATING_SYSTEM_CHOICES = \
     [(x, y["description"]) for (x, y) in OPERATING_SYSTEMS.items()]
 
-SERVICE_MAIL = "noreply@domain.com"
+SERVER_EMAIL = "noreply@domain.com"
+EMAIL_SUBJECT_PREFIX = "[ganetimgr] "
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
