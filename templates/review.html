@@ -70,6 +70,9 @@
 
 <p>{% trans "Choose either a network, or a cluster from the quick list to use the cluster's default network." %}</p>
 <p>{% trans "Network" %}: {{ appform.network }}</p>
+{% if appform.network.errors %}
+<p class="error">{{ appform.network.errors|join:", " }}</p>
+{% endif %}
 <p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }} ({{ cl.slug }})</a> {% if not forloop.last %}| {% endif %}{% endfor %}</p>
 </fieldset>
 

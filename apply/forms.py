@@ -88,6 +88,12 @@ class InstanceApplicationReviewForm(InstanceForm):
         model = InstanceApplication
         fields = InstanceForm.Meta.fields + ('admin_comments',)
 
+    def clean_network(self):
+        if self.cleaned_data["network"] is None:
+            if self.data and "reject" not in self.data:
+                raise forms.ValidationError(_("Please specify a network"))
+        return self.cleaned_data["network"]
+
     def clean_admin_comments(self):
         if self.data and "reject" in self.data and not \
             self.cleaned_data["admin_comments"]:

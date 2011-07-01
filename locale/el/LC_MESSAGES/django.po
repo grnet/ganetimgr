@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-27 14:49+0300\n"
+"POT-Creation-Date: 2011-07-01 15:00+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -60,93 +60,97 @@ msgid "Hosts mail server"
 msgstr "Φιλοξενία mail server"
 
 #: apply/forms.py:37
+msgid "Organization"
+msgstr "Φορέας"
+
+#: apply/forms.py:54
+#, python-format
+msgid "Invalid hostname %s"
+msgstr "Εσφαλμένο όνομα %s"
+
+#: apply/forms.py:60
 msgid "Additional comments you would like the service administrators to see"
 msgstr ""
 "Πρόσθετα σχόλια ή παρατηρήσεις που θα θέλατε να λάβουν υπόψιν τους οι "
 "διαχειριστές της υπηρεσίας"
 
-#: apply/forms.py:38 templates/review.html:57 templates/review.html.py:112
+#: apply/forms.py:61 templates/review.html:57 templates/review.html.py:112
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: apply/forms.py:58
-#, python-format
-msgid "Invalid hostname %s"
-msgstr "Εσφαλμένο όνομα %s"
-
-#: apply/forms.py:71
+#: apply/forms.py:81
 msgid "Choose either an organization or fill in the contact information"
 msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:87
+#: apply/forms.py:93
+msgid "Please specify a network"
+msgstr "Επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής"
+
+#: apply/forms.py:98
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/forms.py:93
+#: apply/forms.py:104
 msgid "Application already handled"
 msgstr ""
 
-#: apply/forms.py:107
+#: apply/forms.py:118
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/forms.py:120
+#: apply/forms.py:131
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/forms.py:127
+#: apply/forms.py:138
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/forms.py:132
+#: apply/forms.py:143
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/forms.py:134
+#: apply/forms.py:145
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/forms.py:140 templates/review.html:50 templates/review.html.py:105
+#: apply/forms.py:151 templates/review.html:50 templates/review.html.py:105
 msgid "Email"
 msgstr "Email"
 
-#: apply/forms.py:141
+#: apply/forms.py:152
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/forms.py:149
+#: apply/forms.py:160
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
-#: apply/models.py:54
+#: apply/models.py:56
 msgid "organization"
 msgstr "φορέας"
 
-#: apply/models.py:55
+#: apply/models.py:57
 msgid "organizations"
 msgstr "φορείς"
 
-#: apply/models.py:66
+#: apply/models.py:69
 msgid "operating system"
 msgstr "λειτουργικό σύστημα"
 
-#: apply/models.py:76
+#: apply/models.py:79
 msgid "network"
 msgstr "δίκτυο"
 
-#: apply/views.py:29
-msgid "Organization"
-msgstr "Φορέας"
-
-#: apply/views.py:34 templates/application_list.html:9
+#: apply/views.py:30 templates/application_list.html:9
 #: templates/application_list.html.py:18 templates/review.html:72
 msgid "Network"
 msgstr "Δίκτυο"
 
-#: apply/views.py:35
+#: apply/views.py:31
 msgid ""
 "Optionally, select a network to connect the virtual machine to if you have a "
 "special requirement"
@@ -154,14 +158,14 @@ msgstr ""
 "Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής.\n"
 "Διαφορετικά, θα χρησιμοποιηθεί το κανονικό δίκτυο της υπηρεσίας."
 
-#: apply/views.py:69
+#: apply/views.py:65
 #, python-format
 msgid "Your request has been filed with id #%d and will be processed shortly."
 msgstr ""
 "Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
 "ξεκινήσει σύντομα."
 
-#: apply/views.py:153
+#: apply/views.py:150
 #, python-format
 msgid "A key with the same fingerprint exists: %s"
 msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
@@ -357,8 +361,8 @@ msgstr ""
 "<p>Αν κάνετε αίτηση για λογαριασμό του NOC κάποιου από τους Φορείς του ΕΔΕΤ, "
 "τότε παρακαλούμε να επιλέξετε τον αντίστοιχο φορέα. Σε διαφορετική "
 "περίπτωση, παρακαλούμε συμπληρώστε τα στοιχεία επικοινωνίας του "
-"διαχειριστικού υπεύθυνου και δηλώστε τη χρήση της εικονικής μηχανής και το Φορέα για τον "
-"οποίο προορίζεται στο πεδίο «Σχόλια».</p>\n"
+"διαχειριστικού υπεύθυνου και δηλώστε τη χρήση της εικονικής μηχανής και το "
+"Φορέα για τον οποίο προορίζεται στο πεδίο «Σχόλια».</p>\n"
 
 #: templates/apply.html:56
 msgid "OR"
@@ -392,11 +396,12 @@ msgstr ""
 "\n"
 "<p>Θα θέλαμε να σας υπενθυμίσουμε τα ακόλουθα:</p>\n"
 "<ul align=\"left\">\n"
-"<li>Είστε αποκλειστικά υπεύθυνοι για τα δεδομένα που βρίσκονται στην εικονική "
-"μηχανή σας. Θα πρέπει να μεριμνήσετε μόνοι σας για τη λήψη αντιγράφων "
-"ασφαλείας κλπ.</li>\n"
-"<li>Διατηρούμε το δικαίωμα προσωρινής παύσης λειτουργίας της εικονικής μηχανής σας σε "
-"περίπτωση που η λειτουργία του προκαλεί προβλήματα στην υποδομή μας.</li>\n"
+"<li>Είστε αποκλειστικά υπεύθυνοι για τα δεδομένα που βρίσκονται στην "
+"εικονική μηχανή σας. Θα πρέπει να μεριμνήσετε μόνοι σας για τη λήψη "
+"αντιγράφων ασφαλείας κλπ.</li>\n"
+"<li>Διατηρούμε το δικαίωμα προσωρινής παύσης λειτουργίας της εικονικής "
+"μηχανής σας σε περίπτωση που η λειτουργία του προκαλεί προβλήματα στην "
+"υποδομή μας.</li>\n"
 "</ul>\n"
 
 #: templates/apply.html:76
@@ -411,7 +416,7 @@ msgstr "Όρους Χρήσης της Υπηρεσίας"
 msgid "You must accept the terms of service before continuing."
 msgstr "Πρέπει να αποδεχθείτε τους Όρους Χρήσης πρoτού συνεχίσετε."
 
-#: templates/base.html:51 templates/login.html:25
+#: templates/base.html:51 templates/login.html:7
 msgid "Welcome"
 msgstr "Καλωσήλθατε"
 
@@ -432,8 +437,8 @@ msgstr "Αιτήσεις"
 msgid "Logout"
 msgstr "Έξοδος"
 
-#: templates/base.html:73 templates/login.html:3 templates/login.html.py:34
-#: templates/login.html:52
+#: templates/base.html:73 templates/login.html:3 templates/login.html.py:16
+#: templates/login.html:34
 msgid "Login"
 msgstr "Είσοδος"
 
@@ -516,13 +521,15 @@ msgstr "Κονσόλα"
 
 #: templates/instance_actions.html:99
 msgid "Instance is shutting down, no actions allowed"
-msgstr "Η εικονική μηχανή απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη φάση"
+msgstr ""
+"Η εικονική μηχανή απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη "
+"φάση"
 
 #: templates/instance_actions.html:104
 msgid "Start"
 msgstr "Εκκίνηση"
 
-#: templates/login.html:26
+#: templates/login.html:8
 msgid ""
 "\n"
 "<p>Welcome to GRNET's ViMa service.</p>\n"
@@ -540,15 +547,15 @@ msgstr ""
 "<p>Αν διαθέτετε ήδη λογαριασμό χρήστη, μπορείτε να εισέλθετε στην υπηρεσία "
 "χρησιμοποιώντας τη φόρμα στο δεξί μέρος της σελίδας.</p>\n"
 
-#: templates/login.html:36
+#: templates/login.html:18
 msgid "Your username and password didn't match. Please try again."
 msgstr "Ο συνδυασμός ονόματος χρήστη και κωδικού δεν είναι έγκυρος"
 
-#: templates/login.html:55
+#: templates/login.html:37
 msgid "Forgot password?"
 msgstr "Ξεχάσατε τον κωδικό σας;"
 
-#: templates/login.html:56
+#: templates/login.html:38
 msgid "Not a member?"
 msgstr "Δεν έχετε εγγραφεί;"
 
@@ -655,8 +662,9 @@ msgid "All"
 msgstr "Όλων"
 
 #: templates/user_instances.html:24
-msgid "Operating System"
-msgstr "Λειτουργικό Σύστημα"
+#, fuzzy
+msgid "IP address"
+msgstr "Διεύθυνση email"
 
 #: templates/user_keys.html:86
 msgid ""
@@ -803,6 +811,9 @@ msgstr "Εγγραφή νέου χρήστη"
 #: templates/registration/registration_form.html:14
 msgid "Create"
 msgstr "Δημιουργία"
+
+#~ msgid "Operating System"
+#~ msgstr "Λειτουργικό Σύστημα"
 
 #~ msgid "Contact"
 #~ msgstr "Επικοινωνία"
