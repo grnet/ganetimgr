@@ -115,6 +115,9 @@ class InstanceApplication(models.Model):
         tags.append("%s:user:%s" %
                     (GANETI_TAG_PREFIX, self.applicant.username))
 
+        if self.hosts_mail_server:
+            tags.append("%s:service:mail" % GANETI_TAG_PREFIX)
+
         nic_dict = dict(link=self.network.link,
                         mode=self.network.mode)
 
