@@ -74,9 +74,9 @@ class InstanceApplicationForm(InstanceForm):
         organization = self.cleaned_data.get("organization", None)
 
         if not (organization or
-                (self.cleaned_data["admin_contact_name"] and
-                 self.cleaned_data["admin_contact_email"] and
-                 self.cleaned_data["admin_contact_phone"] and
+                ("admin_contact_name" in self.cleaned_data and
+                 "admin_contact_email" in self.cleaned_data and
+                 "admin_contact_phone" in self.cleaned_data and
                  self.cleaned_data["comments"])):
             raise forms.ValidationError(_("Choose either an organization or"
                                           " fill in the contact information"))
