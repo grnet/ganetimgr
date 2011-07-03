@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-01 15:00+0300\n"
+"POT-Creation-Date: 2011-07-03 15:58+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -74,7 +74,7 @@ msgstr ""
 "Πρόσθετα σχόλια ή παρατηρήσεις που θα θέλατε να λάβουν υπόψιν τους οι "
 "διαχειριστές της υπηρεσίας"
 
-#: apply/forms.py:61 templates/review.html:57 templates/review.html.py:112
+#: apply/forms.py:61 templates/review.html:57 templates/review.html.py:115
 msgid "Comments"
 msgstr "Σχόλια"
 
@@ -84,48 +84,48 @@ msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:93
+#: apply/forms.py:94
 msgid "Please specify a network"
 msgstr "Επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής"
 
-#: apply/forms.py:98
+#: apply/forms.py:100
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/forms.py:104
+#: apply/forms.py:106
 msgid "Application already handled"
 msgstr ""
 
-#: apply/forms.py:118
+#: apply/forms.py:120
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/forms.py:131
+#: apply/forms.py:133
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/forms.py:138
+#: apply/forms.py:140
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/forms.py:143
+#: apply/forms.py:145
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/forms.py:145
+#: apply/forms.py:147
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/forms.py:151 templates/review.html:50 templates/review.html.py:105
+#: apply/forms.py:153 templates/review.html:50 templates/review.html.py:108
 msgid "Email"
 msgstr "Email"
 
-#: apply/forms.py:152
+#: apply/forms.py:154
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/forms.py:160
+#: apply/forms.py:162
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
@@ -328,9 +328,9 @@ msgstr ""
 msgid "Completed applications"
 msgstr "Περατωθείσες Αιτήσεις"
 
-#: templates/apply.html:3 templates/apply.html.py:84
-msgid "Apply"
-msgstr "Εφαρμογή"
+#: templates/apply.html:3
+msgid "Create new Virtual Machine"
+msgstr "Δημιουργία νέας εικονικής μηχανής"
 
 #: templates/apply.html:4 templates/base.html:63
 msgid "Create Instance"
@@ -341,12 +341,12 @@ msgid "Apply for a new instance"
 msgstr "Αίτηση για νέα εικονική μηχανή"
 
 #: templates/apply.html:24 templates/review.html:33
-#: templates/review.html.py:88
+#: templates/review.html.py:91
 msgid "Instance information"
 msgstr "Στοιχεία εικονικής μηχανής"
 
 #: templates/apply.html:43 templates/apply.html.py:59 templates/review.html:47
-#: templates/review.html.py:102
+#: templates/review.html.py:105
 msgid "Administrative contact"
 msgstr "Διαχειριστικός υπεύθυνος"
 
@@ -369,12 +369,12 @@ msgid "OR"
 msgstr "Ή"
 
 #: templates/apply.html:60 templates/review.html:49
-#: templates/review.html.py:104 templates/user_instances.html:23
+#: templates/review.html.py:107 templates/user_instances.html:23
 msgid "Name"
 msgstr "Όνομα"
 
 #: templates/apply.html:62 templates/review.html:51
-#: templates/review.html.py:106
+#: templates/review.html.py:109
 msgid "Phone"
 msgstr "Τηλέφωνο"
 
@@ -415,6 +415,10 @@ msgstr "Όρους Χρήσης της Υπηρεσίας"
 #: templates/apply.html:79
 msgid "You must accept the terms of service before continuing."
 msgstr "Πρέπει να αποδεχθείτε τους Όρους Χρήσης πρoτού συνεχίσετε."
+
+#: templates/apply.html:84
+msgid "Apply"
+msgstr "Υποβολή"
 
 #: templates/base.html:51 templates/login.html:7
 msgid "Welcome"
@@ -627,7 +631,7 @@ msgstr "από"
 msgid "Submitted"
 msgstr "Έχει υποβληθεί στις"
 
-#: templates/review.html:64 templates/review.html.py:119
+#: templates/review.html:64 templates/review.html.py:122
 msgid "Placement"
 msgstr "Τοποθέτηση"
 
@@ -641,15 +645,15 @@ msgid ""
 "cluster's default network."
 msgstr "Επιλέξτε είτε ένα δίκτυο είτε ένα cluster από τη λίστα"
 
-#: templates/review.html:77
+#: templates/review.html:80
 msgid "Decision"
 msgstr "Απόφαση"
 
-#: templates/review.html:78
+#: templates/review.html:81
 msgid "Comments to the user"
 msgstr "Σχόλια προς το χρήστη"
 
-#: templates/review.html:120
+#: templates/review.html:123
 msgid "The instance has been placed on"
 msgstr "Η εικονική μηχανή έχει τοποθετηθεί στο"
 
