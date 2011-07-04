@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{{ instance.name }} - {% trans "Console" %}{% endblock %}
-{% block breadcrumbs %}:: <a href="{% url instance-detail cluster.slug instance %}">{{ instance.name }}</a> :: VNC</p>{% endblock %}
+{% block title %}{{ instance }} - {% trans "Console" %}{% endblock %}
+{% block breadcrumbs %}:: <a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a> :: VNC</p>{% endblock %}
 
 {% block content %}
 
