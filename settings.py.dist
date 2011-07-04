@@ -110,6 +110,7 @@ INSTALLED_APPS = (
     'ganetimgr.apply',
     'ganetimgr.registration',
     'ganetimgr.recap',
+    'ganetimgr.accounts',
     'django_extensions',
 )
 
@@ -177,3 +178,5 @@ RECAPTCHA_PUBLIC_KEY = '<key>'
 RECAPTCHA_PRIVATE_KEY = '<key>'
 
 ACCOUNT_ACTIVATION_DAYS = 10
+
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
