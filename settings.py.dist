@@ -83,6 +83,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'ganetimgr.middleware.UserMessages.UserMessageMiddleware',
 #    'middleware.MobileDetectionMiddleware.MobileDetectionMiddleware',
 )
 

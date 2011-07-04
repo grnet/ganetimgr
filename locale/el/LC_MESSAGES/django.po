@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-04 13:37+0300\n"
+"POT-Creation-Date: 2011-07-04 16:20+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: settings.py:175
+#: settings.py:177
 msgid "Greek"
 msgstr "Ελληνικά"
 
-#: settings.py:176
+#: settings.py:178
 msgid "English"
 msgstr "Αγγλικά"
 
@@ -165,7 +165,7 @@ msgstr ""
 "Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
 "ξεκινήσει σύντομα."
 
-#: apply/views.py:150
+#: apply/views.py:151
 #, python-format
 msgid "A key with the same fingerprint exists: %s"
 msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
@@ -218,6 +218,14 @@ msgstr "%(url)s δεν είναι αποδεκτή μορφή URL"
 #: ganeti/views.py:198
 msgid "Invalid URL"
 msgstr "Λανθασμένο URL"
+
+#: middleware/UserMessages.py:27
+msgid ""
+"Welcome! Please take some time to update <a href=\"%s\">your profile</a> and "
+"upload your SSH keys."
+msgstr ""
+"Καλωσήρθατε! Αν θέλετε, αφιερώστε λίγο χρόνο για να ενημερώσετε το <a href="
+"\"%s\">προφίλ σας</a> και να ανεβάσετε τα δημόσια SSH κλειδιά σας."
 
 #: recap/field.py:12
 msgid "Invalid captcha"
