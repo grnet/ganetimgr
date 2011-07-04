@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-03 15:58+0300\n"
+"POT-Creation-Date: 2011-07-04 13:37+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -452,26 +452,14 @@ msgid "My instances"
 msgstr "Οι εικονικές μηχανές μου"
 
 #: templates/base.html:97
-msgid "Developed by"
-msgstr "Αναπτύχθηκε από το"
+msgid "GRNET"
+msgstr "ΕΔΕΤ"
 
 #: templates/base.html:97
-msgid "using"
-msgstr "χρησιμοποιώντας το framework"
-
-#: templates/base.html:97
-msgid "provided by"
-msgstr "με λογισμικό που παρέχεται από το"
-
-#: templates/base.html:97
-msgid "running on"
-msgstr "και λειτουργεί σε"
-
-#: templates/base.html:98
 msgid "Info"
 msgstr "Περί"
 
-#: templates/base.html:98
+#: templates/base.html:97
 msgid "Service Terms"
 msgstr "Όροι Χρήσης"
 
@@ -815,6 +803,18 @@ msgstr "Εγγραφή νέου χρήστη"
 #: templates/registration/registration_form.html:14
 msgid "Create"
 msgstr "Δημιουργία"
+
+#~ msgid "Developed by"
+#~ msgstr "Αναπτύχθηκε από το"
+
+#~ msgid "using"
+#~ msgstr "χρησιμοποιώντας το framework"
+
+#~ msgid "provided by"
+#~ msgstr "με λογισμικό που παρέχεται από το"
+
+#~ msgid "running on"
+#~ msgstr "και λειτουργεί σε"
 
 #~ msgid "Operating System"
 #~ msgstr "Λειτουργικό Σύστημα"
