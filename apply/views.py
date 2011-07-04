@@ -141,7 +141,8 @@ def user_keys(request):
             ssh_key = SshPublicKey(key_type=key_type, key=key, comment=comment,
                                    owner=request.user)
             fprint = ssh_key.compute_fingerprint()
-            other_keys = SshPublicKey.objects.filter(fingerprint=fprint)
+            other_keys = SshPublicKey.objects.filter(owner=request.user,
+                                                     fingerprint=fprint)
             if not other_keys:
                 ssh_key.fingerprint = fprint
                 ssh_key.save()
