@@ -19,7 +19,7 @@ setup_environ(settings)
 from apply.models import *
 from django.contrib.sites.models import Site
 from django.utils.encoding import smart_str
-from django.core.mail import mail_admins, send_mail
+from django.core.mail import mail_admins, mail_managers, send_mail
 from django.core import urlresolvers
 from django.template.loader import render_to_string
 
@@ -68,6 +68,8 @@ def monitor_jobs():
                           "Instance %s is ready" % application.hostname,
                           mail_body, settings.SERVER_EMAIL,
                           [application.applicant.email])
+                logging.info("Mailing managers about %s" %
+                             application.hostname)
                 mail_managers("Instance %s is ready" % application.hostname,
                               mail_body)
             application.save()
