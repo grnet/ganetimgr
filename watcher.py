@@ -68,6 +68,8 @@ def monitor_jobs():
                           "Instance %s is ready" % application.hostname,
                           mail_body, settings.SERVER_EMAIL,
                           [application.applicant.email])
+                mail_managers("Instance %s is ready" % application.hostname,
+                              mail_body)
             application.save()
             job.delete()
             break
