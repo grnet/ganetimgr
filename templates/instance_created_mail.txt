@@ -4,4 +4,7 @@
 διεύθυνση:
   {{instance_url}}
 
+{% if application.admin_comments %}Σχόλια διαχειριστή:
+{{ application.admin_comments }}
+{% endif %}
 Για το ΚΕΔ ΕΔΕΤ
