@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Activation Complete" %}{% endblock %}
+{% block brcrmb_container %}{% endblock %}
+{% block content %}
+<div align="center" id="registration">
+{% if activation_key %}
+    <h3>{% trans "Activation Failed" %}</h3>
+    <p>{% trans There was an error while trying to activate your account. Please contact the system administrator. %}</p>
+{% else %}
+    <h3>{% trans "Activation Complete" %}</h3>
+    <p>{% trans Your account has been successfully activated. You may login" %} <a href="{% url login %}">{% trans "here" %}</a>.</p>
+{% endif %}
+</div>
+{% endblock %}

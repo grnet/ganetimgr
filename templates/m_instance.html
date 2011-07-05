@@ -27,6 +27,7 @@
 <em>No configuration allowed at this time</em>
 {% else %}
 <form method="post" align="center">
+    {% csrf_token %}
     {% for field in configform %}
         <div data-role="fieldcontain">
            {{ field.label_tag }}: {{ field }}

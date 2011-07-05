@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Review application" %} #{{ application.pk }}{% endblock %}
+{% block content %}
+<style type="text/css">
+.comments {
+	font-style: italic;
+	max-width: 40em;
+}
+.notice {
+	text-align: center;
+	font-style: italic;
+}
+
+#review {
+	max-width: 50em;
+	margin-left: auto;
+	margin-right: auto;
+}
+</style>
+<script>
+	function set_network(net){
+		$("#id_network").val(net);
+	}
+</script>
+<div align="center" id="review">
+<h2>{% trans "Review application" %} #{{ application.pk }} {% trans "by" %} {{ application.applicant }}</h2>
+<p>{% trans "Submitted" %} {{ application.filed|date }}</p>
+{% if application.is_pending %}
+<form method="POST" id="appform">
+{% csrf_token %}
+<fieldset>
+<legend>{% trans "Instance information" %}</legend>
+<table>
+<tr><th>{{ appform.hostname.label_tag }}</th><td>{{ appform.hostname }}<span class="error">{{ appform.hostname.errors|join:", " }}</span></td></tr>
+<tr><th>{{ appform.memory.label_tag }}</th><td>{{ appform.memory }}<span class="error">{{ appform.memory.errors|join:", " }}</span></td></tr>
+<tr><th>{{ appform.vcpus.label_tag }}</th><td>{{ appform.vcpus }}<span class="error">{{ appform.vcpus.errors|join:", " }}</span></td></tr>
+<tr><th>{{ appform.disk_size.label_tag }}</th><td>{{ appform.disk_size }}<span class="error">{{ appform.disk_size.errors|join:", " }}</span></td></tr>
+<tr><th>{{ appform.organization.label_tag }}</th><td>{{ appform.organization }}<span class="error">{{ appform.organization.errors|join:", " }}</span></td></tr>
+<tr><th>{{ appform.hosts_mail_server.label_tag }}</th><td>{{ appform.hosts_mail_server }}<span class="error">{{ appform.hosts_mail_server.errors|join:", " }}</span></td></tr>
+<tr><th>{{ appform.operating_system.label_tag }}</th><td>{{ appform.operating_system }}<span class="error">{{ appform.operating_system.errors|join:", " }}</span></td></tr>
+</table>
+</fieldset>
+
+{% if application.admin_contact_name %}
+<fieldset>
+<legend>{% trans "Administrative contact" %}</legend>
+<table>
+<tr><th>{% trans "Name" %}</th><td>{{ application.admin_contact_name }}</td></tr>
+<tr><th>{% trans "Email" %}</th><td>{{ application.admin_contact_email }}</td></tr>
+<tr><th>{% trans "Phone" %}</th><td>{{ application.admin_contact_phone }}</td></tr>
+</table>
+</fieldset>
+{% endif %}
+
+<fieldset>
+<legend>{% trans "Comments" %}</legend>
+<div class="comments">
+{{ application.comments }}
+</div>
+</fieldset>
+
+<fieldset>
+<legend>{% trans "Placement" %}</legend>
+{% if application.network %}
+<div class="notice">
+{% trans "The user has requested explicit network placement on" %} {{ application.network }} ({{ application.network.cluster.description }})
+</div>
+{% endif %}
+
+<p>{% trans "Choose either a network, or a cluster from the quick list to use the cluster's default network." %}</p>
+<p>{% trans "Network" %}: {{ appform.network }}</p>
+{% if appform.network.errors %}
+<p class="error">{{ appform.network.errors|join:", " }}</p>
+{% endif %}
+<p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }} ({{ cl.slug }})</a> {% if not forloop.last %}| {% endif %}{% endfor %}</p>
+</fieldset>
+
+<fieldset>
+<legend>{% trans "Decision" %}</legend>
+<p>{% trans "Comments to the user" %}:</p>
+{% if appform.admin_comments.errors %}
+<p><span class="error">{{ appform.admin_comments.errors }}</span></p>
+{% endif %}
+<p>{{ appform.admin_comments }}</p>
+<p><input type="submit" value="Accept" name="accept"/> <input type="submit" value="Reject" name="reject" /></p>
+</legend>
+</form>
+{% else %}
+<fieldset>
+<legend>{% trans "Instance information" %}</legend>
+<table>
+<tr><th>{{ appform.hostname.label_tag }}</th><td>{{ application.hostname }}</td></tr>
+<tr><th>{{ appform.memory.label_tag }}</th><td>{{ application.memory }}</td></tr>
+<tr><th>{{ appform.vcpus.label_tag }}</th><td>{{ application.vcpus }}</td></tr>
+<tr><th>{{ appform.disk_size.label_tag }}</th><td>{{ application.disk_size }}</td></tr>
+<tr><th>{{ appform.organization.label_tag }}</th><td>{{ application.organization }}</td></tr>
+<tr><th>{{ appform.hosts_mail_server.label_tag }}</th><td>{{ application.hosts_mail_server }}</td></tr>
+<tr><th>{{ appform.operating_system.label_tag }}</th><td>{{ application.operating_system }}</td></tr>
+</table>
+</fieldset>
+
+{% if application.admin_contact_name %}
+<fieldset>
+<legend>{% trans "Administrative contact" %}</legend>
+<table>
+<tr><th>{% trans "Name" %}</th><td>{{ application.admin_contact_name }}</td></tr>
+<tr><th>{% trans "Email" %}</th><td>{{ application.admin_contact_email }}</td></tr>
+<tr><th>{% trans "Phone" %}</th><td>{{ application.admin_contact_phone }}</td></tr>
+</table>
+</fieldset>
+{% endif %}
+
+<fieldset>
+<legend>{% trans "Comments" %}</legend>
+<div class="comments">
+{{ application.comments }}
+</div>
+</fieldset>
+
+<fieldset>
+<legend>{% trans "Placement" %}</legend>
+<p>{% trans "The instance has been placed on" %} {{ application.network }} ({{ application.cluster.description }})</p>
+</fieldset>
+{% endif %}
+
+</div>
+{% endblock %}

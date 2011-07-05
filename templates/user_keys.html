@@ -1,0 +1,109 @@
+<div id="sshkeys_placeholder">
+<script>
+	$(document).ajaxSend(function(event, xhr, settings) {
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function sameOrigin(url) {
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    function safeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    }
+});
+
+	$(function() {
+	$('.remove_btn').button({
+            icons: {
+                primary: "ui-icon-circle-close"
+            },
+            text: false
+        })
+	$('#add_ssh_key_btn').button();
+	$('#add_ssh_key_btn').click(function() {
+			str = $('#sshkeyform').serialize();
+            $.ajax({
+                type: "POST",
+                url: "{% url user-keys %}",
+                data: str,
+                success: function(response){
+//					var $response=$(response);
+//					var resdata =  $response.filter("#sshkeys_placeholder").html();
+                	$("#sshkeys_placeholder").html(response);
+                        }
+        });
+    return false;
+        });
+		$('a[id^="remove_key_"]').click(function() {
+			var $this = $(this);
+			var id = $this.attr("id");
+			var key_id = id.replace("remove_key_", "")
+            $.ajax({
+                type: "GET",
+                url: "{% url delete-key %}"+key_id,
+                success: function(response){
+//					var $response=$(response);
+//					var resdata =  $response.filter("#sshkeys_placeholder").html();
+                	$("#sshkeys_placeholder").html(response);
+                        }
+        });
+    return false;
+        });
+	});
+	</script>
+
+<style type="text/css">
+.fingerprint {
+	font-family: monospace;
+}
+</style>
+{% load i18n %}
+<p>{% trans "Upload your SSH public keys and have them automatically installed on all newly-created instances. Keys must be in OpenSSH format, either RSA, or DSA, with or without a trailing comment." %}</p>
+
+{% if keys %}
+<table>
+<tr><th>{% trans "Fingerprint" %}</th><th>{% trans "Comment" %}</th></tr>
+{% for key in keys %}
+<tr><td class="fingerprint">{{ key.fingerprint }}</td><td>{{ key.comment }}</td><td><a class="remove_btn" id="remove_key_{{key.id}}" href="#">{% trans "Delete" %}</a></tr>
+{% endfor %}
+</table>
+{% endif %}
+<h2>{% trans "Add new key" %}</h2>
+{% if msg %}
+<div class="error">{{msg}}</div>
+{% endif %}
+<form method="POST" id="sshkeyform">
+{% csrf_token %}
+{% if form.ssh_pubkey.errors %}
+<div class="error">{{ form.ssh_pubkey.errors }}</div>
+{% endif %}
+{{ form.ssh_pubkey }}<br />
+<button id="add_ssh_key_btn">{% trans "Add key" %}</button>
+</form>
+</div>
+

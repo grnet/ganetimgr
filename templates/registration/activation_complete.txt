@@ -1,0 +1,3 @@
+Dear {{user.username}},
+Your account has been successfully activated.
+You may login here: http://{{ site.domain }}/{% url login %}

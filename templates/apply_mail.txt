@@ -1,0 +1,29 @@
+Ο χρήστης {{user.username}} ({{user.first_name}} {{user.last_name}}) υπέβαλε το
+ακόλουθο αίτημα:
+{% load disksizes %}
+Παράμετροι VM
+-------------
+Όνομα: {{application.hostname}}
+Μνήμη: {{application.memory|memsize}}
+vCPUS: {{application.vcpus}}
+Δίσκος: {{application.disk_size}} GB
+Λειτουργικό σύστημα: {{application.operating_system}}
+Φιλοξενία mail server: {{application.hosts_mail_server|yesno:"Ναι,Όχι"}}
+
+{% if application.network %}Ο χρήστης ζήτησε το VM να συνδεθεί στο δίκτυο «{{ application.network }}»{% endif %}
+
+Στοιχεία επικοινωνίας:
+{% if application.organization %}
+Υπεύθυνος φορέας: {{ application.organization }} {% else %}
+Διαχειριστικός υπεύθυνος
+------------------------
+{{ application.admin_contact_name }}
+{{ application.admin_contact_email }}
+{{ application.admin_contact_phone }}{% endif %}
+
+{% if application.comments %}
+Σχόλια
+------
+{{ application.comments }} {% endif %}
+
+Για να διαχειριστείτε το αίτημα, επισκευθείτε το {{url}}

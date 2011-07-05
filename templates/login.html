@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Login" %}{% endblock %}
+{% block brcrmb_container %}{% endblock %}
+{% block content %}
+<div id="welcome">
+<h3>{% trans "Welcome" %}</h3>
+{% blocktrans %}
+<p>Welcome to GRNET's ViMa service.</p>
+<p>If you are new to the service, take some time to read the service description <a href="/about/info">here</a> and then register for a new account.</p>
+<p>If you already have an account, you can log in using the form on the right.</p>
+{% endblocktrans %}</p>
+</div>
+
+<div id="loginform">
+<h3>{% trans "Login" %}</h3>
+{% if form.errors %}
+<p  class="error" style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>
+{% endif %}
+
+<form method="post" action="{% url login %}">
+{% csrf_token %}
+<table>
+<tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="submit" value="{% trans "Login" %}" />
+<input type="hidden" name="next" value="{{next}}" />
+</form>
+    <p><a href="{% url auth_password_reset %}">{% trans "Forgot password?" %}</a></p>
+    <p><a href="{% url registration_register %}">{% trans "Not a member?" %}</a></p>
+</div>
+{% endblock %}

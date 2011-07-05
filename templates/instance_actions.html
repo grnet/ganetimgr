@@ -85,23 +85,23 @@
 			
 });
 </script>
-
+{% load i18n %}
 <table>
 	{% if instance.oper_state %}
 		{% if instance.admin_state %}
 		<tr id="actions_container_inner">
-			<td><a id="shutdown" href="#">Shutdown</a></td>
-			<td><a id="reboot" href="#">Reboot</a></td>
-			<td><a id="console" href="{% url instance-vnc cluster.slug instance.name %}">Console</a></td>
+			<td><a id="shutdown" href="#">{% trans "Shutdown" %}</a></td>
+			<td><a id="reboot" href="#">{% trans "Reboot" %}</a></td>
+			<td><a id="console" href="{% url instance-vnc cluster.slug instance.name %}">{% trans "Console" %}</a></td>
 		</tr>
 		{% else %}
 		<tr id="actions_container_inner"> 
-			<td id="show_no_actions"><em>Instance is shutting down, no actions allowed</em></td>
+			<td id="show_no_actions"><em>{% trans "Instance is shutting down, no actions allowed" %}</em></td>
 		</tr>
 		{% endif %}
 	{% else %}
 		<tr id="actions_container_inner">
-		<td colspan=3><a id="start" href="#">Start</a></td>
+		<td colspan=3><a id="start" href="#">{% trans "Start" %}</a></td>
 		</tr>
 	{% endif %}
 

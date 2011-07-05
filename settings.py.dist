@@ -23,6 +23,13 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 # system time zone.
 TIME_ZONE = 'Europe/Athens'
 
+_ = lambda s: s
+
+LANGUAGES = (
+    ('el', _('Greek')),
+    ('en', _('English')),
+)
+
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
@@ -72,6 +79,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'ganetimgr.middleware.UserMessages.UserMessageMiddleware',
 #    'middleware.MobileDetectionMiddleware.MobileDetectionMiddleware',
 )
 
@@ -91,8 +103,15 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.flatpages',
+    'django.contrib.messages',
     #'django.contrib.admin',
+    'south',
     'ganetimgr.ganeti',
+    'ganetimgr.apply',
+    'ganetimgr.registration',
+    'ganetimgr.recap',
+    'ganetimgr.accounts',
     'django_extensions',
 )
 
@@ -105,3 +124,60 @@ DATETIME_FORMAT = "d/m/Y H:i"
 CACHE_BACKEND = "redis_cache.cache://127.0.0.1:6379/?timeout=1500"
 
 GANETI_TAG_PREFIX = "ganetimgr"
+
+LOGIN_URL = '/user/login'
+LOGIN_REDIRECT_URL = '/'
+
+# List of operating system images
+OPERATING_SYSTEMS = {
+    "debian-squeeze": {
+        "description": "Debian Squeeze 64 bit",
+        "provider": "image+default",
+        "osparams": {
+            "img_id": "debian-squeeze",
+            "img_format": "tarball",
+        },
+        "ssh_key_param": "img_ssh_key_url",
+    },
+    "ubuntu-lucid": {
+        "description": "Ubuntu 10.04 LTS 64 bit",
+        "provider": "image+default",
+        "osparams": {
+            "img_id": "ubuntu-lucid",
+            "img_format": "tarball",
+        },
+        "ssh_key_param": "img_ssh_key_url",
+    },
+    "centos-5.5": {
+        "description": "CentOS 5.5 64 bit",
+        "provider": "image+default",
+        "osparams": {
+            "img_id": "centos-5.5",
+            "img_format": "tarball",
+        },
+        "ssh_key_param": "img_ssh_key_url",
+    },
+}
+
+OPERATING_SYSTEM_CHOICES = \
+    [(x, y["description"]) for (x, y) in OPERATING_SYSTEMS.items()]
+
+SERVER_EMAIL = "noreply@domain.com"
+EMAIL_SUBJECT_PREFIX = "[ganetimgr] "
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "ganetimgr.context.pending_notifications.notify",
+    "django.contrib.messages.context_processors.messages"
+)
+
+
+RECAPTCHA_PUBLIC_KEY = '<key>'
+RECAPTCHA_PRIVATE_KEY = '<key>'
+
+ACCOUNT_ACTIVATION_DAYS = 10
+
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'

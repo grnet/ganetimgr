@@ -3,9 +3,9 @@ from django.core.cache import cache
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datetime import datetime
-import vapclient
 from socket import gethostbyname
 
+from util import vapclient
 from util.ganeti_client import GanetiRapiClient
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
 
@@ -117,22 +117,22 @@ class Cluster(models.Model):
     description = models.CharField(max_length=128, blank=True, null=True)
     username = models.CharField(max_length=64, blank=True, null=True)
     password = models.CharField(max_length=64, blank=True, null=True)
+    fast_create = models.BooleanField(default=False,
+                                      verbose_name="Enable fast instance"
+                                                   " creation",
+                                      help_text="Allow fast instance creations"
+                                                " on this cluster using the"
+                                                " admin interface")
+    default_disk_template = models.CharField(max_length=255, default="plain")
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
         self._client = GanetiRapiClient(host=self.hostname,
                                         username=self.username,
                                         password=self.password)
-        if self.id:
-            self._update()
 
     def __unicode__(self):
         return self.hostname
-
-    def _update(self):
-        self._info = self.get_cluster_info()
-        for attr in self._info:
-            self.__dict__[attr] = self._info[attr]
 
     def _instance_cache_key(self, instance):
         return "cluster:%s:instance:%s" % (self.slug, instance)
@@ -216,3 +216,68 @@ class Cluster(models.Model):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         return self._client.RebootInstance(instance)
+
+    def create_instance(self, name=None, disk_template=None, disks=None,
+                        nics=None, os=None, memory=None, vcpus=None, tags=None,
+                        osparams=None):
+        beparams = {}
+        if memory is not None:
+            beparams["memory"] = memory
+        if vcpus is not None:
+            beparams["vcpus"] = vcpus
+
+        if nics is None:
+            nics = []
+
+        if tags is None:
+            tags = []
+
+        if osparams is None:
+            osparams = {}
+
+        if disk_template is None:
+            disk_template = self.default_disk_template
+
+        return self._client.CreateInstance(mode="create", name=name, os=os,
+                                           disk_template=disk_template,
+                                           disks=disks, nics=nics,
+                                           start=False, ip_check=False,
+                                           name_check=False,
+                                           beparams=beparams,
+                                           tags=tags, osparams=osparams)
+
+    def get_job_status(self, job_id):
+        return self._client.GetJobStatus(job_id)
+
+    def get_default_network(self):
+        try:
+            return self.network_set.get(cluster_default=True)
+        except Network.DoesNotExist:
+            return None
+
+
+class Network(models.Model):
+    description = models.CharField(max_length=255)
+    cluster = models.ForeignKey(Cluster)
+    link = models.CharField(max_length=255)
+    mode = models.CharField(max_length=64,
+                            choices=(("bridged", "Bridged"),
+                                     ("routed", "Routed")))
+    cluster_default = models.BooleanField(default=False)
+    groups = models.ManyToManyField(Group, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.description
+
+    def save(self, *args, **kwargs):
+        # Ensure that only one cluster_default exists per cluster
+        if self.cluster_default:
+            try:
+                other = Network.objects.get(cluster=self.cluster,
+                                            cluster_default=True)
+                if other != self:
+                    other.cluster_default = False
+                    other.save(*args, **kwargs)
+            except Network.DoesNotExist:
+                pass
+        super(Network, self).save()

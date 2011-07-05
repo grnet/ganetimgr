@@ -1,0 +1,70 @@
+<div id="usermailchange_placeholder">
+<script>
+	$(document).ajaxSend(function(event, xhr, settings) {
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function sameOrigin(url) {
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    function safeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    }
+});
+
+	$(function() {
+	$('#change_email_btn').button();
+	$('#change_email_btn').click(function() {
+			str = $('#change_email_form').serialize();
+            $.ajax({
+                type: "POST",
+                url: "{% url mail-change %}",
+                data: str,
+                success: function(response){
+//					console.log(response);
+//					var $response=$(response);
+//					var resdata =  $response.filter("#sshkeys_placeholder").html();
+                	$("#usermailchange_placeholder").html(response);
+                        }
+        });
+    return false;
+        });
+	});
+	</script>
+	{% load i18n %}
+<div>{{user}} {% trans "enter your new mail address twice so we can verify you typed it in correctly." %}</div> 
+<div>{% trans "Your e-mail" %} {% if changed %} {% trans "has successfully changed to" %} {% endif %}: <strong>{% ifequal mail|length 0 %} {% trans "you have not registered an address yet" %} {% else %}{{mail}}{% endifequal %}</strong></div>
+<form method="POST" id="change_email_form">
+{% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+<button id="change_email_btn">{% trans "Change email" %}</button>
+</form>
+
+</div>

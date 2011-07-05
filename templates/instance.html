@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-
-{% block title %}{{ instance.name }} on {{ cluster }}{% endblock %}
+{% load i18n %}
+{% block title %}{{ instance.name }} on {{ instance.cluster.description }}{% endblock %}
 {% block extrahead %}
 <style type="text/css">
 		#toolbar {
@@ -13,7 +13,7 @@ var polltimer;
 var timer = 5000;
 var load_data = function () {
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: '{% url instance-poll cluster.slug instance.name %}',
             dataType: 'html',
             success: function(data) {
@@ -34,23 +34,29 @@ $(function() {
 
 </script>
 {% endblock %}
+
+{% block breadcrumbs %}:: {{ instance.name }} {% endblock %}
+
 {% block content %}
 {% load disksizes %}
 
-<p class="info_content_title"><a href="/">My instances</a> :: {{ instance.name }}</p>
+
 <h3>{{ instance.name }}</h3>
 <div id="fl_l">
 <table class="instance_det_table">
-<tr><th class="table_top_header" colspan=2>Details</th></tr>
-<tr><td class="table_title">Status</td><td id="status"></td></tr>
-<tr><td class="table_title">Memory</td><td>{{ instance.beparams.memory|memsize }}</td></tr>
-<tr><td class="table_title">CPUs</td><td>{{ instance.beparams.vcpus }}</td></tr>
+<tr><th class="table_top_header" colspan=2>{% trans "Details" %}</th></tr>
+<tr><td class="table_title">{% trans "Status" %}</td><td id="status"></td></tr>
+<tr><td class="table_title">{% trans "Cluster" %}</td><td>{{ instance.cluster.description }}</td></tr>
+<tr><td class="table_title">{% trans "Memory" %}</td><td>{{ instance.beparams.memory|memsize }}</td></tr>
+<tr><td class="table_title">{% trans "CPUs" %}</td><td>{{ instance.beparams.vcpus }}</td></tr>
 <tr><td class="table_title">Hard disk{{ instance.disk_sizes|pluralize }}</td><td>{{ instance.disk_sizes|disksizes|join:", " }}</td></tr>
-<tr><td class="table_title">Network cards</td><td>{{ instance.nic_macs|length }}</td></tr>
-<Tr><td class="table_title">MAC address{{ instance.nic_macs|pluralize:"es" }}</td><td>{{ instance.nic_macs|join:", " }}</td></tr>
-<tr><td class="table_title">Cluster</td><td>{{ instance.cluster.description }}</td></tr>
-<tr><td class="table_title">Created on</td><td>{{ instance.ctime|date }}</td></tr>
-<tr><td class="table_title">Last modified</td><td>{{ instance.mtime|date }}</td></tr>
+<tr><td class="table_title">{% trans "Network cards" %}</td><td>{{ instance.nic_macs|length }}</td></tr>
+<tr><td class="table_title">MAC address{{ instance.nic_macs|pluralize:"es" }}</td><td>{{ instance.nic_macs|join:", " }}</td></tr>
+{% if instance.nic_ips %}
+<tr><td class="table_title">IP address{{ instance.nic_ips|pluralize:"es" }}</td><td>{{ instance.nic_ips|join:", " }}</td></tr>
+{% endif %}
+<tr><td class="table_title">{% trans "Created on" %}</td><td>{{ instance.ctime|date }}</td></tr>
+<tr><td class="table_title">{% trans "Last modified" %}</td><td>{{ instance.mtime|date }}</td></tr>
 </table>
 </div>
 
@@ -58,8 +64,9 @@ $(function() {
 <div id="configuration">
 
 <form method="post" align="center" id="conf_form">
+{% csrf_token %}
 <table class="conf_table">
-	<tr><th colspan="2" style="text-align:center;" class="table_topper_header">Configuration</th></tr>
+	<tr><th colspan="2" style="text-align:center;" class="table_topper_header">{% trans "Configuration" %}</th></tr>
 {{ configform.as_table }}
 <tr><td colspan="2" style="text-align:center; padding: 5px;" ><input style="font-size: 12px;" id="update" type="Submit" value="Update" /></td></tr>
 
@@ -68,7 +75,7 @@ $(function() {
 </form>
 
 <table class="actions_table">
-<tr><th class="table_top_header" colspan=3 style="text-align: center;">Actions</th></tr>
+<tr><th class="table_top_header" colspan=3 style="text-align: center;">{% trans "Actions" %}</th></tr>
 <tr>
 	<td id="actions_container">&nbsp;</td>
 		<!-- Here a setTimeout jquery script populates the instance control every 5 seconds -->

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Register" %}{% endblock %}
+{% block brcrmb_container %}{% endblock %}
+{% block content %}
+<div align="center" id="registration">
+
+<h3>{% trans "Register new user" %}</h3>
+        <form method="post">
+        	{% csrf_token %}
+        	<table>
+          {{ form.as_table }}
+		   </table>
+          <input class="submit"type="submit" value="{% trans "Create" %}" />
+        </form>
+</div>
+{% endblock %}

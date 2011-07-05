@@ -1,0 +1,10 @@
+Η εικονική μηχανή με όνομα {{ application.hostname }} δημιουργήθηκε.
+
+Μπορείτε να τη χειριστείτε και να δείτε τα στοιχεία της στην ακόλουθη
+διεύθυνση:
+  {{instance_url}}
+
+{% if application.admin_comments %}Σχόλια διαχειριστή:
+{{ application.admin_comments }}
+{% endif %}
+Για το ΚΕΔ ΕΔΕΤ

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Application submitted" %}{% endblock %}
+{% block content %}
+<div align="center">
+{% if pending %}
+<h2>{% trans "Pending applications" %}</h2>
+<table>
+<tr><th>{% trans "Hostname" %}</th><th>{% trans "User" %}</th><th>{% trans "Memory" %}</th><th>{% trans "vCPUs" %}</th><th>{% trans "Network" %}</th><th>{% trans "Filed" %}</th></tr>
+{% for app in pending %}
+<tr><td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td><td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td><td>{{ app.network|default_if_none:"&mdash;" }}</td><td>{{ app.filed|date }}</td></tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<h2>{% trans "Completed applications" %}</h2>
+<table>
+<tr><th>{% trans "Hostname" %}</th><th>{% trans "User" %}</th><th>{% trans "Memory" %}</th><th>{% trans "vCPUs" %}</th><th>{% trans "Network" %}</th><th>{% trans "Filed" %}</th></tr>
+{% for app in completed %}
+<tr><td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td><td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td><td>{{ app.network|default_if_none:"&mdash;" }}</td><td>{{ app.filed|date }}</td></tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %}

@@ -1,29 +1,34 @@
+{% load i18n %}
 <html>
 <head>
-<title>vima.grnet.gr :: {% block title %}{% endblock %} </title>
+<title>ViMa :: {% block title %}{% endblock %} </title>
 <script src="/static/js/jquery.min.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/base.css">
 <link rel="stylesheet" type="text/css" href="/static/css/smoothness/jquery-ui-1.8.13.custom.css">
 <script type="text/javascript" src="/static/js/jquery-ui-1.8.12.custom.min.js"></script>
 <script type="text/javascript">
 
-
-function highlight(elemId){
-    var elem = $(elemId);
-    elem.css("background-color", "#ffffbb");
-    setTimeout(function() { $(elemId).animate({ backgroundColor: "white" }, 2000)}, 1500);
-}
-
-   
-$(document).ready( function(){
-	if (document.location.hash) {
-	    highlight(document.location.hash);
+  	function setlang(lang){
+		$("#langsel").val(lang);
+		$("#langform").submit();
 	}
-	$('a[href*=#]').click(function(){
-	    var elemId = '#' + $(this).attr('href').split('#')[1];
-	    highlight(elemId);
-	});
-});
+
+//function highlight(elemId){
+//    var elem = $(elemId);
+//    elem.css("background-color", "#ffffbb");
+//    setTimeout(function() { $(elemId).animate({ backgroundColor: "white" }, 2000)}, 1500);
+//}
+//
+//   
+//$(document).ready( function(){
+//	if (document.location.hash) {
+//	    highlight(document.location.hash);
+//	}
+//	$('a[href*=#]').click(function(){
+//	    var elemId = '#' + $(this).attr('href').split('#')[1];
+//	    highlight(elemId);
+//	});
+//});
 
 </script>
 {% block extrahead %}{% endblock %}
@@ -41,26 +46,55 @@ $(document).ready( function(){
 					<a href="/">virtual private servers</a>
 				</div>
 				<div class="loginform">
-					{% if not user.is_authenticated %}
-					<form id="formcontent" method="post" action="{% url login %}">
-						<label for="username">username </label><input name="username" type="text"></input> 
-						<label for="password">password </label><input name="password" type="password"></input>
-						<input type="submit" value="login" />
-					</form>
-					{% else %}
 					<div id="formcontent">
-						<span class="topmenuuser">Welcome <strong>{{user}}</strong></span><span class="topmenuaction"><a href="{% url pass_change %}">Change password</a></span> <span class="topmenuaction"><a href="{% url logout %}">Logout</a></span>
+						{% if user.is_authenticated %}
+						<span class="topmenuuser">{% trans "Welcome" %} <strong>{{user}}</strong></span>
+						{% endif %}
+						<span {% if user.is_authenticated %}class="topmenuaction"{% else %}class="topmenuuser"{% endif %} >
+							<form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform">
+								{% csrf_token %}
+								<input name="next" type="hidden" value="{{ next }}" />
+								<input id="langsel" name="language" type="hidden" value="" />
+								{% for lang in LANGUAGES %}<a class="select_lang" href="#" onclick="setlang('{{ lang.0 }}'); return false;" title="{{lang.1}}">{% ifnotequal LANGUAGE_CODE lang.0 %}<font style="font-weight:normal;">{% endifnotequal %}{% trans lang.1 %}{% ifnotequal LANGUAGE_CODE lang.0 %}</font>{% endifnotequal %}</a>{% if not forloop.last %} -{% endif %}
+								{% endfor %}
+							</form>
+						</span>
+						{% if user.is_authenticated %}
+						<span class="topmenuaction"><a href="{% url apply %}">{% trans "Create Instance" %}</a></span>
+						<span class="topmenuaction"><a href="{% url profile %}">{% trans "My profile" %}</a></span>
+{% if user.is_superuser %}
+						<span class="topmenuaction"><a href="{% url admin:index %}">{% trans "Admin" %}</a></span>
+{% endif %}
+{% if can_handle_applications %}
+						<span class="topmenuaction"><a href="{% url application-list %}">{% trans "Applications" %}{% if pending_count %} ({{ pending_count }}){% endif %}</a></span>
+{% endif %}
+						<span class="topmenuaction"><a href="{% url logout %}">{% trans "Logout" %}</a></span>
+						{% else %}
+						<span class="topmenuaction"><a href="{% url login %}">{% trans "Login" %}</a></span>
+						{% endif %}
 					</div>
-					{% endif %}
+					
 				</div>
 			</div>
 			<div id="content">
+				{% block brcrmb_container %}
+				<div class="info_content_title">{% if user.is_authenticated %}<a href="/">{% trans "My instances" %}</a>{% endif %}
+				{% block breadcrumbs %}{% endblock %}
+				</div>
+				{% if messages %}
+				<div id="messages">
+				{% for message in messages %}
+					<span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span><br />
+				{% endfor %}
+				</div>
+				{% endif %}
+				{% endblock %}
 				{% block content %}
 				{% endblock %}
 
 			</div>
 			<div id="footer">
-				Developed by <a href="http://www.noc.grnet.gr">GRNET NOC</a> using <a href="http://www.djangoproject.com/">Django</a>, provided by <a href="http://code.google.com/p/ganeti/">Ganeti</a> running on <a href="http://www.debian.org">Debian GNU/Linux</a>
+			<a href="http://www.grnet.gr">{% trans "GRNET" %} NOC</a> | <a href="/about/info/">{% trans "Info" %}</a> | <a href="/about/terms-of-service">{% trans "Service Terms" %}</a>
 			</div>
 	</div>
 </body>
