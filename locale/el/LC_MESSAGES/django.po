@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-06 17:31+0300\n"
+"POT-Creation-Date: 2011-07-06 16:50+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -721,20 +721,19 @@ msgid "VNC session on"
 msgstr "VNC σύνδεση στο"
 
 #: templates/registration/activate.html:3
-#: templates/registration/activate.html:11
 #: templates/registration/activation_complete.html:3
 #: templates/registration/activation_complete.html:7
 msgid "Activation Complete"
 msgstr "Η ενεργοποίηση ολοκληρώθηκε"
 
-#: templates/registration/activate.html:8
-msgid "Activation Failed"
+#: templates/registration/activate.html:7
+#, fuzzy
+msgid "Activation Status"
 msgstr "Η ενεργοποίηση απέτυχε"
 
-#: templates/registration/activate.html:12
-#: templates/registration/password_reset_complete.html:8
-msgid "here"
-msgstr "εδώ"
+#: templates/registration/activate.html:8
+msgid "The user has probably been already activated."
+msgstr "Ο χρήστης έχει πιθανότατα ενεργοποιηθεί ήδη."
 
 #: templates/registration/activation_complete.html:8
 msgid "The user will be notified about his/her account activation"
@@ -753,6 +752,10 @@ msgstr "Η αλλαγή του κωδικού ολοκληρώθηκε"
 #: templates/registration/password_reset_complete.html:8
 msgid "Your password was successfully reset. You may login"
 msgstr "Ο κωδικός σας έχει αλλάξει επιτυχώς. Μπορείτε να εισέρθετε"
+
+#: templates/registration/password_reset_complete.html:8
+msgid "here"
+msgstr "εδώ"
 
 #: templates/registration/password_reset_confirm.html:3
 #: templates/registration/password_reset_confirm.html:9
