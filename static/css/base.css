@@ -237,6 +237,10 @@ form.update textarea {
 	width: 100%;
 }
 
+textarea#id_comments {
+	width: 80%;
+}
+
 .hidden {
 	display: none;
 }

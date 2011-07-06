@@ -40,6 +40,16 @@ th {
 </fieldset>
 
 <fieldset>
+<legend>{% trans "Use/Comments" %}</legend>
+{% blocktrans %}
+<p>Give a short description of the intended use of this virtual machine, that justifies the parameter selection above. Feel free to include any additional comments.</p>
+{% endblocktrans %}
+<p>{{ form.comments }}
+{% if form.errors %}<br /><span class="error">{{ form.comments.errors|join:", " }}</span>{% endif %}
+</p>
+</fieldset>
+
+<fieldset>
 <legend>{% trans "Administrative contact" %}</legend>
 {% blocktrans %}
 <p>If you are applying on behalf of a NOC under GRNET's constituency, please select the appropriate organization. Otherwise, fill-in the admin contact information below.</p>
@@ -60,7 +70,6 @@ th {
 <tr><th>{% trans "Name" %}</th><td>{{ form.admin_contact_name }}<span class="error">{{ form.admin_contact_name.errors|join:", " }}</span></td></tr>
 <tr><th>E-mail</th><td>{{ form.admin_contact_email }}<span class="error">{{ form.admin_contact_email.errors|join:", " }}</span></td></tr>
 <tr><th>{% trans "Phone" %}</th><td>{{ form.admin_contact_phone }}<span class="error">{{ form.admin_contact_phone.errors|join:", " }}</span></td></tr>
-<tr><th>{{ form.comments.label_tag }}</th><td>{{ form.comments }}<span class="error">{{ form.comments.errors|join:", " }}</span></td></tr>
 </table>
 </fieldset>
 

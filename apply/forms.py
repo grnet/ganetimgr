@@ -56,7 +56,7 @@ class InstanceForm(forms.ModelForm):
 
 
 class InstanceApplicationForm(InstanceForm):
-    comments = forms.CharField(widget=forms.Textarea, required=False,
+    comments = forms.CharField(widget=forms.Textarea, required=True,
                                help_text=ugettext_lazy("Additional comments you would like"
                                          " the service administrators to see"), label=ugettext_lazy("Comments"))
     accept_tos = forms.BooleanField()
@@ -76,8 +76,7 @@ class InstanceApplicationForm(InstanceForm):
         if not (organization or
                 ("admin_contact_name" in self.cleaned_data and
                  "admin_contact_email" in self.cleaned_data and
-                 "admin_contact_phone" in self.cleaned_data and
-                 self.cleaned_data["comments"])):
+                 "admin_contact_phone" in self.cleaned_data)):
             raise forms.ValidationError(_("Choose either an organization or"
                                           " fill in the contact information"))
         return self.cleaned_data
