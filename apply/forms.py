@@ -161,3 +161,7 @@ class EmailChangeForm(forms.Form):
             if email1 != email2:
                 raise forms.ValidationError(_("Mail fields do not match."))
         return cleaned_data
+
+class NameChangeForm(forms.Form):
+    name = forms.CharField(label=ugettext_lazy("Name"), max_length=50, min_length = 2,required=True)
+    surname = forms.CharField(label=ugettext_lazy("Surname"), max_length=50, min_length = 2, required=True)

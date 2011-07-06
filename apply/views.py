@@ -188,6 +188,25 @@ def mail_change(request):
             form = EmailChangeForm()
     return render_to_response("mail_change.html", {'mail':usermail, 'form':form, 'changed':changed}, context_instance=RequestContext(request))
 
+@login_required
+def name_change(request):
+    changed = False
+    user_full_name = request.user.get_full_name()
+    if request.method == "GET":
+        form = NameChangeForm()
+    elif request.method == "POST":
+        form = NameChangeForm(request.POST)
+        if form.is_valid():
+            user_name = form.cleaned_data['name']
+            user_surname = form.cleaned_data['surname']
+            user = User.objects.get(username=request.user)
+            user.first_name = user_name
+            user.last_name = user_surname
+            user.save()
+            changed = True
+            user_full_name = user.get_full_name()
+            form = NameChangeForm()
+    return render_to_response("name_change.html", {'name':user_full_name, 'form':form, 'changed':changed}, context_instance=RequestContext(request))
 
 def instance_ssh_keys(request, application_id, cookie):
     app = get_object_or_404(InstanceApplication, pk=application_id)

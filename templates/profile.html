@@ -14,6 +14,8 @@ $(document).ready(function () {
 			$('#manage_sshkeys_placeholder').load("{% url user-keys %}");
 //			change user mail
 			$('#change_email_placeholder').load("{% url mail-change %}");
+//			change user full name
+			$('#change_name_placeholder').load("{% url name-change %}");
 			
         }
     });
@@ -27,6 +29,8 @@ $(document).ready(function () {
 <h3>{% trans "My profile" %}</h3>
 
 <div id="accordion">
+	<h3><a href="#" style="color: #4183C4;">{% trans "Change Name,Surname" %}</a></h3>
+	<div id="change_name_placeholder"></div>
 	<h3><a href="#" style="color: #4183C4;">{% trans "Change Password" %}</a></h3>
 	<div id="pass_change_placeholder"></div>
 	<h3><a href="#" style="color: #4183C4;">{% trans "Change Email" %}</a></h3>

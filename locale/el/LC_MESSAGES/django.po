@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-04 16:20+0300\n"
+"POT-Creation-Date: 2011-07-06 17:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: settings.py:177
+#: settings.py:29
 msgid "Greek"
 msgstr "Ελληνικά"
 
-#: settings.py:178
+#: settings.py:30
 msgid "English"
 msgstr "Αγγλικά"
 
@@ -129,6 +129,15 @@ msgstr "Email (επιβεβαίωση)"
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
+#: apply/forms.py:166 templates/apply.html:60 templates/review.html:49
+#: templates/review.html.py:107 templates/user_instances.html:23
+msgid "Name"
+msgstr "Όνομα"
+
+#: apply/forms.py:167
+msgid "Surname"
+msgstr "Επώνυμο"
+
 #: apply/models.py:56
 msgid "organization"
 msgstr "φορέας"
@@ -219,7 +228,8 @@ msgstr "%(url)s δεν είναι αποδεκτή μορφή URL"
 msgid "Invalid URL"
 msgstr "Λανθασμένο URL"
 
-#: middleware/UserMessages.py:27
+#: middleware/UserMessages.py:32
+#, python-format
 msgid ""
 "Welcome! Please take some time to update <a href=\"%s\">your profile</a> and "
 "upload your SSH keys."
@@ -376,11 +386,6 @@ msgstr ""
 msgid "OR"
 msgstr "Ή"
 
-#: templates/apply.html:60 templates/review.html:49
-#: templates/review.html.py:107 templates/user_instances.html:23
-msgid "Name"
-msgstr "Όνομα"
-
 #: templates/apply.html:62 templates/review.html:51
 #: templates/review.html.py:109
 msgid "Phone"
@@ -432,8 +437,8 @@ msgstr "Υποβολή"
 msgid "Welcome"
 msgstr "Καλωσήλθατε"
 
-#: templates/base.html:64 templates/profile.html:25
-#: templates/profile.html.py:27
+#: templates/base.html:64 templates/profile.html:27
+#: templates/profile.html.py:29
 msgid "My profile"
 msgstr "Το προφίλ μου"
 
@@ -559,7 +564,6 @@ msgstr "Ξεχάσατε τον κωδικό σας;"
 msgid "Not a member?"
 msgstr "Δεν έχετε εγγραφεί;"
 
-#: templates/mail_change.html:60
 msgid ""
 "enter your new mail address twice so we can verify you typed it in correctly."
 msgstr ""
@@ -569,7 +573,7 @@ msgstr ""
 msgid "Your e-mail"
 msgstr "Το e-mail σας"
 
-#: templates/mail_change.html:61
+#: templates/mail_change.html:61 templates/name_change.html:58
 msgid "has successfully changed to"
 msgstr "έχει αλλάξει με επιτυχία σε"
 
@@ -581,6 +585,22 @@ msgstr "δεν έχετε καταχωρήσει κάποια διεύθυνση
 msgid "Change email"
 msgstr "Αλλαγή e-mail"
 
+#: templates/name_change.html:57
+msgid "enter your first and last name."
+msgstr "εισάγετε το ονοματεπώνυμό σας"
+
+#: templates/name_change.html:58
+msgid "Your name"
+msgstr "To ονοματεπώνυμό σας"
+
+#: templates/name_change.html:58
+msgid "you have not entered an name yet"
+msgstr "δεν έχετε καταχωρήσει κάποιο ονοματεπώνυμο"
+
+#: templates/name_change.html:64 templates/pass_change.html:60
+msgid "Change"
+msgstr "Αλλαγή"
+
 #: templates/pass_change.html:57
 msgid ""
 "please enter your old password, for security's sake, and then enter your new "
@@ -590,10 +610,6 @@ msgstr ""
 "συνέχεια εισάγετε το νέο σας κωδικό δύο φορές ώστε να βεβαιωθούμε ότι έχει "
 "αποτυπωθεί ορθά"
 
-#: templates/pass_change.html:60
-msgid "Change"
-msgstr "Αλλαγή"
-
 #: templates/pass_change_done.html:2
 msgid "Password changed"
 msgstr "Ο κωδικός άλλαξε"
@@ -602,16 +618,20 @@ msgstr "Ο κωδικός άλλαξε"
 msgid "successfully"
 msgstr "επιτυχώς"
 
-#: templates/profile.html:30
+#: templates/profile.html:32
+msgid "Change Name,Surname"
+msgstr "Αλλαγή Ονοματεπώνυμου"
+
+#: templates/profile.html:34
 #: templates/registration/password_change_form.html:5
 msgid "Change Password"
 msgstr "Αλλαγή κωδικού"
 
-#: templates/profile.html:32
+#: templates/profile.html:36
 msgid "Change Email"
 msgstr "Αλλαγή e-mail"
 
-#: templates/profile.html:34
+#: templates/profile.html:38
 msgid "Manage SSH Keys"
 msgstr "Διαχείριση SSH κλειδιών"
 
