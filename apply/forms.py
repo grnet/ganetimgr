@@ -84,6 +84,10 @@ class InstanceApplicationForm(InstanceForm):
 
 
 class InstanceApplicationReviewForm(InstanceForm):
+    memory = forms.IntegerField(min_value=512, initial=1024)
+    vcpus = forms.IntegerField(min_value=1, initial=1, label="Virtual CPUs")
+    disk_size = forms.IntegerField(min_value=2, initial=5,
+                                   label=ugettext_lazy("Disk size (GB)"))
     class Meta:
         model = InstanceApplication
         fields = InstanceForm.Meta.fields + ('admin_comments',)
@@ -111,42 +115,49 @@ class SshKeyForm(forms.Form):
     ssh_pubkey = forms.CharField(widget=forms.Textarea)
 
     def clean_ssh_pubkey(self):
-        pubkey = self.cleaned_data["ssh_pubkey"].strip()
-        if not pubkey:
-            return pubkey
+        keydata = self.cleaned_data["ssh_pubkey"].strip()
+        keys = keydata.splitlines()
+        if not keys:
+            return keys
 
-        fields = pubkey.split(None, 2)
-        if len(fields) < 2:
-            raise forms.ValidationError(_("Malformed SSH key, must be in"
-                                        " OpenSSH format, RSA or DSA"))
+        pubkeys = []
+        for pubkey in keys:
+            if not pubkey:
+                continue
 
-        key_type = fields[0].strip().lower()
-        key = fields[1].strip()
-        try:
-            comment = fields[2].strip()
-        except IndexError:
-            comment = None
+            fields = pubkey.split(None, 2)
+            if len(fields) < 2:
+                raise forms.ValidationError(_("Malformed SSH key, must be in"
+                                            " OpenSSH format, RSA or DSA"))
 
-        try:
-            data = base64.b64decode(key)
-        except TypeError:
-            raise forms.ValidationError(_("Malformed SSH key"))
-                                        
-
-        if key_type == "ssh-rsa":
+            key_type = fields[0].strip().lower()
+            key = fields[1].strip()
             try:
-                pkey = RSAKey(data=data)
-            except SSHException:
-                raise forms.ValidationError(_("Invalid RSA SSH key"))
-        elif key_type == "ssh-dss":
-            try:
-                pkey = DSSKey(data=data)
-            except SSHException:
-                raise forms.ValidationError(_("Invalid DSS SSH key"))
-        else:
-            raise forms.ValidationError(_("Unknown key type '%s'") % fields[0])
+                comment = fields[2].strip()
+            except IndexError:
+                comment = None
 
-        return [key_type, key, comment]
+            try:
+                data = base64.b64decode(key)
+            except TypeError:
+                raise forms.ValidationError(_("Malformed SSH key"))
+
+            if key_type == "ssh-rsa":
+                try:
+                    pkey = RSAKey(data=data)
+                except SSHException:
+                    raise forms.ValidationError(_("Invalid RSA SSH key"))
+            elif key_type == "ssh-dss":
+                try:
+                    pkey = DSSKey(data=data)
+                except SSHException:
+                    raise forms.ValidationError(_("Invalid DSS SSH key"))
+            else:
+                raise forms.ValidationError(_("Unknown key type '%s'") % fields[0])
+
+            pubkeys.append((key_type, key, comment))
+
+        return pubkeys
 
 
 class EmailChangeForm(forms.Form):

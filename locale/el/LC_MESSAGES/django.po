@@ -41,7 +41,7 @@ msgstr "Όνομα"
 msgid "Memory"
 msgstr "Μνήμη"
 
-#: apply/forms.py:29
+#: apply/forms.py:29 apply/forms.py:90
 msgid "Disk size (GB)"
 msgstr "Μέγεθος δίσκου (GB)"
 
@@ -84,48 +84,48 @@ msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:94
+#: apply/forms.py:98
 msgid "Please specify a network"
 msgstr "Επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής"
 
-#: apply/forms.py:100
+#: apply/forms.py:104
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/forms.py:106
+#: apply/forms.py:110
 msgid "Application already handled"
 msgstr ""
 
-#: apply/forms.py:120
+#: apply/forms.py:130
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/forms.py:133
+#: apply/forms.py:143
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/forms.py:140
+#: apply/forms.py:149
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/forms.py:145
+#: apply/forms.py:154
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/forms.py:147
+#: apply/forms.py:156
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/forms.py:153 templates/review.html:50 templates/review.html.py:108
+#: apply/forms.py:164 templates/review.html:50 templates/review.html.py:108
 msgid "Email"
 msgstr "Email"
 
-#: apply/forms.py:154
+#: apply/forms.py:165
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/forms.py:162
+#: apply/forms.py:173
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
@@ -154,12 +154,12 @@ msgstr "λειτουργικό σύστημα"
 msgid "network"
 msgstr "δίκτυο"
 
-#: apply/views.py:30 templates/application_list.html:9
+#: apply/views.py:31 templates/application_list.html:9
 #: templates/application_list.html.py:18 templates/review.html:72
 msgid "Network"
 msgstr "Δίκτυο"
 
-#: apply/views.py:31
+#: apply/views.py:32
 msgid ""
 "Optionally, select a network to connect the virtual machine to if you have a "
 "special requirement"
@@ -167,17 +167,17 @@ msgstr ""
 "Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής.\n"
 "Διαφορετικά, θα χρησιμοποιηθεί το κανονικό δίκτυο της υπηρεσίας."
 
-#: apply/views.py:65
+#: apply/views.py:66
 #, python-format
 msgid "Your request has been filed with id #%d and will be processed shortly."
 msgstr ""
 "Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
 "ξεκινήσει σύντομα."
 
-#: apply/views.py:151
+#: apply/views.py:155
 #, python-format
-msgid "A key with the same fingerprint exists: %s"
-msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
+msgid "The following keys were skipped because they already exist:<br />%s"
+msgstr "Τα ακόλουθα κλειδιά υπήρχαν ήδη και δεν αντικαταστάθηκαν:<br />%s"
 
 #: ganeti/views.py:128
 msgid "Please wait... shutting-down"
@@ -831,6 +831,9 @@ msgstr "Εγγραφή νέου χρήστη"
 #: templates/registration/registration_form.html:14
 msgid "Create"
 msgstr "Δημιουργία"
+
+#~ msgid "A key with the same fingerprint exists: %s"
+#~ msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
 
 #~ msgid "Developed by"
 #~ msgstr "Αναπτύχθηκε από το"
