@@ -170,6 +170,9 @@ class SshPublicKey(models.Model):
     owner = models.ForeignKey(User)
     fingerprint = models.CharField(max_length=255, null=True, blank=True)
 
+    class Meta:
+        ordering = ["fingerprint"]
+
     def __unicode__(self):
         return "%s: %s" % (self.fingerprint, self.owner.username)
 
