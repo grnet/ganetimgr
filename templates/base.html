@@ -94,6 +94,9 @@
 
 			</div>
 			<div id="footer">
+			{% if user.is_authenticated %}
+			{% trans "If you have any questions or need help, contact GRNET Helpdesk at <a href='mailto:helpdesk@grnet.gr'>helpdesk@grnet.gr</a> or 800-11-47638." %}<br />
+			{% endif %}
 			<a href="http://www.grnet.gr">{% trans "GRNET" %} NOC</a> | <a href="/about/info/">{% trans "Info" %}</a> | <a href="/about/terms-of-service">{% trans "Service Terms" %}</a>
 			</div>
 	</div>
