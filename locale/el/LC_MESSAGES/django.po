@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-06 18:09+0300\n"
+"POT-Creation-Date: 2011-07-07 09:57+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: settings.py:29
+#: settings.py:177
 msgid "Greek"
 msgstr "Ελληνικά"
 
-#: settings.py:30
+#: settings.py:178
 msgid "English"
 msgstr "Αγγλικά"
 
@@ -129,7 +129,12 @@ msgstr "Email (επιβεβαίωση)"
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
-#: apply/forms.py:167
+#: apply/forms.py:176 templates/apply.html:70 templates/review.html:49
+#: templates/review.html.py:107 templates/user_instances.html:23
+msgid "Name"
+msgstr "Όνομα"
+
+#: apply/forms.py:177
 msgid "Surname"
 msgstr "Επώνυμο"
 
@@ -370,9 +375,9 @@ msgid ""
 "additional comments.</p>\n"
 msgstr ""
 "\n"
-"<p>Δώστε μια σύντομη περιγραφή της χρήσης της εικονικής μηχανής, η οποία "
-"να δικαιολογεί την επιλογή παραμέτρων που κάνατε. Μπορείτε επίσης να "
-"περιλάβετε τυχόν σχόλια προς τους διαχειριστές της εφαρμογής.</p>\n"
+"<p>Δώστε μια σύντομη περιγραφή της χρήσης της εικονικής μηχανής, η οποία να "
+"δικαιολογεί την επιλογή παραμέτρων που κάνατε. Μπορείτε επίσης να περιλάβετε "
+"τυχόν σχόλια προς τους διαχειριστές της εφαρμογής.</p>\n"
 
 #: templates/apply.html:53 templates/apply.html.py:69 templates/review.html:47
 #: templates/review.html.py:105
@@ -395,11 +400,6 @@ msgstr ""
 #: templates/apply.html:66
 msgid "OR"
 msgstr "Ή"
-
-#: templates/apply.html:70 templates/review.html:49
-#: templates/review.html.py:107 templates/user_instances.html:23
-msgid "Name"
-msgstr "Όνομα"
 
 #: templates/apply.html:72 templates/review.html:51
 #: templates/review.html.py:109
@@ -469,8 +469,8 @@ msgstr "Αιτήσεις"
 msgid "Logout"
 msgstr "Έξοδος"
 
-#: templates/base.html:73 templates/login.html:3 templates/login.html.py:16
-#: templates/login.html:34
+#: templates/base.html:73 templates/login.html:3 templates/login.html.py:17
+#: templates/login.html:35
 msgid "Login"
 msgstr "Είσοδος"
 
@@ -550,6 +550,7 @@ msgid "Start"
 msgstr "Εκκίνηση"
 
 #: templates/login.html:8
+#, fuzzy
 msgid ""
 "\n"
 "<p>Welcome to GRNET's ViMa service.</p>\n"
@@ -558,6 +559,8 @@ msgid ""
 "account.</p>\n"
 "<p>If you already have an account, you can log in using the form on the "
 "right.</p>\n"
+"<p>For troubleshooting info and remarks do not hesitate to contact GRNET's "
+"Helpdesk.</p>\n"
 msgstr ""
 "\n"
 "<p>Καλωσήλθατε στην υπηρεσία ViMa του ΕΔΕΤ.</p>\n"
@@ -567,18 +570,19 @@ msgstr ""
 "<p>Αν διαθέτετε ήδη λογαριασμό χρήστη, μπορείτε να εισέλθετε στην υπηρεσία "
 "χρησιμοποιώντας τη φόρμα στο δεξί μέρος της σελίδας.</p>\n"
 
-#: templates/login.html:18
+#: templates/login.html:19
 msgid "Your username and password didn't match. Please try again."
 msgstr "Ο συνδυασμός ονόματος χρήστη και κωδικού δεν είναι έγκυρος"
 
-#: templates/login.html:37
+#: templates/login.html:38
 msgid "Forgot password?"
 msgstr "Ξεχάσατε τον κωδικό σας;"
 
-#: templates/login.html:38
+#: templates/login.html:39
 msgid "Not a member?"
 msgstr "Δεν έχετε εγγραφεί;"
 
+#: templates/mail_change.html:60
 msgid ""
 "enter your new mail address twice so we can verify you typed it in correctly."
 msgstr ""
@@ -588,7 +592,7 @@ msgstr ""
 msgid "Your e-mail"
 msgstr "Το e-mail σας"
 
-#: templates/mail_change.html:61 templates/name_change.html:58
+#: templates/mail_change.html:61
 msgid "has successfully changed to"
 msgstr "έχει αλλάξει με επιτυχία σε"
 
@@ -601,7 +605,7 @@ msgid "Change email"
 msgstr "Αλλαγή e-mail"
 
 #: templates/name_change.html:57
-msgid "enter your first and last name."
+msgid "enter your first and last name"
 msgstr "εισάγετε το ονοματεπώνυμό σας"
 
 #: templates/name_change.html:58
@@ -609,8 +613,12 @@ msgid "Your name"
 msgstr "To ονοματεπώνυμό σας"
 
 #: templates/name_change.html:58
-msgid "you have not entered an name yet"
-msgstr "δεν έχετε καταχωρήσει κάποιο ονοματεπώνυμο"
+msgid "was successfully changed"
+msgstr "έχει αλλάξει με επιτυχία σε"
+
+#: templates/name_change.html:58
+msgid "we don't know your name yet"
+msgstr "δε γνωρίζουμε το όνομά σας ακομα"
 
 #: templates/name_change.html:64 templates/pass_change.html:60
 msgid "Change"
@@ -634,7 +642,7 @@ msgid "successfully"
 msgstr "επιτυχώς"
 
 #: templates/profile.html:32
-msgid "Change Name,Surname"
+msgid "Change Name"
 msgstr "Αλλαγή Ονοματεπώνυμου"
 
 #: templates/profile.html:34
@@ -847,6 +855,9 @@ msgstr "Εγγραφή νέου χρήστη"
 #: templates/registration/registration_form.html:14
 msgid "Create"
 msgstr "Δημιουργία"
+
+#~ msgid "you have not entered an name yet"
+#~ msgstr "δεν έχετε καταχωρήσει κάποιο ονοματεπώνυμο"
 
 #~ msgid "A key with the same fingerprint exists: %s"
 #~ msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
