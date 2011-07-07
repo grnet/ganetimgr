@@ -550,7 +550,6 @@ msgid "Start"
 msgstr "Εκκίνηση"
 
 #: templates/login.html:8
-#, fuzzy
 msgid ""
 "\n"
 "<p>Welcome to GRNET's ViMa service.</p>\n"
@@ -569,6 +568,8 @@ msgstr ""
 "συνέχεια αιτηθείτε ένα νέο λογαριασμό χρήστη.</p>\n"
 "<p>Αν διαθέτετε ήδη λογαριασμό χρήστη, μπορείτε να εισέλθετε στην υπηρεσία "
 "χρησιμοποιώντας τη φόρμα στο δεξί μέρος της σελίδας.</p>\n"
+"<p>Για τυχόν προβλήματα ή απορίες, επικοινωνήστε με το Helpdesk του ΕΔΕΤ."
+"</p>\n"
 
 #: templates/login.html:19
 msgid "Your username and password didn't match. Please try again."
