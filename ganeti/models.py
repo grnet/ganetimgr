@@ -148,6 +148,13 @@ class Cluster(models.Model):
     def _instance_cache_key(self, instance):
         return "cluster:%s:instance:%s" % (self.slug, instance)
 
+    @classmethod
+    def get_all_instances(cls):
+        instances = []
+        for cluster in cls.objects.all():
+            instances.extend(cluster.get_instances())
+        return instances
+
     def get_instance(self, name):
         info = self.get_instance_info(name)
         return Instance(self, info["name"], info)
