@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-07 15:29+0300\n"
+"POT-Creation-Date: 2011-07-07 20:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -26,124 +26,137 @@ msgstr "Ελληνικά"
 msgid "English"
 msgstr "Αγγλικά"
 
-#: accounts/forms.py:29
+#: accounts/forms.py:35
 msgid "Invalid captcha"
 msgstr "Λανθασμένη αντιστοίχιση"
 
+#: accounts/forms.py:57
+msgid "Verify"
+msgstr "Επαλήθευση"
+
 #: accounts/views.py:22
+#, python-format
 msgid "%sUser account activated"
 msgstr "%sΟ λογαριασμός σας ενεργοποιήθηκε"
 
-#: apply/forms.py:23
+#: apply/forms.py:24
 msgid "A fully qualified domain name, e.g. host.domain.com"
 msgstr "Ένα κανονικό όνομα DNS, π.χ. host.domain.com"
 
-#: apply/forms.py:24 templates/application_list.html:9
+#: apply/forms.py:25 templates/application_list.html:9
 #: templates/application_list.html.py:18
 msgid "Hostname"
 msgstr "Όνομα"
 
-#: apply/forms.py:25 templates/application_list.html:9
+#: apply/forms.py:26 templates/application_list.html:9
 #: templates/application_list.html.py:18 templates/instance.html:50
 #: templates/user_instances.html:24
 msgid "Memory"
 msgstr "Μνήμη"
 
-#: apply/forms.py:29 apply/forms.py:89
+#: apply/forms.py:30 apply/forms.py:97
 msgid "Disk size (GB)"
 msgstr "Μέγεθος δίσκου (GB)"
 
-#: apply/forms.py:30
+#: apply/forms.py:31
 msgid "Specify a size from 2 to 100 GB"
 msgstr "Καθορίστε μέγεθος μεταξύ 2 και 100 GB"
 
-#: apply/forms.py:32
+#: apply/forms.py:33
 msgid "Check this option if the virtual machine will be sending e-mail"
 msgstr ""
 "Ενεργοποιήστε αυτή την επιλογή εάν η εικονική μηχανή πρόκειται να στέλνει e-"
 "mails"
 
-#: apply/forms.py:35
+#: apply/forms.py:36
 msgid "Hosts mail server"
 msgstr "Φιλοξενία mail server"
 
-#: apply/forms.py:37
+#: apply/forms.py:38
 msgid "Organization"
 msgstr "Φορέας"
 
-#: apply/forms.py:54
+#: apply/forms.py:55
 #, python-format
 msgid "Invalid hostname %s"
 msgstr "Εσφαλμένο όνομα %s"
 
-#: apply/forms.py:60
+#: apply/forms.py:59
+msgid ""
+"Hostname should be fully qualified, e.g. <em>host.domain.com</em>, not "
+"<em>host</em>"
+msgstr ""
+"Το όνομα πρέπει να περιλαμβάνει domain, π.χ. <em>host.domain.com</em>, "
+"όχι σκέτο <em>host</em>"
+
+#: apply/forms.py:68
 msgid "Additional comments you would like the service administrators to see"
 msgstr ""
 "Πρόσθετα σχόλια ή παρατηρήσεις που θα θέλατε να λάβουν υπόψιν τους οι "
 "διαχειριστές της υπηρεσίας"
 
-#: apply/forms.py:61 templates/review.html:57 templates/review.html.py:115
+#: apply/forms.py:69 templates/review.html:57 templates/review.html.py:115
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: apply/forms.py:80
+#: apply/forms.py:88
 msgid "Choose either an organization or fill in the contact information"
 msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:97
+#: apply/forms.py:105
 msgid "Please specify a network"
 msgstr "Επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής"
 
-#: apply/forms.py:103
+#: apply/forms.py:111
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/forms.py:109
+#: apply/forms.py:117
 msgid "Application already handled"
 msgstr "Η αίτηση έχει ήδη εκκαθαριστεί"
 
-#: apply/forms.py:129
+#: apply/forms.py:137
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/forms.py:142
+#: apply/forms.py:150
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/forms.py:148
+#: apply/forms.py:156
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/forms.py:153
+#: apply/forms.py:161
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/forms.py:155
+#: apply/forms.py:163
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/forms.py:163 templates/review.html:50 templates/review.html.py:108
+#: apply/forms.py:171 templates/review.html:50 templates/review.html.py:108
 msgid "Email"
 msgstr "Email"
 
-#: apply/forms.py:164
+#: apply/forms.py:172
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/forms.py:172
+#: apply/forms.py:180
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
-#: apply/forms.py:176 templates/apply.html:70
+#: apply/forms.py:184 templates/apply.html:70
 #: templates/instance_owners.html:16 templates/review.html:49
 #: templates/review.html.py:107 templates/user_instances.html:23
 msgid "Name"
 msgstr "Όνομα"
 
-#: apply/forms.py:177
+#: apply/forms.py:185
 msgid "Surname"
 msgstr "Επώνυμο"
 
@@ -801,12 +814,9 @@ msgstr ".."
 msgid "Register new user"
 msgstr "Εγγραφή νέου χρήστη"
 
-#: templates/registration/registration_form.html:14
+#: templates/registration/registration_form.html:16
 msgid "Create"
 msgstr "Δημιουργία"
-
-msgid "Verify"
-msgstr "Επαλήθευση"
 
 #~ msgid "Activate users"
 #~ msgstr "Ενεργοποίηση χρηστών"
