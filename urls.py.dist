@@ -37,6 +37,7 @@ urlpatterns = patterns('',
                                                                           'backend':'ganetimgr.registration.backends.default.DefaultBackend'}, 
                                                                           name='registration.views.register'),
     (r'^accounts/', include('ganetimgr.registration.urls')),
+    url(r'^stats/instance_owners/?$', 'ganetimgr.stats.views.instance_owners', name="instance_owners"),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
