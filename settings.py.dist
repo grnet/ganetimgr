@@ -110,7 +110,6 @@ INSTALLED_APPS = (
     'registration',
     'ganetimgr.ganeti',
     'ganetimgr.apply',
-    'ganetimgr.recap',
     'ganetimgr.accounts',
     'ganetimgr.stats',
     'django_extensions',
