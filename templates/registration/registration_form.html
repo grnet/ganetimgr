@@ -9,8 +9,10 @@
         <form method="post">
         	{% csrf_token %}
         	<table>
-          {{ form.as_table }}
-		   </table>
+		{% for field in form %}
+          	<tr><th>{% trans field.label|capfirst %}</th><td>{{ field }}{% if field.errors %} <span class="error">{{ field.errors|join:", " }}</span>{% endif %}</td></tr>
+		{% endfor %}
+	        </table>
           <input class="submit"type="submit" value="{% trans "Create" %}" />
         </form>
 </div>

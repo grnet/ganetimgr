@@ -1,3 +1,11 @@
-Dear {{user.username}},
-Your account has been successfully activated.
-You may login here: http://{{ site.domain }}/{% url login %}
+Ο λογαριασμός σας με όνομα χρήστη «{{user.username}}» ενεργοποιήθηκε.
+Μπορείτε να χρησιμοποιήσετε την υπηρεσία ViMa, κάνοντας login στην παρακάτω
+διεύθυνση:
+
+	http://{{ site.domain }}{% url login %}
+
+---------------------------------------------------------------------------
+Your account with username “{{ user.username }}” has been activated.
+You may login to ViMa using the following URL:
+
+	http://{{ site.domain }}{% url login %}

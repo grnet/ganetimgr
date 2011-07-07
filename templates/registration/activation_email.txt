@@ -1,10 +1,25 @@
-A user has registered an account with {{ site.name }}:
+Ο/H {{ user.get_full_name }} έκανε αίτηση για νεό λογαριασμό στην υπηρεσία.
 
-username: {{user.username}}
-email: {{user.email}}
+Όνομα χρήστη: {{ user.username }}
+E-mail: {{ user.email }}
 
-Before the user may login you must confirm the account.  Click on this link or copy any paste it to your browser's address bar:
+Για να ενεργοποιήσετε το λογαριασμό και να επιτρέψετε στο χρήστη να
+χρησιμοποιήσει την υπηρεσία, επισκευθείτε τον ακόλουθο σύνδεσμο:
 
-http://{{ site.domain }}/accounts/activate/{{ activation_key }}/
+http://{{ site.domain }}{% url activate_account activation_key %}
+
+Ο χρήστης θα ενημερωθεί για την ενεργοποίηση του λογαριασμού του μέσω e-mail.
+
+-----------------------------------------------------------------------------
+
+{{ user.get_full_name }} has registered for a new account.
+
+Username: {{user.username}}
+E-mail: {{user.email}}
+
+To activate the user's account and allow them to access the service, click on
+the following link:
+
+http://{{ site.domain }}{% url activate_account activation_key %}
 
 The user will be notified via mail about the account activation

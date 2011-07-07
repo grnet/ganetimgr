@@ -1,10 +1,14 @@
 from django import forms
 from django.conf import settings
+from django.core.mail import mail_managers
+from django.contrib.sites.models import Site
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_unicode
 
 from recaptcha.client import captcha
+from registration.models import RegistrationProfile
 from registration.forms import RegistrationForm as _RegistrationForm
 
 
@@ -42,4 +46,43 @@ class ReCaptchaField(forms.CharField):
 
 
 class RegistrationForm(_RegistrationForm):
-    recaptcha = ReCaptchaField(label=_("Verify"))
+    name = forms.CharField()
+    surname = forms.CharField()
+    recaptcha = ReCaptchaField(label=_("Verify"), required=False)
+
+    def save(self, profile_callback=None):
+        """
+        Override registration.forms.RegistrationForm's save() method to save
+        the user's full name as well.
+
+        See the original method's documentation about profile_callback.
+        """
+
+        # Sadly, we can't call super().save(), since we want to keep the
+        # application from sending an e-mail
+        user = RegistrationProfile.objects.create_inactive_user(username=self.cleaned_data['username'],
+                                                                password=self.cleaned_data['password1'],
+                                                                email=self.cleaned_data['email'],
+                                                                send_email=False,
+                                                                profile_callback=profile_callback)
+        user.first_name = self.cleaned_data["name"]
+        user.last_name = self.cleaned_data["surname"]
+        user.save()
+
+        # This is partly the same as registration's original code, but we want
+        # to send the notification to the managers instead.
+        current_site = Site.objects.get_current()
+        subject = render_to_string('registration/activation_email_subject.txt',
+                                   { 'site': current_site })
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+
+        registration_profile = RegistrationProfile.objects.get(user=user)
+        message = render_to_string('registration/activation_email.txt',
+                                   { 'activation_key': registration_profile.activation_key,
+                                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                                     'site': current_site,
+                                     'user': user })
+
+        mail_managers(subject, message)
+        return user
