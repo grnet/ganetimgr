@@ -115,6 +115,8 @@ class InstanceApplication(models.Model):
         tags.append("%s:user:%s" %
                     (GANETI_TAG_PREFIX, self.applicant.username))
 
+        tags.append("%s:application:%d" % (GANETI_TAG_PREFIX, self.id))
+
         if self.hosts_mail_server:
             tags.append("%s:service:mail" % GANETI_TAG_PREFIX)
 
