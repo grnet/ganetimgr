@@ -26,6 +26,13 @@ from django.template.loader import render_to_string
 
 def monitor_jobs():
     b = beanstalkc.Connection()
+    try:
+        b.watch(settings.BEANSTALK_TUBE)
+        b.ignore("default")
+    except AttributeError:
+        # We are watching "default" anyway
+        pass
+
     job = b.reserve()
     data = json.loads(job.body)
     assert data["type"] == "CREATE"

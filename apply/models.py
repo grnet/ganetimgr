@@ -10,6 +10,10 @@ from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from ganetimgr.settings import GANETI_TAG_PREFIX, OPERATING_SYSTEMS, \
                                OPERATING_SYSTEM_CHOICES
+try:
+    from ganetimgr.settings import BEANSTALK_TUBE
+except ImportError:
+    BEANSTALK_TUBE = None
 
 from util import beanstalkc
 from paramiko import RSAKey, DSSKey
@@ -154,6 +158,8 @@ class InstanceApplication(models.Model):
         self.save()
 
         b = beanstalkc.Connection()
+        if BEANSTALK_TUBE:
+            b.use(BEANSTALK_TUBE)
         b.put(json.dumps({"type": "CREATE",
                "application_id": self.id}))
 
