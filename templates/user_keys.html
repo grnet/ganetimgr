@@ -89,7 +89,7 @@
 <table>
 <tr><th>{% trans "Fingerprint" %}</th><th>{% trans "Comment" %}</th></tr>
 {% for key in keys %}
-<tr><td class="fingerprint">{{ key.fingerprint }}</td><td>{{ key.comment }}</td><td><a class="remove_btn" id="remove_key_{{key.id}}" href="#">{% trans "Delete" %}</a></tr>
+<tr><td class="fingerprint">{{ key.fingerprint }}</td><td>{{ key.comment|default:"&mdash;" }}</td><td><a class="remove_btn" id="remove_key_{{key.id}}" href="#">{% trans "Delete" %}</a></tr>
 {% endfor %}
 </table>
 {% endif %}

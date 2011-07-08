@@ -76,6 +76,8 @@ class Instance(object):
         self._update(info)
 
     def _update(self, info=None):
+        user_cache = {}
+        group_cache = {}
         if not info:
             info = self.cluster.get_instance_info(self.name)
         for attr in info:
@@ -85,16 +87,25 @@ class Instance(object):
             user_pfx = "%s:user:" % GANETI_TAG_PREFIX
             if tag.startswith(group_pfx):
                 group = tag.replace(group_pfx,'')
-                try:
-                    self.groups.append(Group.objects.get(name__iexact=group))
-                except:
-                    pass
+                if group not in group_cache:
+                    try:
+                        g = Group.objects.get(name__iexact=group)
+                    except:
+                        g = None
+                    group_cache[group] = g
+                if group_cache[group] is not None:
+                    self.groups.append(group_cache[group])
+
             elif tag.startswith(user_pfx):
                 user = tag.replace(user_pfx,'')
-                try:
-                    self.users.append(User.objects.get(username__iexact=user))
-                except:
-                    pass
+                if user not in user_cache:
+                    try:
+                        u = User.objects.get(username__iexact=user)
+                    except:
+                        u = None
+                    user_cache[user] = u
+                if user_cache[user] is not None:
+                    self.users.append(user_cache[user])
         
         if getattr(self, 'ctime', None):
             self.ctime = datetime.fromtimestamp(self.ctime)
@@ -136,6 +147,13 @@ class Cluster(models.Model):
 
     def _instance_cache_key(self, instance):
         return "cluster:%s:instance:%s" % (self.slug, instance)
+
+    @classmethod
+    def get_all_instances(cls):
+        instances = []
+        for cluster in cls.objects.all():
+            instances.extend(cluster.get_instances())
+        return instances
 
     def get_instance(self, name):
         info = self.get_instance_info(name)

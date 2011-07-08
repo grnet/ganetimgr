@@ -4,6 +4,7 @@ import base64
 from paramiko import RSAKey, DSSKey, SSHException
 
 from django import forms
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.template.defaultfilters import filesizeformat
@@ -43,7 +44,7 @@ class InstanceForm(forms.ModelForm):
                   'operating_system', 'network')
 
     def clean_hostname(self):
-        hostname = self.cleaned_data["hostname"]
+        hostname = self.cleaned_data["hostname"].rstrip(".")
 
         # Check copied from ganeti's code
         if (not _VALID_NAME_RE.match(hostname) or
@@ -52,11 +53,18 @@ class InstanceForm(forms.ModelForm):
             # empty initial label
             hostname.startswith(".")):
             raise forms.ValidationError(_("Invalid hostname %s") % hostname)
+
+        if not hostname.count("."):
+            # We require at least two DNS labels
+            raise forms.ValidationError(mark_safe(_("Hostname should be fully"
+                                                    " qualified, e.g. <em>host"
+                                                    ".domain.com</em>, not"
+                                                    " <em>host</em>")))
         return hostname
 
 
 class InstanceApplicationForm(InstanceForm):
-    comments = forms.CharField(widget=forms.Textarea, required=False,
+    comments = forms.CharField(widget=forms.Textarea, required=True,
                                help_text=ugettext_lazy("Additional comments you would like"
                                          " the service administrators to see"), label=ugettext_lazy("Comments"))
     accept_tos = forms.BooleanField()
@@ -74,16 +82,19 @@ class InstanceApplicationForm(InstanceForm):
         organization = self.cleaned_data.get("organization", None)
 
         if not (organization or
-                ("admin_contact_name" in self.cleaned_data and
-                 "admin_contact_email" in self.cleaned_data and
-                 "admin_contact_phone" in self.cleaned_data and
-                 self.cleaned_data["comments"])):
+                (self.cleaned_data.get("admin_contact_name", None) and
+                 self.cleaned_data.get("admin_contact_email", None) and
+                 self.cleaned_data.get("admin_contact_phone", None))):
             raise forms.ValidationError(_("Choose either an organization or"
                                           " fill in the contact information"))
         return self.cleaned_data
 
 
 class InstanceApplicationReviewForm(InstanceForm):
+    memory = forms.IntegerField(min_value=512, initial=1024)
+    vcpus = forms.IntegerField(min_value=1, initial=1, label="Virtual CPUs")
+    disk_size = forms.IntegerField(min_value=2, initial=5,
+                                   label=ugettext_lazy("Disk size (GB)"))
     class Meta:
         model = InstanceApplication
         fields = InstanceForm.Meta.fields + ('admin_comments',)
@@ -111,42 +122,49 @@ class SshKeyForm(forms.Form):
     ssh_pubkey = forms.CharField(widget=forms.Textarea)
 
     def clean_ssh_pubkey(self):
-        pubkey = self.cleaned_data["ssh_pubkey"].strip()
-        if not pubkey:
-            return pubkey
+        keydata = self.cleaned_data["ssh_pubkey"].strip()
+        keys = keydata.splitlines()
+        if not keys:
+            return keys
 
-        fields = pubkey.split(None, 2)
-        if len(fields) < 2:
-            raise forms.ValidationError(_("Malformed SSH key, must be in"
-                                        " OpenSSH format, RSA or DSA"))
+        pubkeys = []
+        for pubkey in keys:
+            if not pubkey:
+                continue
 
-        key_type = fields[0].strip().lower()
-        key = fields[1].strip()
-        try:
-            comment = fields[2].strip()
-        except IndexError:
-            comment = None
+            fields = pubkey.split(None, 2)
+            if len(fields) < 2:
+                raise forms.ValidationError(_("Malformed SSH key, must be in"
+                                            " OpenSSH format, RSA or DSA"))
 
-        try:
-            data = base64.b64decode(key)
-        except TypeError:
-            raise forms.ValidationError(_("Malformed SSH key"))
-                                        
-
-        if key_type == "ssh-rsa":
+            key_type = fields[0].strip().lower()
+            key = fields[1].strip()
             try:
-                pkey = RSAKey(data=data)
-            except SSHException:
-                raise forms.ValidationError(_("Invalid RSA SSH key"))
-        elif key_type == "ssh-dss":
-            try:
-                pkey = DSSKey(data=data)
-            except SSHException:
-                raise forms.ValidationError(_("Invalid DSS SSH key"))
-        else:
-            raise forms.ValidationError(_("Unknown key type '%s'") % fields[0])
+                comment = fields[2].strip()
+            except IndexError:
+                comment = None
 
-        return [key_type, key, comment]
+            try:
+                data = base64.b64decode(key)
+            except TypeError:
+                raise forms.ValidationError(_("Malformed SSH key"))
+
+            if key_type == "ssh-rsa":
+                try:
+                    pkey = RSAKey(data=data)
+                except SSHException:
+                    raise forms.ValidationError(_("Invalid RSA SSH key"))
+            elif key_type == "ssh-dss":
+                try:
+                    pkey = DSSKey(data=data)
+                except SSHException:
+                    raise forms.ValidationError(_("Invalid DSS SSH key"))
+            else:
+                raise forms.ValidationError(_("Unknown key type '%s'") % fields[0])
+
+            pubkeys.append((key_type, key, comment))
+
+        return pubkeys
 
 
 class EmailChangeForm(forms.Form):
@@ -161,3 +179,7 @@ class EmailChangeForm(forms.Form):
             if email1 != email2:
                 raise forms.ValidationError(_("Mail fields do not match."))
         return cleaned_data
+
+class NameChangeForm(forms.Form):
+    name = forms.CharField(label=ugettext_lazy("Name"), max_length=50, min_length = 2,required=True)
+    surname = forms.CharField(label=ugettext_lazy("Surname"), max_length=50, min_length = 2, required=True)

@@ -3,6 +3,7 @@ from cStringIO import StringIO
 from django import forms
 from django.contrib import messages
 from django.core import urlresolvers
+from django.utils.safestring import mark_safe
 from django.core.mail import send_mail, mail_managers
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
@@ -137,18 +138,23 @@ def user_keys(request):
     else:
         form = SshKeyForm(request.POST)
         if form.is_valid():
-            key_type, key, comment = form.cleaned_data["ssh_pubkey"]
-            ssh_key = SshPublicKey(key_type=key_type, key=key, comment=comment,
-                                   owner=request.user)
-            fprint = ssh_key.compute_fingerprint()
-            other_keys = SshPublicKey.objects.filter(owner=request.user,
-                                                     fingerprint=fprint)
-            if not other_keys:
-                ssh_key.fingerprint = fprint
-                ssh_key.save()
-                form = SshKeyForm()
-            else:
-                msg = _("A key with the same fingerprint exists: %s") % fprint
+            dups = []
+            for key_type, key, comment in form.cleaned_data["ssh_pubkey"]:
+                ssh_key = SshPublicKey(key_type=key_type, key=key,
+                                       comment=comment, owner=request.user)
+                fprint = ssh_key.compute_fingerprint()
+                other_keys = SshPublicKey.objects.filter(owner=request.user,
+                                                         fingerprint=fprint)
+                if not other_keys:
+                    ssh_key.fingerprint = fprint
+                    ssh_key.save()
+                    form = SshKeyForm()
+                else:
+                    dups.append(fprint)
+            if dups:
+                msg = _("The following keys were skipped because"
+                        " they already exist:<br />%s") % "<br />".join(dups)
+                msg = mark_safe(msg)
 
     keys = SshPublicKey.objects.filter(owner=request.user)
     return render_to_response('user_keys.html',
@@ -188,6 +194,25 @@ def mail_change(request):
             form = EmailChangeForm()
     return render_to_response("mail_change.html", {'mail':usermail, 'form':form, 'changed':changed}, context_instance=RequestContext(request))
 
+@login_required
+def name_change(request):
+    changed = False
+    user_full_name = request.user.get_full_name()
+    if request.method == "GET":
+        form = NameChangeForm()
+    elif request.method == "POST":
+        form = NameChangeForm(request.POST)
+        if form.is_valid():
+            user_name = form.cleaned_data['name']
+            user_surname = form.cleaned_data['surname']
+            user = User.objects.get(username=request.user)
+            user.first_name = user_name
+            user.last_name = user_surname
+            user.save()
+            changed = True
+            user_full_name = user.get_full_name()
+            form = NameChangeForm()
+    return render_to_response("name_change.html", {'name':user_full_name, 'form':form, 'changed':changed}, context_instance=RequestContext(request))
 
 def instance_ssh_keys(request, application_id, cookie):
     app = get_object_or_404(InstanceApplication, pk=application_id)

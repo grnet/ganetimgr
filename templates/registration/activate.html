@@ -4,12 +4,11 @@
 {% block brcrmb_container %}{% endblock %}
 {% block content %}
 <div align="center" id="registration">
-{% if activation_key %}
-    <h3>{% trans "Activation Failed" %}</h3>
-    <p>{% trans There was an error while trying to activate your account. Please contact the system administrator. %}</p>
+    <h3>{% trans "Activation Status" %}</h3>
+{% if account %}
+    <p>{{account}} {% trans "succesfully activated" %}</p>
 {% else %}
-    <h3>{% trans "Activation Complete" %}</h3>
-    <p>{% trans Your account has been successfully activated. You may login" %} <a href="{% url login %}">{% trans "here" %}</a>.</p>
+    <p>{% trans "The user has probably been already activated." %}</p>
 {% endif %}
 </div>
 {% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-04 16:20+0300\n"
+"POT-Creation-Date: 2011-07-07 20:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -26,108 +26,139 @@ msgstr "Ελληνικά"
 msgid "English"
 msgstr "Αγγλικά"
 
-#: apply/forms.py:23
+#: accounts/forms.py:35
+msgid "Invalid captcha"
+msgstr "Λανθασμένη αντιστοίχιση"
+
+#: accounts/forms.py:57
+msgid "Verify"
+msgstr "Επαλήθευση"
+
+#: accounts/views.py:22
+#, python-format
+msgid "%sUser account activated"
+msgstr "%sΟ λογαριασμός σας ενεργοποιήθηκε"
+
+#: apply/forms.py:24
 msgid "A fully qualified domain name, e.g. host.domain.com"
 msgstr "Ένα κανονικό όνομα DNS, π.χ. host.domain.com"
 
-#: apply/forms.py:24 templates/application_list.html:9
+#: apply/forms.py:25 templates/application_list.html:9
 #: templates/application_list.html.py:18
 msgid "Hostname"
 msgstr "Όνομα"
 
-#: apply/forms.py:25 templates/application_list.html:9
+#: apply/forms.py:26 templates/application_list.html:9
 #: templates/application_list.html.py:18 templates/instance.html:50
 #: templates/user_instances.html:24
 msgid "Memory"
 msgstr "Μνήμη"
 
-#: apply/forms.py:29
+#: apply/forms.py:30 apply/forms.py:97
 msgid "Disk size (GB)"
 msgstr "Μέγεθος δίσκου (GB)"
 
-#: apply/forms.py:30
+#: apply/forms.py:31
 msgid "Specify a size from 2 to 100 GB"
 msgstr "Καθορίστε μέγεθος μεταξύ 2 και 100 GB"
 
-#: apply/forms.py:32
+#: apply/forms.py:33
 msgid "Check this option if the virtual machine will be sending e-mail"
 msgstr ""
 "Ενεργοποιήστε αυτή την επιλογή εάν η εικονική μηχανή πρόκειται να στέλνει e-"
 "mails"
 
-#: apply/forms.py:35
+#: apply/forms.py:36
 msgid "Hosts mail server"
 msgstr "Φιλοξενία mail server"
 
-#: apply/forms.py:37
+#: apply/forms.py:38
 msgid "Organization"
 msgstr "Φορέας"
 
-#: apply/forms.py:54
+#: apply/forms.py:55
 #, python-format
 msgid "Invalid hostname %s"
 msgstr "Εσφαλμένο όνομα %s"
 
-#: apply/forms.py:60
+#: apply/forms.py:59
+msgid ""
+"Hostname should be fully qualified, e.g. <em>host.domain.com</em>, not "
+"<em>host</em>"
+msgstr ""
+"Το όνομα πρέπει να περιλαμβάνει domain, π.χ. <em>host.domain.com</em>, "
+"όχι σκέτο <em>host</em>"
+
+#: apply/forms.py:68
 msgid "Additional comments you would like the service administrators to see"
 msgstr ""
 "Πρόσθετα σχόλια ή παρατηρήσεις που θα θέλατε να λάβουν υπόψιν τους οι "
 "διαχειριστές της υπηρεσίας"
 
-#: apply/forms.py:61 templates/review.html:57 templates/review.html.py:115
+#: apply/forms.py:69 templates/review.html:57 templates/review.html.py:115
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: apply/forms.py:81
+#: apply/forms.py:88
 msgid "Choose either an organization or fill in the contact information"
 msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:94
+#: apply/forms.py:105
 msgid "Please specify a network"
 msgstr "Επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής"
 
-#: apply/forms.py:100
+#: apply/forms.py:111
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/forms.py:106
+#: apply/forms.py:117
 msgid "Application already handled"
-msgstr ""
+msgstr "Η αίτηση έχει ήδη εκκαθαριστεί"
 
-#: apply/forms.py:120
+#: apply/forms.py:137
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/forms.py:133
+#: apply/forms.py:150
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/forms.py:140
+#: apply/forms.py:156
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/forms.py:145
+#: apply/forms.py:161
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/forms.py:147
+#: apply/forms.py:163
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/forms.py:153 templates/review.html:50 templates/review.html.py:108
+#: apply/forms.py:171 templates/review.html:50 templates/review.html.py:108
 msgid "Email"
 msgstr "Email"
 
-#: apply/forms.py:154
+#: apply/forms.py:172
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/forms.py:162
+#: apply/forms.py:180
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
+
+#: apply/forms.py:184 templates/apply.html:70
+#: templates/instance_owners.html:16 templates/review.html:49
+#: templates/review.html.py:107 templates/user_instances.html:23
+msgid "Name"
+msgstr "Όνομα"
+
+#: apply/forms.py:185
+msgid "Surname"
+msgstr "Επώνυμο"
 
 #: apply/models.py:56
 msgid "organization"
@@ -145,12 +176,12 @@ msgstr "λειτουργικό σύστημα"
 msgid "network"
 msgstr "δίκτυο"
 
-#: apply/views.py:30 templates/application_list.html:9
+#: apply/views.py:31 templates/application_list.html:9
 #: templates/application_list.html.py:18 templates/review.html:72
 msgid "Network"
 msgstr "Δίκτυο"
 
-#: apply/views.py:31
+#: apply/views.py:32
 msgid ""
 "Optionally, select a network to connect the virtual machine to if you have a "
 "special requirement"
@@ -158,17 +189,17 @@ msgstr ""
 "Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής.\n"
 "Διαφορετικά, θα χρησιμοποιηθεί το κανονικό δίκτυο της υπηρεσίας."
 
-#: apply/views.py:65
+#: apply/views.py:66
 #, python-format
 msgid "Your request has been filed with id #%d and will be processed shortly."
 msgstr ""
 "Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
 "ξεκινήσει σύντομα."
 
-#: apply/views.py:151
+#: apply/views.py:155
 #, python-format
-msgid "A key with the same fingerprint exists: %s"
-msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
+msgid "The following keys were skipped because they already exist:<br />%s"
+msgstr "Τα ακόλουθα κλειδιά υπήρχαν ήδη και δεν αντικαταστάθηκαν:<br />%s"
 
 #: ganeti/views.py:128
 msgid "Please wait... shutting-down"
@@ -219,98 +250,14 @@ msgstr "%(url)s δεν είναι αποδεκτή μορφή URL"
 msgid "Invalid URL"
 msgstr "Λανθασμένο URL"
 
-#: middleware/UserMessages.py:27
+#: middleware/UserMessages.py:32
+#, python-format
 msgid ""
 "Welcome! Please take some time to update <a href=\"%s\">your profile</a> and "
 "upload your SSH keys."
 msgstr ""
 "Καλωσήρθατε! Αν θέλετε, αφιερώστε λίγο χρόνο για να ενημερώσετε το <a href="
 "\"%s\">προφίλ σας</a> και να ανεβάσετε τα δημόσια SSH κλειδιά σας."
-
-#: recap/field.py:12
-msgid "Invalid captcha"
-msgstr "Λανθασμένη αντιστοίχιση"
-
-#: recap/forms.py:7
-msgid "Verify"
-msgstr "Αντιστοίχιση"
-
-#: registration/admin.py:27
-msgid "Activate users"
-msgstr "Ενεργοποίηση χρηστών"
-
-#: registration/admin.py:47
-msgid "Re-send activation emails"
-msgstr ""
-
-#: registration/forms.py:35
-msgid "Username"
-msgstr "Όνομα Χρήστη"
-
-#: registration/forms.py:36
-msgid "This value must contain only letters, numbers and underscores."
-msgstr ""
-"Αυτό το πεδίο μπορεί να περιέχει μόνο γράμματα, αριθμούς και underscores "
-
-#: registration/forms.py:39
-msgid "Email address"
-msgstr "Διεύθυνση email"
-
-#: registration/forms.py:41
-msgid "Password"
-msgstr "Κωδικός"
-
-#: registration/forms.py:43
-msgid "Password (again)"
-msgstr "Κωδικός (ξανά)"
-
-#: registration/forms.py:55
-msgid "A user with that username already exists."
-msgstr "Βρέθηκε ένας χρήστης με το ίδιο όνομα χρήστη"
-
-#: registration/forms.py:67
-msgid "The two password fields didn't match."
-msgstr "Τα πεδία κωδικού δεν ταιριάζουν"
-
-#: registration/forms.py:78
-msgid "I have read and agree to the Terms of Service"
-msgstr "Διάβασα και συμφωνώ με τους Όρους Χρήσης της υπηρεσίας"
-
-#: registration/forms.py:79
-msgid "You must agree to the terms to register"
-msgstr "Πρέπει να συμφωνείτε με τους όρους για να εγγραφείτε"
-
-#: registration/forms.py:95
-msgid ""
-"This email address is already in use. Please supply a different email "
-"address."
-msgstr ""
-"Η συγκεκριμένη διεύθυνση ηλεκτρονικού ταχυδρομείου χρησιμοποιείται ήδη. "
-"Παρακαλώ δώστε κάποια άλλη."
-
-#: registration/forms.py:122
-msgid ""
-"Registration using free email addresses is prohibited. Please supply a "
-"different email address."
-msgstr ""
-"Η εγγραφή μέσω δωρεάν διευθύνσεων ηλεκτρονικού ταχυδρομείου απαγορεύεται. "
-"Παρακαλώ δώστε κάποια άλλη."
-
-#: registration/models.py:174
-msgid "user"
-msgstr "χρήστης"
-
-#: registration/models.py:175
-msgid "activation key"
-msgstr "κλειδί ενεργοποίησης"
-
-#: registration/models.py:180
-msgid "registration profile"
-msgstr "προφίλ εγγραφής"
-
-#: registration/models.py:181
-msgid "registration profiles"
-msgstr "προφίλ εγγραφής"
 
 #: templates/application_list.html:3
 msgid "Application submitted"
@@ -330,7 +277,7 @@ msgstr ""
 
 #: templates/application_list.html:9 templates/application_list.html.py:18
 msgid "Filed"
-msgstr ""
+msgstr "Καταχωρήθηκε"
 
 #: templates/application_list.html:16
 msgid "Completed applications"
@@ -353,12 +300,28 @@ msgstr "Αίτηση για νέα εικονική μηχανή"
 msgid "Instance information"
 msgstr "Στοιχεία εικονικής μηχανής"
 
-#: templates/apply.html:43 templates/apply.html.py:59 templates/review.html:47
+#: templates/apply.html:43
+msgid "Use/Comments"
+msgstr "Χρήση/Σχόλια"
+
+#: templates/apply.html:44
+msgid ""
+"\n"
+"<p>Give a short description of the intended use of this virtual machine, "
+"that justifies the parameter selection above. Feel free to include any "
+"additional comments.</p>\n"
+msgstr ""
+"\n"
+"<p>Δώστε μια σύντομη περιγραφή της χρήσης της εικονικής μηχανής, η οποία να "
+"δικαιολογεί την επιλογή παραμέτρων που κάνατε. Μπορείτε επίσης να περιλάβετε "
+"τυχόν σχόλια προς τους διαχειριστές της εφαρμογής.</p>\n"
+
+#: templates/apply.html:53 templates/apply.html.py:69 templates/review.html:47
 #: templates/review.html.py:105
 msgid "Administrative contact"
 msgstr "Διαχειριστικός υπεύθυνος"
 
-#: templates/apply.html:44
+#: templates/apply.html:54
 msgid ""
 "\n"
 "<p>If you are applying on behalf of a NOC under GRNET's constituency, please "
@@ -369,28 +332,22 @@ msgstr ""
 "<p>Αν κάνετε αίτηση για λογαριασμό του NOC κάποιου από τους Φορείς του ΕΔΕΤ, "
 "τότε παρακαλούμε να επιλέξετε τον αντίστοιχο φορέα. Σε διαφορετική "
 "περίπτωση, παρακαλούμε συμπληρώστε τα στοιχεία επικοινωνίας του "
-"διαχειριστικού υπεύθυνου και δηλώστε τη χρήση της εικονικής μηχανής και το "
-"Φορέα για τον οποίο προορίζεται στο πεδίο «Σχόλια».</p>\n"
+"διαχειριστικού υπεύθυνου.</p>\n"
 
-#: templates/apply.html:56
+#: templates/apply.html:66
 msgid "OR"
 msgstr "Ή"
 
-#: templates/apply.html:60 templates/review.html:49
-#: templates/review.html.py:107 templates/user_instances.html:23
-msgid "Name"
-msgstr "Όνομα"
-
-#: templates/apply.html:62 templates/review.html:51
+#: templates/apply.html:72 templates/review.html:51
 #: templates/review.html.py:109
 msgid "Phone"
 msgstr "Τηλέφωνο"
 
-#: templates/apply.html:68
+#: templates/apply.html:77
 msgid "Miscellaneous"
 msgstr "Λοιπά"
 
-#: templates/apply.html:69
+#: templates/apply.html:78
 msgid ""
 "\n"
 "<p>We kindly remind you of the following:</p>\n"
@@ -412,19 +369,19 @@ msgstr ""
 "υποδομή μας.</li>\n"
 "</ul>\n"
 
-#: templates/apply.html:76
+#: templates/apply.html:85
 msgid "I have read the above and accept them, along with the"
 msgstr "Διάβασα τα παραπάνω και τα αποδέχομαι μαζί με τους"
 
-#: templates/apply.html:76
+#: templates/apply.html:85
 msgid "Terms of Service"
 msgstr "Όρους Χρήσης της Υπηρεσίας"
 
-#: templates/apply.html:79
+#: templates/apply.html:88
 msgid "You must accept the terms of service before continuing."
 msgstr "Πρέπει να αποδεχθείτε τους Όρους Χρήσης πρoτού συνεχίσετε."
 
-#: templates/apply.html:84
+#: templates/apply.html:93
 msgid "Apply"
 msgstr "Υποβολή"
 
@@ -432,8 +389,8 @@ msgstr "Υποβολή"
 msgid "Welcome"
 msgstr "Καλωσήλθατε"
 
-#: templates/base.html:64 templates/profile.html:25
-#: templates/profile.html.py:27
+#: templates/base.html:64 templates/profile.html:27
+#: templates/profile.html.py:29
 msgid "My profile"
 msgstr "Το προφίλ μου"
 
@@ -449,8 +406,8 @@ msgstr "Αιτήσεις"
 msgid "Logout"
 msgstr "Έξοδος"
 
-#: templates/base.html:73 templates/login.html:3 templates/login.html.py:16
-#: templates/login.html:34
+#: templates/base.html:73 templates/login.html:3 templates/login.html.py:17
+#: templates/login.html:35
 msgid "Login"
 msgstr "Είσοδος"
 
@@ -459,15 +416,23 @@ msgstr "Είσοδος"
 msgid "My instances"
 msgstr "Οι εικονικές μηχανές μου"
 
-#: templates/base.html:97
+#: templates/base.html:98
+msgid ""
+"If you have any questions or need help, contact GRNET Helpdesk at <a "
+"href='mailto:helpdesk@grnet.gr'>helpdesk@grnet.gr</a> or 800-11-47638."
+msgstr ""
+"Για προβλήματα ή απορίες, επικοινωνήστε με το Helpdesk του ΕΔΕΤ στο <a "
+"href='mailto:helpdesk@grnet.gr'>helpdesk@grnet.gr</a> ή το 800-11-47638."
+
+#: templates/base.html:100
 msgid "GRNET"
 msgstr "ΕΔΕΤ"
 
-#: templates/base.html:97
+#: templates/base.html:100
 msgid "Info"
 msgstr "Περί"
 
-#: templates/base.html:97
+#: templates/base.html:100
 msgid "Service Terms"
 msgstr "Όροι Χρήσης"
 
@@ -529,6 +494,18 @@ msgstr ""
 msgid "Start"
 msgstr "Εκκίνηση"
 
+#: templates/instance_owners.html:3 templates/instance_owners.html.py:4
+msgid "Instance owners"
+msgstr "Μητρώο εικονικών μηχανών"
+
+#: templates/instance_owners.html:16
+msgid "Username"
+msgstr "Όνομα Χρήστη"
+
+#: templates/instance_owners.html:16
+msgid "E-mail"
+msgstr "E-mail"
+
 #: templates/login.html:8
 msgid ""
 "\n"
@@ -538,6 +515,8 @@ msgid ""
 "account.</p>\n"
 "<p>If you already have an account, you can log in using the form on the "
 "right.</p>\n"
+"<p>For troubleshooting info and remarks do not hesitate to contact GRNET's "
+"Helpdesk.</p>\n"
 msgstr ""
 "\n"
 "<p>Καλωσήλθατε στην υπηρεσία ViMa του ΕΔΕΤ.</p>\n"
@@ -546,18 +525,20 @@ msgstr ""
 "συνέχεια αιτηθείτε ένα νέο λογαριασμό χρήστη.</p>\n"
 "<p>Αν διαθέτετε ήδη λογαριασμό χρήστη, μπορείτε να εισέλθετε στην υπηρεσία "
 "χρησιμοποιώντας τη φόρμα στο δεξί μέρος της σελίδας.</p>\n"
+"<p>Για τυχόν προβλήματα ή απορίες, επικοινωνήστε με το Helpdesk του ΕΔΕΤ.</"
+"p>\n"
 
-#: templates/login.html:18
+#: templates/login.html:19
 msgid "Your username and password didn't match. Please try again."
 msgstr "Ο συνδυασμός ονόματος χρήστη και κωδικού δεν είναι έγκυρος"
 
-#: templates/login.html:37
+#: templates/login.html:38
 msgid "Forgot password?"
 msgstr "Ξεχάσατε τον κωδικό σας;"
 
-#: templates/login.html:38
-msgid "Not a member?"
-msgstr "Δεν έχετε εγγραφεί;"
+#: templates/login.html:39
+msgid "Register a new account"
+msgstr "Εγγραφή νέου χρήστη"
 
 #: templates/mail_change.html:60
 msgid ""
@@ -581,6 +562,26 @@ msgstr "δεν έχετε καταχωρήσει κάποια διεύθυνση
 msgid "Change email"
 msgstr "Αλλαγή e-mail"
 
+#: templates/name_change.html:57
+msgid "enter your first and last name"
+msgstr "εισάγετε το ονοματεπώνυμό σας"
+
+#: templates/name_change.html:58
+msgid "Your name"
+msgstr "To ονοματεπώνυμό σας"
+
+#: templates/name_change.html:58
+msgid "was successfully changed"
+msgstr "έχει αλλάξει με επιτυχία σε"
+
+#: templates/name_change.html:58
+msgid "we don't know your name yet"
+msgstr "δε γνωρίζουμε το όνομά σας ακομα"
+
+#: templates/name_change.html:64 templates/pass_change.html:60
+msgid "Change"
+msgstr "Αλλαγή"
+
 #: templates/pass_change.html:57
 msgid ""
 "please enter your old password, for security's sake, and then enter your new "
@@ -590,10 +591,6 @@ msgstr ""
 "συνέχεια εισάγετε το νέο σας κωδικό δύο φορές ώστε να βεβαιωθούμε ότι έχει "
 "αποτυπωθεί ορθά"
 
-#: templates/pass_change.html:60
-msgid "Change"
-msgstr "Αλλαγή"
-
 #: templates/pass_change_done.html:2
 msgid "Password changed"
 msgstr "Ο κωδικός άλλαξε"
@@ -602,16 +599,20 @@ msgstr "Ο κωδικός άλλαξε"
 msgid "successfully"
 msgstr "επιτυχώς"
 
-#: templates/profile.html:30
+#: templates/profile.html:32
+msgid "Change Name"
+msgstr "Αλλαγή Ονοματεπώνυμου"
+
+#: templates/profile.html:34
 #: templates/registration/password_change_form.html:5
 msgid "Change Password"
 msgstr "Αλλαγή κωδικού"
 
-#: templates/profile.html:32
+#: templates/profile.html:36
 msgid "Change Email"
 msgstr "Αλλαγή e-mail"
 
-#: templates/profile.html:34
+#: templates/profile.html:38
 msgid "Manage SSH Keys"
 msgstr "Διαχείριση SSH κλειδιών"
 
@@ -662,9 +663,8 @@ msgid "All"
 msgstr "Όλων"
 
 #: templates/user_instances.html:24
-#, fuzzy
 msgid "IP address"
-msgstr "Διεύθυνση email"
+msgstr "Διεύθυνση IP"
 
 #: templates/user_keys.html:86
 msgid ""
@@ -701,20 +701,22 @@ msgid "VNC session on"
 msgstr "VNC σύνδεση στο"
 
 #: templates/registration/activate.html:3
-#: templates/registration/activate.html:11
 #: templates/registration/activation_complete.html:3
 #: templates/registration/activation_complete.html:7
 msgid "Activation Complete"
 msgstr "Η ενεργοποίηση ολοκληρώθηκε"
 
-#: templates/registration/activate.html:8
-msgid "Activation Failed"
-msgstr "Η ενεργοποίηση απέτυχε"
+#: templates/registration/activate.html:7
+msgid "Activation Status"
+msgstr "Ενεργοποίηση χρήστη"
 
-#: templates/registration/activate.html:12
-#: templates/registration/password_reset_complete.html:8
-msgid "here"
-msgstr "εδώ"
+#: templates/registration/activate.html:9
+msgid "succesfully activated"
+msgstr "ενεργοποιήθηκε επιτυχώς"
+
+#: templates/registration/activate.html:11
+msgid "The user has probably been already activated."
+msgstr "Ο χρήστης έχει πιθανότατα ενεργοποιηθεί ήδη."
 
 #: templates/registration/activation_complete.html:8
 msgid "The user will be notified about his/her account activation"
@@ -733,6 +735,10 @@ msgstr "Η αλλαγή του κωδικού ολοκληρώθηκε"
 #: templates/registration/password_reset_complete.html:8
 msgid "Your password was successfully reset. You may login"
 msgstr "Ο κωδικός σας έχει αλλάξει επιτυχώς. Μπορείτε να εισέρθετε"
+
+#: templates/registration/password_reset_complete.html:8
+msgid "here"
+msgstr "εδώ"
 
 #: templates/registration/password_reset_confirm.html:3
 #: templates/registration/password_reset_confirm.html:9
@@ -808,9 +814,72 @@ msgstr ".."
 msgid "Register new user"
 msgstr "Εγγραφή νέου χρήστη"
 
-#: templates/registration/registration_form.html:14
+#: templates/registration/registration_form.html:16
 msgid "Create"
 msgstr "Δημιουργία"
+
+#~ msgid "Activate users"
+#~ msgstr "Ενεργοποίηση χρηστών"
+
+#~ msgid "This value must contain only letters, numbers and underscores."
+#~ msgstr ""
+#~ "Αυτό το πεδίο μπορεί να περιέχει μόνο γράμματα, αριθμούς και underscores "
+
+#~ msgid "Email address"
+#~ msgstr "Διεύθυνση email"
+
+#~ msgid "Password"
+#~ msgstr "Κωδικός"
+
+#~ msgid "Password (again)"
+#~ msgstr "Κωδικός (ξανά)"
+
+#~ msgid "A user with that username already exists."
+#~ msgstr "Βρέθηκε ένας χρήστης με το ίδιο όνομα χρήστη"
+
+#~ msgid "The two password fields didn't match."
+#~ msgstr "Τα πεδία κωδικού δεν ταιριάζουν"
+
+#~ msgid "I have read and agree to the Terms of Service"
+#~ msgstr "Διάβασα και συμφωνώ με τους Όρους Χρήσης της υπηρεσίας"
+
+#~ msgid "You must agree to the terms to register"
+#~ msgstr "Πρέπει να συμφωνείτε με τους όρους για να εγγραφείτε"
+
+#~ msgid ""
+#~ "This email address is already in use. Please supply a different email "
+#~ "address."
+#~ msgstr ""
+#~ "Η συγκεκριμένη διεύθυνση ηλεκτρονικού ταχυδρομείου χρησιμοποιείται ήδη. "
+#~ "Παρακαλώ δώστε κάποια άλλη."
+
+#~ msgid ""
+#~ "Registration using free email addresses is prohibited. Please supply a "
+#~ "different email address."
+#~ msgstr ""
+#~ "Η εγγραφή μέσω δωρεάν διευθύνσεων ηλεκτρονικού ταχυδρομείου απαγορεύεται. "
+#~ "Παρακαλώ δώστε κάποια άλλη."
+
+#~ msgid "user"
+#~ msgstr "χρήστης"
+
+#~ msgid "activation key"
+#~ msgstr "κλειδί ενεργοποίησης"
+
+#~ msgid "registration profile"
+#~ msgstr "προφίλ εγγραφής"
+
+#~ msgid "registration profiles"
+#~ msgstr "προφίλ εγγραφής"
+
+#~ msgid "Not a member?"
+#~ msgstr "Δεν έχετε εγγραφεί;"
+
+#~ msgid "you have not entered an name yet"
+#~ msgstr "δεν έχετε καταχωρήσει κάποιο ονοματεπώνυμο"
+
+#~ msgid "A key with the same fingerprint exists: %s"
+#~ msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
 
 #~ msgid "Developed by"
 #~ msgstr "Αναπτύχθηκε από το"

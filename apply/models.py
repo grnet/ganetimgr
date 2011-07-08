@@ -115,6 +115,8 @@ class InstanceApplication(models.Model):
         tags.append("%s:user:%s" %
                     (GANETI_TAG_PREFIX, self.applicant.username))
 
+        tags.append("%s:application:%d" % (GANETI_TAG_PREFIX, self.id))
+
         if self.hosts_mail_server:
             tags.append("%s:service:mail" % GANETI_TAG_PREFIX)
 
@@ -169,6 +171,9 @@ class SshPublicKey(models.Model):
     comment = models.CharField(max_length=255, null=True, blank=True)
     owner = models.ForeignKey(User)
     fingerprint = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        ordering = ["fingerprint"]
 
     def __unicode__(self):
         return "%s: %s" % (self.fingerprint, self.owner.username)

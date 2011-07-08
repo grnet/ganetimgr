@@ -107,11 +107,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     #'django.contrib.admin',
     'south',
+    'registration',
     'ganetimgr.ganeti',
     'ganetimgr.apply',
-    'ganetimgr.registration',
-    'ganetimgr.recap',
     'ganetimgr.accounts',
+    'ganetimgr.stats',
     'django_extensions',
 )
 
@@ -177,6 +177,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 RECAPTCHA_PUBLIC_KEY = '<key>'
 RECAPTCHA_PRIVATE_KEY = '<key>'
+RECAPTCHA_USE_SSL = True
 
 ACCOUNT_ACTIVATION_DAYS = 10
 
