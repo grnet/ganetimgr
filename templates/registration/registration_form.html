@@ -3,6 +3,13 @@
 {% block title %}{% trans "Register" %}{% endblock %}
 {% block brcrmb_container %}{% endblock %}
 {% block content %}
+<!-- change recaptcha theme -->
+<script type="text/javascript">
+var RecaptchaOptions = {
+   theme : 'white'
+};
+</script>
+
 <div align="center" id="registration">
 
 <h3>{% trans "Register new user" %}</h3>
