@@ -23,7 +23,8 @@ from django.utils.translation import ugettext_lazy
 
 @login_required
 def apply(request):
-    user_networks = Network.objects.filter(groups__in=request.user.groups.all())
+    user_groups = request.user.groups.all()
+    user_networks = Network.objects.filter(groups__in=user_groups).distinct()
 
     if user_networks:
         InstanceApplicationForm.base_fields["network"] = \
