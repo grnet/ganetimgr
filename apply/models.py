@@ -2,6 +2,7 @@ import re
 import json
 import base64
 
+import django.dispatch
 from django.db import models
 from django.core.urlresolvers import reverse
 from ganetimgr.ganeti.models import Cluster, Network
@@ -156,6 +157,7 @@ class InstanceApplication(models.Model):
         self.status = STATUS_SUBMITTED
         self.job_id = job
         self.save()
+        application_submitted.send(sender=self)
 
         b = beanstalkc.Connection()
         if BEANSTALK_TUBE:
@@ -195,3 +197,6 @@ class SshPublicKey(models.Model):
 
     def key_line(self):
         return " ".join((self.key_type, self.key, self.comment)) + "\n"
+
+
+application_submitted = django.dispatch.Signal()
