@@ -22,6 +22,7 @@ from django.utils.encoding import smart_str
 from django.core.mail import mail_admins, mail_managers, send_mail
 from django.core import urlresolvers
 from django.template.loader import render_to_string
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def monitor_jobs():
@@ -37,7 +38,16 @@ def monitor_jobs():
     data = json.loads(job.body)
     assert data["type"] == "CREATE"
 
-    application = InstanceApplication.objects.get(id=data["application_id"])
+    try:
+        application = InstanceApplication.objects.get(id=data["application_id"])
+    except ObjectDoesNotExist:
+        logging.warn("Unable to find application #%d, burying" %
+                     data["application_id"])
+        mail_admins("Burying job #%d" % job.jid,
+                    "Please inspect job #%d (application %d) manually" %
+                    (job.jid, data["application_id"]))
+        job.bury()
+        return
 
     logging.info("Handling %s (job: %d)",
                  application.hostname, application.job_id)
