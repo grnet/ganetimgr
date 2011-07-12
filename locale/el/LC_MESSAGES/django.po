@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-07 20:43+0300\n"
+"POT-Creation-Date: 2011-07-12 14:54+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -86,8 +86,8 @@ msgid ""
 "Hostname should be fully qualified, e.g. <em>host.domain.com</em>, not "
 "<em>host</em>"
 msgstr ""
-"Το όνομα πρέπει να περιλαμβάνει domain, π.χ. <em>host.domain.com</em>, "
-"όχι σκέτο <em>host</em>"
+"Το όνομα πρέπει να περιλαμβάνει domain, π.χ. <em>host.domain.com</em>, όχι "
+"σκέτο <em>host</em>"
 
 #: apply/forms.py:68
 msgid "Additional comments you would like the service administrators to see"
@@ -160,28 +160,28 @@ msgstr "Όνομα"
 msgid "Surname"
 msgstr "Επώνυμο"
 
-#: apply/models.py:56
+#: apply/models.py:61
 msgid "organization"
 msgstr "φορέας"
 
-#: apply/models.py:57
+#: apply/models.py:62
 msgid "organizations"
 msgstr "φορείς"
 
-#: apply/models.py:69
+#: apply/models.py:74
 msgid "operating system"
 msgstr "λειτουργικό σύστημα"
 
-#: apply/models.py:79
+#: apply/models.py:84
 msgid "network"
 msgstr "δίκτυο"
 
-#: apply/views.py:31 templates/application_list.html:9
+#: apply/views.py:32 templates/application_list.html:9
 #: templates/application_list.html.py:18 templates/review.html:72
 msgid "Network"
 msgstr "Δίκτυο"
 
-#: apply/views.py:32
+#: apply/views.py:33
 msgid ""
 "Optionally, select a network to connect the virtual machine to if you have a "
 "special requirement"
@@ -189,64 +189,64 @@ msgstr ""
 "Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής.\n"
 "Διαφορετικά, θα χρησιμοποιηθεί το κανονικό δίκτυο της υπηρεσίας."
 
-#: apply/views.py:66
+#: apply/views.py:67
 #, python-format
 msgid "Your request has been filed with id #%d and will be processed shortly."
 msgstr ""
 "Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
 "ξεκινήσει σύντομα."
 
-#: apply/views.py:155
+#: apply/views.py:156
 #, python-format
 msgid "The following keys were skipped because they already exist:<br />%s"
 msgstr "Τα ακόλουθα κλειδιά υπήρχαν ήδη και δεν αντικαταστάθηκαν:<br />%s"
 
-#: ganeti/views.py:128
+#: ganeti/views.py:131
 msgid "Please wait... shutting-down"
 msgstr "Παρακαλώ περιμένετε... απενεργοποίηση"
 
-#: ganeti/views.py:138
+#: ganeti/views.py:141
 msgid "Please wait... starting-up"
 msgstr "Παρακαλώ περιμένετε... εκκίνηση"
 
-#: ganeti/views.py:147
+#: ganeti/views.py:150
 msgid "Please wait... rebooting"
 msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
 
-#: ganeti/views.py:152
+#: ganeti/views.py:155
 msgid "Network adapter model"
 msgstr "Τύπος κάρτας δικτύου"
 
-#: ganeti/views.py:158
+#: ganeti/views.py:161
 msgid "Hard disk type"
 msgstr "Τύπος σκληρού δίσκου"
 
-#: ganeti/views.py:163
+#: ganeti/views.py:166
 msgid "Boot device"
 msgstr "Συσκευή εκκίνησης"
 
-#: ganeti/views.py:167
+#: ganeti/views.py:170
 msgid "CD-ROM Drive"
 msgstr "Συσκευή CD-ROM"
 
-#: ganeti/views.py:174
+#: ganeti/views.py:177
 msgid "ISO Image URL (http)"
 msgstr ""
 
-#: ganeti/views.py:176
+#: ganeti/views.py:179
 msgid "Hardware clock uses local time instead of UTC"
 msgstr ""
 
-#: ganeti/views.py:184
+#: ganeti/views.py:187
 msgid "Only HTTP URLs are allowed"
 msgstr "Μόνο URLs συμβατά με τη μορφή HTTP επιτρέπονται"
 
-#: ganeti/views.py:195
+#: ganeti/views.py:198
 #, python-format
 msgid "%(url)s is not a valid URL"
 msgstr "%(url)s δεν είναι αποδεκτή μορφή URL"
 
-#: ganeti/views.py:198
+#: ganeti/views.py:201
 msgid "Invalid URL"
 msgstr "Λανθασμένο URL"
 
@@ -472,27 +472,32 @@ msgstr "Διαμόρφωση"
 msgid "Actions"
 msgstr "Ενέργειες"
 
-#: templates/instance_actions.html:93
+#: templates/instance_actions.html:94
 msgid "Shutdown"
 msgstr "Απενεργοποίηση"
 
-#: templates/instance_actions.html:94
+#: templates/instance_actions.html:95
 msgid "Reboot"
 msgstr "Επανεκκίνηση"
 
-#: templates/instance_actions.html:95 templates/vnc.html:3
+#: templates/instance_actions.html:96 templates/vnc.html:3
 msgid "Console"
 msgstr "Κονσόλα"
 
-#: templates/instance_actions.html:99
+#: templates/instance_actions.html:100
 msgid "Instance is shutting down, no actions allowed"
 msgstr ""
 "Η εικονική μηχανή απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη "
 "φάση"
 
-#: templates/instance_actions.html:104
+#: templates/instance_actions.html:105
 msgid "Start"
 msgstr "Εκκίνηση"
+
+#: templates/instance_actions.html:110
+msgid "Instance is being created, no actions allowed."
+msgstr ""
+"Η εικονική μηχανή δημιουργείται. Δεν επιτρέπονται ενέργειες σε αυτή τη φάση."
 
 #: templates/instance_owners.html:3 templates/instance_owners.html.py:4
 msgid "Instance owners"
@@ -810,11 +815,11 @@ msgstr "είσοδο"
 msgid "page"
 msgstr ".."
 
-#: templates/registration/registration_form.html:8
+#: templates/registration/registration_form.html:15
 msgid "Register new user"
 msgstr "Εγγραφή νέου χρήστη"
 
-#: templates/registration/registration_form.html:16
+#: templates/registration/registration_form.html:23
 msgid "Create"
 msgstr "Δημιουργία"
 

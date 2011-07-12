@@ -87,6 +87,7 @@
 </script>
 {% load i18n %}
 <table>
+{% if ready %}
 	{% if instance.oper_state %}
 		{% if instance.admin_state %}
 		<tr id="actions_container_inner">
@@ -104,6 +105,11 @@
 		<td colspan=3><a id="start" href="#">{% trans "Start" %}</a></td>
 		</tr>
 	{% endif %}
+{% else %}
+	<tr id="actions_container_inner">
+		<td id="show_no_actions"><em>{% trans "Instance is being created, no actions allowed." %}</em></td>
+	</tr>
+{% endif %}
 
 </table>
 

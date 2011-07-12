@@ -2,8 +2,10 @@ import urllib2
 import re
 import socket
 from django import forms
+from django.conf import settings
 from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
@@ -15,6 +17,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 
 from ganetimgr.ganeti.models import *
+from ganetimgr.apply.models import InstanceApplication, STATUS_SUCCESS
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
@@ -249,8 +252,27 @@ def instance(request, cluster_slug, instance):
 def poll(request, cluster_slug, instance):
         cluster = get_object_or_404(Cluster, slug=cluster_slug)
         instance = cluster.get_instance(instance)
+        app_ids = [t.replace("%s:application:" % settings.GANETI_TAG_PREFIX, "")
+                   for t in instance.tags if
+                   t.startswith("%s:application:" %
+                                settings.GANETI_TAG_PREFIX)]
+        ready = True
+        if app_ids:
+            try:
+                app_id = int(app_ids[0])
+            except ValueError:
+                app_id = None
+
+            if app_id:
+                try:
+                    application = InstanceApplication.objects.get(pk=app_id)
+                    ready = (application.status == STATUS_SUCCESS)
+                except ObjectDoesNotExist:
+                    pass
+
         return render_to_response("instance_actions.html",
                                   {'cluster':cluster,
                                    'instance': instance,
+                                   'ready': ready,
                                    },
                                   context_instance=RequestContext(request))
