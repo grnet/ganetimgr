@@ -9,6 +9,14 @@ from util import vapclient
 from util.ganeti_client import GanetiRapiClient
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
 
+try:
+    from ganetimgr.settings import BEANSTALK_TUBE
+except ImportError:
+    BEANSTALK_TUBE = None
+
+from util import beanstalkc
+import simplejson as json
+
 
 class InstanceManager(object):
     def all(self):
@@ -113,13 +121,24 @@ class Instance(object):
             self.mtime = datetime.fromtimestamp(self.mtime)
 
     def set_params(self, **kwargs):
-        self.cluster._client.ModifyInstance(self.name, **kwargs)
+        job_id = self.cluster._client.ModifyInstance(self.name, **kwargs)
+        self.lock(reason="modifying", job_id=job_id)
 
     def __repr__(self):
         return "<Instance: '%s'>" % self.name
 
     def __unicode__(self):
         return self.name
+
+    def get_lock_key(self):
+        return self.cluster._instance_lock_key(self.name)
+
+    def lock(self, reason="locked", timeout=30, job_id=None):
+        self.cluster._lock_instance(self.name, reason, timeout, job_id)
+
+    def is_locked(self):
+        return cache.get(self.get_lock_key())
+
 
 class Cluster(models.Model):
     hostname = models.CharField(max_length=128)
@@ -147,6 +166,23 @@ class Cluster(models.Model):
 
     def _instance_cache_key(self, instance):
         return "cluster:%s:instance:%s" % (self.slug, instance)
+
+    def _instance_lock_key(self, instance):
+        return "cluster:%s:instance:%s:lock" % (self.slug, instance)
+
+    def _lock_instance(self, instance, reason="locked",
+                       timeout=30, job_id=None):
+        lock_key = self._instance_lock_key(instance)
+        cache.set(lock_key, reason, timeout)
+        if job_id is not None:
+            b = beanstalkc.Connection()
+            if BEANSTALK_TUBE:
+                b.use(BEANSTALK_TUBE)
+            b.put(json.dumps({"type": "JOB_LOCK",
+                              "cluster": self.slug,
+                              "job_id": job_id,
+                              "lock_key": lock_key,
+                              "flush_keys": [self._instance_cache_key(instance)]}))
 
     @classmethod
     def get_all_instances(cls):
@@ -223,17 +259,23 @@ class Cluster(models.Model):
     def shutdown_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
-        return self._client.ShutdownInstance(instance)
+        job_id = self._client.ShutdownInstance(instance)
+        self._lock_instance(instance, reason="shutting down", job_id=job_id)
+        return job_id
 
     def startup_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
-        return self._client.StartupInstance(instance)
+        job_id = self._client.StartupInstance(instance)
+        self._lock_instance(instance, reason="starting up", job_id=job_id)
+        return job_id
 
     def reboot_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
-        return self._client.RebootInstance(instance)
+        job_id = self._client.RebootInstance(instance)
+        self._lock_instance(instance, reason="rebooting", job_id=job_id)
+        return job_id
 
     def create_instance(self, name=None, disk_template=None, disks=None,
                         nics=None, os=None, memory=None, vcpus=None, tags=None,
@@ -256,13 +298,16 @@ class Cluster(models.Model):
         if disk_template is None:
             disk_template = self.default_disk_template
 
-        return self._client.CreateInstance(mode="create", name=name, os=os,
-                                           disk_template=disk_template,
-                                           disks=disks, nics=nics,
-                                           start=False, ip_check=False,
-                                           name_check=False,
-                                           beparams=beparams,
-                                           tags=tags, osparams=osparams)
+        job_id = self._client.CreateInstance(mode="create", name=name, os=os,
+                                             disk_template=disk_template,
+                                             disks=disks, nics=nics,
+                                             start=False, ip_check=False,
+                                             name_check=False,
+                                             beparams=beparams,
+                                             tags=tags, osparams=osparams)
+
+        self._lock_instance(name, reason="creating", job_id=job_id)
+        return job_id
 
     def get_job_status(self, job_id):
         return self._client.GetJobStatus(job_id)
