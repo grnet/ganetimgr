@@ -225,7 +225,6 @@ def instance(request, cluster_slug, instance):
                     continue
                 data[key] = val
             instance.set_params(hvparams=data)
-            sleep(2)
             return HttpResponseRedirect(request.path)
 
     else:
