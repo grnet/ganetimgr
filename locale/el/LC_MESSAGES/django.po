@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-12 14:54+0300\n"
+"POT-Creation-Date: 2011-07-13 13:28+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -200,6 +200,26 @@ msgstr ""
 #, python-format
 msgid "The following keys were skipped because they already exist:<br />%s"
 msgstr "Τα ακόλουθα κλειδιά υπήρχαν ήδη και δεν αντικαταστάθηκαν:<br />%s"
+
+#: ganeti/models.py:126
+msgid "modifying"
+msgstr "γίνεται τροποποίηση των παραμέτρων της μηχανής"
+
+#: ganeti/models.py:264
+msgid "shutting down"
+msgstr "η μηχανή απενεργοποιείται"
+
+#: ganeti/models.py:271
+msgid "starting up"
+msgstr "η μηχανή ξεκινά"
+
+#: ganeti/models.py:278
+msgid "rebooting"
+msgstr "η μηχανή επανεκκινεί"
+
+#: ganeti/models.py:310
+msgid "creating"
+msgstr "η μηχανή δημιουργείται"
 
 #: ganeti/views.py:131
 msgid "Please wait... shutting-down"
@@ -472,32 +492,21 @@ msgstr "Διαμόρφωση"
 msgid "Actions"
 msgstr "Ενέργειες"
 
-#: templates/instance_actions.html:94
+#: templates/instance_actions.html:93
 msgid "Shutdown"
 msgstr "Απενεργοποίηση"
 
-#: templates/instance_actions.html:95
+#: templates/instance_actions.html:94
 msgid "Reboot"
 msgstr "Επανεκκίνηση"
 
-#: templates/instance_actions.html:96 templates/vnc.html:3
+#: templates/instance_actions.html:95 templates/vnc.html:3
 msgid "Console"
 msgstr "Κονσόλα"
 
-#: templates/instance_actions.html:100
-msgid "Instance is shutting down, no actions allowed"
-msgstr ""
-"Η εικονική μηχανή απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη "
-"φάση"
-
-#: templates/instance_actions.html:105
+#: templates/instance_actions.html:99
 msgid "Start"
 msgstr "Εκκίνηση"
-
-#: templates/instance_actions.html:110
-msgid "Instance is being created, no actions allowed."
-msgstr ""
-"Η εικονική μηχανή δημιουργείται. Δεν επιτρέπονται ενέργειες σε αυτή τη φάση."
 
 #: templates/instance_owners.html:3 templates/instance_owners.html.py:4
 msgid "Instance owners"
@@ -822,6 +831,16 @@ msgstr "Εγγραφή νέου χρήστη"
 #: templates/registration/registration_form.html:23
 msgid "Create"
 msgstr "Δημιουργία"
+
+#~ msgid "Instance is shutting down, no actions allowed"
+#~ msgstr ""
+#~ "Η εικονική μηχανή απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη "
+#~ "φάση"
+
+#~ msgid "Instance is being created, no actions allowed."
+#~ msgstr ""
+#~ "Η εικονική μηχανή δημιουργείται. Δεν επιτρέπονται ενέργειες σε αυτή τη "
+#~ "φάση."
 
 #~ msgid "Activate users"
 #~ msgstr "Ενεργοποίηση χρηστών"

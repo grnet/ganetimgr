@@ -101,7 +101,7 @@
 	{% endif %}
 {% else %}
 	<tr id="actions_container_inner">
-		<td id="show_no_actions"><em>Locked, reason: {{instance.is_locked}}</em></td>
+		<td id="show_no_actions"><em>{{ instance.is_locked|capfirst }}</em></td>
 	</tr>
 {% endif %}
 

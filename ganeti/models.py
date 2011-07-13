@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
+from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datetime import datetime
 from socket import gethostbyname
@@ -122,7 +123,7 @@ class Instance(object):
 
     def set_params(self, **kwargs):
         job_id = self.cluster._client.ModifyInstance(self.name, **kwargs)
-        self.lock(reason="modifying", job_id=job_id)
+        self.lock(reason=_("modifying"), job_id=job_id)
 
     def __repr__(self):
         return "<Instance: '%s'>" % self.name
@@ -260,21 +261,21 @@ class Cluster(models.Model):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         job_id = self._client.ShutdownInstance(instance)
-        self._lock_instance(instance, reason="shutting down", job_id=job_id)
+        self._lock_instance(instance, reason=_("shutting down"), job_id=job_id)
         return job_id
 
     def startup_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         job_id = self._client.StartupInstance(instance)
-        self._lock_instance(instance, reason="starting up", job_id=job_id)
+        self._lock_instance(instance, reason=_("starting up"), job_id=job_id)
         return job_id
 
     def reboot_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         job_id = self._client.RebootInstance(instance)
-        self._lock_instance(instance, reason="rebooting", job_id=job_id)
+        self._lock_instance(instance, reason=_("rebooting"), job_id=job_id)
         return job_id
 
     def create_instance(self, name=None, disk_template=None, disks=None,
@@ -306,7 +307,7 @@ class Cluster(models.Model):
                                              beparams=beparams,
                                              tags=tags, osparams=osparams)
 
-        self._lock_instance(name, reason="creating", job_id=job_id)
+        self._lock_instance(name, reason=_("creating"), job_id=job_id)
         return job_id
 
     def get_job_status(self, job_id):
