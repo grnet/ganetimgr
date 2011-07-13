@@ -45,7 +45,7 @@
         success: function(data) {
 			$("#actions_container_inner").empty();
 			$("#actions_container_inner").html("<td>"+data.action+"<td>");
-			setTimeout(load_data, 2000);
+			setTimeout(load_data, 0);
 
         }
     });	 
@@ -61,7 +61,7 @@
         success: function(data) {
 			$("#actions_container_inner").empty();
 			$("#actions_container_inner").html("<td>"+data.action+"<td>");
-			setTimeout(load_data, 2000);
+			setTimeout(load_data, 0);
 			
         }
     });	 
@@ -77,7 +77,7 @@
         success: function(data) {
 			$("#actions_container_inner").empty();
 			$("#actions_container_inner").html("<td>"+data.action+"<td>");
-			setTimeout(load_data, 2000);
+			setTimeout(load_data, 0);
 
         }
     });	 
@@ -87,19 +87,13 @@
 </script>
 {% load i18n %}
 <table>
-{% if ready %}
+{% if not instance.is_locked %}
 	{% if instance.oper_state %}
-		{% if instance.admin_state %}
 		<tr id="actions_container_inner">
 			<td><a id="shutdown" href="#">{% trans "Shutdown" %}</a></td>
 			<td><a id="reboot" href="#">{% trans "Reboot" %}</a></td>
 			<td><a id="console" href="{% url instance-vnc cluster.slug instance.name %}">{% trans "Console" %}</a></td>
 		</tr>
-		{% else %}
-		<tr id="actions_container_inner"> 
-			<td id="show_no_actions"><em>{% trans "Instance is shutting down, no actions allowed" %}</em></td>
-		</tr>
-		{% endif %}
 	{% else %}
 		<tr id="actions_container_inner">
 		<td colspan=3><a id="start" href="#">{% trans "Start" %}</a></td>
@@ -107,7 +101,7 @@
 	{% endif %}
 {% else %}
 	<tr id="actions_container_inner">
-		<td id="show_no_actions"><em>{% trans "Instance is being created, no actions allowed." %}</em></td>
+		<td id="show_no_actions"><em>Locked, reason: {{instance.is_locked}}</em></td>
 	</tr>
 {% endif %}
 

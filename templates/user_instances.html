@@ -33,7 +33,7 @@
 {{ instance.admin_state|yesno:"Running,Stopped" }}
 {% else %}
 {{ instance.oper_state|yesno:"Running,Stopped" }}, should be {{ instance.admin_state|yesno:"running,stopped" }}
-{% endifequal %}
+{% endifequal %}{% if instance.is_locked %}(<em>{{ instance.is_locked }}</em>){% endif %}
 </td></tr>
 
 {% endfor %}
