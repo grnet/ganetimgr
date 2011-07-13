@@ -237,6 +237,8 @@ class GanetiRapiClient(object): # pylint: disable-msg=R0904
 
     try:
       resp = urllib2.urlopen(req)
+    except urllib2.HTTPError, err:
+      raise GanetiApiError(str(err), code=err.code)
     except IOError, err:
       raise GanetiApiError(str(err))
 
