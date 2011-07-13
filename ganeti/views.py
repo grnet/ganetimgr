@@ -222,7 +222,6 @@ def instance(request, cluster_slug, instance):
                     continue
                 data[key] = val
             instance.set_params(hvparams=data)
-            return HttpResponseRedirect(request.path)
 
     else:
         if instance.hvparams['cdrom_image_path']:
