@@ -93,6 +93,7 @@ def handle_job_lock(job):
             return
         # Touch the key
         cache.set(lock_key, reason, 30)
+        job.touch()
         sleep(pi.next())
 
 
