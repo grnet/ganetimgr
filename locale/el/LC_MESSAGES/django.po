@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-13 13:28+0300\n"
+"POT-Creation-Date: 2011-07-13 14:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -221,52 +221,52 @@ msgstr "η μηχανή επανεκκινεί"
 msgid "creating"
 msgstr "η μηχανή δημιουργείται"
 
-#: ganeti/views.py:131
+#: ganeti/views.py:128
 msgid "Please wait... shutting-down"
 msgstr "Παρακαλώ περιμένετε... απενεργοποίηση"
 
-#: ganeti/views.py:141
+#: ganeti/views.py:138
 msgid "Please wait... starting-up"
 msgstr "Παρακαλώ περιμένετε... εκκίνηση"
 
-#: ganeti/views.py:150
+#: ganeti/views.py:147
 msgid "Please wait... rebooting"
 msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
 
-#: ganeti/views.py:155
+#: ganeti/views.py:152
 msgid "Network adapter model"
 msgstr "Τύπος κάρτας δικτύου"
 
-#: ganeti/views.py:161
+#: ganeti/views.py:158
 msgid "Hard disk type"
 msgstr "Τύπος σκληρού δίσκου"
 
-#: ganeti/views.py:166
+#: ganeti/views.py:163
 msgid "Boot device"
 msgstr "Συσκευή εκκίνησης"
 
-#: ganeti/views.py:170
+#: ganeti/views.py:167
 msgid "CD-ROM Drive"
 msgstr "Συσκευή CD-ROM"
 
-#: ganeti/views.py:177
+#: ganeti/views.py:174
 msgid "ISO Image URL (http)"
 msgstr ""
 
-#: ganeti/views.py:179
+#: ganeti/views.py:176
 msgid "Hardware clock uses local time instead of UTC"
 msgstr ""
 
-#: ganeti/views.py:187
+#: ganeti/views.py:184
 msgid "Only HTTP URLs are allowed"
 msgstr "Μόνο URLs συμβατά με τη μορφή HTTP επιτρέπονται"
 
-#: ganeti/views.py:198
+#: ganeti/views.py:195
 #, python-format
 msgid "%(url)s is not a valid URL"
 msgstr "%(url)s δεν είναι αποδεκτή μορφή URL"
 
-#: ganeti/views.py:201
+#: ganeti/views.py:198
 msgid "Invalid URL"
 msgstr "Λανθασμένο URL"
 
