@@ -40,7 +40,7 @@ POLL_INTERVALS = [0.5, 1, 1, 2, 2, 2, 5]
 DEFAULT_WORKERS = 10
 DEFAULT_PID_FILE = "/var/run/ganetimgr-watcher.pid"
 DEFAULT_LOG_FILE = "/var/log/ganetimgr/watcher.log"
-RESERVE_ERROR_THRESHOLD = 10
+RESERVE_ERROR_THRESHOLD = 30
 
 def next_poll_interval():
     for t in POLL_INTERVALS:
