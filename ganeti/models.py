@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datetime import datetime
 from socket import gethostbyname
+from time import sleep
 
 from util import vapclient
 from util.ganeti_client import GanetiRapiClient, GanetiApiError
@@ -177,7 +178,16 @@ class Cluster(models.Model):
         lock_key = self._instance_lock_key(instance)
         cache.set(lock_key, reason, timeout)
         if job_id is not None:
-            b = beanstalkc.Connection()
+            b = None
+            for i in range(5):
+                try:
+                    b = beanstalkc.Connection()
+                    break
+                except Exception, err:
+                    sleep(1)
+            if b is None:
+                return
+
             if BEANSTALK_TUBE:
                 b.use(BEANSTALK_TUBE)
             b.put(json.dumps({"type": "JOB_LOCK",

@@ -53,7 +53,13 @@ def next_poll_interval():
 def monitor_jobs():
     # We have to open one socket per Greenlet, as currently socket sharing is
     # not allowed
-    b = beanstalkc.Connection()
+    try:
+        b = beanstalkc.Connection()
+    except Exception, err:
+        logger.error("Error connecting to beanstalkd: %s" % str(err))
+        sleep(5)
+        return
+
     try:
         b.watch(settings.BEANSTALK_TUBE)
         b.ignore("default")
