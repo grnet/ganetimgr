@@ -56,7 +56,7 @@ def check_instance_auth(view_fn):
         res = cache.get(cache_key)
         if res is None:
             cluster = get_object_or_404(Cluster, slug=cluster_slug)
-            instance = cluster.get_instance(instance_name)
+            instance = cluster.get_instance_or_404(instance_name)
             res = False
 
             if (request.user.is_superuser or
@@ -203,7 +203,7 @@ class InstanceConfigForm(forms.Form):
 @check_instance_auth
 def instance(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
-    instance = cluster.get_instance(instance)
+    instance = cluster.get_instance_or_404(instance)
     if request.method == 'POST':
         configform = InstanceConfigForm(request.POST)
         if configform.is_valid():
@@ -246,7 +246,7 @@ def instance(request, cluster_slug, instance):
 @check_instance_auth
 def poll(request, cluster_slug, instance):
         cluster = get_object_or_404(Cluster, slug=cluster_slug)
-        instance = cluster.get_instance(instance)
+        instance = cluster.get_instance_or_404(instance)
         return render_to_response("instance_actions.html",
                                   {'cluster':cluster,
                                    'instance': instance,

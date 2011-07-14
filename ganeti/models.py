@@ -1,4 +1,5 @@
 from django.db import models
+from django.http import Http404
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_lazy as _
@@ -7,7 +8,7 @@ from datetime import datetime
 from socket import gethostbyname
 
 from util import vapclient
-from util.ganeti_client import GanetiRapiClient
+from util.ganeti_client import GanetiRapiClient, GanetiApiError
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
 
 try:
@@ -195,6 +196,15 @@ class Cluster(models.Model):
     def get_instance(self, name):
         info = self.get_instance_info(name)
         return Instance(self, info["name"], info)
+
+    def get_instance_or_404(self, name):
+        try:
+            return self.get_instance(name)
+        except GanetiApiError, err:
+            if err.code == 404:
+                raise Http404()
+            else:
+                raise
 
     def get_instances(self):
         instances = cache.get("cluster:%s:instances" % self.slug)
