@@ -25,7 +25,7 @@ from django.core.management import setup_environ
 setup_environ(settings)
 
 from ganeti.models import Cluster
-from apply.models import InstanceApplication
+from apply.models import InstanceApplication, STATUS_FAILED, STATUS_SUCCESS
 from django.core.cache import cache
 from django.contrib.sites.models import Site
 from django.utils.encoding import smart_str
