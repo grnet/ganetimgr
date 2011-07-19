@@ -196,7 +196,10 @@ class SshPublicKey(models.Model):
         return ":".join(re.findall(r"..", hexlify(pkey.get_fingerprint())))
 
     def key_line(self):
-        return " ".join((self.key_type, self.key, self.comment)) + "\n"
+        line = " ".join((self.key_type, self.key))
+        if self.comment is not None:
+            line = " ".join((line, self.comment))
+        return line + "\n"
 
 
 application_submitted = django.dispatch.Signal()
