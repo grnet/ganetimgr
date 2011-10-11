@@ -82,13 +82,20 @@ class Instance(object):
     def __init__(self, cluster, name, info=None):
         self.cluster = cluster
         self.name = name
+        self.organization = None
+        self.application = None
+        self.services = []
         self.users = []
         self.groups = []
         self._update(info)
+        self.admin_view_only = False
 
     def _update(self, info=None):
         user_cache = {}
         group_cache = {}
+        org_cache = {}
+        app_cache = {}
+        serv_cache = {}
         if not info:
             info = self.cluster.get_instance_info(self.name)
         for attr in info:
@@ -96,6 +103,9 @@ class Instance(object):
         for tag in self.tags:
             group_pfx = "%s:group:" % GANETI_TAG_PREFIX
             user_pfx = "%s:user:" % GANETI_TAG_PREFIX
+            org_pfx = "%s:org:" % GANETI_TAG_PREFIX
+            app_pfx = "%s:application:" % GANETI_TAG_PREFIX
+            serv_pfx = "%s:service:" % GANETI_TAG_PREFIX
             if tag.startswith(group_pfx):
                 group = tag.replace(group_pfx,'')
                 if group not in group_cache:
@@ -117,7 +127,32 @@ class Instance(object):
                     user_cache[user] = u
                 if user_cache[user] is not None:
                     self.users.append(user_cache[user])
-        
+            elif tag.startswith(org_pfx):
+                org = tag.replace(org_pfx,'')
+                if org not in org_cache:
+                    try:
+                        o = Organization.objects.get(tag__iexact=org)
+                    except:
+                        o = None
+                    org_cache[org] = o
+                if org_cache[org] is not None:
+                    self.organization = org_cache[org]
+            elif tag.startswith(app_pfx):
+                app = tag.replace(app_pfx,'')
+                if app not in app_cache:
+                    try:
+                        a = InstanceApplication.objects.get(pk=app)
+                    except:
+                        a = None
+                    app_cache[app] = a
+                if app_cache[app] is not None:
+                    self.application = app_cache[app]
+            elif tag.startswith(serv_pfx):
+                serv = tag.replace(serv_pfx,'')
+                if serv not in serv_cache:
+                    serv_cache[serv] = serv
+                if serv_cache[serv] is not None:
+                    self.services.append(serv_cache[serv])
         if getattr(self, 'ctime', None):
             self.ctime = datetime.fromtimestamp(self.ctime)
         if getattr(self, 'mtime', None):
@@ -142,6 +177,8 @@ class Instance(object):
     def is_locked(self):
         return cache.get(self.get_lock_key())
 
+    def set_admin_view_only_True(self):
+        self.admin_view_only = True
 
 class Cluster(models.Model):
     hostname = models.CharField(max_length=128)
@@ -157,6 +194,11 @@ class Cluster(models.Model):
                                                 " on this cluster using the"
                                                 " admin interface")
     default_disk_template = models.CharField(max_length=255, default="plain")
+
+    class Meta:
+        permissions = (
+            ("view_instances", "Can view all instances (but interfere only with owned)"),
+        )
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
@@ -228,6 +270,12 @@ class Cluster(models.Model):
         instances = self.get_instances()
         if user.is_superuser:
             return instances
+        elif user.has_perm('ganeti.view_instances'):
+            user_inst = [i for i in instances if (user in i.users or
+                    user.groups.filter(id__in=[g.id for g in i.groups]))]
+            other_inst = [i for i in instances if (i not in user_inst)]
+            map(lambda i: i.set_admin_view_only_True(), other_inst)
+            return user_inst + other_inst
         else:
             return [i for i in instances if (user in i.users or
                     user.groups.filter(id__in=[g.id for g in i.groups]))]
@@ -365,3 +413,5 @@ class Network(models.Model):
             except Network.DoesNotExist:
                 pass
         super(Network, self).save()
+
+from ganetimgr.apply.models import Organization, InstanceApplication
