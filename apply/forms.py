@@ -12,7 +12,7 @@ from django.template.defaultfilters import filesizeformat
 from ganetimgr.apply.models import *
 
 
-_VALID_NAME_RE = re.compile("^[a-z0-9._-]{1,255}$") # taken from ganeti
+_VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$") # taken from ganeti
 
 VALID_MEMORY_VALUES = ['512', '768', '1024', '1500', '2048', '3072', '4096']
 
