@@ -2,6 +2,7 @@ from django.db import models
 from django.http import Http404
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
+from ganetimgr.apply.models import Organization, InstanceApplication
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datetime import datetime
@@ -414,4 +415,3 @@ class Network(models.Model):
                 pass
         super(Network, self).save()
 
-from ganetimgr.apply.models import Organization, InstanceApplication
