@@ -198,7 +198,7 @@ class Cluster(models.Model):
 
     class Meta:
         permissions = (
-            ("view_instances", "Can view all instances (but interfere only with owned)"),
+            ("view_instances", "Can view all instances"),
         )
 
     def __init__(self, *args, **kwargs):
