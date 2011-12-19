@@ -41,6 +41,14 @@ def cluster_detail(request, slug):
 #        return render_to_response('m_cluster.html', {'object': object}, context_instance=RequestContext(request))
     return render_to_response('cluster.html', {'object': object}, context_instance=RequestContext(request))
 
+@login_required
+def user_info(request, type, usergroup):
+     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+         if type == 'user' :
+             usergroup_info = User.objects.get(username=usergroup)
+         if type == 'group' :
+             usergroup_info = Group.objects.get(name=usergroup)
+         return render_to_response('user_info.html', {'usergroup': usergroup_info, 'type': type}, context_instance=RequestContext(request))
 
 def check_instance_auth(view_fn):
     def check_auth(request, *args, **kwargs):
@@ -241,6 +249,22 @@ def instance(request, cluster_slug, instance):
                                'instance': instance,
                                'configform': configform},
                               context_instance=RequestContext(request))
+
+@login_required
+def instance_popup(request):
+    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+        if request.method == 'GET':
+            if 'cluster' in request.GET:
+                cluster_slug = request.GET.get('cluster')
+            if 'instance' in request.GET:
+                instance = request.GET.get('instance')
+        cluster = get_object_or_404(Cluster, slug=cluster_slug)
+        instance = cluster.get_instance_or_404(instance)
+
+        return render_to_response("instance_popup.html",
+                                  {'cluster': cluster,
+                                   'instance': instance},
+                                  context_instance=RequestContext(request))
 
 @login_required
 @check_instance_auth

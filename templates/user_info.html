@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript">
+	$(document).ready( function(){
+			$('#usergroup_instance_table').dataTable( {
+			"bJQueryUI": true,
+			"oLanguage": {
+				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> instances'
+			},
+			"iDisplayLength": 25,
+	} );
+		});
+</script>
+{% endblock %}
+{% block title %}
+	{% ifequal type 'user' %}
+		{% trans "User Information" %}
+	{% endifequal %}
+	{% ifequal type 'group' %}
+		{% trans "Group Information" %}
+	{% endifequal %}
+{% endblock %}
+
+{% block content %}
+{% ifequal type 'user' %}
+<h3>{% trans "User Information" %}: {{usergroup}}</h3>
+{% endifequal %}
+
+{% ifequal type 'group' %}
+<h3>{% trans "Group Information" %}: {{usergroup}}</h3>
+{% endifequal %}
+<table class="display" width="100%" id="usergroup_instance_table">
+<thead>
+<tr>
+	{% ifequal type 'user' %}
+	<th style="text-align: center;">{% trans "Username" %}</th>
+	<th>{% trans "First Name" %}</th>
+	<th>{% trans "Last Name" %}</th>
+	<th>{% trans "E-mail" %}</th>
+	<th style="text-align: center;">{% trans "Groups" %}</th>
+	{% endifequal %}
+	{% ifequal type 'group' %}
+	<th style="text-align: center;">{% trans "Group Name" %}</th>
+	<th>{% trans "Username" %}</th>
+	<th>{% trans "First Name" %}</th>
+	<th>{% trans "Last Name" %}</th>
+	<th>{% trans "E-mail" %}</th>
+	{% endifequal %}
+</tr>
+
+</thead>
+<tbody>
+{% ifequal type 'user' %}
+<tr class="GradeA">
+	<td style="text-align: center;">{{usergroup.username}}</td>
+<td>{{usergroup.first_name}}</td>
+<td>{{usergroup.last_name}}</td>
+<td><a href="mailto:{{usergroup.email}}">{{usergroup.email}}</a></td>
+<td>{% for group in usergroup.groups.all %}<a href="{% url user-info 'group' group %}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+{% endifequal %}
+{% ifequal type 'group' %}
+{% for user in usergroup.user_set.all %}
+<tr class="GradeA">
+<td style="text-align: center;">{{usergroup.name}}</td>
+<td><a href="{% url user-info 'user' user.username %}">{{user.username}}</a></td>
+<td>{{user.first_name}}</td>
+<td>{{user.last_name}}</td>
+<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
+</tr>
+{% endfor %}
+{% endifequal %}
+
+</tbody>
+</table>
+{% endblock %}

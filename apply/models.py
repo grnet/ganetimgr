@@ -5,7 +5,6 @@ import base64
 import django.dispatch
 from django.db import models
 from django.core.urlresolvers import reverse
-from ganetimgr.ganeti.models import Cluster, Network
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
@@ -81,7 +80,7 @@ class InstanceApplication(models.Model):
     admin_contact_phone = models.CharField(max_length=64, null=True, blank=True)
     admin_contact_email = models.EmailField(null=True, blank=True)
     organization = models.ForeignKey(Organization, null=True, blank=True)
-    network = models.ForeignKey(Network, related_name=_("network"),
+    network = models.ForeignKey('ganeti.Network', related_name=_("network"),
                                 null=True, blank=True)
     applicant = models.ForeignKey(User)
     job_id = models.IntegerField(null=True, blank=True)

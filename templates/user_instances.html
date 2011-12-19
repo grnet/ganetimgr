@@ -9,9 +9,44 @@
 			"oLanguage": {
 				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> instances'
 			},
+			"aoColumns": [ {"bSearchable": true,"bSortable": true },
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true}
+						{% if user.is_superuser or perms.ganeti.view_instances %},
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": false,"bSortable": false},
+						{"bVisible":false}
+						{% endif %}
+						],
 			"iDisplayLength": 25,
 	} );
+	{% if not user.is_superuser or perms.ganeti.view_instances %}
+	$( "#instancedetails" ).dialog({
+			autoOpen: false,
+			height: 450,
+			width: 350,
+			modal: true,
+			title: "Instance Details",
+			buttons: {
+				Close: function(){
+					$(this).dialog("close");
+				}
+			}
 		});
+	{% endif %}
+
+});
+{% if not user.is_superuser or perms.ganeti.view_instances %}
+function showDetails(cluster, instance){
+	$( "#instancedetails" ).html( "" );
+	$( "#instancedetails" ).load("{% url instance-popup %}/?cluster="+cluster+"&instance="+instance+"");
+	$( "#instancedetails" ).dialog( "open" );
+	return false;
+}
+{% endif %}
 </script>
 {% endblock %}
 {% block title %}{% trans "My instances" %}{% endblock %}
@@ -20,24 +55,45 @@
 
 <table class="display" width="100%" id="vm_instance_table">
 <thead>
-<tr><th>{% trans "Name" %}</th><th>{% trans "Cluster" %}</th>
-<th style="text-align: center;">{% trans "Memory" %}</th><th style="text-align: center;">CPUs</th><th style="text-align: center;">{% trans "IP address" %}</th><th style="text-align: center;">{% trans "Status" %}</th></tr>
+<tr>
+	<th>{% trans "Name" %}</th>
+	<th>{% trans "Cluster" %}</th>
+	<th style="text-align: center;">{% trans "Memory" %}</th>
+	<th style="text-align: center;">CPUs</th>
+	<th style="text-align: center;">{% trans "IP address" %}</th>
+	<th style="text-align: center;">{% trans "Status" %}</th>
+{% if user.is_superuser or perms.ganeti.view_instances %}
+	<th style="text-align: center;">{% trans "Owner" %}</th>
+	<th style="text-align: center;">{% trans "Details" %}</th>
+	<th style="text-align: center;">{% trans "HiddenContactDetails" %}</th>
+{% endif %}
+</tr>
+
 </thead>
 <tbody>
 {% load disksizes %}
 {% for instance in instances %}
-
-<tr {% if instance.admin_state %} class="GradeA" {% else %} class="GradeX" {% endif %}><td><a href="{% url instance-detail instance.cluster.slug instance.name %}">{{ instance.name }}</a></td>
+<tr {% if instance.admin_state %} class="GradeA" {% else %} class="GradeX" {% endif %}><td>{% if not instance.admin_view_only %}<a href="{% url instance-detail instance.cluster.slug instance.name %}">{{ instance.name }}</a>{% else %}{{ instance.name }}{% endif %}</td>
 <td>{{ instance.cluster.description }}</td><td style="text-align: center;">{{ instance.beparams.memory|memsize }}</td><td style="text-align: center;">{{ instance.beparams.vcpus }}</td><td style="text-align: center;">{{ instance.nic_ips.0|default:"&mdash;" }}</td>
 <td style="text-align: center;">{% ifequal instance.admin_state instance.oper_state %}
 {{ instance.admin_state|yesno:"Running,Stopped" }}
 {% else %}
 {{ instance.oper_state|yesno:"Running,Stopped" }}, should be {{ instance.admin_state|yesno:"running,stopped" }}
 {% endifequal %}{% if instance.is_locked %} (<em>{{ instance.is_locked }}</em>){% endif %}
-</td></tr>
+</td>
+{% if user.is_superuser or perms.ganeti.view_instances %}
+	<td style="text-align: center;">{% for user in instance.users %}<a href="{% url user-info 'user' user %}">{{ user }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+	{% for group in instance.groups %}<a href="{% url user-info 'group' group %}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+	<td style="text-align: center;"><a href="#" onclick="javascript:showDetails('{{instance.cluster.slug}}','{{instance.name}}'); return false;">details</a></td>
+	<td>{% for user in instance.users %}{{ user }},{{ user.email }}{% if not forloop.last %}, {% endif %}{% endfor %},{% for group in instance.groups %}{% for user in group.user_set.all %}{{user}}, {{user.email}},{% endfor %}{% if not forloop.last %}, {% endif %}{% endfor %}
+	</td>
+{% endif %}
+</tr>
 
 {% endfor %}
 </tbody>
 </table>
-
+{% if user.is_superuser or perms.ganeti.view_instances %}
+<div id="instancedetails"></div>
+{% endif %}
 {% endblock %}
