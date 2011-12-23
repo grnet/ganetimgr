@@ -58,7 +58,7 @@
 <td>{{usergroup.first_name}}</td>
 <td>{{usergroup.last_name}}</td>
 <td><a href="mailto:{{usergroup.email}}">{{usergroup.email}}</a></td>
-<td>{% for group in usergroup.groups.all %}<a href="{% url user-info 'group' group %}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+<td>{% for group in usergroup.groups.all %}<a href="{% url user-info 'group' group.name %}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
 {% endifequal %}
 {% ifequal type 'group' %}
 {% for user in usergroup.user_set.all %}
