@@ -14,8 +14,10 @@
 						{"bSearchable": true,"bSortable": true},
 						{"bSearchable": true,"bSortable": true},
 						{"bSearchable": true,"bSortable": true},
-						{"bSearchable": true,"bSortable": true}
+						{"bSearchable": true,"bSortable": true},
+						{"bVisible":false}
 						{% if user.is_superuser or perms.ganeti.view_instances %},
+						{"bSearchable": true,"bSortable": true},
 						{"bSearchable": true,"bSortable": true},
 						{"bSearchable": false,"bSortable": false},
 						{"bVisible":false}
@@ -62,7 +64,9 @@ function showDetails(cluster, instance){
 	<th style="text-align: center;">CPUs</th>
 	<th style="text-align: center;">{% trans "IP address" %}</th>
 	<th style="text-align: center;">{% trans "Status" %}</th>
+	<th style="text-align: center;">{% trans "MAC" %}</th>
 {% if user.is_superuser or perms.ganeti.view_instances %}
+	<th style="text-align: center;">{% trans "Link" %}</th>
 	<th style="text-align: center;">{% trans "Owner" %}</th>
 	<th style="text-align: center;">{% trans "Details" %}</th>
 	<th style="text-align: center;">{% trans "HiddenContactDetails" %}</th>
@@ -81,7 +85,10 @@ function showDetails(cluster, instance){
 {{ instance.oper_state|yesno:"Running,Stopped" }}, should be {{ instance.admin_state|yesno:"running,stopped" }}
 {% endifequal %}{% if instance.is_locked %} (<em>{{ instance.is_locked }}</em>){% endif %}
 </td>
+
+<td style="text-align: center;">{{instance.nic_macs|join:", "}}</td>
 {% if user.is_superuser or perms.ganeti.view_instances %}
+	<td style="text-align: center;">{{instance.nic_links|join:", "}}</td>
 	<td style="text-align: center;">{% for user in instance.users %}<a href="{% url user-info 'user' user %}">{{ user }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
 	{% for group in instance.groups %}<a href="{% url user-info 'group' group %}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
 	<td style="text-align: center;"><a href="#" onclick="javascript:showDetails('{{instance.cluster.slug}}','{{instance.name}}'); return false;">details</a></td>
