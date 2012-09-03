@@ -1,4 +1,5 @@
 #
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # Copyright © 2010-2012 Greek Research and Technology Network (GRNET S.A.)
 #
 # Permission to use, copy, modify, and/or distribute this software for any

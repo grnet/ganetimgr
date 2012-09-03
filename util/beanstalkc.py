@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 """beanstalkc - A beanstalkd Client Library for Python"""
 
 __license__ = '''

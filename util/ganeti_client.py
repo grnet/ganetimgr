@@ -1,4 +1,5 @@
 #
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 #
 
 # Copyright (C) 2010 Google Inc.

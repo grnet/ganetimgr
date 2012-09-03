@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 #
 # Copyright © 2010-2012 Greek Research and Technology Network (GRNET S.A.)
 #
