@@ -3,6 +3,15 @@
 
 {% block title %}{{ flatpage.title }}{% endblock %}
 {% block breadcrumbs %}:: {% trans flatpage.title %}{% endblock %}
+{% block extrahead %}
+<script type="text/javascript">
+	function setlang(lang) {
+		$("#langsel").val(lang);
+		$("#langform").submit();
+		window.location=location.href + "../" + lang + "/";
+	}
+</script>
+{% endblock %}
 
 {% block content %}
 {{ flatpage.content|linebreaks }}
