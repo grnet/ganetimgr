@@ -5,11 +5,19 @@
 {% block breadcrumbs %}:: {% trans flatpage.title %}{% endblock %}
 {% block extrahead %}
 <script type="text/javascript">
-	function setlang(lang) {
-		$("#langsel").val(lang);
-		$("#langform").submit();
-		window.location=location.href + "../" + lang + "/";
-	}
+function setlang(lang) {
+	$("#langsel").val(lang);
+	var form = $("#langform");
+	$.ajax({
+		url: form.attr('action'),
+		data: form.serialize(),
+		type: "POST",
+		cache: false,
+		success:function(data){
+				window.location.href=location.href + "../" + lang + "/";
+			}
+	});
+}
 </script>
 {% endblock %}
 
