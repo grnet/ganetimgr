@@ -8,80 +8,80 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-13 14:33+0300\n"
+"POT-Creation-Date: 2012-11-27 11:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
+"Last-Translator: Alexandros Kosiaris <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
-"Language: Greek \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: Greek \n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: settings.py:177
+#: settings.py:29
 msgid "Greek"
 msgstr "Ελληνικά"
 
-#: settings.py:178
+#: settings.py:30
 msgid "English"
 msgstr "Αγγλικά"
 
-#: accounts/forms.py:35
+#: accounts/forms.py:51
 msgid "Invalid captcha"
 msgstr "Λανθασμένη αντιστοίχιση"
 
-#: accounts/forms.py:57
+#: accounts/forms.py:73
 msgid "Verify"
 msgstr "Επαλήθευση"
 
-#: accounts/views.py:22
+#: accounts/views.py:38
 #, python-format
 msgid "%sUser account activated"
 msgstr "%sΟ λογαριασμός σας ενεργοποιήθηκε"
 
-#: apply/forms.py:24
+#: apply/forms.py:41
 msgid "A fully qualified domain name, e.g. host.domain.com"
 msgstr "Ένα κανονικό όνομα DNS, π.χ. host.domain.com"
 
-#: apply/forms.py:25 templates/application_list.html:9
+#: apply/forms.py:42 templates/application_list.html:9
 #: templates/application_list.html.py:18
 msgid "Hostname"
 msgstr "Όνομα"
 
-#: apply/forms.py:26 templates/application_list.html:9
+#: apply/forms.py:43 templates/application_list.html:9
 #: templates/application_list.html.py:18 templates/instance.html:50
-#: templates/user_instances.html:24
+#: templates/user_instances.html:63
 msgid "Memory"
 msgstr "Μνήμη"
 
-#: apply/forms.py:30 apply/forms.py:97
+#: apply/forms.py:47 apply/forms.py:114
 msgid "Disk size (GB)"
 msgstr "Μέγεθος δίσκου (GB)"
 
-#: apply/forms.py:31
+#: apply/forms.py:48
 msgid "Specify a size from 2 to 100 GB"
 msgstr "Καθορίστε μέγεθος μεταξύ 2 και 100 GB"
 
-#: apply/forms.py:33
+#: apply/forms.py:50
 msgid "Check this option if the virtual machine will be sending e-mail"
 msgstr ""
 "Ενεργοποιήστε αυτή την επιλογή εάν η εικονική μηχανή πρόκειται να στέλνει e-"
 "mails"
 
-#: apply/forms.py:36
+#: apply/forms.py:53
 msgid "Hosts mail server"
 msgstr "Φιλοξενία mail server"
 
-#: apply/forms.py:38
+#: apply/forms.py:55
 msgid "Organization"
 msgstr "Φορέας"
 
-#: apply/forms.py:55
+#: apply/forms.py:72
 #, python-format
 msgid "Invalid hostname %s"
 msgstr "Εσφαλμένο όνομα %s"
 
-#: apply/forms.py:59
+#: apply/forms.py:76
 msgid ""
 "Hostname should be fully qualified, e.g. <em>host.domain.com</em>, not "
 "<em>host</em>"
@@ -89,99 +89,99 @@ msgstr ""
 "Το όνομα πρέπει να περιλαμβάνει domain, π.χ. <em>host.domain.com</em>, όχι "
 "σκέτο <em>host</em>"
 
-#: apply/forms.py:68
+#: apply/forms.py:85
 msgid "Additional comments you would like the service administrators to see"
 msgstr ""
 "Πρόσθετα σχόλια ή παρατηρήσεις που θα θέλατε να λάβουν υπόψιν τους οι "
 "διαχειριστές της υπηρεσίας"
 
-#: apply/forms.py:69 templates/review.html:57 templates/review.html.py:115
+#: apply/forms.py:86 templates/review.html:57 templates/review.html.py:115
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: apply/forms.py:88
+#: apply/forms.py:105
 msgid "Choose either an organization or fill in the contact information"
 msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:105
+#: apply/forms.py:122
 msgid "Please specify a network"
 msgstr "Επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής"
 
-#: apply/forms.py:111
+#: apply/forms.py:128
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/forms.py:117
+#: apply/forms.py:134
 msgid "Application already handled"
 msgstr "Η αίτηση έχει ήδη εκκαθαριστεί"
 
-#: apply/forms.py:137
+#: apply/forms.py:154
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/forms.py:150
+#: apply/forms.py:167
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/forms.py:156
+#: apply/forms.py:173
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/forms.py:161
+#: apply/forms.py:178
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/forms.py:163
+#: apply/forms.py:180
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/forms.py:171 templates/review.html:50 templates/review.html.py:108
+#: apply/forms.py:188 templates/review.html:50 templates/review.html.py:108
 msgid "Email"
 msgstr "Email"
 
-#: apply/forms.py:172
+#: apply/forms.py:189
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/forms.py:180
+#: apply/forms.py:197
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
-#: apply/forms.py:184 templates/apply.html:70
+#: apply/forms.py:201 templates/apply.html:70
 #: templates/instance_owners.html:16 templates/review.html:49
-#: templates/review.html.py:107 templates/user_instances.html:23
+#: templates/review.html.py:107 templates/user_instances.html:61
 msgid "Name"
 msgstr "Όνομα"
 
-#: apply/forms.py:185
+#: apply/forms.py:202
 msgid "Surname"
 msgstr "Επώνυμο"
 
-#: apply/models.py:61
+#: apply/models.py:76
 msgid "organization"
 msgstr "φορέας"
 
-#: apply/models.py:62
+#: apply/models.py:77
 msgid "organizations"
 msgstr "φορείς"
 
-#: apply/models.py:74
+#: apply/models.py:89
 msgid "operating system"
 msgstr "λειτουργικό σύστημα"
 
-#: apply/models.py:84
+#: apply/models.py:99
 msgid "network"
 msgstr "δίκτυο"
 
-#: apply/views.py:32 templates/application_list.html:9
+#: apply/views.py:48 templates/application_list.html:9
 #: templates/application_list.html.py:18 templates/review.html:72
 msgid "Network"
 msgstr "Δίκτυο"
 
-#: apply/views.py:33
+#: apply/views.py:49
 msgid ""
 "Optionally, select a network to connect the virtual machine to if you have a "
 "special requirement"
@@ -189,88 +189,88 @@ msgstr ""
 "Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής.\n"
 "Διαφορετικά, θα χρησιμοποιηθεί το κανονικό δίκτυο της υπηρεσίας."
 
-#: apply/views.py:67
+#: apply/views.py:83
 #, python-format
 msgid "Your request has been filed with id #%d and will be processed shortly."
 msgstr ""
 "Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
 "ξεκινήσει σύντομα."
 
-#: apply/views.py:156
+#: apply/views.py:172
 #, python-format
 msgid "The following keys were skipped because they already exist:<br />%s"
 msgstr "Τα ακόλουθα κλειδιά υπήρχαν ήδη και δεν αντικαταστάθηκαν:<br />%s"
 
-#: ganeti/models.py:126
+#: ganeti/models.py:180
 msgid "modifying"
 msgstr "γίνεται τροποποίηση των παραμέτρων της μηχανής"
 
-#: ganeti/models.py:264
+#: ganeti/models.py:349
 msgid "shutting down"
 msgstr "η μηχανή απενεργοποιείται"
 
-#: ganeti/models.py:271
+#: ganeti/models.py:356
 msgid "starting up"
 msgstr "η μηχανή ξεκινά"
 
-#: ganeti/models.py:278
+#: ganeti/models.py:363
 msgid "rebooting"
 msgstr "η μηχανή επανεκκινεί"
 
-#: ganeti/models.py:310
+#: ganeti/models.py:395
 msgid "creating"
 msgstr "η μηχανή δημιουργείται"
 
-#: ganeti/views.py:128
+#: ganeti/views.py:152
 msgid "Please wait... shutting-down"
 msgstr "Παρακαλώ περιμένετε... απενεργοποίηση"
 
-#: ganeti/views.py:138
+#: ganeti/views.py:162
 msgid "Please wait... starting-up"
 msgstr "Παρακαλώ περιμένετε... εκκίνηση"
 
-#: ganeti/views.py:147
+#: ganeti/views.py:171
 msgid "Please wait... rebooting"
 msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
 
-#: ganeti/views.py:152
+#: ganeti/views.py:176
 msgid "Network adapter model"
 msgstr "Τύπος κάρτας δικτύου"
 
-#: ganeti/views.py:158
+#: ganeti/views.py:182
 msgid "Hard disk type"
 msgstr "Τύπος σκληρού δίσκου"
 
-#: ganeti/views.py:163
+#: ganeti/views.py:187
 msgid "Boot device"
 msgstr "Συσκευή εκκίνησης"
 
-#: ganeti/views.py:167
+#: ganeti/views.py:191
 msgid "CD-ROM Drive"
 msgstr "Συσκευή CD-ROM"
 
-#: ganeti/views.py:174
+#: ganeti/views.py:198
 msgid "ISO Image URL (http)"
 msgstr ""
 
-#: ganeti/views.py:176
+#: ganeti/views.py:200
 msgid "Hardware clock uses local time instead of UTC"
 msgstr ""
 
-#: ganeti/views.py:184
+#: ganeti/views.py:208
 msgid "Only HTTP URLs are allowed"
 msgstr "Μόνο URLs συμβατά με τη μορφή HTTP επιτρέπονται"
 
-#: ganeti/views.py:195
+#: ganeti/views.py:219
 #, python-format
 msgid "%(url)s is not a valid URL"
 msgstr "%(url)s δεν είναι αποδεκτή μορφή URL"
 
-#: ganeti/views.py:198
+#: ganeti/views.py:222
 msgid "Invalid URL"
 msgstr "Λανθασμένο URL"
 
-#: middleware/UserMessages.py:32
+#: middleware/UserMessages.py:48
 #, python-format
 msgid ""
 "Welcome! Please take some time to update <a href=\"%s\">your profile</a> and "
@@ -431,8 +431,8 @@ msgstr "Έξοδος"
 msgid "Login"
 msgstr "Είσοδος"
 
-#: templates/base.html:81 templates/user_instances.html:17
-#: templates/user_instances.html.py:19
+#: templates/base.html:81 templates/user_instances.html:54
+#: templates/user_instances.html.py:56
 msgid "My instances"
 msgstr "Οι εικονικές μηχανές μου"
 
@@ -456,15 +456,15 @@ msgstr "Περί"
 msgid "Service Terms"
 msgstr "Όροι Χρήσης"
 
-#: templates/instance.html:47
+#: templates/instance.html:47 templates/user_instances.html:71
 msgid "Details"
 msgstr "Λεπτομέρειες"
 
-#: templates/instance.html:48 templates/user_instances.html:24
+#: templates/instance.html:48 templates/user_instances.html:66
 msgid "Status"
 msgstr "Κατάσταση"
 
-#: templates/instance.html:49 templates/user_instances.html:23
+#: templates/instance.html:49 templates/user_instances.html:62
 msgid "Cluster"
 msgstr ""
 
@@ -512,11 +512,13 @@ msgstr "Εκκίνηση"
 msgid "Instance owners"
 msgstr "Μητρώο εικονικών μηχανών"
 
-#: templates/instance_owners.html:16
+#: templates/instance_owners.html:16 templates/user_info.html:38
+#: templates/user_info.html.py:46
 msgid "Username"
 msgstr "Όνομα Χρήστη"
 
-#: templates/instance_owners.html:16
+#: templates/instance_owners.html:16 templates/user_info.html:41
+#: templates/user_info.html.py:49
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -525,8 +527,8 @@ msgid ""
 "\n"
 "<p>Welcome to GRNET's ViMa service.</p>\n"
 "<p>If you are new to the service, take some time to read the service "
-"description <a href=\"/about/info\">here</a> and then register for a new "
-"account.</p>\n"
+"description supplied at the hyperlink at the end of this page and then "
+"register for a new account.</p>\n"
 "<p>If you already have an account, you can log in using the form on the "
 "right.</p>\n"
 "<p>For troubleshooting info and remarks do not hesitate to contact GRNET's "
@@ -535,8 +537,8 @@ msgstr ""
 "\n"
 "<p>Καλωσήλθατε στην υπηρεσία ViMa του ΕΔΕΤ.</p>\n"
 "<p>Αν έρχεστε για πρώτη φορά στη σελίδα αυτή, αφιερώστε λίγο χρόνο για να "
-"διαβάσετε σχετικά με την υπηρεσία <a href=\"/about/info\">εδώ</a> και στη "
-"συνέχεια αιτηθείτε ένα νέο λογαριασμό χρήστη.</p>\n"
+"διαβάσετε σχετικά με την υπηρεσία ακολουθώντας τον σύνδεσμο στο τέλος της "
+"τρέχουσας σελίδας και στη συνέχεια αιτηθείτε ένα νέο λογαριασμό χρήστη.</p>\n"
 "<p>Αν διαθέτετε ήδη λογαριασμό χρήστη, μπορείτε να εισέλθετε στην υπηρεσία "
 "χρησιμοποιώντας τη φόρμα στο δεξί μέρος της σελίδας.</p>\n"
 "<p>Για τυχόν προβλήματα ή απορίες, επικοινωνήστε με το Helpdesk του ΕΔΕΤ.</"
@@ -668,17 +670,57 @@ msgstr "Σχόλια προς το χρήστη"
 msgid "The instance has been placed on"
 msgstr "Η εικονική μηχανή έχει τοποθετηθεί στο"
 
-#: templates/user_instances.html:10
+#: templates/user_info.html:10 templates/user_instances.html:10
 msgid "Display"
 msgstr "Προβολή"
 
-#: templates/user_instances.html:10
+#: templates/user_info.html:10 templates/user_instances.html:10
 msgid "All"
 msgstr "Όλων"
 
-#: templates/user_instances.html:24
+#: templates/user_info.html:19 templates/user_info.html.py:28
+msgid "User Information"
+msgstr "Στοιχεία χρήστη"
+
+#: templates/user_info.html:22 templates/user_info.html.py:32
+msgid "Group Information"
+msgstr "Στοιχεία ομάδας"
+
+#: templates/user_info.html:39 templates/user_info.html.py:47
+msgid "First Name"
+msgstr "Όνομα"
+
+#: templates/user_info.html:40 templates/user_info.html.py:48
+msgid "Last Name"
+msgstr "Επώνυμο"
+
+#: templates/user_info.html:42
+msgid "Groups"
+msgstr "Ομάδες"
+
+#: templates/user_info.html:45
+msgid "Group Name"
+msgstr "Ομάδα"
+
+#: templates/user_instances.html:65
 msgid "IP address"
 msgstr "Διεύθυνση IP"
+
+#: templates/user_instances.html:67
+msgid "MAC"
+msgstr ""
+
+#: templates/user_instances.html:69
+msgid "Link"
+msgstr "Σύνδεσμος"
+
+#: templates/user_instances.html:70
+msgid "Owner"
+msgstr "Ιδιοκτήτης"
+
+#: templates/user_instances.html:72
+msgid "HiddenContactDetails"
+msgstr ""
 
 #: templates/user_keys.html:86
 msgid ""
