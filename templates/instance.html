@@ -14,7 +14,7 @@ var timer = 2500;
 var load_data = function () {
         $.ajax({
             type: 'GET',
-            url: '{% url instance-poll cluster.slug instance.name %}',
+            url: '{% url instance-poll cluster.slug instance.name %}'+"?_="+new Date().getTime(),
             dataType: 'html',
             success: function(data) {
                 $('#actions_container').html(data);
