@@ -26,7 +26,6 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import request
 from django.template.context import RequestContext
 from django.template.loader import get_template
-from django.utils import simplejson
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 
@@ -41,6 +40,10 @@ from django.utils.translation import ugettext as _
 
 from time import sleep
 
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 def cluster_overview(request):
     clusters = Cluster.objects.all()
@@ -124,7 +127,6 @@ def user_index(request):
                              "Some instances may be missing because the"
                              " following clusters are unreachable: " +
                              ", ".join([c.description for c in bad_clusters]))
-
     return render_to_response('user_instances.html', {'instances': instances},
                               context_instance=RequestContext(request))
 
@@ -150,7 +152,7 @@ def shutdown(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.shutdown_instance(instance)
     action = {'action': _("Please wait... shutting-down")}
-    return HttpResponse(simplejson.dumps(action))
+    return HttpResponse(json.dumps(action))
 
 
 @login_required
@@ -160,7 +162,7 @@ def startup(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.startup_instance(instance)
     action = {'action': _("Please wait... starting-up")}
-    return HttpResponse(simplejson.dumps(action))
+    return HttpResponse(json.dumps(action))
 
 @login_required
 @csrf_exempt
@@ -169,7 +171,7 @@ def reboot(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.reboot_instance(instance)
     action = {'action': _("Please wait... rebooting")}
-    return HttpResponse(simplejson.dumps(action))
+    return HttpResponse(json.dumps(action))
 
 
 class InstanceConfigForm(forms.Form):
