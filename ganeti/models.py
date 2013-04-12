@@ -35,8 +35,11 @@ except ImportError:
     BEANSTALK_TUBE = None
 
 from util import beanstalkc
-import simplejson as json
 
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 class InstanceManager(object):
     def all(self):
@@ -96,9 +99,10 @@ class InstanceManager(object):
 class Instance(object):
     objects = InstanceManager()
 
-    def __init__(self, cluster, name, info=None):
+    def __init__(self, cluster, name, info=None, listusers=None, listorganizations=None, listgroups=None, listinstanceapplications=None):
         self.cluster = cluster
         self.name = name
+        self.listusers = listusers
         self.organization = None
         self.application = None
         self.services = []
@@ -127,7 +131,7 @@ class Instance(object):
                 group = tag.replace(group_pfx,'')
                 if group not in group_cache:
                     try:
-                        g = Group.objects.get(name__iexact=group)
+                        g = self.listgroups.get(name__iexact=group)
                     except:
                         g = None
                     group_cache[group] = g
@@ -138,7 +142,7 @@ class Instance(object):
                 user = tag.replace(user_pfx,'')
                 if user not in user_cache:
                     try:
-                        u = User.objects.get(username__iexact=user)
+                        u = self.listusers.get(username__iexact=user)
                     except:
                         u = None
                     user_cache[user] = u
@@ -148,7 +152,7 @@ class Instance(object):
                 org = tag.replace(org_pfx,'')
                 if org not in org_cache:
                     try:
-                        o = Organization.objects.get(tag__iexact=org)
+                        o = self.listorganizations.get(tag__iexact=org)
                     except:
                         o = None
                     org_cache[org] = o
@@ -158,7 +162,7 @@ class Instance(object):
                 app = tag.replace(app_pfx,'')
                 if app not in app_cache:
                     try:
-                        a = InstanceApplication.objects.get(pk=app)
+                        a = self.listinstanceapplications.get(pk=app)
                     except:
                         a = None
                     app_cache[app] = a
@@ -276,12 +280,49 @@ class Cluster(models.Model):
                 raise
 
     def get_instances(self):
+        instances_min = []
         instances = cache.get("cluster:%s:instances" % self.slug)
         if instances is None:
             instances = self._client.GetInstances(bulk=True)
-            cache.set("cluster:%s:instances" % self.slug, instances, 30)
+            for instance in instances:
+                inst_dict_min = {}
+                inst_dict_min['name'] = instance['name']
+                inst_dict_min['admin_state'] = instance['admin_state']
+                inst_dict_min['beparams'] = instance['beparams']
+                inst_dict_min['pnode'] = instance['pnode']
+                inst_dict_min['oper_state'] = instance['oper_state']
+                inst_dict_min['nic.macs'] = instance['nic.macs']
+                inst_dict_min['nic.links'] = instance['nic.links']
+                inst_dict_min['nic.ips'] = instance['nic.ips']
+                inst_dict_min['ctime'] = instance['ctime']
+                inst_dict_min['mtime'] = instance['mtime']
+                inst_dict_min['tags'] = instance['tags']
+                instances_min.append(inst_dict_min)
+            cache.set("cluster:%s:instances" % self.slug, instances_min, 45)
 
-        return [Instance(self, info['name'], info) for info in instances]
+        users = cache.get('userlist')
+        if not users:
+            users = User.objects.all()
+            cache.set('userlist', users, 30)
+
+        orgs = cache.get('orgslist')
+        if not orgs:
+            orgs = Organization.objects.all()
+            cache.set('orgslist', orgs, 30)
+
+        groups = cache.get('groupslist')
+        if not groups:
+            groups = Group.objects.all()
+            cache.set('groupslist', groups, 30)
+
+        instanceapps = cache.get('instaceapplist')
+        if not instanceapps:
+            instanceapps = InstanceApplication.objects.all()
+            cache.set('instaceapplist', instanceapps, 30)
+
+        retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps) for info in instances]
+        return retinstances
+    
 
     def get_user_instances(self, user):
         instances = self.get_instances()
