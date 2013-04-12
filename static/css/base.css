@@ -4,7 +4,8 @@
 }
 
 html {
-    height: 100% color: black;
+    height: 100%;
+    color: black;
 }
 
 #page_wrapper {
@@ -116,7 +117,7 @@ body {
 	background: #fafafa;
 	 border: 2px solid #FFFFFF;
     -moz-border-radius: 10px 10px 10px 10px;
-	border-raduis: 10px;
+	border-radius: 10px;
 	-webkit-border-radius: 10px;
     -moz-box-shadow: 0 0 3px #AAAAAA;
 	-webkit-box-shadow: 0 0 3px #AAAAAA;
