@@ -44,8 +44,9 @@ except ImportError:
 class InstanceManager(object):
     def all(self):
         results = []
+        users, orgs, groups, instanceapps = preload_instance_data()
         for cluster in Cluster.objects.all():
-            results.extend([Instance(cluster, info['name'], info)
+            results.extend([Instance(cluster, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps)
                             for info in cluster.get_cluster_instances_detail()])
         return results
 
@@ -103,6 +104,9 @@ class Instance(object):
         self.cluster = cluster
         self.name = name
         self.listusers = listusers
+        self.listorganizations = listorganizations
+        self.listgroups = listgroups
+        self.listinstanceapplications = listinstanceapplications
         self.organization = None
         self.application = None
         self.services = []
@@ -117,6 +121,7 @@ class Instance(object):
         org_cache = {}
         app_cache = {}
         serv_cache = {}
+
         if not info:
             info = self.cluster.get_instance_info(self.name)
         for attr in info:
@@ -268,7 +273,8 @@ class Cluster(models.Model):
 
     def get_instance(self, name):
         info = self.get_instance_info(name)
-        return Instance(self, info["name"], info)
+        users, orgs, groups, instanceapps = preload_instance_data()
+        return Instance(self, info["name"], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps)
 
     def get_instance_or_404(self, name):
         try:
@@ -300,26 +306,7 @@ class Cluster(models.Model):
                 instances_min.append(inst_dict_min)
             cache.set("cluster:%s:instances" % self.slug, instances_min, 45)
 
-        users = cache.get('userlist')
-        if not users:
-            users = User.objects.all()
-            cache.set('userlist', users, 30)
-
-        orgs = cache.get('orgslist')
-        if not orgs:
-            orgs = Organization.objects.all()
-            cache.set('orgslist', orgs, 30)
-
-        groups = cache.get('groupslist')
-        if not groups:
-            groups = Group.objects.all()
-            cache.set('groupslist', groups, 30)
-
-        instanceapps = cache.get('instaceapplist')
-        if not instanceapps:
-            instanceapps = InstanceApplication.objects.all()
-            cache.set('instaceapplist', instanceapps, 30)
-
+        users, orgs, groups, instanceapps = preload_instance_data()
         retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps) for info in instances]
         return retinstances
     
@@ -471,4 +458,28 @@ class Network(models.Model):
             except Network.DoesNotExist:
                 pass
         super(Network, self).save()
+
+
+
+def preload_instance_data():
+    users = cache.get('userlist')
+    if not users:
+        users = User.objects.all()
+        cache.set('userlist', users, 30)
+
+    orgs = cache.get('orgslist')
+    if not orgs:
+        orgs = Organization.objects.all()
+        cache.set('orgslist', orgs, 30)
+
+    groups = cache.get('groupslist')
+    if not groups:
+        groups = Group.objects.all()
+        cache.set('groupslist', groups, 30)
+
+    instanceapps = cache.get('instaceapplist')
+    if not instanceapps:
+        instanceapps = InstanceApplication.objects.all()
+        cache.set('instaceapplist', instanceapps, 30)
+    return users, orgs, groups, instanceapps
 
