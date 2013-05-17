@@ -46,11 +46,11 @@ class InstanceManager(object):
         results = []
         users, orgs, groups, instanceapps = preload_instance_data()
         for cluster in Cluster.objects.all():
-            results.extend([Instance(cluster, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps)
-                            for info in cluster.get_cluster_instances_detail()])
+            results.extend(cluster.get_instances())
         return results
 
     def filter(self, **kwargs):
+        users, orgs, groups, instanceapps = preload_instance_data()
         if 'cluster' in kwargs:
             if isinstance(kwargs['cluster'], Cluster):
                 cluster = kwargs['cluster']
@@ -68,14 +68,14 @@ class InstanceManager(object):
             if arg == 'user':
                 if not isinstance(val, User):
                     try:
-                        val = User.objects.get(username__iexact=val)
+                        val = users[val]
                     except:
                         return []
                 results = [result for result in results if val in result.users]
             elif arg == 'group':
                 if not isinstance(val, Group):
                     try:
-                        val = Group.objects.get(name__iexact=val)
+                        val = group[val]
                     except:
                         return []
                 results = [result for result in results if val in result.groups]
@@ -121,7 +121,6 @@ class Instance(object):
         org_cache = {}
         app_cache = {}
         serv_cache = {}
-
         if not info:
             info = self.cluster.get_instance_info(self.name)
         for attr in info:
@@ -136,18 +135,17 @@ class Instance(object):
                 group = tag.replace(group_pfx,'')
                 if group not in group_cache:
                     try:
-                        g = self.listgroups.get(name__iexact=group)
+                        g = self.listgroups[group]
                     except:
                         g = None
                     group_cache[group] = g
                 if group_cache[group] is not None:
                     self.groups.append(group_cache[group])
-
             elif tag.startswith(user_pfx):
                 user = tag.replace(user_pfx,'')
                 if user not in user_cache:
                     try:
-                        u = self.listusers.get(username__iexact=user)
+                        u = self.listusers[user]
                     except:
                         u = None
                     user_cache[user] = u
@@ -157,7 +155,7 @@ class Instance(object):
                 org = tag.replace(org_pfx,'')
                 if org not in org_cache:
                     try:
-                        o = self.listorganizations.get(tag__iexact=org)
+                        o = self.listorganizations[org]
                     except:
                         o = None
                     org_cache[org] = o
@@ -167,7 +165,7 @@ class Instance(object):
                 app = tag.replace(app_pfx,'')
                 if app not in app_cache:
                     try:
-                        a = self.listinstanceapplications.get(pk=app)
+                        a = self.listinstanceapplications[app]
                     except:
                         a = None
                     app_cache[app] = a
@@ -287,25 +285,11 @@ class Cluster(models.Model):
 
     def get_instances(self):
         instances_min = []
+        retinstances = []
         instances = cache.get("cluster:%s:instances" % self.slug)
         if instances is None:
             instances = self._client.GetInstances(bulk=True)
-            for instance in instances:
-                inst_dict_min = {}
-                inst_dict_min['name'] = instance['name']
-                inst_dict_min['admin_state'] = instance['admin_state']
-                inst_dict_min['beparams'] = instance['beparams']
-                inst_dict_min['pnode'] = instance['pnode']
-                inst_dict_min['oper_state'] = instance['oper_state']
-                inst_dict_min['nic.macs'] = instance['nic.macs']
-                inst_dict_min['nic.links'] = instance['nic.links']
-                inst_dict_min['nic.ips'] = instance['nic.ips']
-                inst_dict_min['ctime'] = instance['ctime']
-                inst_dict_min['mtime'] = instance['mtime']
-                inst_dict_min['tags'] = instance['tags']
-                instances_min.append(inst_dict_min)
-            cache.set("cluster:%s:instances" % self.slug, instances_min, 45)
-
+            cache.set("cluster:%s:instances" % self.slug, instances, 45)
         users, orgs, groups, instanceapps = preload_instance_data()
         retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps) for info in instances]
         return retinstances
@@ -316,14 +300,22 @@ class Cluster(models.Model):
         if user.is_superuser:
             return instances
         elif user.has_perm('ganeti.view_instances'):
+            user = User.objects.filter(pk=user.pk).select_related('groups').get()
+            ugroups = []
+            for ug in user.groups.all():
+                ugroups.append(ug.pk)
             user_inst = [i for i in instances if (user in i.users or
-                    user.groups.filter(id__in=[g.id for g in i.groups]))]
+                    len(list(set(ugroups).intersection(set([g.id for g in i.groups]))))> 0)]
             other_inst = [i for i in instances if (i not in user_inst)]
             map(lambda i: i.set_admin_view_only_True(), other_inst)
             return user_inst + other_inst
         else:
+            user = User.objects.filter(pk=user.pk).select_related('groups').get()
+            ugroups = []
+            for ug in user.groups.all():
+                ugroups.append(ug.pk)
             return [i for i in instances if (user in i.users or
-                    user.groups.filter(id__in=[g.id for g in i.groups]))]
+                   len(list(set(ugroups).intersection(set([g.id for g in i.groups]))))> 0)]
 
     def get_cluster_info(self):
         info = cache.get("cluster:%s:info" % self.slug)
@@ -465,21 +457,34 @@ def preload_instance_data():
     users = cache.get('userlist')
     if not users:
         users = User.objects.all()
+        userdict = {}
+        for user in users:
+            userdict[user.username] = user
+        users = userdict
         cache.set('userlist', users, 30)
-
     orgs = cache.get('orgslist')
     if not orgs:
         orgs = Organization.objects.all()
+        orgsdict = {}
+        for org in orgs:
+            orgsdict[org.tag] = org
+        orgs = orgsdict
         cache.set('orgslist', orgs, 30)
-
     groups = cache.get('groupslist')
     if not groups:
         groups = Group.objects.all()
+        groupsdict = {}
+        for group in groups:
+            groupsdict[group.name] = group
+        groups = groupsdict
         cache.set('groupslist', groups, 30)
-
     instanceapps = cache.get('instaceapplist')
     if not instanceapps:
         instanceapps = InstanceApplication.objects.all()
+        instappdict= {}
+        for instapp in instanceapps:
+            instappdict[str(instapp.pk)] = instapp
+        instanceapps = instappdict
         cache.set('instaceapplist', instanceapps, 30)
     return users, orgs, groups, instanceapps
 
