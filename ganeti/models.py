@@ -28,7 +28,7 @@ from time import sleep
 from util import vapclient
 from util.ganeti_client import GanetiRapiClient, GanetiApiError
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
-
+import re
 try:
     from ganetimgr.settings import BEANSTALK_TUBE
 except ImportError:
@@ -81,10 +81,12 @@ class InstanceManager(object):
                 results = [result for result in results if val in result.groups]
             elif arg == 'name':
                 results = [result for result in results if result.name == val]
+            elif arg == 'name__icontains':
+                valre = re.compile(val)
+                results = [result for result in results if valre.search(result.name) is not None]
             else:
                 results = [result for result in results
                            if '%s:%s' % (arg, val) in result.tags] 
-
         return results
 
     def get(self, **kwargs):
