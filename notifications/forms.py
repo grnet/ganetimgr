@@ -27,4 +27,3 @@ class MessageForm(forms.Form):
     subject = forms.CharField(max_length=100)
     message = forms.CharField()
     recipient_list = forms.CharField()
-    bcc_myself = forms.BooleanField(required=False)
