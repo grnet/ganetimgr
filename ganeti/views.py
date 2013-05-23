@@ -30,6 +30,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 
 from ganetimgr.ganeti.models import *
+from ganetimgr.ganeti.forms import *
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
@@ -44,6 +45,8 @@ try:
     import json
 except ImportError:
     import simplejson as json
+
+from ganetimgr.settings import GANETI_TAG_PREFIX
 
 def cluster_overview(request):
     clusters = Cluster.objects.all()
@@ -294,3 +297,98 @@ def poll(request, cluster_slug, instance):
                                    'instance': instance,
                                    },
                                   context_instance=RequestContext(request))
+
+@csrf_exempt
+@login_required     
+def tagInstance(request, instance):
+    if request.user.is_superuser:
+        instance = Instance.objects.get(name=instance)
+        if request.method == 'POST':
+            koko = request.POST
+            users = []
+            for user in instance.users:
+                users.append("u_%s"%user.pk)
+            groups = []
+            for group in instance.groups:
+                groups.append("g_%s"%group.pk)
+            existingugtags = users+groups
+            form = tagsForm(request.POST)
+            if form.is_valid():
+                newtags = form.cleaned_data['tags']
+                newtags = newtags.split(',')
+                common = list(set(existingugtags).intersection(set(newtags)))
+                deltags = list(set(existingugtags)-set(common))
+                if len(deltags)>0:
+                    #we have tags to delete
+                    oldtodelete = prepare_tags(deltags)
+                    instance.cluster._client.DeleteInstanceTags(instance.name, oldtodelete)
+                newtagstoapply = prepare_tags(newtags)
+                instance.cluster._client.AddInstanceTags(instance.name, newtagstoapply)
+                cache_key = instance.cluster._instance_cache_key(instance)
+                cache.delete(cache_key)
+                cache.delete("cluster:%s:instances" % instance.cluster.slug)
+                return HttpResponseRedirect(reverse('instance-tags', kwargs={'instance':instance.name}))
+        else:
+            form = tagsForm()
+            users = []
+            for user in instance.users:
+                userd = {}
+                userd['text']=user.username
+                userd['id']="u_%s"%user.pk
+                userd['type']="user"
+                users.append(userd)
+            for group in instance.groups:
+                groupd = {}
+                groupd['text']=group.name
+                groupd['id']="u_%s"%group.pk
+                groupd['type']="group"
+                users.append(groupd)
+        return render_to_response('tagging/itags.html', {
+            'form': form, 'users': users, 'instance': instance, 
+        })
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
+
+def prepare_tags(taglist):
+    tags = []
+    for i in taglist:
+        #User
+        if i.startswith('u'):
+            tags.append("%s:user:%s" %(GANETI_TAG_PREFIX, User.objects.get(pk=i.replace('u_','')).username))
+        #Group
+        if i.startswith('g'):
+            tags.append("%s:group:%s" %(GANETI_TAG_PREFIX, Group.objects.get(pk=i.replace('g_','')).name))
+    return list(set(tags))
+
+@login_required
+def get_user_groups(request):
+    if request.user.is_superuser:
+        q_params = None
+        try:
+            q_params = request.GET['q']
+        except:
+            pass
+        users = User.objects.all()
+        groups = Group.objects.all()
+        if q_params:
+            users = users.filter(username__icontains=q_params)
+            groups = groups.filter(name__icontains=q_params)
+        ret_list = []
+        for user in users:
+            userd = {}
+            userd['text']=user.username
+            userd['email']=user.email
+            userd['id']="u_%s"%user.pk
+            userd['type']="user"
+            ret_list.append(userd)
+        for group in groups:
+            groupd = {}
+            groupd['text']=group.name
+            groupd['id']="g_%s"%group.pk
+            groupd['type']="group"
+            ret_list.append(groupd)
+        action = ret_list
+        return HttpResponse(json.dumps(action), mimetype='application/json')
+    else:
+        action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
+        return HttpResponse(json.dumps(action), mimetype='application/json')
