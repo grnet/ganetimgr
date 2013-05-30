@@ -28,7 +28,7 @@ from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-
+from django.conf import settings
 from ganetimgr.ganeti.models import *
 from ganetimgr.ganeti.forms import *
 
@@ -304,7 +304,6 @@ def tagInstance(request, instance):
     if request.user.is_superuser:
         instance = Instance.objects.get(name=instance)
         if request.method == 'POST':
-            koko = request.POST
             users = []
             for user in instance.users:
                 users.append("u_%s"%user.pk)
@@ -327,8 +326,16 @@ def tagInstance(request, instance):
                 cache_key = instance.cluster._instance_cache_key(instance)
                 cache.delete(cache_key)
                 cache.delete("cluster:%s:instances" % instance.cluster.slug)
-                return HttpResponseRedirect(reverse('instance-tags', kwargs={'instance':instance.name}))
-        else:
+                res = {'result':'success'}
+                return HttpResponse(json.dumps(res), mimetype='application/json')
+            else:
+                return render_to_response('tagging/itags.html',
+                    {
+                        'form': form, 'users': users, 'instance': instance
+                    }, 
+                    context_instance=RequestContext(request)
+                    )
+        elif request.method == 'GET':
             form = tagsForm()
             users = []
             for user in instance.users:
@@ -343,11 +350,43 @@ def tagInstance(request, instance):
                 groupd['id']="u_%s"%group.pk
                 groupd['type']="group"
                 users.append(groupd)
-        return render_to_response('tagging/itags.html', {
-            'form': form, 'users': users, 'instance': instance, 
-        })
+            return render_to_response('tagging/itags.html', {
+                    'form': form, 'users': users, 'instance': instance}, 
+                    context_instance=RequestContext(request)
+                )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
+
+@login_required
+def get_clusternodes(request):
+    clusters = Cluster.objects.all()
+    p = Pool(20)
+    nodes = []
+    bad_clusters = []
+    servermon_url = None
+    def _get_nodes(cluster):
+        t = Timeout(5)
+        t.start()
+        try:
+            nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
+        except (GanetiApiError, Timeout):
+            bad_clusters.append(cluster)
+        finally:
+            t.cancel()
+
+    if not request.user.is_anonymous():
+        p.imap(_get_nodes, Cluster.objects.all())
+        p.join()
+        
+    if bad_clusters:
+        messages.add_message(request, messages.WARNING,
+                             "Some nodes may be missing because the"
+                             " following clusters are unreachable: " +
+                             ", ".join([c.description for c in bad_clusters]))
+    if settings.SERVER_MONITORING_URL:
+        servermon_url = settings.SERVER_MONITORING_URL 
+    return render_to_response('cluster_nodes.html', {'nodes': nodes, 'servermon':servermon_url},
+                              context_instance=RequestContext(request))
 
 def prepare_tags(taglist):
     tags = []
