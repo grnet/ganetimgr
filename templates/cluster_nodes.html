@@ -1,0 +1,119 @@
+{% extends "theme/base.html" %}
+{% load i18n %}
+{% block extrahead %}
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
+<script type="text/javascript">
+
+$(document).ready( function(){
+			var oTable = $('#vm_instance_table').dataTable( {
+			"bPaginate": true,
+            "bLengthChange": true,
+            "bFilter": true,
+            "bSort": true,
+            "bDeferRender": true,
+            "bInfo": true,
+            "bAutoWidth": true,
+            "oLanguage": {
+            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> instances'
+            },
+            "sPaginationType": "bootstrap",
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+			"aoColumns": [ {"bSearchable": true,"bSortable": true },
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true},
+						],
+			"iDisplayLength": 25,
+	} );
+	oTable.fnDraw();
+	{% if not user.is_superuser or perms.ganeti.view_instances %}
+	$( "#instancedetails" ).dialog({
+			autoOpen: false,
+			height: 450,
+			width: 350,
+			modal: true,
+			title: "Instance Details",
+			buttons: {
+				Close: function(){
+					$(this).dialog("close");
+				}
+			}
+		});
+	{% endif %}
+
+});
+
+
+</script>
+<style>
+.dropdown-menu.instanceopt{
+	right: 0px;
+	left: auto;
+}
+</style>
+{% endblock %}
+{% block title %}{% trans "My instances" %}{% endblock %}
+{% block content %}
+<div class="span12 main-content">
+
+    <div class="row-fluid">
+        <div class="row-fluid">
+            <h2>{% trans "My instances" %}
+                <span class="info">Displaying all instances</span>
+            </h2>
+
+<table class="table table-first-column-number data-table display full" id="vm_instance_table">
+<thead>
+<tr>
+	<th><span class="sort-icon"><span>{% trans "Name" %}</th>
+	<th><span class="sort-icon"><span>{% trans "Memory" %}</th>
+	<th><span class="sort-icon"><span>{% trans "Disk" %}</th>
+	<th style="text-align: center;">CPUs</th>
+	<th style="text-align: center;">Instance #</th>
+	<th >Status</th>
+	<th >Cluster</th>
+</tr>
+
+</thead>
+<tbody>
+{% load disksizes %}
+{% load bootstrappercent %}
+{% load noderole %}
+{% for node in nodes %}
+<tr><td>{% if servermon %}<a href="{{servermon}}/{{node.name}}" target="_blank">{{node.name}}</a>{% else %}{{node.name}}{% endif %}</td>
+<td>
+<div class="progress progress-{{node.mem_used|perctobootstrap}}">
+<div class="bar" style="width: {{node.mem_used}}%">{{node.mem_used}}%</div>
+</div>
+Free: <span class="badge badge-{{node.mem_used|perctobootstrapbadge}}">{{node.mfree|memsize}} </span> Total: <span class="badge badge-inverse">{{node.mtotal|memsize}}</span></td>
+<td>
+{% if node.shared_storage %}<span class="label label-info">Shared Storage</span>{% else %}
+<div class="progress progress-{{node.disk_used|perctobootstrap}}">
+<div class="bar" style="width: {{node.disk_used}}%">{{node.disk_used}}%</div>
+</div>
+Free: <span class="badge badge-{{node.disk_used|perctobootstrapbadge}}">{{node.dfree|memsize}} </span> Total: <span class="badge badge-inverse">{{node.dtotal|memsize}}</span>
+{% endif %}
+</td>
+<td>{{node.ctotal}}</td>
+<td>{{node.pinst_cnt}}</td>
+<td style="text-align: center;"><span class="label label-{{ node.role|nodelabel }}">
+{{ node.role|noderole }}
+<span>
+</td>
+<td style="text-align: center;">{{ node.cluster }}</td>
+</tr>
+
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+{% endblock %}
