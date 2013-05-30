@@ -25,5 +25,5 @@ from django.utils.encoding import smart_unicode
 
 class MessageForm(forms.Form):
     subject = forms.CharField(max_length=100)
-    message = forms.CharField()
+    message = forms.CharField(widget=forms.Textarea)
     recipient_list = forms.CharField()
