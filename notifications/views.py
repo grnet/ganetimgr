@@ -33,10 +33,12 @@ import json
 
 @csrf_exempt
 @login_required
-def notify(request):
+def notify(request, instance=None):
     if request.user.is_superuser:
+        if instance:
+            instance = Instance.objects.get(name=instance)
+        users = []
         if request.method == 'POST':
-            koko = request.POST
             form = MessageForm(request.POST)
             if form.is_valid():
                 rl = form.cleaned_data['recipient_list']
@@ -46,12 +48,33 @@ def notify(request):
                 if len(mail_list) > 0:
                     send_mail(_("%s%s") % (settings.EMAIL_SUBJECT_PREFIX, form.cleaned_data['subject']),
                               email, settings.SERVER_EMAIL, mail_list)
+                if request.is_ajax():
+                    ret = {'result':'success'}
+                    return HttpResponse(json.dumps(ret), mimetype='application/json')
                 return HttpResponseRedirect(reverse('user-instances'))
         else:
+            if instance:
+                for user in instance.users:
+                    userd = {}
+                    userd['text']=user.username
+                    userd['id']="u_%s"%user.pk
+                    userd['type']="user"
+                    users.append(userd)
+                for group in instance.groups:
+                    groupd = {}
+                    groupd['text']=group.name
+                    groupd['id']="u_%s"%group.pk
+                    groupd['type']="group"
+                    users.append(groupd)
             form = MessageForm()
+        if request.is_ajax():
+            return render_to_response('notifications/create_ajax.html', {
+                                    'form': form, 'users': users, 'ajax': 'true',
+                                    },context_instance=RequestContext(request))
+        
         return render_to_response('notifications/create.html', {
-            'form': form,
-        })
+            'form': form, 'users': users
+            },context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect(reverse('user-instances'))
 
