@@ -333,7 +333,11 @@ class Cluster(models.Model):
         return info
 
     def get_cluster_nodes(self):
-        return self._client.GetNodes()
+        info = cache.get("cluster:%s:nodes" % self.slug)
+        if info is None:
+            info = self._client.GetNodes()
+            cache.set("cluster:%s:nodes" % self.slug, info, 180)
+        return info
 
     def get_cluster_instances(self):
         return self._client.GetInstances()
@@ -342,7 +346,15 @@ class Cluster(models.Model):
         return self._client.GetInstances(bulk=True)
 
     def get_node_info(self, node):
-        return self._client.GetNode(node)
+        info = cache.get("cluster:%s:node:%s" % (self.slug, node))
+        if info is None:
+            info = self._client.GetNode(node)
+            info['cluster'] = self.slug
+            info['mem_used'] = 100*(info['mtotal']-info['mfree'])/info['mtotal']
+            info['disk_used'] = 100*(info['dtotal']-info['dfree'])/info['dtotal']
+            info['shared_storage'] = self.get_cluster_info()['shared_file_storage_dir'] if self.get_cluster_info()['shared_file_storage_dir'] else None
+            cache.set("cluster:%s:node:%s" % (self.slug, node), info, 180)
+        return info
 
     def get_instance_info(self, instance):
         cache_key = self._instance_cache_key(instance)
