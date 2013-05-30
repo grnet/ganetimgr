@@ -1,14 +1,26 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 {% load i18n %}
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <script type="text/javascript">
-	$(document).ready( function(){
-			$('#vm_instance_table').dataTable( {
-			"bJQueryUI": true,
-			"oLanguage": {
-				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> instances'
-			},
+
+$(document).ready( function(){
+			var oTable = $('#vm_instance_table').dataTable( {
+			"bPaginate": true,
+            "bLengthChange": true,
+            "bFilter": true,
+            "bSort": true,
+            "bDeferRender": true,
+            "bInfo": true,
+            "bAutoWidth": true,
+            "oLanguage": {
+            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> instances'
+            },
+            "sPaginationType": "bootstrap",
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
 			"aoColumns": [ {"bSearchable": true,"bSortable": true },
 						{"bSearchable": true,"bSortable": true},
 						{"bSearchable": true,"bSortable": true},
@@ -25,6 +37,7 @@
 						],
 			"iDisplayLength": 25,
 	} );
+	oTable.fnDraw();
 	{% if not user.is_superuser or perms.ganeti.view_instances %}
 	$( "#instancedetails" ).dialog({
 			autoOpen: false,
@@ -41,35 +54,66 @@
 	{% endif %}
 
 });
+
 {% if not user.is_superuser or perms.ganeti.view_instances %}
-function showDetails(cluster, instance){
-	$( "#instancedetails" ).html( "" );
-	$( "#instancedetails" ).load("{% url instance-popup %}/?cluster="+cluster+"&instance="+instance+"");
-	$( "#instancedetails" ).dialog( "open" );
-	return false;
-}
+	function showDetails(cluster, instance){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Instance Details: '+instance);
+		$( "#instDetsbody" ).load("{% url instance-popup %}/?cluster="+cluster+"&instance="+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+	
+	function showTags(cluster, instance){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Instance Tags: '+instance);
+		$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+	
+	function showNotify(cluster, instance){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Notify: '+instance);
+		$( "#instDetsbody" ).load("{% url notify %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
 {% endif %}
+
 </script>
+<style>
+.dropdown-menu.instanceopt{
+	right: 0px;
+	left: auto;
+}
+</style>
 {% endblock %}
 {% block title %}{% trans "My instances" %}{% endblock %}
 {% block content %}
-<h3>{% trans "My instances" %}</h3>
+<div class="span12 main-content">
 
-<table class="display" width="100%" id="vm_instance_table">
+    <div class="row-fluid">
+        <div class="row-fluid">
+            <h2>{% trans "My instances" %}
+                <span class="info">Displaying all instances</span>
+            </h2>
+
+<table class="table table-first-column-number data-table display full" id="vm_instance_table">
 <thead>
 <tr>
-	<th>{% trans "Name" %}</th>
-	<th>{% trans "Cluster" %}</th>
+	<th><span class="sort-icon"><span>{% trans "Name" %}</th>
+	<th><span class="sort-icon"><span>{% trans "Cluster" %}</th>
 	<th style="text-align: center;">{% trans "Memory" %}</th>
 	<th style="text-align: center;">CPUs</th>
 	<th style="text-align: center;">{% trans "IP address" %}</th>
 	<th style="text-align: center;">{% trans "Status" %}</th>
-	<th style="text-align: center;">{% trans "MAC" %}</th>
+	<th style="display:none">{% trans "MAC" %}</th>
 {% if user.is_superuser or perms.ganeti.view_instances %}
 	<th style="text-align: center;">{% trans "Link" %}</th>
 	<th style="text-align: center;">{% trans "Owner" %}</th>
-	<th style="text-align: center;">{% trans "Details" %}</th>
-	<th style="text-align: center;">{% trans "HiddenContactDetails" %}</th>
+	<th style="text-align: center;">{% trans "Options" %}</th>
+	<th style="display:none">{% trans "HiddenContactDetails" %}</th>
 {% endif %}
 </tr>
 
@@ -80,19 +124,43 @@ function showDetails(cluster, instance){
 <tr {% if instance.admin_state %} class="GradeA" {% else %} class="GradeX" {% endif %}><td>{% if not instance.admin_view_only %}<a href="{% url instance-detail instance.cluster.slug instance.name %}">{{ instance.name }}</a>{% else %}{{ instance.name }}{% endif %}</td>
 <td>{{ instance.cluster.description }}</td><td style="text-align: center;">{{ instance.beparams.memory|memsize }}</td><td style="text-align: center;">{{ instance.beparams.vcpus }}</td><td style="text-align: center;">{{ instance.nic_ips.0|default:"&mdash;" }}</td>
 <td style="text-align: center;">{% ifequal instance.admin_state instance.oper_state %}
-{{ instance.admin_state|yesno:"Running,Stopped" }}
+{% autoescape off %}
+{{ instance.admin_state|yesno:'<span class="label label-success">Running</span>,<span class="label label-important">Stopped</span>' }}
+{% endautoescape %}
 {% else %}
+<span class="label label-warning">
 {{ instance.oper_state|yesno:"Running,Stopped" }}, should be {{ instance.admin_state|yesno:"running,stopped" }}
-{% endifequal %}{% if instance.is_locked %} (<em>{{ instance.is_locked }}</em>){% endif %}
+<span>
+{% endifequal %}{% if instance.is_locked %} <span class="label label-inverse">{{ instance.is_locked }}</span>{% endif %}
+{% if instance.hvparams.cdrom_image_path and instance.hvparams.boot_order == 'cdrom' %}
+<span class="label label-warning">CDROM</span>
+{% endif %}
 </td>
 
-<td style="text-align: center;">{{instance.nic_macs|join:", "}}</td>
+<td style="text-align: center;display:none;">{{instance.nic_macs|join:", "}}</td>
 {% if user.is_superuser or perms.ganeti.view_instances %}
 	<td style="text-align: center;">{{instance.nic_links|join:", "}}</td>
-	<td style="text-align: center;">{% for user in instance.users %}<a href="{% url user-info 'user' user %}">{{ user }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
-	{% for group in instance.groups %}<a href="{% url user-info 'group' group %}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-	<td style="text-align: center;"><a href="#" onclick="javascript:showDetails('{{instance.cluster.slug}}','{{instance.name}}'); return false;">details</a></td>
-	<td>{% for user in instance.users %}{{ user }},{{ user.email }}{% if not forloop.last %}, {% endif %}{% endfor %},{% for group in instance.groups %}{% for user in group.user_set.all %}{{user}}, {{user.email}},{% endfor %}{% if not forloop.last %}, {% endif %}{% endfor %}
+	<td style="text-align: center;">{% for user in instance.users %}<a class="btn" href="{% url user-info 'user' user %}"><i class="icon-user"></i> {{ user }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+	{% for group in instance.groups %}<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i>  {{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+	<td>
+	
+	
+
+	
+	<div class="btn-group">
+                <button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> Options <span class="caret"></span></button>
+                <ul class="dropdown-menu instanceopt">
+                  <li><a href="#" onclick="javascript:showDetails('{{instance.cluster.slug}}','{{instance.name}}'); return false;">Details</a></li>
+                  <li><a href="#" onclick="javascript:showTags('{{instance.cluster.slug}}','{{instance.name}}'); return false;">Tags</a></li>
+                  <li><a href="#" onclick="javascript:showNotify('{{instance.cluster.slug}}','{{instance.name}}'); return false;">Notify</a></li>
+                </ul>
+              </div>
+	
+	
+	
+	
+	</td>
+	<td style="display:none;">{% for user in instance.users %}{{ user }},{{ user.email }}{% if not forloop.last %}, {% endif %}{% endfor %},{% for group in instance.groups %}{% for user in group.user_set.all %}{{user}}, {{user.email}},{% endfor %}{% if not forloop.last %}, {% endif %}{% endfor %}
 	</td>
 {% endif %}
 </tr>
@@ -100,7 +168,22 @@ function showDetails(cluster, instance){
 {% endfor %}
 </tbody>
 </table>
+</div>
+</div>
+</div>
 {% if user.is_superuser or perms.ganeti.view_instances %}
-<div id="instancedetails"></div>
+
+<div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabelservdets">{% trans "Instance Details" %}</h3>
+</div>
+<div class="modal-body" id="instDetsbody">
+
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+</div>
+</div>
 {% endif %}
 {% endblock %}

@@ -1,119 +1,16 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Notify" %}{% endblock %}
 {% block breadcrumbs %}:: {% trans "Create Notification" %}{% endblock %}
 {% block extrahead %}
-<link rel="stylesheet" href="/static/select2/select2.css">
-<script src="/static/select2/select2.js"></script>
-<link href="/static/awesome/css/font-awesome.min.css" rel="stylesheet">
-<script>
-$(document).ready(function() {
-	$("#id_recipient_list")
-								.select2(
-										{
-											placeholder : "Users from user, group, instance, cluster",
-											minimumInputLength : 2,
-											multiple: true,
-											ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
-												url : "{% url usergroups %}",
-												dataType : 'json',
-												data : function(term, page) {
-													return {
-														q : term,
-													};
-												},
-												results : function(data, page) { // parse the results into the format expected by Select2.
-													// since we are using custom formatting functions we do not need to alter remote JSON data
-													return {
-														results : data
-													};
-												}
-											},
-											formatResult : format, // omitted for brevity, see the source of this page
-											formatSelection : format, // omitted for brevity, see the source of this page
-											escapeMarkup: function(m) { return m; }
-										});
 
-					});
-function format(item) {
-	if (item.type=="user"){
-		return '<i class="icon-user"></i> ' + item.text;
-	}
-	else if (item.type=="group"){
-		return '<i class="icon-group"></i> ' + item.text;
-	}
-	else if (item.type=="vm"){
-		return '<i class="icon-laptop"></i> ' + item.text;
-	}
-	else if (item.type=="cluster"){
-		return '<i class="icon-puzzle-piece"></i> ' + item.text;
-	}
-	else{
-		return item.text;
-	}
-	};
+{% include "notifications/create_script.html" %}
 
-</script>
 {% endblock %}
 
 {% block content %}
-<style type="text/css">
-th {
-	text-align: right;
-	padding-right: 0.5em;
-	vertical-align: top;
-}
 
-.help {
-	font-style: italic;
+{% include "notifications/create_body.html" %}
 
-}
-</style>
-
-<div align="center">
-<h3>{% trans "Create Notification" %}</h3>
-<form method="POST" class="form-horizontal">
-                                         <fieldset>
-                                        {% csrf_token %}
-                                        {% if form.non_field_errors %}
-                                        <p class="error">
-                                            {{ form.non_field_errors}}
-                                        </p>
-                                        {% endif %}
-                                    <div class="control-group {% if form.subject.errors %} error {% endif %}">
-                                            <label class="control-label">{% if form.subject.field.required %}<b>{% endif %}{{form.subject.label}}{% if form.subject.field.required %}</b>{% endif %}</label>
-                                            <div class="controls">
-                                                {{ form.subject }}
-                                                {% if form.subject.errors %} <span class="help-inline"> {{ form.subject.errors|join:", " }} </span>
-                                                {% endif %} <span class="help-block"> {{ form.subject.help_text }}</span>
-                                            </div>
-                                            </div>
-                                    <div class="control-group {% if form.message.errors %} error {% endif %}">
-                                            <label class="control-label">{% if form.message.field.required %}<b>{% endif %}{{form.message.label}}{% if form.message.field.required %}</b>{% endif %}</label>
-                                            <div class="controls">
-                                                {{ form.message }}<div id="livingarea"></div>
-                                                {% if form.message.errors %} <span class="help-inline"> {{ form.message.errors|join:", " }} </span>
-                                                {% endif %} <span class="help-block"> {{ form.message.help_text }}</span>
-                                            </div>
-                                            </div>
-                                    <div class="control-group {% if form.recipient_list.errors %} error {% endif %}">
-                                            <label class="control-label">{% if form.recipient_list.field.required %}<b>{% endif %}{{form.recipient_list.label}}{% if form.recipient_list.field.required %}</b>{% endif %}</label>
-                                            <div class="controls">
-                                                <input type='hidden' id='id_recipient_list' style='width:300px' name="recipient_list"/>
-                                                {% if form.recipient_list.errors %} <span class="help-inline"> {{ form.recipient_list.errors|join:", " }} </span>
-                                                {% endif %} <span class="help-block"> {{ form.recipient_list.help_text }}</span>
-                                            </div>
-                                            </div>
-                                        <div class="control-group">
-                                            <div class="controls">
-                                                <button type="submit" id="applybutton" value="Send" class="btn"/>
-                                                Send</button>
-                                            </div>
-                                        </div>
-                                        </fieldset>
-                                    </form>
-
-<input type='hidden' id='e1' style='width:300px' />
-
-</div>
 {% endblock %}
+

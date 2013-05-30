@@ -44,7 +44,7 @@
         dataType: 'json',
         success: function(data) {
 			$("#actions_container_inner").empty();
-			$("#actions_container_inner").html("<td>"+data.action+"<td>");
+			$("#actions_container_inner").html("<div class='span4'>"+data.action+"</div>");
 			setTimeout(load_data, 0);
 
         }
@@ -60,7 +60,7 @@
         dataType: 'json',
         success: function(data) {
 			$("#actions_container_inner").empty();
-			$("#actions_container_inner").html("<td>"+data.action+"<td>");
+			$("#actions_container_inner").html("<div class='span4'>"+data.action+"</div>");
 			setTimeout(load_data, 0);
 			
         }
@@ -76,7 +76,7 @@
         dataType: 'json',
         success: function(data) {
 			$("#actions_container_inner").empty();
-			$("#actions_container_inner").html("<td>"+data.action+"<td>");
+			$("#actions_container_inner").html("<div class='span4'>"+data.action+"</div>");
 			setTimeout(load_data, 0);
 
         }
@@ -89,20 +89,20 @@
 <table>
 {% if not instance.is_locked %}
 	{% if instance.oper_state %}
-		<tr id="actions_container_inner">
-			<td><a id="shutdown" href="#">{% trans "Shutdown" %}</a></td>
-			<td><a id="reboot" href="#">{% trans "Reboot" %}</a></td>
-			<td><a id="console" href="{% url instance-vnc cluster.slug instance.name %}">{% trans "Console" %}</a></td>
-		</tr>
+		<div id="actions_container_inner" class="row-fluid">
+			<div class="span4"><a class="btn btn-danger" id="shutdown" href="#"><i class='icon-stop'></i> {% trans "Shutdown" %}</a></div>
+			<div class="span4"><a class="btn btn-warning" id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div>
+			<div class="span4"><a class="btn btn-inverse" id="console" href="{% url instance-vnc cluster.slug instance.name %}"><i class='icon-terminal'></i> {% trans "Console" %}</a></div>
+		</div>
 	{% else %}
-		<tr id="actions_container_inner">
-		<td colspan=3><a id="start" href="#">{% trans "Start" %}</a></td>
-		</tr>
+		<div id="actions_container_inner" class="row-fluid">
+		<div class="span4"><a class="btn btn btn-success" id="start" href="#"><i class="icon-play"></i> {% trans "Start" %}</a></div>
+		</div>
 	{% endif %}
 {% else %}
-	<tr id="actions_container_inner">
-		<td id="show_no_actions"><em>{{ instance.is_locked|capfirst }}</em></td>
-	</tr>
+	<div id="actions_container_inner" class="row-fluid">
+		<div class="span4" id="show_no_actions"><em>{{ instance.is_locked|capfirst }}</em></div>
+	</div>
 {% endif %}
 
 </table>
