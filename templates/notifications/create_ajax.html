@@ -1,0 +1,42 @@
+{% load i18n %}
+{% block extrahead %}
+
+{% include "notifications/create_script.html" %}
+<script>
+$(document).ready(function() {
+	$("#mailapplybutton").click(function(){
+		$.ajax({
+			
+			url:"{% url notify %}",
+			data:$("#notifyform").serialize(),
+			type: "POST",
+			cache: false,
+			success:function(data){
+					console.log(data);
+					try {
+						result = data.result;
+						if (typeof result === 'undefined'){
+							$('#instDetsbody').html(data);
+						}
+						else{
+							$('#instDets').modal('hide');
+							//window.setTimeout('location.reload()', 3000);
+						}
+					}
+					catch (exception) {
+						$('#instDetsbody').html(data);
+					}			
+				}
+				});
+		return false;
+	});
+	
+});
+</script>
+{% endblock %}
+
+{% block content %}
+
+{% include "notifications/create_body.html" %}
+
+{% endblock %}
