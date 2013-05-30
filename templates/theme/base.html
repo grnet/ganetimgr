@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<!-- Web Crawler Spider -->
+<head>
+    <meta charset="utf-8">
+    <title>ViMa Admin</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+
+
+
+    <!-- For sample logo only-->
+    <!--Remove if you no longer need this font-->
+    
+    <!--For sample logo only-->
+
+
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/awesome/css/font-awesome.min.css">
+    <script src="/static/js/jquery-1.7.1.min.js"></script>
+    
+    <script type="text/javascript" src="/static/js/jquery-ui-1.8.12.custom.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="/static/theme/theme.css">
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<style>
+
+.label, .badge {
+    background-color: #999999;
+    color: #FFFFFF;
+    display: inline-block;
+    font-size: 11.844px;
+    font-weight: bold;
+    line-height: 14px;
+    padding: 2px 4px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
+.label-important, .badge-important {
+    background-color: #B94A48;
+}
+.label {
+    border-radius: 3px 3px 3px 3px;
+}
+
+
+.btn-group.open .btn-success.dropdown-toggle, .label.label-success, .badge.badge-success {
+    background: none repeat scroll 0 0 #468847;
+}
+
+.label.label-important, .badge.badge-important {
+    background: none repeat scroll 0 0 #B94A48;
+}
+
+
+.btn-group.open .btn-warning.dropdown-toggle, .label.label-warning, .badge.badge-warning {
+    background: none repeat scroll 0 0 #F89406;
+}
+
+.label-success, .badge-success {
+    background-color: #468847;
+}
+
+.label-warning, .badge-warning {
+    background-color: #F89406;
+}
+
+</style>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+{% block extrahead %}{% endblock %}
+  </head>
+
+  <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
+  <!--[if IE 7 ]> <body class="ie ie7 "> <![endif]-->
+  <!--[if IE 8 ]> <body class="ie ie8 "> <![endif]-->
+  <!--[if IE 9 ]> <body class="ie ie9 "> <![endif]-->
+  <!--[if (gt IE 9)|!(IE)]><!--> 
+  <body class=""> 
+  <!--<![endif]-->
+    
+    <div class="navbar">
+        <div class="navbar-inner">
+                <ul class="nav pull-right">
+                    
+                    <li class="hidden-phone"><a href="#" role="button">Settings</a></li>
+                    <li id="fat-menu" class="dropdown">
+                        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-user"></i> {{user}}
+                            <i class="icon-caret-down"></i>
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="#">My Account</a></li>
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" class="visible-phone" href="#">Settings</a></li>
+                            <li class="divider visible-phone"></li>
+                            <li><a tabindex="-1" href="{% url logout %}">Logout</a></li>
+                        </ul>
+                    </li>
+                    
+                </ul>
+                <a class="brand" href="{% url user-instances %}">
+					<img class="logoimg" src="/static/grnet_logo.png">
+				
+					virtual private servers
+                </a>
+        </div>
+    </div>
+
+    <div id="main-menu">
+        
+        <div id="phone-navigation">
+            <select class="selectnav" id="phone-menu">
+                
+                <option value="{% url user-instances %}" selected="selected"> Dashboard</option>
+                
+                <option value="{% url notify %}" > Send Mail</option>
+                    
+                    
+            </select>
+        </div>
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="index.html"><i class="icon-dashboard"></i> <span>Dashboard</span></a></li>
+            {% comment %}
+            <li ><a href="reports.html" ><i class="icon-bar-chart"></i> <span>Reports</span></a></li>
+            <li ><a href="components.html" ><i class="icon-cogs"></i> <span>Components</span></a></li>
+            <li ><a href="pricing.html"><i class="icon-magic"></i> <span>Pricing</span></a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i> Settings <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="sign-in.html"><span>Sign-in Page</span></a></li>
+                    <li><a href="sign-up.html"><span>Sign-up Page</span></a></li>
+                    <li><a href="reset-password.html"><span>Forgot Password Page</span></a></li>
+                </ul>
+            </li>
+            {% endcomment %}
+        </ul>
+    </div>
+    
+    
+    <div id="sidebar-nav">
+        
+        <ul id="dashboard-menu" class="nav nav-list">
+            
+            <li class="active "><a href="{% url user-instances %}"><i class="icon-home"></i> <span>Dashboard</span></a></li>
+            {% if user.is_superuser %}
+            <li><a href="{% url notify %}"><i class="icon-envelope"></i> <span>Send Mail</span></a></li>
+            <li><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>Cluster Nodes</span></a></li>
+            {% endif %}
+            
+            
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                
+
+            {% block content %}
+                {% endblock %}
+
+
+
+{% comment %}
+<div class="span4 sidebar">
+    <div class="widget">
+        <h2>Latest Comments</h2>
+        <ul class="cards">
+            <li>
+                <p class="title">Ashley Jacobs</p>
+                <div class="img">
+                    <img src="images/faces/1b.png">
+                    <div class="label label-info">Pro</div>
+                </div>
+                <p class="info-text">Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+                <div class="stats">
+                    <p class="time">5 minutes ago</p>
+                    <span>15 <i class="icon-pushpin"></i></span>
+                    <span>27 <i class="icon-comment"></i></span>
+                    <span>158 <i class="icon-eye-open"></i></span>
+                </div>
+            </li>
+            <li>
+                <p class="title">Sarah Whitman</p>
+                <div class="img">
+                    <img src="images/faces/2b.png">
+                    <div class="label label-warning">Free</div>
+                </div>
+                <p class="info-text">Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master.</p>
+                <div class="stats">
+                    <p class="time">29 minutes ago</p>
+                    <span>10 <i class="icon-pushpin"></i></span>
+                    <span>19 <i class="icon-comment"></i></span>
+                    <span>58 <i class="icon-eye-open"></i></span>
+                </div>
+            </li>
+            <li>
+                <p class="title">Connor Adams</p>
+                <div class="img">
+                    <img src="images/faces/1a.png">
+                    <div class="label label-info">Pro</div>
+                </div>
+                <p class="info-text">Anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack.</p>
+                <div class="stats">
+                    <p class="time">Yesterday</p>
+                    <span>25 <i class="icon-pushpin"></i></span>
+                    <span>39 <i class="icon-comment"></i></span>
+                    <span>252 <i class="icon-eye-open"></i></span>
+                </div>
+            </li>
+            <li class="more">
+                <a href="#">Show All</a>
+            </li>
+        </ul>
+    </div>
+    <div class="widget">
+        <ul id="myTab" class="nav nav-tabs three-tabs fancy">
+          <li class="active"><a href="#home" data-toggle="tab">Orders</a></li>
+          <li><a href="#promotions" data-toggle="tab">Promotions</a></li>
+          <li class="dropdown">
+            <a href="#deals" data-toggle="tab">Deals</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="home">
+          <ul class="cards">
+            <li>
+                <p class="pull-right text-error">$20,500</p>
+                <a href="#"><p class="title">Care Hospital</p></a>
+                <p class="info">Sales Rating: 86%</p>
+            </li>
+            <li>
+                <p class="pull-right text-info">$9,400</p>
+                <a href="#"><p class="title">New Automotive</p></a>
+                <p class="info">Sales Rating: 72%</p>
+            </li>
+            <li>
+                <p class="pull-right text-success">$60,200</p>
+                <a href="#"><p class="title">Money Financial</p></a>
+                <p class="info">Sales Rating: 92%</p>
+            </li>
+            <li>
+                <p class="pull-right text-important">$8,640</p>
+                <a href="#"><p class="title">Custom Insurance</p></a>
+                <p class="info">Sales Rating: 84%</p>
+            </li>
+            <li>
+                <p class="pull-right text-warning">$36,700</p>
+                <a href="#"><p class="title">New Technology</p></a>
+                <p class="info">Sales Rating: 66%</p>
+            </li>
+        </ul>
+          </div>
+          <div class="tab-pane fade" id="promotions">
+            
+            <ul class="cards">
+                <li style="padding: 0em 1em;"><h3>This is something interesting.</h3></li>
+                <li>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation labore velit, blog sartorial PBR leggings next level wes anderson artisan.</li>
+                <li>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation labore velit, blog sartorial PBR leggings next level wes anderson artisan.</li>
+                <li>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation labore velit, blog sartorial PBR leggings next level wes anderson artisan.</li>
+            </ul>
+          </div>
+          <div class="tab-pane fade" id="deals">
+            <ul class="cards">
+                <li><p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid oranges apples banana.</p><a class="btn btn-mini" href="#">Show me</a></li>
+                <li><p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid oranges apples banana.</p><a class="btn btn-mini" href="#">Show me</a></li>
+                <li><p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid oranges apples banana.</p><a class="btn btn-mini" href="#">Show me</a></li>
+                <li><p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid oranges apples banana.</p><a class="btn btn-mini" href="#">Show me</a></li>
+            </ul>
+          </div>
+        </div>
+    </div>
+
+    <div class="widget">
+        <ul class="nav nav-tabs two-tabs fancy">
+          <li class="active"><a href="#upgrade" data-toggle="tab">Upgrade Account</a></li>
+          <li><a href="#why-upgrade" data-toggle="tab">Why Upgrade?</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="upgrade">
+            <ul class="unstyled cards not-bottom">
+            
+            
+            
+                <li>
+                <i class="icon-leaf pull-left text-info"></i>
+                    <p class="title"><strong>More Features</strong></p>
+                    <p class="info small">This is the kind of thing you really need.</p>
+                </li>
+                
+                <li>
+                <i class="icon-group pull-left text-info"></i>
+                    <p class="title"><strong>Unlimited Users</strong></p>
+                    <p class="info small">This is the kind of thing you really need.</p>
+                </li>
+                
+                <li>
+                <i class="icon-trophy pull-left text-info"></i>
+                    <p class="title"><strong>Custom Database</strong></p>
+                    <p class="info small">This is the kind of thing you really need.</p>
+                </li>
+                
+                <li>
+                <i class="icon-book pull-left text-info"></i>
+                    <p class="title"><strong>Enhanced Reporting</strong></p>
+                    <p class="info small">This is the kind of thing you really need.</p>
+                </li>
+                
+            </ul>
+            <button class="btn btn-primary pull-right">Upgrade Now</button>
+          </div>
+          <div class="tab-pane fade" id="why-upgrade">
+            <h3>This is something interesting.</h3>
+            <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation labore velit, blog sartorial PBR leggings next level wes anderson artisan.</p>
+            <button class="btn btn-primary pull-right">Upgrade Now</button>
+          </div>
+        </div>
+    </div>
+</div>
+
+        {% endcomment %}
+        
+                <footer>
+                    <hr>
+                    <p>&copy; 2013 <a href="#">GRNET NOC</a></p>
+                </footer>
+                
+            </div>
+        </div>
+    </div>
+    
+
+
+    
+  </body>
+
+<!-- Web Crawler Spider -->
+</html>
+
+
