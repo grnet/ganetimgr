@@ -158,6 +158,15 @@ def shutdown(request, cluster_slug, instance):
     action = {'action': _("Please wait... shutting-down")}
     return HttpResponse(json.dumps(action))
 
+@login_required
+@csrf_exempt
+@check_instance_auth
+def reinstall(request, cluster_slug, instance):
+    cluster = get_object_or_404(Cluster, slug=cluster_slug)
+    cluster.reinstall_instance(instance)
+    action = {'action': _("Please wait... re-installing instance")}
+    return HttpResponse(json.dumps(action))
+
 
 @login_required
 @csrf_exempt
