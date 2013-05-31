@@ -382,6 +382,13 @@ class Cluster(models.Model):
         job_id = self._client.ShutdownInstance(instance)
         self._lock_instance(instance, reason=_("shutting down"), job_id=job_id)
         return job_id
+    
+    def reinstall_instance(self, instance):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
+        job_id = self._client.ReinstallInstance(instance)
+        self._lock_instance(instance, reason=_("reinstalling"), job_id=job_id)
+        return job_id
 
     def startup_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
