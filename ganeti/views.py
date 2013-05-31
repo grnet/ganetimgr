@@ -31,6 +31,7 @@ from django.contrib import messages
 from django.conf import settings
 from ganetimgr.ganeti.models import *
 from ganetimgr.ganeti.forms import *
+from operator import itemgetter
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
@@ -39,7 +40,7 @@ from util.ganeti_client import GanetiApiError
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 
-from time import sleep
+from time import sleep, mktime
 
 try:
     import json
@@ -398,6 +399,80 @@ def prepare_tags(taglist):
         if i.startswith('g'):
             tags.append("%s:group:%s" %(GANETI_TAG_PREFIX, Group.objects.get(pk=i.replace('g_','')).name))
     return list(set(tags))
+
+def stats(request):
+    clusters = Cluster.objects.all()
+    instances = len(Instance.objects.all())
+    users = len(User.objects.all())
+    groups = len(Group.objects.all())
+    instance_apps = len(InstanceApplication.objects.all())
+    orgs = len(Organization.objects.all())
+    return render_to_response('statistics.html', {
+                                                  'clusters':clusters, 
+                                                  'instances':instances,
+                                                  'users':users,
+                                                  'groups': groups,
+                                                  'instance_apps': instance_apps,
+                                                  'orgs': orgs},
+                              context_instance=RequestContext(request))
+
+@login_required
+def stats_ajax_instances(request):
+    clusters = Cluster.objects.all()
+    inst_dates = []
+    ret = []
+    i = 0
+    
+    cluster_list = []
+    for cluster in clusters:
+        i = 0
+        cluster_dict = {}
+        cluster_dict['name'] = cluster.slug
+        cluster_dict['instances'] = []
+        for instance in cluster.get_user_instances(request.user):
+            inst_dict = {}
+            inst_dict['time'] = (1000*mktime(instance.ctime.timetuple()))
+            inst_dict['name'] = instance.name
+            cluster_dict['instances'].append(inst_dict)
+        cluster_dict['instances'] = sorted(cluster_dict['instances'], key=itemgetter('time'))
+        for item in cluster_dict['instances']:
+            i = i + 1
+            item['count'] = i
+        cluster_list.append(cluster_dict)
+    return HttpResponse(json.dumps(cluster_list), mimetype='application/json')
+
+@login_required
+def stats_ajax_vms_per_cluster(request, cluster_slug):
+    cluster = Cluster.objects.get(slug=cluster_slug)
+    inst_dates = []
+    ret = []
+    i = 0
+    cluster_dict = {}
+    cluster_dict['name'] = cluster.slug
+    cluster_dict['instances'] = {'up':0,'down':0}
+    for instance in cluster.get_user_instances(request.user):
+        if instance.admin_state:
+            cluster_dict['instances']['up'] = cluster_dict['instances']['up'] + 1
+        else:
+            cluster_dict['instances']['down'] = cluster_dict['instances']['down'] + 1
+
+    return HttpResponse(json.dumps(cluster_dict), mimetype='application/json')
+
+
+@login_required
+def stats_ajax_applications(request):
+    applications = InstanceApplication.objects.all().order_by('filed')
+    app_list = []
+    i = 0
+    for app in applications:
+       appd = {}
+       appd['instance'] = app.hostname
+       i = i + 1
+       appd['count'] = i
+       appd['user'] = app.applicant.username
+       appd['time'] = (1000*mktime(app.filed.timetuple()))
+       app_list.append(appd)
+    return HttpResponse(json.dumps(app_list), mimetype='application/json')     
 
 @login_required
 def get_user_groups(request):
