@@ -138,9 +138,9 @@
         </div>
 
         <ul class="nav nav-tabs">
-            <li class="active"><a href="index.html"><i class="icon-dashboard"></i> <span>Dashboard</span></a></li>
+            <li class="active"><a href="{% url user-instances %}"><i class="icon-dashboard"></i> <span>Dashboard</span></a></li>
+            <li ><a href="{% url stats %}" ><i class="icon-bar-chart"></i> <span>Statistics</span></a></li>
             {% comment %}
-            <li ><a href="reports.html" ><i class="icon-bar-chart"></i> <span>Reports</span></a></li>
             <li ><a href="components.html" ><i class="icon-cogs"></i> <span>Components</span></a></li>
             <li ><a href="pricing.html"><i class="icon-magic"></i> <span>Pricing</span></a></li>
             <li class="dropdown">
@@ -164,6 +164,7 @@
             {% if user.is_superuser %}
             <li><a href="{% url notify %}"><i class="icon-envelope"></i> <span>Send Mail</span></a></li>
             <li><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>Cluster Nodes</span></a></li>
+            <li><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>Service Stats</span></a></li>
             {% endif %}
             
             
