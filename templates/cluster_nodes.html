@@ -100,9 +100,9 @@ Free: <span class="badge badge-{{node.mem_used|perctobootstrapbadge}}">{{node.mf
 Free: <span class="badge badge-{{node.disk_used|perctobootstrapbadge}}">{{node.dfree|memsize}} </span> Total: <span class="badge badge-inverse">{{node.dtotal|memsize}}</span>
 {% endif %}
 </td>
-<td>{{node.ctotal}}</td>
-<td>{{node.pinst_cnt}}</td>
-<td style="text-align: center;"><span class="label label-{{ node.role|nodelabel }}">
+<td style="text-align: center;">{{node.ctotal}}</td>
+<td style="text-align: center;">{{node.pinst_cnt}}</td>
+<td><span class="label label-{{ node.role|nodelabel }}">
 {{ node.role|noderole }}
 <span>
 </td>
