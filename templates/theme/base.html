@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  
+{% load i18n %}
 <!-- Web Crawler Spider -->
 <head>
     <meta charset="utf-8">
@@ -34,25 +34,7 @@
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
 <style>
 
-.label, .badge {
-    background-color: #999999;
-    color: #FFFFFF;
-    display: inline-block;
-    font-size: 11.844px;
-    font-weight: bold;
-    line-height: 14px;
-    padding: 2px 4px;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    vertical-align: baseline;
-    white-space: nowrap;
-}
 
-.label-important, .badge-important {
-    background-color: #B94A48;
-}
-.label {
-    border-radius: 3px 3px 3px 3px;
-}
 
 
 .btn-group.open .btn-success.dropdown-toggle, .label.label-success, .badge.badge-success {
@@ -68,13 +50,6 @@
     background: none repeat scroll 0 0 #F89406;
 }
 
-.label-success, .badge-success {
-    background-color: #468847;
-}
-
-.label-warning, .badge-warning {
-    background-color: #F89406;
-}
 
 </style>
 
@@ -140,6 +115,13 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="{% url user-instances %}"><i class="icon-dashboard"></i> <span>Dashboard</span></a></li>
             <li ><a href="{% url stats %}" ><i class="icon-bar-chart"></i> <span>Statistics</span></a></li>
+            <li ><a href="{% url apply %}" ><i class="icon-plus-sign"></i> <span>{% trans "Create Instance" %}</span></a></li>
+            {% if user.is_superuser %}
+						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
+{% endif %}
+{% if can_handle_applications %}
+						<li ><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
+{% endif %}
             {% comment %}
             <li ><a href="components.html" ><i class="icon-cogs"></i> <span>Components</span></a></li>
             <li ><a href="pricing.html"><i class="icon-magic"></i> <span>Pricing</span></a></li>
