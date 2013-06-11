@@ -66,7 +66,29 @@
         }
     });	 
 		return false; });
+	
+	{% if not instance.pending_reinstall %}
+		$( "#reinstall" )
+		.click(function() {
+			clearTimeout(polltimer);
+			$( "#instDets" ).modal('show');
+			return false; });
 		
+		
+		$( "#reinstallapplybutton" )
+		.click(function() {
+			clearTimeout(polltimer);
+			$.ajax({
+	        type: 'POST',
+	        url: "{% url instance-reinstall cluster.slug instance.name %}",
+	        dataType: 'json',
+	        success: function(data) {
+	        	$( "#instDetsbody" ).html("<div class='span4'>"+data.action+"</div>")
+	        }
+	    });	 
+			return false; });
+	{% endif %}
+	
 	$( "#reboot" )
 	.click(function() {
 		clearTimeout(polltimer);
@@ -84,19 +106,30 @@
 		return false; });	
 			
 });
+
 </script>
 {% load i18n %}
 <table>
 {% if not instance.is_locked %}
 	{% if instance.oper_state %}
 		<div id="actions_container_inner" class="row-fluid">
-			<div class="span4"><a class="btn btn-danger" id="shutdown" href="#"><i class='icon-stop'></i> {% trans "Shutdown" %}</a></div>
-			<div class="span4"><a class="btn btn-warning" id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div>
-			<div class="span4"><a class="btn btn-inverse" id="console" href="{% url instance-vnc cluster.slug instance.name %}"><i class='icon-terminal'></i> {% trans "Console" %}</a></div>
+			<div class="span2"><a class="btn btn-danger" id="shutdown" href="#"><i class='icon-stop'></i> {% trans "Shutdown" %}</a></div>
+			<div class="span2"><a class="btn btn-warning" id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div>
+			<div class="span2"><a class="btn btn-inverse" id="console" href="{% url instance-vnc cluster.slug instance.name %}"><i class='icon-terminal'></i> {% trans "Console" %}</a></div>
+			{% if not instance.pending_reinstall %}
+			<div class="span2"><a class="btn btn-danger" id="reinstall" href="#"><i class='icon-cloud-download'></i> {% trans "Reinstall..." %}</a></div>
+			{% endif %}
+			koko{{instance.pending_reinstall}}lsla
+			{% if not instance.pending_destroy %}
+			<div class="span2"><a class="btn btn-danger" id="destroy" href="#"><i class='icon-trash'></i> {% trans "Destroy..." %}</a></div>
+			{% endif %}
 		</div>
 	{% else %}
 		<div id="actions_container_inner" class="row-fluid">
-		<div class="span4"><a class="btn btn btn-success" id="start" href="#"><i class="icon-play"></i> {% trans "Start" %}</a></div>
+		<div class="span3"><a class="btn btn btn-success" id="start" href="#"><i class="icon-play"></i> {% trans "Start" %}</a></div>
+		<div class="span3"><a class="btn btn-warning" id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div>
+		<div class="span3"><a class="btn btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#"><i class='icon-cloud-download'></i> {% trans "Reinstall..." %}</a></div>
+		<div class="span3"><a class="btn btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='icon-trash'></i> {% trans "Destroy..." %}</a></div>
 		</div>
 	{% endif %}
 {% else %}
@@ -108,3 +141,21 @@
 </table>
 
 <div id="instance_status" style="display:none;">{{ instance.oper_state|yesno:"Running,Stopped" }}</div>
+
+<div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabelservdets">{% trans "Reinstall Instance" %}: {{instance}}</h3>
+</div>
+<div class="modal-body" id="instDetsbody">
+{% blocktrans %}You are about to initiate the process of your instance <strong>{{instance}}</strong> re-installation. <br>Your instance will not be reinstalled yet.
+You will receive an email with an activation link. Only when you visit the activation link, your instance will be reinstalled.{% endblocktrans %}
+<br>
+<div>
+<a href="#" id="reinstallapplybutton" value="Save" class="btn btn-danger">{% trans "Email link" %}</a>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+</div>
+</div>
