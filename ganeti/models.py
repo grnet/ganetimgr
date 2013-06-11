@@ -213,13 +213,20 @@ class Instance(object):
         self.admin_view_only = True
         
     def _pending_action_request(self, action):
-        try:
-            pending = InstanceAction.objects.get(instance=self.name, cluster=self.cluster, action=action)
-            if pending.activation_key == 'ALREADY_ACTIVATED':
-                return False
-            return True
-        except InstanceAction.DoesNotExist:
+        '''This should return either 1 or 0 instance actions'''
+        actions = []
+        pending_actions = InstanceAction.objects.filter(instance=self.name, cluster=self.cluster, action=action)
+        for pending in pending_actions:
+            if pending.activation_key_expired():
+                continue
+            actions.append(pending)
+        if len(actions) == 0:
             return False
+        elif len(actions) == 1:
+            return True
+        else:
+            raise Exception
+        
     
     def pending_reinstall(self):
         return self._pending_action_request(1)
@@ -410,6 +417,13 @@ class Cluster(models.Model):
         cache.delete(cache_key)
         job_id = self._client.ReinstallInstance(instance)
         self._lock_instance(instance, reason=_("reinstalling"), job_id=job_id)
+        return job_id
+    
+    def destroy_instance(self, instance):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
+        job_id = self._client.DeleteInstance(instance)
+        self._lock_instance(instance, reason=_("deleting"), job_id=job_id)
         return job_id
 
     def startup_instance(self, instance):
