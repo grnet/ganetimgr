@@ -1,6 +1,6 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
-{% block title %}Re-install instance {{instance}}{% endblock %}
+{% block title %}{% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %} instance {{instance}}{% endblock %}
 {% block extrahead %}
 <style type="text/css">
 		#toolbar {
@@ -23,19 +23,26 @@
     <div class="row-fluid">
         <div class="row-fluid">
         	<h2>{{ instance }}</h2>
-        	{{activated}}
+        	<div class="alert alert-danger">
         	{% if not activated %}
-            You are about to reinstall instance: <strong>{{instance}}</strong><br>
-            Warning! All your data will be lost.
+            You are about to {% if action == 1 %}reinstall{% endif %}{% if action == 2 %}destroy{% endif %} instance: <strong>{{instance}}</strong><br>
+            <h4>Warning!</h4> 
+            {% if action == 1 %}All your data will be lost!{% endif %}
+            {% if action == 2 %}Your instance will be deleted!{% endif %}
+            <br>Make sure you have a recent backup of your data!
+            <br>Once initiated, this process cannot be undone or stop!
+            <br>
             <br>
              <form method="post" align="center" id="conf_form" class="form">
              {% csrf_token %}
-            		<button type="submit" class="btn btn-danger">Re-install</button>
+            		<button type="submit" class="btn btn-danger">{% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %}</button>
              </form>
              {% else %}
-              Reinstall on instance <strong>{{instance}}</strong> is no longer available. It has either expired or already performed.<br>
-              Make a new request via the instance details page: <a href="{% url instance-detail cluster.slug instance %}">{{instance}}</a>.
+              {% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %} on instance <strong>{{instance}}</strong> is no longer available. It has either expired or it is already performed.<br>
+              Apply for a new request via the instance details page.
               {% endif %}
+              </div>
+              
         </div>
     </div>
 </div>
