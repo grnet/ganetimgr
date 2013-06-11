@@ -643,11 +643,12 @@ footer a {
 .btn-group.open .btn-danger.dropdown-toggle {
   background: #a02d17;
 }
-*/
+
 .label.label-important,
 .badge.badge-important {
   background: #a93018;
 }
+*/
 .toggle-button span.info {
   background: #82cdea;
   background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #82cdea), color-stop(1, #41b3df));
@@ -1403,9 +1404,10 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 .dataTables_length {
   float: left;
 }
+/*
 .label {
   font-weight: normal;
-}
+}*/
 .widget {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
