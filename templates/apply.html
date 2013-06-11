@@ -13,6 +13,8 @@ th {
 .help {
 	font-style: italic;
 }
+
+label.required { font-weight: bold; }
 </style>
 
 <div class="span6 main-content">
@@ -28,7 +30,9 @@ th {
                     {% trans "Instance information" %}
                 </legend>
                   <div class="control-group {% if form.hostname.errors %}error{% endif %}">
-	                <label class="control-label" for="id_applier"><b>{{ form.hostname.label_tag }}</b></label>
+	                <label class="control-label {% if form.hostname.field.required %}required{% endif %}" for="id_applier">
+	                	{{ form.hostname.label }}
+	                </label>
                    <div class="controls">{{ form.hostname }}
                     {% if form.hostname.errors %}
                     <span class="help-inline" style="clear:both;">
@@ -40,7 +44,7 @@ th {
                 </div>
                 
                 <div class="control-group {% if form.memory.errors %}error{% endif %}">
-	                <label class="control-label" for="id_applier"><b>{{ form.memory.label_tag }}</b></label>
+	                <label class="control-label {% if form.memory.field.required %}required{% endif %}" for="id_applier">{{ form.memory.label }}</label>
                    <div class="controls">{{ form.memory }}
                     {% if form.memory.errors %}
                     <span class="help-inline" style="clear:both;">
@@ -52,7 +56,7 @@ th {
                 </div>
                 
                 <div class="control-group {% if form.vcpus.errors %}error{% endif %}">
-	                <label class="control-label" for="id_applier"><b>{{ form.vcpus.label_tag }}</b></label>
+	                <label class="control-label {% if form.vcpus.field.required %}required{% endif %}" for="id_applier">{{ form.vcpus.label }}</label>
                    <div class="controls">{{ form.vcpus }}
                     {% if form.vcpus.errors %}
                     <span class="help-inline" style="clear:both;">
@@ -64,7 +68,7 @@ th {
                 </div>
                 
                 <div class="control-group {% if form.disk_size.errors %}error{% endif %}">
-	                <label class="control-label" for="id_applier"><b>{{ form.disk_size.label_tag }}</b></label>
+	                <label class="control-label {% if form.disk_size.field.required %}required{% endif %}" for="id_applier">{{ form.disk_size.label }}</label>
                    <div class="controls">{{ form.disk_size }}
                     {% if form.disk_size.errors %}
                     <span class="help-inline" style="clear:both;">
@@ -76,7 +80,7 @@ th {
                 </div>
                 
                 <div class="control-group {% if form.hosts_mail_server.errors %}error{% endif %}">
-	                <label class="control-label" for="id_applier"><b>{{ form.hosts_mail_server.label_tag }}</b></label>
+	                <label class="control-label {% if form.hosts_mail_server.field.required %}required{% endif %}" for="id_applier">{{ form.hosts_mail_server.label }}</label>
                    <div class="controls">{{ form.hosts_mail_server }}
                     {% if form.hosts_mail_server.errors %}
                     <span class="help-inline" style="clear:both;">
@@ -88,7 +92,7 @@ th {
                 </div>
                 
                 <div class="control-group {% if form.operating_system.errors %}error{% endif %}">
-	                <label class="control-label" for="id_applier"><b>{{ form.operating_system.label_tag }}</b></label>
+	                <label class="control-label {% if form.operating_system.field.required %}required{% endif %}" for="id_applier">{{ form.operating_system.label }}</label>
                    <div class="controls">{{ form.operating_system }}
                     {% if form.operating_system.errors %}
                     <span class="help-inline" style="clear:both;">
@@ -102,7 +106,7 @@ th {
                 {% if form.network %}			
                 
                 <div class="control-group {% if form.network.errors %}error{% endif %}">
-	                <label class="control-label" for="id_applier"><b>{{ form.network.label_tag }}</b></label>
+	                <label class="control-label {% if form.network.field.required %}required{% endif %}" for="id_applier">{{ form.network.label }}</label>
                    <div class="controls">{{ form.network }}
                     {% if form.network.errors %}
                     <span class="help-inline" style="clear:both;">
@@ -126,7 +130,7 @@ th {
 					{% endblocktrans %}
 					<p>
 					 <div class="control-group {% if form.comments.errors %}error{% endif %}">
-		                <label class="control-label" for="id_applier"><b>{{ form.comments.label_tag }}</b></label>
+		                <label class="control-label {% if form.comments.field.required %}required{% endif %}" for="id_applier">{{ form.comments.label }}</label>
 	                   <div class="controls">{{ form.comments }}
 	                    {% if form.comments.errors %}
 	                    <span class="help-inline" style="clear:both;">
@@ -162,7 +166,7 @@ th {
 					{% endif %}
 					
 					<div class="control-group {% if form.organization.errors %}error{% endif %}">
-		                <label class="control-label" for="id_applier"><b>{{ form.organization.label_tag }}</b></label>
+		                <label class="control-label {% if form.organization.field.required %}required{% endif %}" for="id_applier">{{ form.organization.label }}</label>
 	                   <div class="controls">{{ form.organization }}
 	                    {% if form.organization.errors %}
 	                    <span class="help-inline" style="clear:both;">
@@ -176,7 +180,7 @@ th {
 					<div class="text-center"> <b><u>Administrative Contact</u></b> </div>
 					<div><br></div>
 					<div class="control-group {% if form.admin_contact_name.errors %}error{% endif %}">
-		                <label class="control-label" for="id_applier"><b>{{ form.admin_contact_name.label_tag }}</b></label>
+		                <label class="control-label {% if form.admin_contact_name.field.required %}required{% endif %}" for="id_applier">{{ form.admin_contact_name.label }}</label>
 	                   <div class="controls">{{ form.admin_contact_name }}
 	                    {% if form.admin_contact_name.errors %}
 	                    <span class="help-inline" style="clear:both;">
@@ -188,7 +192,7 @@ th {
 	                </div>
 	                
 	                <div class="control-group {% if form.admin_contact_email.errors %}error{% endif %}">
-		                <label class="control-label" for="id_applier"><b>{{ form.admin_contact_email.label_tag }}</b></label>
+		                <label class="control-label {% if form.admin_contact_email.field.required %}required{% endif %}" for="id_applier">{{ form.admin_contact_email.label }}</label>
 	                   <div class="controls">{{ form.admin_contact_email }}
 	                    {% if form.admin_contact_email.errors %}
 	                    <span class="help-inline" style="clear:both;">
@@ -200,7 +204,7 @@ th {
 	                </div>
 	                
 	                <div class="control-group {% if form.admin_contact_phone.errors %}error{% endif %}">
-		                <label class="control-label" for="id_applier"><b>{{ form.admin_contact_phone.label_tag }}</b></label>
+		                <label class="control-label {% if form.admin_contact_phone.field.required %}required{% endif %}" for="id_applier">{{ form.admin_contact_phone.label }}</label>
 	                   <div class="controls">{{ form.admin_contact_phone }}
 	                    {% if form.admin_contact_phone.errors %}
 	                    <span class="help-inline" style="clear:both;">
