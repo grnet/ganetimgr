@@ -1,7 +1,7 @@
-{% extends "base.html" %}
-{% load i18n %}
-{% block title %}{% trans "Create new Virtual Machine" %}{% endblock %}
-{% block breadcrumbs %}:: {% trans "Create Instance" %}{% endblock %}
+{% extends "theme/base.html" %} {% load i18n %} {% block title %}
+{% trans "Create new Virtual Machine" %}{% endblock %} 
+{% block breadcrumbs %}:: {% trans "Create Instance" %}{% endblock %} 
+
 {% block content %}
 <style type="text/css">
 th {
@@ -12,85 +12,145 @@ th {
 
 .help {
 	font-style: italic;
-
 }
 </style>
 
-<div align="center">
-<h3>{% trans "Apply for a new instance" %}</h3>
-<form method="POST">
-{% csrf_token %}
-<fieldset>
-<legend>{% trans "Instance information" %}</legend>
-<table>
-<tr><th>{{ form.hostname.label_tag }}</th><td>{{ form.hostname }}<span class="error">{{ form.hostname.errors|join:", " }}</span></td></tr>
-<tr class="help"><td></td><td>{{ form.hostname.help_text }}</td></tr>
-<tr><th>{{ form.memory.label_tag }}</th><td>{{ form.memory }}<span class="error">{{ form.memory.errors|join:", " }}</span></td></tr>
-<tr><th>{{ form.vcpus.label_tag }}</th><td>{{ form.vcpus }}<span class="error">{{ form.vcpus.errors|join:", " }}</span></td></tr>
-<tr><th>{{ form.disk_size.label_tag }}</th><td>{{ form.disk_size }}<span class="error">{{ form.disk_size.errors|join:", " }}</span></td></tr>
-<tr class="help"><td></td><td>{{ form.disk_size.help_text }}</td></tr>
-<tr><th>{{ form.hosts_mail_server.label_tag }}</th><td>{{ form.hosts_mail_server }}<span class="error">{{ form.hosts_mail_server.errors|join:", " }}</span></td></tr>
-<tr class="help"><td></td><td>{{ form.hosts_mail_server.help_text }}</td></tr>
-<tr><th>{{ form.operating_system.label_tag }}</th><td>{{ form.operating_system }}<span class="error">{{ form.operating_system.errors|join:", " }}</span></td></tr>
-{% if form.network %}
-<tr><th>{{ form.network.label_tag }}</th><td>{{ form.network }}<span class="error">{{ form.network.errors|join:", " }}</span></td></tr>
-<tr class="help"><td></td><td>{{ form.network.help_text|linebreaks }}</td></tr>
-{% endif %}
-</table>
-</fieldset>
+<div class="span6 main-content">
 
-<fieldset>
-<legend>{% trans "Use/Comments" %}</legend>
-{% blocktrans %}
-<p>Give a short description of the intended use of this virtual machine, that justifies the parameter selection above. Feel free to include any additional comments.</p>
-{% endblocktrans %}
-<p>{{ form.comments }}
-{% if form.errors %}<br /><span class="error">{{ form.comments.errors|join:", " }}</span>{% endif %}
-</p>
-</fieldset>
+	<div class="row-fluid">
+		<div class="row-fluid">
+			<h2>{% trans "Apply for a new instance" %}</h2>
+			<form method="POST">
+				{% csrf_token %}
+				<fieldset>
+					<legend>{% trans "Instance information" %}</legend>
+					<table>
+						<tr>
+							<th>{{ form.hostname.label_tag }}</th>
+							<td>{{ form.hostname }}<span class="error">{{ form.hostname.errors|join:", " }}</span></td>
+						</tr>
+						<tr class="help">
+							<td></td>
+							<td>{{ form.hostname.help_text }}</td>
+						</tr>
+						<tr>
+							<th>{{ form.memory.label_tag }}</th>
+							<td>{{ form.memory }}<span class="error">{{ form.memory.errors|join:", " }}</span></td>
+						</tr>
+						<tr>
+							<th>{{ form.vcpus.label_tag }}</th>
+							<td>{{ form.vcpus }}<span class="error">{{ form.vcpus.errors|join:", " }}</span></td>
+						</tr>
+						<tr>
+							<th>{{ form.disk_size.label_tag }}</th>
+							<td>{{ form.disk_size }}<span class="error">{{ form.disk_size.errors|join:", " }}</span></td>
+						</tr>
+						<tr class="help">
+							<td></td>
+							<td>{{ form.disk_size.help_text }}</td>
+						</tr>
+						<tr>
+							<th>{{ form.hosts_mail_server.label_tag }}</th>
+							<td>{{ form.hosts_mail_server }}<span class="error">{{ form.hosts_mail_server.errors|join:", " }}</span></td>
+						</tr>
+						<tr class="help">
+							<td></td>
+							<td>{{ form.hosts_mail_server.help_text }}</td>
+						</tr>
+						<tr>
+							<th>{{ form.operating_system.label_tag }}</th>
+							<td>{{ form.operating_system }}<span class="error">{{ form.operating_system.errors|join:", " }}</span></td>
+						</tr>
+						{% if form.network %}
+						<tr>
+							<th>{{ form.network.label_tag }}</th>
+							<td>{{ form.network }}<span class="error">{{ form.network.errors|join:", " }}</span></td>
+						</tr>
+						<tr class="help">
+							<td></td>
+							<td>{{ form.network.help_text|linebreaks }}</td>
+						</tr>
+						{% endif %}
+					</table>
+				</fieldset>
 
-<fieldset>
-<legend>{% trans "Administrative contact" %}</legend>
-{% blocktrans %}
-<p>If you are applying on behalf of a NOC under GRNET's constituency, please select the appropriate organization. Otherwise, fill-in the admin contact information below.</p>
-{% endblocktrans %}
+				<fieldset>
+					<legend>{% trans "Use/Comments" %}</legend>
+					{% blocktrans %}
+					<p>Give a short description of the intended use of this virtual
+						machine, that justifies the parameter selection above. Feel free
+						to include any additional comments.</p>
+					{% endblocktrans %}
+					<p>
+						{{ form.comments }} {% if form.errors %}<br />
+						<span class="error">{{ form.comments.errors|join:", " }}</span>
+						{% endif %}
+					</p>
+				</fieldset>
 
-{% if form.non_field_errors %}
-<p class="error">{{ form.non_field_errors|join:", "}}</p>
-{% endif %}
+				<fieldset>
+					<legend>{% trans "Administrative contact" %}</legend>
+					{% blocktrans %}
+					<p>If you are applying on behalf of a NOC under GRNET's
+						constituency, please select the appropriate organization.
+						Otherwise, fill-in the admin contact information below.</p>
+					{% endblocktrans %} {% if form.non_field_errors %}
+					<p class="error">{{ form.non_field_errors|join:", "}}</p>
+					{% endif %}
 
-<table>
-<tr><th>{{ form.organization.label_tag }}</th><td>{{ form.organization }}<span class="error">{{ form.organization.errors|join:", " }}</span></td></tr>
+					<table>
+						<tr>
+							<th>{{ form.organization.label_tag }}</th>
+							<td>{{ form.organization }}<span class="error">{{ form.organization.errors|join:", " }}</span></td>
+						</tr>
 
 
-<tr><td colspan="3"><div align="center">{% trans "OR" %}</div></td></tr>
+						<tr>
+							<td colspan="3"><div align="center">{% trans "OR" %}</div></td>
+						</tr>
 
 
-<tr><th colspan="3"><div align="center">{% trans "Administrative contact" %}</div></th></tr>
-<tr><th>{% trans "Name" %}</th><td>{{ form.admin_contact_name }}<span class="error">{{ form.admin_contact_name.errors|join:", " }}</span></td></tr>
-<tr><th>E-mail</th><td>{{ form.admin_contact_email }}<span class="error">{{ form.admin_contact_email.errors|join:", " }}</span></td></tr>
-<tr><th>{% trans "Phone" %}</th><td>{{ form.admin_contact_phone }}<span class="error">{{ form.admin_contact_phone.errors|join:", " }}</span></td></tr>
-</table>
-</fieldset>
+						<tr>
+							<th colspan="3"><div align="center">{% trans "Administrative contact" %}</div></th>
+						</tr>
+						<tr>
+							<th>{% trans "Name" %}</th>
+							<td>{{ form.admin_contact_name }}<span class="error">{{ form.admin_contact_name.errors|join:", " }}</span></td>
+						</tr>
+						<tr>
+							<th>E-mail</th>
+							<td>{{ form.admin_contact_email }}<span class="error">{{ form.admin_contact_email.errors|join:", " }}</span></td>
+						</tr>
+						<tr>
+							<th>{% trans "Phone" %}</th>
+							<td>{{ form.admin_contact_phone }}<span class="error">{{ form.admin_contact_phone.errors|join:", " }}</span></td>
+						</tr>
+					</table>
+				</fieldset>
 
-<fieldset>
-<legend>{% trans "Miscellaneous" %}</legend>
-{% blocktrans %}
-<p>We kindly remind you of the following:</p>
-<ul align="left">
-<li>You are solely responsible for the data on your VM. You have to take care of back-ups etc.</li>
-<li>We reserve the right to temporarily suspend the operation of your VM in case it causes malfunctions to our infrastructure</li>
-</ul>
-{% endblocktrans %}
-<p>{{ form.accept_tos }} {% trans "I have read the above and accept them, along with the" %} {% trans "Terms of Service" %}</p>
-{% if form.accept_tos.errors %}
-<p class="error">
-{% trans "You must accept the terms of service before continuing." %}
-</p>
-{% endif %}
-</fieldset>
+				<fieldset>
+					<legend>{% trans "Miscellaneous" %}</legend>
+					{% blocktrans %}
+					<p>We kindly remind you of the following:</p>
+					<ul align="left">
+						<li>You are solely responsible for the data on your VM. You
+							have to take care of back-ups etc.</li>
+						<li>We reserve the right to temporarily suspend the operation
+							of your VM in case it causes malfunctions to our infrastructure</li>
+					</ul>
+					{% endblocktrans %}
+					<p>{{ form.accept_tos }} 
+					{% trans "I have read the above and accept them, along with the" %} {% trans "Terms of Service" %}</p>
+					{% if form.accept_tos.errors %}
+					<p class="error">{% trans "You must accept the terms of service before continuing." %}</p>
+					{% endif %}
+				</fieldset>
 
-<p><input type="submit" value="{% trans "Apply" %}" /></p>
-</form>
+				<p>
+					<input type="submit" value="{% trans "Apply" %}" class="btn btn-primary" />
+				</p>
+			</form>
+		</div>
+	</div>
 </div>
 {% endblock %}
