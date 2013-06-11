@@ -39,6 +39,7 @@ from gevent.timeout import Timeout
 from util.ganeti_client import GanetiApiError
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
+from django.core.mail import send_mail, mail_managers
 
 from time import sleep, mktime
 
@@ -163,9 +164,67 @@ def shutdown(request, cluster_slug, instance):
 @check_instance_auth
 def reinstall(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
-    cluster.reinstall_instance(instance)
-    action = {'action': _("Please wait... re-installing instance")}
+    instance = cluster.get_instance_or_404(instance)
+    reinstall_req = InstanceAction.objects.create_action(request.user, instance, cluster, 1)
+    fqdn = Site.objects.get_current().domain
+    url = "https://%s%s" % \
+               (
+                fqdn,
+                reverse("reinstall-review",
+                        kwargs={'application_hash': reinstall_req.activation_key}
+                        )
+                )
+    email = render_to_string("reinstall_mail.txt",
+                                         {"instance": instance,
+                                          "user": request.user,
+                                          "url": url})
+    send_mail(_("%sInstance re-installation requested: %s") % (settings.EMAIL_SUBJECT_PREFIX, instance),
+                  email, settings.SERVER_EMAIL, [request.user.email])
+    action = {'action':_("Mail sent")}
     return HttpResponse(json.dumps(action))
+
+@csrf_exempt
+def reinstallreview(request, application_hash):
+    activation_key = application_hash.lower() # Normalize before trying anything with it.
+    try:
+        action = InstanceAction.objects.get(activation_key=activation_key)
+    except InstanceAction.DoesNotExist:
+        activated = True
+        return render_to_response('verify_action.html', {'instance': instance, 
+                                                         'cluster':cluster, 
+                                                         'activated': activated, 
+                                                         'hash': application_hash},
+                                  context_instance=RequestContext(request))
+    instance = action.instance
+    cluster = action.cluster
+    activated = False
+    if action.activation_key == "ALREADY_ACTIVATED":
+            activated = True
+    if request.method == 'POST':
+        if not activated:
+            instance_action = InstanceAction.objects.activate_request(application_hash)
+            cluster.reinstall_instance(instance)
+            activated = True
+            return HttpResponseRedirect(reverse('instance-detail', kwargs={
+                                                    'instance': instance, 
+                                                    'cluster':cluster.slug 
+                                                     }),
+                              context_instance=RequestContext(request))
+        else:
+            return render_to_response('verify_action.html', {'instance': instance, 
+                                                         'cluster':cluster, 
+                                                         'activated': activated, 
+                                                         'hash': application_hash},
+                                  context_instance=RequestContext(request))
+        
+    if request.method == 'GET':
+        return render_to_response('verify_action.html', {'instance': instance, 
+                                                         'cluster':cluster, 
+                                                         'activated': activated, 
+                                                         'hash': application_hash},
+                                  context_instance=RequestContext(request))
+
+
 
 
 @login_required
@@ -466,7 +525,6 @@ def stats_ajax_vms_per_cluster(request, cluster_slug):
             cluster_dict['instances']['down'] = cluster_dict['instances']['down'] + 1
 
     return HttpResponse(json.dumps(cluster_dict), mimetype='application/json')
-
 
 @login_required
 def stats_ajax_applications(request):
