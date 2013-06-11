@@ -407,7 +407,8 @@ footer a {
   background-color: transparent;
   background-image: none;
 }
-.btn {
+
+/*.btn {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
@@ -535,7 +536,7 @@ footer a {
 .btn-inverse.btn-link {
   background-color: transparent;
   background-image: none;
-}
+}*/
 .fancy.pagination ul {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -590,6 +591,7 @@ footer a {
   background-color: transparent;
   background-image: none;
 }
+/*
 .btn .dropdown-toggle {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -641,6 +643,7 @@ footer a {
 .btn-group.open .btn-danger.dropdown-toggle {
   background: #a02d17;
 }
+*/
 .label.label-important,
 .badge.badge-important {
   background: #a93018;
