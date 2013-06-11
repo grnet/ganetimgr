@@ -17,112 +17,281 @@
 	margin-left: auto;
 	margin-right: auto;
 }
+
+label.required { font-weight: bold; }
+
+.padcontrol{
+	padding-top: 5px;
+}
 </style>
 <script>
 	function set_network(net){
 		$("#id_network").val(net);
 	}
 </script>
-<div align="center" id="review">
-<h2>{% trans "Review application" %} #{{ application.pk }} {% trans "by" %} {{ application.applicant }}</h2>
+
+
+<div class="span9 main-content">
+
+	<div class="row-fluid">
+		<div class="row-fluid">
+			<h2>{% trans "Review application" %} #{{ application.pk }} {% trans "by" %} {{ application.applicant }}</h2>
+
+
 <p>{% trans "Submitted" %} {{ application.filed|date }}</p>
 {% if application.is_pending %}
-<form method="POST" id="appform">
-{% csrf_token %}
-<fieldset>
-<legend>{% trans "Instance information" %}</legend>
-<table>
-<tr><th>{{ appform.hostname.label_tag }}</th><td>{{ appform.hostname }}<span class="error">{{ appform.hostname.errors|join:", " }}</span></td></tr>
-<tr><th>{{ appform.memory.label_tag }}</th><td>{{ appform.memory }}<span class="error">{{ appform.memory.errors|join:", " }}</span></td></tr>
-<tr><th>{{ appform.vcpus.label_tag }}</th><td>{{ appform.vcpus }}<span class="error">{{ appform.vcpus.errors|join:", " }}</span></td></tr>
-<tr><th>{{ appform.disk_size.label_tag }}</th><td>{{ appform.disk_size }}<span class="error">{{ appform.disk_size.errors|join:", " }}</span></td></tr>
-<tr><th>{{ appform.organization.label_tag }}</th><td>{{ appform.organization }}<span class="error">{{ appform.organization.errors|join:", " }}</span></td></tr>
-<tr><th>{{ appform.hosts_mail_server.label_tag }}</th><td>{{ appform.hosts_mail_server }}<span class="error">{{ appform.hosts_mail_server.errors|join:", " }}</span></td></tr>
-<tr><th>{{ appform.operating_system.label_tag }}</th><td>{{ appform.operating_system }}<span class="error">{{ appform.operating_system.errors|join:", " }}</span></td></tr>
-</table>
-</fieldset>
+		<form method="POST" id="appform" class="form-horizontal">
+		{% csrf_token %}
+		<div class="row-fluid"><div class="span6">
+		<fieldset>
+                <legend>
+                    {% trans "Instance information" %}
+                </legend>
+                  <div class="control-group {% if appform.hostname.errors %}error{% endif %}">
+	                <label class="control-label {% if appform.hostname.field.required %}required{% endif %}" for="id_applier">
+	                	{{ appform.hostname.label }}
+	                </label>
+                   <div class="controls">{{ appform.hostname }}
+                    {% if appform.hostname.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ appform.hostname.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                </div>
+                
+                <div class="control-group {% if appform.memory.errors %}error{% endif %}">
+	                <label class="control-label {% if appform.memory.field.required %}required{% endif %}" for="id_applier">{{ appform.memory.label }}</label>
+                   <div class="controls">{{ appform.memory }}
+                    {% if appform.memory.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ appform.memory.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                </div>
+                
+                <div class="control-group {% if appform.vcpus.errors %}error{% endif %}">
+	                <label class="control-label {% if appform.vcpus.field.required %}required{% endif %}" for="id_applier">{{ appform.vcpus.label }}</label>
+                   <div class="controls">{{ appform.vcpus }}
+                    {% if appform.vcpus.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ appform.vcpus.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                </div>
+                
+                <div class="control-group {% if appform.disk_size.errors %}error{% endif %}">
+	                <label class="control-label {% if appform.disk_size.field.required %}required{% endif %}" for="id_applier">{{ appform.disk_size.label }}</label>
+                   <div class="controls">{{ appform.disk_size }}
+                    {% if appform.disk_size.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ appform.disk_size.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                </div>
+                
+                <div class="control-group {% if appform.organization.errors %}error{% endif %}">
+	                <label class="control-label {% if appform.organization.field.required %}required{% endif %}" for="id_applier">{{ appform.organization.label }}</label>
+                   <div class="controls">{{ appform.organization }}
+                    {% if appform.organization.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ appform.organization.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                </div>
+                
+                <div class="control-group {% if appform.hosts_mail_server.errors %}error{% endif %}">
+	                <label class="control-label {% if appform.hosts_mail_server.field.required %}required{% endif %}" for="id_applier">{{ appform.hosts_mail_server.label }}</label>
+                   <div class="controls">{{ appform.hosts_mail_server }}
+                    {% if appform.hosts_mail_server.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ appform.hosts_mail_server.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                </div>
+                
+                <div class="control-group {% if appform.operating_system.errors %}error{% endif %}">
+	                <label class="control-label {% if appform.operating_system.field.required %}required{% endif %}" for="id_applier">{{ appform.operating_system.label }}</label>
+                   <div class="controls">{{ appform.operating_system }}
+                    {% if appform.operating_system.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ appform.operating_system.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                </div>                
+                </fieldset>
+			</div>
+			<div class="span6">
+				{% if application.admin_contact_name %}
+				<fieldset>
+				<legend>{% trans "Administrative contact" %}</legend>
+				<address>
+					<i class="icon-user"></i> <strong>{{ application.admin_contact_name }}</strong><br>
+					<i class="icon-envelope-alt"></i> <a href="mailto:{{ application.admin_contact_email }}">{{ application.admin_contact_email }}</a><br>
+					<i class="icon-phone"></i> {{ application.admin_contact_phone }}
+				</address>				
+				
+				</fieldset>
+				{% endif %}
 
-{% if application.admin_contact_name %}
-<fieldset>
-<legend>{% trans "Administrative contact" %}</legend>
-<table>
-<tr><th>{% trans "Name" %}</th><td>{{ application.admin_contact_name }}</td></tr>
-<tr><th>{% trans "Email" %}</th><td>{{ application.admin_contact_email }}</td></tr>
-<tr><th>{% trans "Phone" %}</th><td>{{ application.admin_contact_phone }}</td></tr>
-</table>
-</fieldset>
-{% endif %}
+				<fieldset>
+				<legend>{% trans "Comments" %}</legend>
+				<div class="alert alert-info">
+				<i class="icon-pencil"></i> {{ application.comments }}
+				</div>
+				</fieldset>
 
-<fieldset>
-<legend>{% trans "Comments" %}</legend>
-<div class="comments">
-{{ application.comments }}
-</div>
-</fieldset>
-
-<fieldset>
-<legend>{% trans "Placement" %}</legend>
-{% if application.network %}
-<div class="notice">
-{% trans "The user has requested explicit network placement on" %} {{ application.network }} ({{ application.network.cluster.description }})
-</div>
-{% endif %}
-
-<p>{% trans "Choose either a network, or a cluster from the quick list to use the cluster's default network." %}</p>
-<p>{% trans "Network" %}: {{ appform.network }}</p>
-{% if appform.network.errors %}
-<p class="error">{{ appform.network.errors|join:", " }}</p>
-{% endif %}
-<p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }} ({{ cl.slug }})</a> {% if not forloop.last %}| {% endif %}{% endfor %}</p>
-</fieldset>
-
+				<fieldset>
+					<legend>{% trans "Placement" %}</legend>
+					{% if application.network %}
+					<div class="notice">
+					{% trans "The user has requested explicit network placement on" %} {{ application.network }} ({{ application.network.cluster.description }})
+					</div>
+					{% endif %}
+					
+					<p>{% trans "Choose either a network, or a cluster from the quick list to use the cluster's default network." %}</p>
+					
+					
+					<div class="control-group {% if appform.network.errors %}error{% endif %}">
+		                <label class="control-label {% if appform.network.field.required %}required{% endif %}" for="id_applier">{{ appform.network.label }}</label>
+	                    <div class="controls">{{ appform.network }}
+	                    {% if appform.network.errors %}
+	                    <span class="help-inline" style="clear:both;">
+	                        {{ appform.network.errors|join:", " }}
+	                    </span>
+	                    {% endif %}
+	                    </div>
+                	</div>
+					<p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }} ({{ cl.slug }})</a> {% if not forloop.last %}| {% endif %}{% endfor %}</p>
+				</fieldset></div></div>
+<div class="row-fluid">
 <fieldset>
 <legend>{% trans "Decision" %}</legend>
-<p>{% trans "Comments to the user" %}:</p>
-{% if appform.admin_comments.errors %}
-<p><span class="error">{{ appform.admin_comments.errors }}</span></p>
-{% endif %}
-<p>{{ appform.admin_comments }}</p>
-<p><input type="submit" value="Accept" name="accept"/> <input type="submit" value="Reject" name="reject" /></p>
-</legend>
+
+<div class="control-group {% if appform.network.errors %}error{% endif %}">
+		                <label class="control-label {% if appform.admin_comments.field.required %}required{% endif %}" for="id_applier">{% trans "Comments to the user" %}</label>
+	                    <div class="controls">{{ appform.admin_comments }}
+	                    {% if appform.admin_comments.errors %}
+	                    <span class="help-inline" style="clear:both;">
+	                        {{ appform.admin_comments.errors|join:", " }}
+	                    </span>
+	                    {% endif %}
+	                    </div>
+                	</div>
+</fieldset>
+
+<div class="control-group">
+			<div class="controls">
+			<input type="submit" value="Accept" class="btn btn-success" name="accept"/> <input type="submit" value="Reject" class="btn btn-danger" name="reject"/>
+			</div>
+			</div>
+</div>
 </form>
+
 {% else %}
-<fieldset>
-<legend>{% trans "Instance information" %}</legend>
-<table>
-<tr><th>{{ appform.hostname.label_tag }}</th><td>{{ application.hostname }}</td></tr>
-<tr><th>{{ appform.memory.label_tag }}</th><td>{{ application.memory }}</td></tr>
-<tr><th>{{ appform.vcpus.label_tag }}</th><td>{{ application.vcpus }}</td></tr>
-<tr><th>{{ appform.disk_size.label_tag }}</th><td>{{ application.disk_size }}</td></tr>
-<tr><th>{{ appform.organization.label_tag }}</th><td>{{ application.organization }}</td></tr>
-<tr><th>{{ appform.hosts_mail_server.label_tag }}</th><td>{{ application.hosts_mail_server }}</td></tr>
-<tr><th>{{ appform.operating_system.label_tag }}</th><td>{{ application.operating_system }}</td></tr>
-</table>
-</fieldset>
+	
+	<form class="form-horizontal">
+	<div class="row-fluid"><div class="span6">
+		<fieldset>
+		
+		<legend>
+                    {% trans "Instance information" %}
+                </legend>
+                  <div class="control-group">
+	                <label class="control-label required" for="id_applier">
+	                	{{ appform.hostname.label }}
+	                </label>
+                   <div class="controls padcontrol">{{ application.hostname }}
+                   
+                    </div>
+                </div>
+                
+                <div class="control-group">
+	                <label class="control-label required" for="id_applier">{{ appform.memory.label }}</label>
+                   <div class="controls padcontrol">{{ application.memory }}
+                   
+                    </div>
+                </div>
+                
+                <div class="control-group ">
+	                <label class="control-label required" for="id_applier">{{ appform.vcpus.label }}</label>
+                   <div class="controls padcontrol">{{ application.vcpus }}
+                    
+                    </div>
+                </div>
+                
+                <div class="control-group">
+	                <label class="control-label required" for="id_applier">{{ appform.disk_size.label }}</label>
+                   <div class="controls padcontrol">{{ application.disk_size }}
+                  
+                    </div>
+                </div>
+                
+                <div class="control-group">
+	                <label class="control-label required" for="id_applier">{{ appform.organization.label }}</label>
+                   <div class="controls padcontrol">{{ application.organization }}
+                   
+                    </div>
+                </div>
+                
+                <div class="control-group ">
+	                <label class="control-label required" for="id_applier">{{ appform.hosts_mail_server.label }}</label>
+                   <div class="controls padcontrol">{{ application.hosts_mail_server }}
 
-{% if application.admin_contact_name %}
-<fieldset>
-<legend>{% trans "Administrative contact" %}</legend>
-<table>
-<tr><th>{% trans "Name" %}</th><td>{{ application.admin_contact_name }}</td></tr>
-<tr><th>{% trans "Email" %}</th><td>{{ application.admin_contact_email }}</td></tr>
-<tr><th>{% trans "Phone" %}</th><td>{{ application.admin_contact_phone }}</td></tr>
-</table>
-</fieldset>
+                    </div>
+                </div>
+                
+                <div class="control-group ">
+	                <label class="control-label required" for="id_applier">{{ appform.operating_system.label }}</label>
+                   <div class="controls padcontrol">{{ application.operating_system }}
+                    
+                    </div>
+                </div>
+		
+		</fieldset>
+		</div>
+			<div class="span6">
+		
+		{% if application.admin_contact_name %}
+		<fieldset>
+			<legend>{% trans "Administrative contact" %}</legend>
+			<address>
+				<i class="icon-user"></i> <strong>{{ application.admin_contact_name }}</strong><br>
+				<i class="icon-envelope-alt"></i> <a href="mailto:{{ application.admin_contact_email }}">{{ application.admin_contact_email }}</a><br>
+				<i class="icon-phone"></i> {{ application.admin_contact_phone }}
+			</address>				
+				
+		</fieldset>
+		{% endif %}
+		
+		<fieldset>
+				<legend>{% trans "Comments" %}</legend>
+				<div class="alert alert-info">
+				<i class="icon-pencil"></i> {{ application.comments }}
+				</div>
+		</fieldset>
+		
+		
+		<fieldset>
+				<legend>{% trans "Placement" %}</legend>
+				<div class="alert alert-success">
+				<i class="icon-sitemap"></i> {% trans "The instance has been placed on" %} {{ application.network }} ({{ application.cluster.description }})
+				</div>
+		</fieldset>
+		</div></div>
+
+		
+	</form>
 {% endif %}
 
-<fieldset>
-<legend>{% trans "Comments" %}</legend>
-<div class="comments">
-{{ application.comments }}
 </div>
-</fieldset>
-
-<fieldset>
-<legend>{% trans "Placement" %}</legend>
-<p>{% trans "The instance has been placed on" %} {{ application.network }} ({{ application.cluster.description }})</p>
-</fieldset>
-{% endif %}
-
 </div>
+</div>
+
 {% endblock %}
