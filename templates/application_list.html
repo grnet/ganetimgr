@@ -1,24 +1,117 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Application submitted" %}{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
+<script type="text/javascript">
+
+$(document).ready( function(){
+			var oTable1 = $('#pending_instance_table').dataTable( {
+			"bPaginate": true,
+            "bLengthChange": true,
+            "bFilter": true,
+            "bSort": true,
+            "bDeferRender": true,
+            "bInfo": true,
+            "bAutoWidth": true,
+            "oLanguage": {
+            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> applications'
+            },
+            "sPaginationType": "bootstrap",
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+			"iDisplayLength": 25,
+	} );
+			var oTable2 = $('#completed_instance_table').dataTable( {
+				"bPaginate": true,
+	            "bLengthChange": true,
+	            "bFilter": true,
+	            "bSort": true,
+	            "bDeferRender": true,
+	            "bInfo": true,
+	            "bAutoWidth": true,
+	            "oLanguage": {
+	            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> applications'
+	            },
+	            "sPaginationType": "bootstrap",
+	            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+	            "sPaginationType": "bootstrap",
+				"iDisplayLength": 25,
+		} );
+	oTable1.fnDraw();
+	oTable2.fnDraw();
+	
+
+});
+
+</script>
+<style>
+.dropdown-menu.instanceopt{
+	right: 0px;
+	left: auto;
+}
+</style>
+{% endblock %}
+
+
 {% block content %}
-<div align="center">
-{% if pending %}
-<h2>{% trans "Pending applications" %}</h2>
-<table>
-<tr><th>{% trans "Hostname" %}</th><th>{% trans "User" %}</th><th>{% trans "Memory" %}</th><th>{% trans "vCPUs" %}</th><th>{% trans "Network" %}</th><th>{% trans "Filed" %}</th></tr>
+
+<div class="span9 main-content">
+
+    <div class="row-fluid">
+        <div class="row-fluid">
+        {% if pending %}
+        
+            <h2>{% trans "Pending applications" %}</h2>
+
+<table class="table table-first-column-number data-table display full" id="pending_instance_table">
+<thead>
+<tr>
+	<th>{% trans "Hostname" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "User" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "Memory" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "vCPUs" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "Network" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "Filed" %} <span class="sort-icon"><span></span></span></th>
+</tr>
+
+</thead>
+
+<tbody>
 {% for app in pending %}
 <tr><td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td><td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td><td>{{ app.network|default_if_none:"&mdash;" }}</td><td>{{ app.filed|date }}</td></tr>
 {% endfor %}
+</tbody>
 </table>
+
 {% endif %}
 
-<h2>{% trans "Completed applications" %}</h2>
-<table>
-<tr><th>{% trans "Hostname" %}</th><th>{% trans "User" %}</th><th>{% trans "Memory" %}</th><th>{% trans "vCPUs" %}</th><th>{% trans "Network" %}</th><th>{% trans "Filed" %}</th></tr>
+ <h2>{% trans "Completed applications" %}</h2>
+<table class="table table-first-column-number data-table display full" id="completed_instance_table">
+<thead>
+<tr>
+	<th>{% trans "Hostname" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "User" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "Memory" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "vCPUs" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "Network" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "Filed" %} <span class="sort-icon"><span></span></span></th>
+</tr>
+
+</thead>
+
+<tbody>
 {% for app in completed %}
 <tr><td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td><td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td><td>{{ app.network|default_if_none:"&mdash;" }}</td><td>{{ app.filed|date }}</td></tr>
 {% endfor %}
+</tbody>
 </table>
+
+
+</div>
+</div>
 </div>
 {% endblock %}
