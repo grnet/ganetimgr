@@ -162,67 +162,88 @@ def shutdown(request, cluster_slug, instance):
 @login_required
 @csrf_exempt
 @check_instance_auth
-def reinstall(request, cluster_slug, instance):
+def reinstalldestroy(request, cluster_slug, instance, action_id):
+    action_id = int(action_id)
+    if action_id not in [1,2]:
+        action = {'action':_("Not allowed action")}
+        return HttpResponse(json.dumps(action))
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     instance = cluster.get_instance_or_404(instance)
-    reinstall_req = InstanceAction.objects.create_action(request.user, instance, cluster, 1)
+    reinstalldestroy_req = InstanceAction.objects.create_action(request.user, instance, cluster, action_id)
     fqdn = Site.objects.get_current().domain
     url = "https://%s%s" % \
                (
                 fqdn,
-                reverse("reinstall-review",
-                        kwargs={'application_hash': reinstall_req.activation_key}
+                reverse("reinstall-destroy-review",
+                        kwargs={'application_hash': reinstalldestroy_req.activation_key, 'action_id':action_id}
                         )
                 )
     email = render_to_string("reinstall_mail.txt",
                                          {"instance": instance,
                                           "user": request.user,
+                                          "action": reinstalldestroy_req.get_action_display(),
                                           "url": url})
-    send_mail(_("%sInstance re-installation requested: %s") % (settings.EMAIL_SUBJECT_PREFIX, instance),
+    if action_id == 1:
+        action_mail_text = "re-installation"
+    if action_id == 2:
+        action_mail_text = "destruction"
+    send_mail(_("%sInstance %s requested: %s") % (settings.EMAIL_SUBJECT_PREFIX, action_mail_text, instance),
                   email, settings.SERVER_EMAIL, [request.user.email])
     action = {'action':_("Mail sent")}
     return HttpResponse(json.dumps(action))
 
 @csrf_exempt
-def reinstallreview(request, application_hash):
+def reinstalldestreview(request, application_hash, action_id):
+    action_id = int(action_id)
+    if action_id not in [1,2]:
+        return HttpResponseRedirect(reverse('instance-detail', kwargs={
+                                                    'instance': instance, 
+                                                    'cluster':cluster.slug 
+                                                    })
+                              )
     activation_key = application_hash.lower() # Normalize before trying anything with it.
     try:
-        action = InstanceAction.objects.get(activation_key=activation_key)
+        action = InstanceAction.objects.get(activation_key=activation_key, action=action_id)
     except InstanceAction.DoesNotExist:
         activated = True
-        return render_to_response('verify_action.html', {'instance': instance, 
-                                                         'cluster':cluster, 
+        return render_to_response('verify_action.html', {
+                                                         'action': action_id,
                                                          'activated': activated, 
                                                          'hash': application_hash},
                                   context_instance=RequestContext(request))
     instance = action.instance
     cluster = action.cluster
     activated = False
-    if action.activation_key == "ALREADY_ACTIVATED":
+    if action.activation_key_expired():
             activated = True
     if request.method == 'POST':
         if not activated:
             instance_action = InstanceAction.objects.activate_request(application_hash)
-            cluster.reinstall_instance(instance)
+            if action_id == 1:
+                cluster.reinstall_instance(instance)
+            if action_id == 2:
+                cluster.destroy_instance(instance)
             activated = True
             return HttpResponseRedirect(reverse('instance-detail', kwargs={
                                                     'instance': instance, 
-                                                    'cluster':cluster.slug 
-                                                     }),
-                              context_instance=RequestContext(request))
+                                                    'cluster_slug':cluster.slug 
+                                                     }))
         else:
-            return render_to_response('verify_action.html', {'instance': instance, 
-                                                         'cluster':cluster, 
-                                                         'activated': activated, 
-                                                         'hash': application_hash},
-                                  context_instance=RequestContext(request))
+            return render_to_response('verify_action.html', {
+                                                             'action': action_id, 
+                                                             'activated': activated, 
+                                                             'hash': application_hash},
+                              context_instance=RequestContext(request))
         
-    if request.method == 'GET':
-        return render_to_response('verify_action.html', {'instance': instance, 
+    elif request.method == 'GET':
+        return render_to_response('verify_action.html', {'instance': instance,
+                                                         'action': action_id, 
                                                          'cluster':cluster, 
                                                          'activated': activated, 
                                                          'hash': application_hash},
                                   context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
 
 
 
