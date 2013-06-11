@@ -1,0 +1,44 @@
+{% extends "theme/base.html" %}
+{% load i18n %}
+{% block title %}Re-install instance {{instance}}{% endblock %}
+{% block extrahead %}
+<style type="text/css">
+		#toolbar {
+		padding: 10px 4px;
+	}
+
+</style>
+<script type="text/javascript">
+
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}:: {{ instance.name }} {% endblock %}
+
+{% block content %}
+
+
+<div class="span12 main-content">
+
+    <div class="row-fluid">
+        <div class="row-fluid">
+        	<h2>{{ instance }}</h2>
+        	{{activated}}
+        	{% if not activated %}
+            You are about to reinstall instance: <strong>{{instance}}</strong><br>
+            Warning! All your data will be lost.
+            <br>
+             <form method="post" align="center" id="conf_form" class="form">
+             {% csrf_token %}
+            		<button type="submit" class="btn btn-danger">Re-install</button>
+             </form>
+             {% else %}
+              Reinstall on instance <strong>{{instance}}</strong> is no longer available. It has either expired or already performed.<br>
+              Make a new request via the instance details page: <a href="{% url instance-detail cluster.slug instance %}">{{instance}}</a>.
+              {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
