@@ -21,7 +21,8 @@ from django.contrib.auth.models import User, Group
 from ganetimgr.apply.models import Organization, InstanceApplication
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
-from datetime import datetime
+from django.conf import settings
+from datetime import datetime, timedelta
 from socket import gethostbyname
 from time import sleep
 
@@ -210,6 +211,22 @@ class Instance(object):
 
     def set_admin_view_only_True(self):
         self.admin_view_only = True
+        
+    def _pending_action_request(self, action):
+        try:
+            pending = InstanceAction.objects.get(instance=self.name, cluster=self.cluster, action=action)
+            if pending.activation_key == 'ALREADY_ACTIVATED':
+                return False
+            return True
+        except InstanceAction.DoesNotExist:
+            return False
+    
+    def pending_reinstall(self):
+        return self._pending_action_request(1)
+    
+    def pending_destroy(self):
+        return self._pending_action_request(2)
+            
 
 class Cluster(models.Model):
     hostname = models.CharField(max_length=128)
@@ -587,10 +604,10 @@ class InstanceAction(models.Model):
     ACTIVATED = u"ALREADY_ACTIVATED"
     objects = InstanceActionManager()
 
-    
+
     def activation_key_expired(self):
         
-        expiration_date = datetime.timedelta(days=settings.INSTANCE_ACTION_ACTIVE_DAYS)
+        expiration_date = timedelta(days=settings.INSTANCE_ACTION_ACTIVE_DAYS)
         return self.activation_key == self.ACTIVATED or \
                (self.filed + expiration_date <= datetime.now())
     activation_key_expired.boolean = True
