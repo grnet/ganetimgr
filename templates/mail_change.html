@@ -1,4 +1,4 @@
-<div id="usermailchange_placeholder">
+<div id="usermailchange_placeholder" class="padwidget">
 <script>
 	$(document).ajaxSend(function(event, xhr, settings) {
     function getCookie(name) {
@@ -59,12 +59,12 @@
 	{% load i18n %}
 <div>{{user}} {% trans "enter your new mail address twice so we can verify you typed it in correctly." %}</div> 
 <div>{% trans "Your e-mail" %} {% if changed %} {% trans "has successfully changed to" %} {% endif %}: <strong>{% ifequal mail|length 0 %} {% trans "you have not registered an address yet" %} {% else %}{{mail}}{% endifequal %}</strong></div>
-<form method="POST" id="change_email_form">
+<form method="POST" id="change_email_form" class="form">
 {% csrf_token %}
         <table>
             {{ form.as_table }}
         </table>
-<button id="change_email_btn">{% trans "Change email" %}</button>
+<button id="change_email_btn" class="btn btn-success">{% trans "Change email" %}</button>
 </form>
 
 </div>
