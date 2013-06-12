@@ -196,11 +196,7 @@ def reinstalldestroy(request, cluster_slug, instance, action_id):
 def reinstalldestreview(request, application_hash, action_id):
     action_id = int(action_id)
     if action_id not in [1,2]:
-        return HttpResponseRedirect(reverse('instance-detail', kwargs={
-                                                    'instance': instance, 
-                                                    'cluster':cluster.slug 
-                                                    })
-                              )
+        return HttpResponseRedirect(reverse('user-instances'))
     activation_key = application_hash.lower() # Normalize before trying anything with it.
     try:
         action = InstanceAction.objects.get(activation_key=activation_key, action=action_id)
