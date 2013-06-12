@@ -1,4 +1,4 @@
-<div id="sshkeys_placeholder">
+<div id="sshkeys_placeholder" class="padwidget">
 <script>
 	$(document).ajaxSend(function(event, xhr, settings) {
     function getCookie(name) {
@@ -86,14 +86,25 @@
 <p>{% trans "Upload your SSH public keys and have them automatically installed on all newly-created instances. Keys must be in OpenSSH format, either RSA, or DSA, with or without a trailing comment." %}</p>
 
 {% if keys %}
-<table>
-<tr><th>{% trans "Fingerprint" %}</th><th>{% trans "Comment" %}</th></tr>
+
+
+<div class="row-fluid">
+<ul class="cards widget span9">
 {% for key in keys %}
-<tr><td class="fingerprint">{{ key.fingerprint }}</td><td>{{ key.comment|default:"&mdash;" }}</td><td><a class="remove_btn" id="remove_key_{{key.id}}" href="#">{% trans "Delete" %}</a></tr>
-{% endfor %}
-</table>
+	<li>
+        <a class="btn btn-danger pull-right" id="remove_key_{{key.id}}" href="#">{% trans "Delete" %}</a>
+        <i class="pull-left muted icon-key"></i>
+        <div>
+            <p class="title">{{ key.fingerprint }}</p>
+            <p class="info">{{ key.comment|default:"&mdash;" }}</p>
+        </div>
+    </li>
+    {% endfor %}
+    
+</ul>
+                    </div>
 {% endif %}
-<h2>{% trans "Add new key" %}</h2>
+<legend>{% trans "Add new key" %}</legend>
 {% if msg %}
 <div class="error">{{msg}}</div>
 {% endif %}
@@ -103,7 +114,7 @@
 <div class="error">{{ form.ssh_pubkey.errors }}</div>
 {% endif %}
 {{ form.ssh_pubkey }}<br />
-<button id="add_ssh_key_btn">{% trans "Add key" %}</button>
+<button id="add_ssh_key_btn" class="btn btn-success">{% trans "Add key" %}</button>
 </form>
 </div>
 
