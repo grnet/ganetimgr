@@ -74,7 +74,7 @@
         <div class="navbar-inner">
                 <ul class="nav pull-right">
                     
-                    <li class="hidden-phone"><a href="#" role="button">Settings</a></li>
+                    <li class="hidden-phone"><a href="{% url profile %}" role="button">My Profile</a></li>
                     <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-user"></i> {{user}}
@@ -82,9 +82,7 @@
                         </a>
 
                         <ul class="dropdown-menu">
-                            <li><a tabindex="-1" href="#">My Account</a></li>
-                            <li class="divider"></li>
-                            <li><a tabindex="-1" class="visible-phone" href="#">Settings</a></li>
+                            <li><a tabindex="-1" class="visible-phone" href="{% url profile %}">My Profile</a></li>
                             <li class="divider visible-phone"></li>
                             <li><a tabindex="-1" href="{% url logout %}">Logout</a></li>
                         </ul>
