@@ -1872,3 +1872,9 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 .ie .theme-mobile-hack {
   display: none;
 }
+
+
+.breadcrumb {
+    margin: 5px 0 20px;
+
+}
