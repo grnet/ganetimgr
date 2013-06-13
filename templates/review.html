@@ -23,6 +23,10 @@ label.required { font-weight: bold; }
 .padcontrol{
 	padding-top: 5px;
 }
+
+textarea{
+	width: 100%;
+}
 </style>
 <script>
 	function set_network(net){
@@ -31,7 +35,7 @@ label.required { font-weight: bold; }
 </script>
 
 
-<div class="span9 main-content">
+<div class="span8 main-content">
 
 	<div class="row-fluid">
 		<div class="row-fluid">
@@ -40,7 +44,7 @@ label.required { font-weight: bold; }
 
 <p>{% trans "Submitted" %} {{ application.filed|date }}</p>
 {% if application.is_pending %}
-		<form method="POST" id="appform" class="form-horizontal">
+		<form method="POST" id="appform" class="form-inline">
 		{% csrf_token %}
 		<div class="row-fluid"><div class="span6">
 		<fieldset>
@@ -196,7 +200,7 @@ label.required { font-weight: bold; }
 
 {% else %}
 	
-	<form class="form-horizontal">
+	<form class="form-inline">
 	<div class="row-fluid"><div class="span6">
 		<fieldset>
 		
@@ -293,5 +297,19 @@ label.required { font-weight: bold; }
 </div>
 </div>
 </div>
-
+{% if applications %}
+<div class="span3 sidebar">
+    <div class="widget">
+        <h2><i class="icon-inbox"></i>  Pending Instance Applications</h2>
+        <ul class="cards">
+        	{% for appl in applications %}
+            <li>
+                <p class="title"><a href="{% url application-review appl.pk %}"><i class="icon-laptop"></i> {{appl.hostname}}</a></p>
+                <p class="info small"><i class="icon-calendar"></i> {{appl.filed|date }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
