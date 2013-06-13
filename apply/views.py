@@ -104,6 +104,7 @@ def application_list(request):
 
 @permission_required("apply.change_instanceapplication")
 def review_application(request, application_id):
+    applications = InstanceApplication.objects.filter(status=STATUS_PENDING)
     app = get_object_or_404(InstanceApplication, pk=application_id)
     fast_clusters = Cluster.objects.filter(fast_create=True)
 
@@ -111,6 +112,7 @@ def review_application(request, application_id):
         form = InstanceApplicationReviewForm(instance=app)
         return render_to_response('review.html',
                                   {'application': app,
+                                   'applications': applications,
                                    'appform': form,
                                    'fast_clusters': fast_clusters},
                                   context_instance=RequestContext(request))
@@ -142,6 +144,7 @@ def review_application(request, application_id):
         else:
             return render_to_response('review.html',
                                       {'application': app,
+                                       'applications': applications,
                                        'appform': form,
                                        'fast_clusters': fast_clusters},
                                       context_instance=RequestContext(request))
