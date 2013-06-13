@@ -1,11 +1,14 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{{ instance }} - {% trans "Console" %}{% endblock %}
 {% block breadcrumbs %}:: <a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a> :: VNC</p>{% endblock %}
 
 {% block content %}
+<div class="span11 main-content">
 
-<h3>{% trans "VNC session on" %} {{ instance }}</h3>
+    <div class="row-fluid">
+        <div class="row-fluid">
+<h2><i class="icon-terminal"></i> {% trans "VNC session on" %} {{ instance }}</h2>
 <applet archive="/static/javavnc/VncViewer.jar" code="VncViewer.class" width="99%" height="790px" align="middle">
 <param name="PORT" value="{{ port }}">
 <param name="PASSWORD" value="{{ password }}">
@@ -14,5 +17,7 @@
 <param name="Scaling factor" value="auto">
 -->
 </applet>
-
+</div>
+</div>
+</div>
 {% endblock %}
