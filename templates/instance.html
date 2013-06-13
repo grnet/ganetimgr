@@ -37,7 +37,10 @@ $(function() {
 </script>
 {% endblock %}
 
-{% block breadcrumbs %}:: {{ instance.name }} {% endblock %}
+{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{{ instance.name }}</li>
+	    		{% endblock %}
 
 {% block content %}
 {% load disksizes %}

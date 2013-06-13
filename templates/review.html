@@ -1,6 +1,13 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Review application" %} #{{ application.pk }}{% endblock %}
+
+{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li><a href="{% url application-list %}">Instance Applications</a><span class="divider">/</span></li>
+	    			<li class="active">#{{ application.pk }}: {{ application.hostname }}</li>
+	    		{% endblock %}
+
 {% block content %}
 <style type="text/css">
 .comments {

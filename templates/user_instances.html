@@ -20,7 +20,6 @@ $(document).ready( function(){
             },
             "sPaginationType": "bootstrap",
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-            "sPaginationType": "bootstrap",
 			"aoColumns": [ {"bSearchable": true,"bSortable": true },
 						{"bSearchable": true,"bSortable": true},
 						{"bSearchable": true,"bSortable": true},
@@ -89,6 +88,8 @@ $(document).ready( function(){
 }
 </style>
 {% endblock %}
+
+
 {% block title %}{% trans "My instances" %}{% endblock %}
 {% block content %}
 <div class="span12 main-content">
@@ -96,7 +97,7 @@ $(document).ready( function(){
     <div class="row-fluid">
         <div class="row-fluid">
             <h2>{% trans "My instances" %}
-                <span class="info">Displaying all instances</span>
+                <span class="info">Displaying {{user}} instances</span>
             </h2>
 
 <table class="table table-first-column-number data-table display full" id="vm_instance_table">
@@ -140,7 +141,7 @@ $(document).ready( function(){
 <td style="text-align: center;display:none;">{{instance.nic_macs|join:", "}}</td>
 {% if user.is_superuser or perms.ganeti.view_instances %}
 	<td style="text-align: center;">{{instance.nic_links|join:", "}}</td>
-	<td style="text-align: center;">{% for user in instance.users %}<a class="btn" href="{% url user-info 'user' user %}"><i class="icon-user"></i> {{ user }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+	<td style="text-align: center;">{% for user in instance.users %}<a class="btn" href="{% url user-info 'user' user %}"><i class="icon-user"></i> {{ user }}</a>{% if not forloop.last %} {% endif %}{% endfor %}
 	{% for group in instance.groups %}<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i>  {{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
 	<td>
 	

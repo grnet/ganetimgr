@@ -4,7 +4,7 @@
 <!-- Web Crawler Spider -->
 <head>
     <meta charset="utf-8">
-    <title>ViMa Admin</title>
+    <title>ViMa .:: {% block title %}{% endblock %} </title>
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -146,6 +146,8 @@
             <li><a href="{% url notify %}"><i class="icon-envelope"></i> <span>Send Mail</span></a></li>
             <li><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>Cluster Nodes</span></a></li>
             <li><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>Service Stats</span></a></li>
+            <li><a href="{% url instance_owners %}"><i class="icon-bar-chart"></i> <span>Instance Owners</span></a></li>
+            
             {% endif %}
             
             
@@ -154,9 +156,18 @@
     
     <div class="content">
         <div class="container-fluid">
+        {% block brcrmb_container %}
+			
+				<ul class="breadcrumb">
+					{% block crumbs %}
+	    			<li class="active">{% trans "Home" %}</li>
+	    			{% endblock %}
+	    		</ul>
+			
+				{% endblock %}
             <div class="row-fluid">
-                
 
+			
             {% block content %}
                 {% endblock %}
 

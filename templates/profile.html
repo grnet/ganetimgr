@@ -23,6 +23,12 @@ $(document).ready(function () {
 	}
 </style>
 {% endblock %}
+
+{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{{user}} profile</li>
+	    		{% endblock %}
+
 {% block title %}{% trans "My profile" %}{% endblock %}
 {% block content %}
 <h2>{% trans "My profile" %}</h2>

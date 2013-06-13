@@ -56,6 +56,10 @@ $(document).ready( function(){
 </style>
 {% endblock %}
 
+{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">Instance Applications</li>
+	    		{% endblock %}
 
 {% block content %}
 

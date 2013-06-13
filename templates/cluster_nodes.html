@@ -58,7 +58,13 @@ $(document).ready( function(){
 }
 </style>
 {% endblock %}
-{% block title %}{% trans "My instances" %}{% endblock %}
+{% block title %}{% trans "Cluster Nodes" %}{% endblock %}
+
+{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% trans "Cluster Nodes" %}</li>
+	    		{% endblock %}
+
 {% block content %}
 <div class="span12 main-content">
 

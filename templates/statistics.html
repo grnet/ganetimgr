@@ -177,6 +177,10 @@ $(function () {
 
 {% endblock %}
 {% block title %}{% trans "Statistics" %}{% endblock %}
+{% block crumbs %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li class="active">{% trans "Service Statistics" %}</li>
+{% endblock %}
 {% block content %}
 <div class="span8">
 

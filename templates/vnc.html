@@ -1,7 +1,12 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{{ instance }} - {% trans "Console" %}{% endblock %}
-{% block breadcrumbs %}:: <a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a> :: VNC</p>{% endblock %}
+
+{% block crumbs %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a><span class="divider">/</span></li>
+	<li class="active">{% trans "Console" %}</li>
+{% endblock %}
 
 {% block content %}
 <div class="span11 main-content">

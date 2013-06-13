@@ -1,7 +1,10 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Notify" %}{% endblock %}
-{% block breadcrumbs %}:: {% trans "Create Notification" %}{% endblock %}
+{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">Notify</li>
+	    		{% endblock %}
 {% block extrahead %}
 
 {% include "notifications/create_script.html" %}
