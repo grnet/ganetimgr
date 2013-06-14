@@ -1,5 +1,7 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
+{% block applicationstop %}class="active"{% endblock %}
+{% block applications %}class="active"{% endblock %}
 {% block title %}{% trans "Review application" %} #{{ application.pk }}{% endblock %}
 
 {% block crumbs %}

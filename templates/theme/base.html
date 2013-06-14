@@ -33,6 +33,13 @@
     
     <link rel="stylesheet" type="text/css" href="/static/theme/theme.css">
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+  	function setlang(lang){
+		$("#langsel").val(lang);
+		$("#langform").submit();
+	}
+</script>
 <style>
 
 
@@ -76,12 +83,29 @@
                 <ul class="nav pull-right">
                     
                     <li class="hidden-phone"><a href="{% url profile %}" role="button">My Profile</a></li>
+                    
+                    <li class="dropdown pull-right">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+            <form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform">
+								{% csrf_token %}
+								<input name="next" type="hidden" value="{{ next }}" />
+								<input id="langsel" name="language" type="hidden" value="" />
+							</form>
+            	{% for lang in LANGUAGES %}
+                <li>
+                    <a class="select_lang" href="#" onclick="setlang('{{ lang.0 }}'); return false;" title="{{lang.1}}">{% trans lang.1 %}{% ifequal LANGUAGE_CODE lang.0 %}  <i class="icon-ok"></i>{% endifequal %}</a>
+                </li>
+              {% endfor %}
+            </ul>
+        </li>
+                    
                     <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-user"></i> {{user}}
                             <i class="icon-caret-down"></i>
                         </a>
-
+						
                         <ul class="dropdown-menu">
                             <li><a tabindex="-1" class="visible-phone" href="{% url profile %}">My Profile</a></li>
                             <li class="divider visible-phone"></li>
@@ -112,15 +136,15 @@
         </div>
 
         <ul class="nav nav-tabs">
-            <li class="active"><a href="{% url user-instances %}"><i class="icon-dashboard"></i> <span>Dashboard</span></a></li>
-            <li ><a href="{% url stats %}" ><i class="icon-bar-chart"></i> <span>Statistics</span></a></li>
-            <li ><a href="{% url apply %}" ><i class="icon-plus-sign"></i> <span>{% trans "Create Instance" %}</span></a></li>
+            <li {% block homepagetop %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>Home</span></a></li>
+            <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="icon-plus-sign"></i> <span>{% trans "Create Instance" %}</span></a></li>
+            {% if can_handle_applications %}
+						<li {% block applicationstop %}{% endblock %}><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
+{% endif %}
             {% if user.is_superuser %}
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
 {% endif %}
-{% if can_handle_applications %}
-						<li ><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
-{% endif %}
+
             {% comment %}
             <li ><a href="components.html" ><i class="icon-cogs"></i> <span>Components</span></a></li>
             <li ><a href="pricing.html"><i class="icon-magic"></i> <span>Pricing</span></a></li>
@@ -141,15 +165,21 @@
         
         <ul id="dashboard-menu" class="nav nav-list">
             
-            <li class="active "><a href="{% url user-instances %}"><i class="icon-home"></i> <span>Dashboard</span></a></li>
+            <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>Home</span></a></li>
             {% if user.is_superuser %}
-            <li><a href="{% url notify %}"><i class="icon-envelope"></i> <span>Send Mail</span></a></li>
-            <li><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>Cluster Nodes</span></a></li>
-            <li><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>Service Stats</span></a></li>
-            <li><a href="{% url instance_owners %}"><i class="icon-bar-chart"></i> <span>Instance Owners</span></a></li>
+            <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="icon-envelope"></i> <span>Send Mail</span></a></li>
+            <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>Cluster Nodes</span></a></li>
+            <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>Statistics</span></a></li>
+            {% if can_handle_applications %}
+						<li {% block applications %}{% endblock %}><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
+	{% endif %}
+            <li {% block owners %}{% endblock %}><a href="{% url instance_owners %}"><i class="icon-briefcase"></i> <span>Instance Owners</span></a></li>
             
             {% endif %}
-            
+            <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="icon-user"></i> <span>My Profile</span></a></li>
+            {% if user.is_superuser %}
+						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
+{% endif %}
             
         </ul>
     </div>
@@ -164,6 +194,15 @@
 	    			{% endblock %}
 	    		</ul>
 			
+			        {% if messages %}
+            {% for message in messages %}
+            <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+                <button class="close" data-dismiss="alert" type="button"> × </button>
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+				
 				{% endblock %}
             <div class="row-fluid">
 

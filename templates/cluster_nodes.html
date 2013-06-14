@@ -59,7 +59,7 @@ $(document).ready( function(){
 </style>
 {% endblock %}
 {% block title %}{% trans "Cluster Nodes" %}{% endblock %}
-
+{% block clusternodes %}class="active"{% endblock %}
 {% block crumbs %}
 	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	    			<li class="active">{% trans "Cluster Nodes" %}</li>

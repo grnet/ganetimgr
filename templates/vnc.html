@@ -1,5 +1,7 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
+{% block homepage %}class="active"{% endblock %}
+{% block homepagetop %}class="active"{% endblock %}
 {% block title %}{{ instance }} - {% trans "Console" %}{% endblock %}
 
 {% block crumbs %}

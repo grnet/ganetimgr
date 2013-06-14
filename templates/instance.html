@@ -36,7 +36,8 @@ $(function() {
 
 </script>
 {% endblock %}
-
+{% block homepage %}class="active"{% endblock %}
+{% block homepagetop %}class="active"{% endblock %}
 {% block crumbs %}
 	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	    			<li class="active">{{ instance.name }}</li>
