@@ -513,7 +513,7 @@ class Network(models.Model):
 def preload_instance_data():
     users = cache.get('userlist')
     if not users:
-        users = User.objects.all()
+        users = User.objects.select_related('groups').all()
         userdict = {}
         for user in users:
             userdict[user.username] = user
@@ -529,9 +529,10 @@ def preload_instance_data():
         cache.set('orgslist', orgs, 30)
     groups = cache.get('groupslist')
     if not groups:
-        groups = Group.objects.all()
+        groups = Group.objects.all().select_related('user_set').all()
         groupsdict = {}
         for group in groups:
+            group.userset = group.user_set.all()
             groupsdict[group.name] = group
         groups = groupsdict
         cache.set('groupslist', groups, 30)
