@@ -37,21 +37,6 @@ $(document).ready( function(){
 			"iDisplayLength": 25,
 	} );
 	oTable.fnDraw();
-	{% if not user.is_superuser or perms.ganeti.view_instances %}
-	$( "#instancedetails" ).dialog({
-			autoOpen: false,
-			height: 450,
-			width: 350,
-			modal: true,
-			title: "Instance Details",
-			buttons: {
-				Close: function(){
-					$(this).dialog("close");
-				}
-			}
-		});
-	{% endif %}
-
 });
 
 {% if not user.is_superuser or perms.ganeti.view_instances %}
@@ -161,7 +146,7 @@ $(document).ready( function(){
 	
 	
 	</td>
-	<td style="display:none;">{% for user in instance.users %}{{ user }},{{ user.email }}{% if not forloop.last %}, {% endif %}{% endfor %},{% for group in instance.groups %}{% for user in group.user_set.all %}{{user}}, {{user.email}},{% endfor %}{% if not forloop.last %}, {% endif %}{% endfor %}
+	<td style="display:none;">{% for user in instance.users %}{{ user }},{{ user.email }}{% if not forloop.last %}, {% endif %}{% endfor %},{% for group in instance.groups %}{% for user in group.userset %}{{user}}, {{user.email}},{% endfor %}{% if not forloop.last %}, {% endif %}{% endfor %}
 	</td>
 {% endif %}
 </tr>
@@ -172,6 +157,7 @@ $(document).ready( function(){
 </div>
 </div>
 </div>
+
 {% if user.is_superuser or perms.ganeti.view_instances %}
 
 <div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
