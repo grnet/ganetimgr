@@ -18,12 +18,18 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from ganetimgr.apply.models import InstanceApplication, STATUS_PENDING
+from django.core.cache import cache
 
 def notify(request):
     res = {}
     if (request.user and
         request.user.has_perm("apply.change_instanceapplication")):
         res.update(can_handle_applications=True)
-        pend = InstanceApplication.objects.filter(status=STATUS_PENDING)
-        res.update(pending_count=pend.count())
+        cres = cache.get('pendingapplications')
+        if cres is None:
+            pend = InstanceApplication.objects.filter(status=STATUS_PENDING)
+            res.update(pending_count=pend.count())
+            cache.set('pendingapplications', res, 45)
+        else:
+            res = cres
     return res
