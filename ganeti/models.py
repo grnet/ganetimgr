@@ -493,7 +493,7 @@ class Network(models.Model):
     groups = models.ManyToManyField(Group, blank=True, null=True)
 
     def __unicode__(self):
-        return self.description
+        return "%s (%s)" %(self.description, self.cluster.slug)
 
     def save(self, *args, **kwargs):
         # Ensure that only one cluster_default exists per cluster
