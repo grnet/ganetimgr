@@ -10,31 +10,6 @@
 		list-style: none;
 	}
 </style>
-<script type="text/javascript">
-var polltimer;
-var timer = 2500;
-var load_data = function () {
-        $.ajax({
-            type: 'GET',
-            url: '{% url instance-poll cluster.slug instance.name %}'+"?_="+new Date().getTime(),
-            dataType: 'html',
-            success: function(data) {
-                $('#actions_container').html(data);
-				if ($('#show_no_actions').size()==1){
-					$('#conf_form').hide();
-				}else if ($('#show_no_actions').size()==0){
-					$('#conf_form').show();
-				}
-				$("#status").html($("#instance_status").html());
-                polltimer = setTimeout(load_data, timer);
-            }
-        });
-    }
-$(function() {
-    load_data();
-});
-
-</script>
 {% endblock %}
 {% block homepage %}class="active"{% endblock %}
 {% block homepagetop %}class="active"{% endblock %}
@@ -121,4 +96,31 @@ $(function() {
 
 
 
+{% endblock %}
+{% block bottomblock %}
+<script type="text/javascript">
+var polltimer;
+var timer = 2500;
+var load_data = function () {
+        $.ajax({
+            type: 'GET',
+            url: '{% url instance-poll cluster.slug instance.name %}'+"?_="+new Date().getTime(),
+            dataType: 'html',
+            success: function(data) {
+                $('#actions_container').html(data);
+				if ($('#show_no_actions').size()==1){
+					$('#conf_form').hide();
+				}else if ($('#show_no_actions').size()==0){
+					$('#conf_form').show();
+				}
+				$("#status").html($("#instance_status").html());
+                polltimer = setTimeout(load_data, timer);
+            }
+        });
+    }
+$(function() {
+    load_data();
+});
+
+</script>
 {% endblock %}
