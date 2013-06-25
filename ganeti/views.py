@@ -455,6 +455,8 @@ def instance_popup(request):
                                   {'cluster': cluster,
                                    'instance': instance},
                                   context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
 
 @login_required
 @check_instance_auth
