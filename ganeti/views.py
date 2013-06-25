@@ -528,43 +528,46 @@ def tagInstance(request, instance):
 
 @login_required
 def get_clusternodes(request):
-    nodes = cache.get('allclusternodes')
-    if nodes is None:
-        clusters = Cluster.objects.all()
-        p = Pool(20)
-        nodes = []
-        bad_clusters = []
-        bad_nodes = []
-        servermon_url = None
-        def _get_nodes(cluster):
-            t = Timeout(5)
-            t.start()
-            try:
-                nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
-                bad_nodes.extend(cluster.get_node_info(node)['name'] for node in cluster.get_cluster_nodes() if cluster.get_node_info(node)['offline'] == True)
-            except (GanetiApiError, Timeout):
-                bad_clusters.append(cluster)
-            finally:
-                t.cancel()
-    
-        if not request.user.is_anonymous():
-            p.imap(_get_nodes, clusters)
-            p.join()
-            
-        if bad_clusters:
-            messages.add_message(request, messages.WARNING,
-                                 "Some nodes may be missing because the" +
-                                 " following clusters are unreachable: " +
-                                 ", ".join([c.description for c in bad_clusters]))
-        if bad_nodes:
-            messages.add_message(request, messages.ERROR,
-                                 "Some nodes appear to be offline: "+
-                                 ", ".join(bad_nodes))
-        cache.set('allclusternodes', nodes, 90)
-    if settings.SERVER_MONITORING_URL:
-        servermon_url = settings.SERVER_MONITORING_URL 
-    return render_to_response('cluster_nodes.html', {'nodes': nodes, 'servermon':servermon_url},
-                              context_instance=RequestContext(request))
+    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+        nodes = cache.get('allclusternodes')
+        if nodes is None:
+            clusters = Cluster.objects.all()
+            p = Pool(20)
+            nodes = []
+            bad_clusters = []
+            bad_nodes = []
+            servermon_url = None
+            def _get_nodes(cluster):
+                t = Timeout(5)
+                t.start()
+                try:
+                    nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
+                    bad_nodes.extend(cluster.get_node_info(node)['name'] for node in cluster.get_cluster_nodes() if cluster.get_node_info(node)['offline'] == True)
+                except (GanetiApiError, Timeout):
+                    bad_clusters.append(cluster)
+                finally:
+                    t.cancel()
+        
+            if not request.user.is_anonymous():
+                p.imap(_get_nodes, clusters)
+                p.join()
+                
+            if bad_clusters:
+                messages.add_message(request, messages.WARNING,
+                                     "Some nodes may be missing because the" +
+                                     " following clusters are unreachable: " +
+                                     ", ".join([c.description for c in bad_clusters]))
+            if bad_nodes:
+                messages.add_message(request, messages.ERROR,
+                                     "Some nodes appear to be offline: "+
+                                     ", ".join(bad_nodes))
+            cache.set('allclusternodes', nodes, 90)
+        if settings.SERVER_MONITORING_URL:
+            servermon_url = settings.SERVER_MONITORING_URL 
+        return render_to_response('cluster_nodes.html', {'nodes': nodes, 'servermon':servermon_url},
+                                  context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
 
 def prepare_tags(taglist):
     tags = []
