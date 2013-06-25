@@ -614,67 +614,76 @@ def stats(request):
 
 @login_required
 def stats_ajax_instances(request):
-    cluster_list = cache.get('ajaxinstances')
-    if cluster_list is None:
-        clusters = Cluster.objects.all()
-        inst_dates = []
-        ret = []
-        i = 0
-        cluster_list = []
-        for cluster in clusters:
+    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+        cluster_list = cache.get('ajaxinstances')
+        if cluster_list is None:
+            clusters = Cluster.objects.all()
+            inst_dates = []
+            ret = []
             i = 0
-            cluster_dict = {}
-            cluster_dict['name'] = cluster.slug
-            cluster_dict['instances'] = []
-            for instance in cluster.get_user_instances(request.user):
-                inst_dict = {}
-                inst_dict['time'] = (1000*mktime(instance.ctime.timetuple()))
-                inst_dict['name'] = instance.name
-                cluster_dict['instances'].append(inst_dict)
-            cluster_dict['instances'] = sorted(cluster_dict['instances'], key=itemgetter('time'))
-            for item in cluster_dict['instances']:
-                i = i + 1
-                item['count'] = i
-            cluster_list.append(cluster_dict)
-        cache.set('ajaxinstances', cluster_list, 90)
-    return HttpResponse(json.dumps(cluster_list), mimetype='application/json')
+            cluster_list = []
+            for cluster in clusters:
+                i = 0
+                cluster_dict = {}
+                cluster_dict['name'] = cluster.slug
+                cluster_dict['instances'] = []
+                for instance in cluster.get_user_instances(request.user):
+                    inst_dict = {}
+                    inst_dict['time'] = (1000*mktime(instance.ctime.timetuple()))
+                    inst_dict['name'] = instance.name
+                    cluster_dict['instances'].append(inst_dict)
+                cluster_dict['instances'] = sorted(cluster_dict['instances'], key=itemgetter('time'))
+                for item in cluster_dict['instances']:
+                    i = i + 1
+                    item['count'] = i
+                cluster_list.append(cluster_dict)
+            cache.set('ajaxinstances', cluster_list, 90)
+        return HttpResponse(json.dumps(cluster_list), mimetype='application/json')
+    else:
+        return HttpResponse(json.dumps([]), mimetype='application/json')
 
 @login_required
 def stats_ajax_vms_per_cluster(request, cluster_slug):
-    cluster_dict = cache.get('ajaxvmscluster:%s'%cluster_slug)
-    if cluster_dict is None:
-        cluster = Cluster.objects.get(slug=cluster_slug)
-        inst_dates = []
-        ret = []
-        i = 0
-        cluster_dict = {}
-        cluster_dict['name'] = cluster.slug
-        cluster_dict['instances'] = {'up':0,'down':0}
-        for instance in cluster.get_user_instances(request.user):
-            if instance.admin_state:
-                cluster_dict['instances']['up'] = cluster_dict['instances']['up'] + 1
-            else:
-                cluster_dict['instances']['down'] = cluster_dict['instances']['down'] + 1
-        cache.set('ajaxvmscluster:%s'%cluster_slug, cluster_dict, 90)
-    return HttpResponse(json.dumps(cluster_dict), mimetype='application/json')
+    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+        cluster_dict = cache.get('ajaxvmscluster:%s'%cluster_slug)
+        if cluster_dict is None:
+            cluster = Cluster.objects.get(slug=cluster_slug)
+            inst_dates = []
+            ret = []
+            i = 0
+            cluster_dict = {}
+            cluster_dict['name'] = cluster.slug
+            cluster_dict['instances'] = {'up':0,'down':0}
+            for instance in cluster.get_user_instances(request.user):
+                if instance.admin_state:
+                    cluster_dict['instances']['up'] = cluster_dict['instances']['up'] + 1
+                else:
+                    cluster_dict['instances']['down'] = cluster_dict['instances']['down'] + 1
+            cache.set('ajaxvmscluster:%s'%cluster_slug, cluster_dict, 90)
+        return HttpResponse(json.dumps(cluster_dict), mimetype='application/json')
+    else:
+        return HttpResponse(json.dumps([]), mimetype='application/json')
 
 @login_required
 def stats_ajax_applications(request):
-    app_list = cache.get('ajaxapplist')
-    if app_list is None:
-        applications = InstanceApplication.objects.all().order_by('filed')
-        app_list = []
-        i = 0
-        for app in applications:
-           appd = {}
-           appd['instance'] = app.hostname
-           i = i + 1
-           appd['count'] = i
-           appd['user'] = app.applicant.username
-           appd['time'] = (1000*mktime(app.filed.timetuple()))
-           app_list.append(appd)
-        cache.set('ajaxapplist',app_list, 90)
-    return HttpResponse(json.dumps(app_list), mimetype='application/json')     
+    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+        app_list = cache.get('ajaxapplist')
+        if app_list is None:
+            applications = InstanceApplication.objects.all().order_by('filed')
+            app_list = []
+            i = 0
+            for app in applications:
+               appd = {}
+               appd['instance'] = app.hostname
+               i = i + 1
+               appd['count'] = i
+               appd['user'] = app.applicant.username
+               appd['time'] = (1000*mktime(app.filed.timetuple()))
+               app_list.append(appd)
+            cache.set('ajaxapplist',app_list, 90)
+        return HttpResponse(json.dumps(app_list), mimetype='application/json')
+    else:
+        return HttpResponse(json.dumps([]), mimetype='application/json')
 
 @login_required
 def get_user_groups(request):
