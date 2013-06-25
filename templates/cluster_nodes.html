@@ -16,7 +16,7 @@ $(document).ready( function(){
             "bInfo": true,
             "bAutoWidth": true,
             "oLanguage": {
-            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> instances'
+            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> nodes'
             },
             "sPaginationType": "bootstrap",
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -32,20 +32,7 @@ $(document).ready( function(){
 			"iDisplayLength": 25,
 	} );
 	oTable.fnDraw();
-	{% if not user.is_superuser or perms.ganeti.view_instances %}
-	$( "#instancedetails" ).dialog({
-			autoOpen: false,
-			height: 450,
-			width: 350,
-			modal: true,
-			title: "Instance Details",
-			buttons: {
-				Close: function(){
-					$(this).dialog("close");
-				}
-			}
-		});
-	{% endif %}
+	
 
 });
 
@@ -58,11 +45,11 @@ $(document).ready( function(){
 }
 </style>
 {% endblock %}
-{% block title %}{% trans "Cluster Nodes" %}{% endblock %}
+{% block title %}{% trans "Nodes" %}{% endblock %}
 {% block clusternodes %}class="active"{% endblock %}
 {% block crumbs %}
 	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Cluster Nodes" %}</li>
+	    			<li class="active">{% trans "Nodes" %}</li>
 	    		{% endblock %}
 
 {% block content %}
@@ -70,20 +57,19 @@ $(document).ready( function(){
 
     <div class="row-fluid">
         <div class="row-fluid">
-            <h2>{% trans "My instances" %}
-                <span class="info">Displaying all instances</span>
+            <h2>{% trans "Nodes" %}
             </h2>
 
 <table class="table table-first-column-number data-table display full" id="vm_instance_table">
 <thead>
 <tr>
-	<th><span class="sort-icon"><span>{% trans "Name" %}</th>
-	<th><span class="sort-icon"><span>{% trans "Memory" %}</th>
-	<th><span class="sort-icon"><span>{% trans "Disk" %}</th>
-	<th style="text-align: center;">CPUs</th>
-	<th style="text-align: center;">Instance #</th>
-	<th >Status</th>
-	<th >Cluster</th>
+	<th>{% trans "Name" %} <span class="sort-icon"><span></th>
+	<th>{% trans "Memory" %} <span class="sort-icon"><span></th>
+	<th>{% trans "Disk" %} <span class="sort-icon"><span></th>
+	<th style="text-align: center;">CPUs <span class="sort-icon"><span></th>
+	<th style="text-align: center;">Instance # <span class="sort-icon"><span></th>
+	<th >Status <span class="sort-icon"><span></th>
+	<th >Cluster <span class="sort-icon"><span></th>
 </tr>
 
 </thead>
