@@ -28,13 +28,14 @@ from ganetimgr.notifications.forms import *
 from ganetimgr.ganeti.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
+from django.contrib import messages
 import json
 
 
 @csrf_exempt
 @login_required
 def notify(request, instance=None):
-    if request.user.is_superuser:
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         if instance:
             instance = Instance.objects.get(name=instance)
         users = []
@@ -51,6 +52,8 @@ def notify(request, instance=None):
                 if request.is_ajax():
                     ret = {'result':'success'}
                     return HttpResponse(json.dumps(ret), mimetype='application/json')
+                messages.add_message(request, messages.SUCCESS,
+                             "Mail sent to %s" %','.join(mail_list))
                 return HttpResponseRedirect(reverse('user-instances'))
         else:
             if instance:
@@ -105,7 +108,7 @@ def get_mails(itemlist):
 
 @login_required
 def get_user_group_list(request):
-    if request.user.is_superuser:
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         q_params = None
         try:
             q_params = request.GET['q']
