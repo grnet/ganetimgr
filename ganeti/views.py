@@ -75,6 +75,8 @@ def user_info(request, type, usergroup):
          if type == 'group' :
              usergroup_info = Group.objects.get(name=usergroup)
          return render_to_response('user_info.html', {'usergroup': usergroup_info, 'type': type}, context_instance=RequestContext(request))
+     else:
+        return HttpResponseRedirect(reverse('user-instances'))
 
 def check_instance_auth(view_fn):
     def check_auth(request, *args, **kwargs):
@@ -113,7 +115,7 @@ def user_index(request):
         return HttpResponseRedirect(reverse('login'))
     return render_to_response('user_instances_json.html',
                               context_instance=RequestContext(request))
-
+@login_required
 def user_index_json(request):
     if request.user.is_anonymous():
         action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
@@ -275,6 +277,7 @@ def reinstalldestroy(request, cluster_slug, instance, action_id):
     action = {'action':_("Mail sent")}
     return HttpResponse(json.dumps(action))
 
+@login_required
 @csrf_exempt
 def reinstalldestreview(request, application_hash, action_id):
     action_id = int(action_id)
