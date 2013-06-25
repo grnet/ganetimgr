@@ -24,6 +24,7 @@
 </script>
 {% endblock %}
 {% block title %}{% trans "Instance owners" %}{% endblock %}
+{% block owners %}class="active"{% endblock %}
 {% block crumbs %}
 	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li class="active">{% trans "Instance owners" %}</li>
