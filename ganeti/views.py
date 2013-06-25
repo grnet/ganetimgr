@@ -32,6 +32,7 @@ from django.conf import settings
 from ganetimgr.ganeti.models import *
 from ganetimgr.ganeti.forms import *
 from operator import itemgetter
+from django.template.defaultfilters import filesizeformat
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
@@ -49,6 +50,7 @@ except ImportError:
     import simplejson as json
 
 from ganetimgr.settings import GANETI_TAG_PREFIX
+
 
 def cluster_overview(request):
     clusters = Cluster.objects.all()
@@ -109,6 +111,13 @@ def check_instance_auth(view_fn):
 def user_index(request):
     if request.user.is_anonymous():
         return HttpResponseRedirect(reverse('login'))
+    return render_to_response('user_instances_json.html',
+                              context_instance=RequestContext(request))
+
+def user_index_json(request):
+    if request.user.is_anonymous():
+        action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
+        return HttpResponse(json.dumps(action), mimetype='application/json')
     p = Pool(20)
     instances = []
     bad_clusters = []
@@ -132,8 +141,82 @@ def user_index(request):
                              "Some instances may be missing because the"
                              " following clusters are unreachable: " +
                              ", ".join([c.description for c in bad_clusters]))
-    return render_to_response('user_instances.html', {'instances': instances},
-                              context_instance=RequestContext(request))
+    jresp = {}
+    cache_key = "user:%s:index:instances" %request.user.username
+    res = cache.get(cache_key)
+    instancedetails = []
+    j = Pool(80)
+    user = request.user
+    def _get_instance_details(instance):
+        t = Timeout(2)
+        t.start()
+        try:
+            instancedetails.extend(generate_json(instance, user))
+        except Exception as e:
+            pass
+        finally:
+            t.cancel()
+    
+    if res is None:
+        j.imap(_get_instance_details, instances)
+        j.join()
+        jresp['aaData'] = instancedetails
+        cache.set(cache_key, jresp, 90)
+        res = jresp
+
+    return HttpResponse(json.dumps(res), mimetype='application/json')
+
+
+def generate_json(instance, user):
+    
+    jresp_list = []
+    i = instance
+    inst_dict = {}
+    if not i.admin_view_only:
+        inst_dict['name_href'] = "%s"%(reverse("instance-detail",
+                        kwargs={'cluster_slug': i.cluster.slug, 'instance':i.name}
+                        ))
+
+    inst_dict['name'] =  i.name
+    inst_dict['cluster'] = i.cluster.description
+    inst_dict['clusterslug'] = i.cluster.slug
+    inst_dict['memory'] = memsize(i.beparams['memory'])
+    inst_dict['vcpus'] = i.beparams['vcpus']
+    inst_dict['ipaddress'] = i.nic_ips[0] if i.nic_ips[0] else "-"
+    #inst_dict['status'] = i.nic_ips[0] if i.nic_ips[0] else "-"
+    if i.admin_state == i.oper_state:
+        if i.admin_state:
+            inst_dict['status'] = "Running"
+            inst_dict['status_style'] = "success"
+        else:
+            inst_dict['status'] = "Stopped"
+            inst_dict['status_style'] = "important"
+    else:
+        if i.oper_state:
+            inst_dict['status'] = "Running"
+        else:
+            inst_dict['status'] = "Stopped"
+        if admin_state:
+            inst_dict['status'] = "%s, should be running" %inst_dict['status']
+        else:
+            inst_dict['status'] = "%s, should be stopped" %inst_dict['status']
+        inst_dict['status_style'] = "warning"
+    
+    if i.is_locked():
+        inst_dict['locked'] = True
+    if i.hvparams['cdrom_image_path'] and i.hvparams['boot_order'] == 'cdrom':
+         inst_dict['cdrom'] = True
+    inst_dict['nic_macs'] = ', '.join(i.nic_macs)
+    if user.is_superuser or user.has_perm('ganeti.view_instances'):
+        inst_dict['nic_links'] = ', '.join(i.nic_links)
+        inst_dict['users'] = [{'user':user.username, 'email':user.email, 'user_href':"%s"%(reverse("user-info",
+                            kwargs={'type': 'user', 'usergroup':user.username}
+                            ))} for user in i.users]
+        inst_dict['groups'] = [{'group':group.name, 'groupusers':["%s,%s"%(u.username, u.email) for u in group.userset], 'group_href':"%s"%(reverse("user-info",
+                            kwargs={'type': 'group', 'usergroup':group.name}
+                            ))} for group in i.groups]
+    jresp_list.append(inst_dict)
+    return jresp_list
 
 @login_required
 @check_instance_auth
@@ -387,7 +470,7 @@ def poll(request, cluster_slug, instance):
 @csrf_exempt
 @login_required     
 def tagInstance(request, instance):
-    if request.user.is_superuser:
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         instance = Instance.objects.get(name=instance)
         if request.method == 'POST':
             users = []
@@ -445,30 +528,39 @@ def tagInstance(request, instance):
 
 @login_required
 def get_clusternodes(request):
-    clusters = Cluster.objects.all()
-    p = Pool(20)
-    nodes = []
-    bad_clusters = []
-    servermon_url = None
-    def _get_nodes(cluster):
-        t = Timeout(5)
-        t.start()
-        try:
-            nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
-        except (GanetiApiError, Timeout):
-            bad_clusters.append(cluster)
-        finally:
-            t.cancel()
-
-    if not request.user.is_anonymous():
-        p.imap(_get_nodes, Cluster.objects.all())
-        p.join()
-        
-    if bad_clusters:
-        messages.add_message(request, messages.WARNING,
-                             "Some nodes may be missing because the"
-                             " following clusters are unreachable: " +
-                             ", ".join([c.description for c in bad_clusters]))
+    nodes = cache.get('allclusternodes')
+    if nodes is None:
+        clusters = Cluster.objects.all()
+        p = Pool(20)
+        nodes = []
+        bad_clusters = []
+        bad_nodes = []
+        servermon_url = None
+        def _get_nodes(cluster):
+            t = Timeout(5)
+            t.start()
+            try:
+                nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
+                bad_nodes.extend(cluster.get_node_info(node)['name'] for node in cluster.get_cluster_nodes() if cluster.get_node_info(node)['offline'] == True)
+            except (GanetiApiError, Timeout):
+                bad_clusters.append(cluster)
+            finally:
+                t.cancel()
+    
+        if not request.user.is_anonymous():
+            p.imap(_get_nodes, clusters)
+            p.join()
+            
+        if bad_clusters:
+            messages.add_message(request, messages.WARNING,
+                                 "Some nodes may be missing because the" +
+                                 " following clusters are unreachable: " +
+                                 ", ".join([c.description for c in bad_clusters]))
+        if bad_nodes:
+            messages.add_message(request, messages.ERROR,
+                                 "Some nodes appear to be offline: "+
+                                 ", ".join(bad_nodes))
+        cache.set('allclusternodes', nodes, 90)
     if settings.SERVER_MONITORING_URL:
         servermon_url = settings.SERVER_MONITORING_URL 
     return render_to_response('cluster_nodes.html', {'nodes': nodes, 'servermon':servermon_url},
@@ -487,11 +579,26 @@ def prepare_tags(taglist):
 
 def stats(request):
     clusters = Cluster.objects.all()
-    instances = len(Instance.objects.all())
-    users = len(User.objects.all())
-    groups = len(Group.objects.all())
-    instance_apps = len(InstanceApplication.objects.all())
-    orgs = len(Organization.objects.all())
+    instances = cache.get('leninstances')
+    if instances is None:
+        instances = len(Instance.objects.all())
+        cache.set('leninstances', instances, 90)
+    users = cache.get('lenusers')
+    if users is None:
+        users = len(User.objects.all())
+        cache.set('lenusers', users, 90)
+    groups = cache.get('lengroups')
+    if groups is None:
+        groups = len(Group.objects.all())
+        cache.set('lengroups', groups, 90)
+    instance_apps = cache.get('leninstapps')
+    if instance_apps is None:
+        instance_apps = len(InstanceApplication.objects.all())
+        cache.set('leninstapps', instance_apps, 90)
+    orgs = cache.get('lenorgs')
+    if orgs is None:
+        orgs = len(Organization.objects.all())
+        cache.set('lenorgs', orgs, 90)
     return render_to_response('statistics.html', {
                                                   'clusters':clusters, 
                                                   'instances':instances,
@@ -503,59 +610,66 @@ def stats(request):
 
 @login_required
 def stats_ajax_instances(request):
-    clusters = Cluster.objects.all()
-    inst_dates = []
-    ret = []
-    i = 0
-    
-    cluster_list = []
-    for cluster in clusters:
+    cluster_list = cache.get('ajaxinstances')
+    if cluster_list is None:
+        clusters = Cluster.objects.all()
+        inst_dates = []
+        ret = []
         i = 0
-        cluster_dict = {}
-        cluster_dict['name'] = cluster.slug
-        cluster_dict['instances'] = []
-        for instance in cluster.get_user_instances(request.user):
-            inst_dict = {}
-            inst_dict['time'] = (1000*mktime(instance.ctime.timetuple()))
-            inst_dict['name'] = instance.name
-            cluster_dict['instances'].append(inst_dict)
-        cluster_dict['instances'] = sorted(cluster_dict['instances'], key=itemgetter('time'))
-        for item in cluster_dict['instances']:
-            i = i + 1
-            item['count'] = i
-        cluster_list.append(cluster_dict)
+        cluster_list = []
+        for cluster in clusters:
+            i = 0
+            cluster_dict = {}
+            cluster_dict['name'] = cluster.slug
+            cluster_dict['instances'] = []
+            for instance in cluster.get_user_instances(request.user):
+                inst_dict = {}
+                inst_dict['time'] = (1000*mktime(instance.ctime.timetuple()))
+                inst_dict['name'] = instance.name
+                cluster_dict['instances'].append(inst_dict)
+            cluster_dict['instances'] = sorted(cluster_dict['instances'], key=itemgetter('time'))
+            for item in cluster_dict['instances']:
+                i = i + 1
+                item['count'] = i
+            cluster_list.append(cluster_dict)
+        cache.set('ajaxinstances', cluster_list, 90)
     return HttpResponse(json.dumps(cluster_list), mimetype='application/json')
 
 @login_required
 def stats_ajax_vms_per_cluster(request, cluster_slug):
-    cluster = Cluster.objects.get(slug=cluster_slug)
-    inst_dates = []
-    ret = []
-    i = 0
-    cluster_dict = {}
-    cluster_dict['name'] = cluster.slug
-    cluster_dict['instances'] = {'up':0,'down':0}
-    for instance in cluster.get_user_instances(request.user):
-        if instance.admin_state:
-            cluster_dict['instances']['up'] = cluster_dict['instances']['up'] + 1
-        else:
-            cluster_dict['instances']['down'] = cluster_dict['instances']['down'] + 1
-
+    cluster_dict = cache.get('ajaxvmscluster:%s'%cluster_slug)
+    if cluster_dict is None:
+        cluster = Cluster.objects.get(slug=cluster_slug)
+        inst_dates = []
+        ret = []
+        i = 0
+        cluster_dict = {}
+        cluster_dict['name'] = cluster.slug
+        cluster_dict['instances'] = {'up':0,'down':0}
+        for instance in cluster.get_user_instances(request.user):
+            if instance.admin_state:
+                cluster_dict['instances']['up'] = cluster_dict['instances']['up'] + 1
+            else:
+                cluster_dict['instances']['down'] = cluster_dict['instances']['down'] + 1
+        cache.set('ajaxvmscluster:%s'%cluster_slug, cluster_dict, 90)
     return HttpResponse(json.dumps(cluster_dict), mimetype='application/json')
 
 @login_required
 def stats_ajax_applications(request):
-    applications = InstanceApplication.objects.all().order_by('filed')
-    app_list = []
-    i = 0
-    for app in applications:
-       appd = {}
-       appd['instance'] = app.hostname
-       i = i + 1
-       appd['count'] = i
-       appd['user'] = app.applicant.username
-       appd['time'] = (1000*mktime(app.filed.timetuple()))
-       app_list.append(appd)
+    app_list = cache.get('ajaxapplist')
+    if app_list is None:
+        applications = InstanceApplication.objects.all().order_by('filed')
+        app_list = []
+        i = 0
+        for app in applications:
+           appd = {}
+           appd['instance'] = app.hostname
+           i = i + 1
+           appd['count'] = i
+           appd['user'] = app.applicant.username
+           appd['time'] = (1000*mktime(app.filed.timetuple()))
+           app_list.append(appd)
+        cache.set('ajaxapplist',app_list, 90)
     return HttpResponse(json.dumps(app_list), mimetype='application/json')     
 
 @login_required
@@ -590,3 +704,10 @@ def get_user_groups(request):
     else:
         action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
         return HttpResponse(json.dumps(action), mimetype='application/json')
+
+def disksizes(value):
+    return [filesizeformat(v * 1024**2) for v in value]
+
+def memsize(value):
+    return filesizeformat(value * 1024**2)
+
