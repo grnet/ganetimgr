@@ -379,8 +379,24 @@ class Cluster(models.Model):
         if info is None:
             info = self._client.GetNode(node)
             info['cluster'] = self.slug
-            info['mem_used'] = 100*(info['mtotal']-info['mfree'])/info['mtotal']
-            info['disk_used'] = 100*(info['dtotal']-info['dfree'])/info['dtotal']
+            if info['mfree'] is None:
+                info['mfree'] = 0
+            if info['mtotal'] is None:
+                info['mtotal'] = 0
+            if info['dtotal'] is None:
+                info['dtotal'] = 0
+            if info['dfree'] is None:
+                info['dfree'] = 0
+            try:
+                info['mem_used'] = 100*(info['mtotal']-info['mfree'])/info['mtotal']
+            except ZeroDivisionError:
+                '''this is the case where the node is offline and reports none, thus it is 0'''
+                info['mem_used'] = 0
+            try:
+                info['disk_used'] = 100*(info['dtotal']-info['dfree'])/info['dtotal']
+            except ZeroDivisionError:
+                '''this is the case where the node is offline and reports none, thus it is 0'''
+                info['disk_used'] = 0
             info['shared_storage'] = self.get_cluster_info()['shared_file_storage_dir'] if self.get_cluster_info()['shared_file_storage_dir'] else None
             cache.set("cluster:%s:node:%s" % (self.slug, node), info, 180)
         return info
