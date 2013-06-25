@@ -687,7 +687,7 @@ def stats_ajax_applications(request):
 
 @login_required
 def get_user_groups(request):
-    if request.user.is_superuser:
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         q_params = None
         try:
             q_params = request.GET['q']
