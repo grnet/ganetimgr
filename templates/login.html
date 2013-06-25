@@ -1,41 +1,122 @@
-{% extends "base.html" %}
-{% load i18n %}
-{% block title %}{% trans "Login" %}{% endblock %}
-{% block brcrmb_container %}{% endblock %}
-{% block content %}
-<div id="welcome">
-<h3>{% trans "Welcome" %}</h3>
-{% blocktrans %}
-<p>Welcome to GRNET's ViMa service.</p>
-<p>If you are new to the service, take some time to read the service description supplied at the hyperlink at the end of this page and then register for a new account.</p>
-<p>If you already have an account, you can log in using the form on the right.</p>
-<p>For troubleshooting info and remarks do not hesitate to contact GRNET's Helpdesk.</p>
-{% endblocktrans %}</p>
+{% extends "theme/base.html" %}
+	{% load i18n %}
+	{% block navbars %}{% endblock %}
+	{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.sparkline.min.js"></script>
+	<script>
+	$(function () {
+		$('.inlinesparkline').sparkline([1,3,4,5,8,9,10,12,14,33,35], {
+		    type: 'line',
+		    width: '150px',
+		    height: '40px'});
+		$(".inlinesparkbar").sparkline([200,100,50], {
+		    type: 'pie',
+		    width: '60',
+		    height: '60',
+		    tooltipFormat: '[[offset:offset]]'.replace('[[', '\{\{').replace(']]', '\}\}'),
+		    tooltipValueLookups: {
+		        'offset': {
+		            0: 'Ubuntu 10.04',
+		            1: 'Debian 64bit',
+		            2: 'Centos 5.5'
+		        }
+		    }
+		    });
+	});
+	</script>
+	{% endblock %}
+	{% block title %}{% trans "Login" %}{% endblock %}
+	{% block brcrmb_container %}{% endblock %}
+	{% block blockcontainer %}
+    <div class="logincontent">
+        <div class="container-fluid">
+         <div class="row-fluid">
+	
+	
+	
+	<div class="span12">
+<div class="row-fluid">
+<div class="span4 sidebar">
+
+	<div class="widget">
+		<div class="row-fluid">
+			<h2><i class="icon-cloud"></i> {% trans "Welcome" %}</h2>
+				<div id="change_name_placeholder" class="padwidget">
+				{% blocktrans %}
+				<p>Welcome to GRNET's ViMa service.</p>
+				<p>If you are new to the service, take some time to read the service description supplied at the hyperlink at the end of this page and then register for a new account.</p>
+				<p>If you already have an account, you can log in using the form on the right.</p>
+				<p>For troubleshooting info and remarks do not hesitate to contact GRNET's Helpdesk.</p>
+				{% endblocktrans %}
+				</div>
+		</div></div></div>
+
+<div class="span4 sidebar">
+
+	<div class="widget">
+		<div class="row-fluid">
+			<h2><i class="icon-signin"></i> {% trans "Login" %}</h2>
+				<div id="pass_change_placeholder" class="padwidget">
+				{% if form.errors %}
+				<p  class="error" style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>
+				{% endif %}
+				
+				<form method="post" action="{% url login %}">
+				{% csrf_token %}
+				<table>
+				<tr>
+				    <td>{{ form.username.label_tag }}</td>
+				    <td>{{ form.username }}</td>
+				</tr>
+				<tr>
+				    <td>{{ form.password.label_tag }}</td>
+				    <td>{{ form.password }}</td>
+				</tr>
+				</table>
+				
+				<input type="submit" class="btn" value="{% trans "Login" %}" />
+				<input type="hidden" name="next" value="{{next}}" />
+				</form>
+			    <p><a href="{% url auth_password_reset %}">{% trans "Forgot password?" %}</a></p>
+			    <p><a href="{% url registration_register %}">{% trans "Register a new account" %}</a></p>
+				</div>
+		</div></div></div>
+		
+		<div class="span4 sidebar">
+
+	<div class="widget">
+		<div class="row-fluid">
+			<h2><i class="icon-bar-chart"></i> {% trans "Statistics" %}</h2>
+				<div id="change_email_placeholder"  class="padwidget" style="line-height: 2.3em;">
+				Currently there are over <font style="color: #468847; font-size: 32px">700</font> 
+				VMs running on <font style="color: #468847; font-size: 22px">5</font> clusters. 
+				There are <font style="color: #3A87AD; font-size: 24px">78</font> active users 
+				from <font style="color: #B94A48; font-size: 26px">30</font> organizations in Greece.
+				We offer <font style="color: #B94A48; font-size: 22px">5</font> different operating systems but you can always 
+				bring your own.
+				<p>This is an approximation of the VM creation over the last <font style="color: #3A87AD; font-size: 24px">2</font> years: <span class="inlinesparkline"></span> Not bad huh?</p>
+				<p>Favorite OS <span class="inlinesparkbar"></span> seems to be <font style="color: #3A87AD; font-size: 25px">Ubuntu 10.04</font> with <font style="color: #3A87AD; font-size: 24px">200</font> installation requests</p>
+				<p>Still in doubt? Register for an account <font style="color: #B94A48; font-size: 26px">now</font> and give it a try!</p>
+				</div>
+		</div></div></div>
 </div>
 
-<div id="loginform">
-<h3>{% trans "Login" %}</h3>
-{% if form.errors %}
-<p  class="error" style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>
-{% endif %}
-
-<form method="post" action="{% url login %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
-
-<input type="submit" value="{% trans "Login" %}" />
-<input type="hidden" name="next" value="{{next}}" />
-</form>
-    <p><a href="{% url auth_password_reset %}">{% trans "Forgot password?" %}</a></p>
-    <p><a href="{% url registration_register %}">{% trans "Register a new account" %}</a></p>
 </div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	</div>
+	<footer>
+                    <hr>
+                    <p>&copy; 2013 <a href="#">GRNET NOC</a></p>
+                </footer>
+                
+            </div>
+	</div>
 {% endblock %}
