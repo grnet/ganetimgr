@@ -13,15 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="/static/awesome/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="/static/theme/theme.css">
-    <script src="/static/js/jquery-1.7.1.min.js"></script>
-    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
 
-  	function setlang(lang){
-		$("#langsel").val(lang);
-		$("#langform").submit();
-	}
-</script>
 <style>
 
 
@@ -47,7 +39,33 @@
     <![endif]-->
 
     <!-- Le fav and touch icons -->
+
+    <script src="/static/js/jquery-1.10.1.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+     {% if user.is_authenticated and HELPDESK_INTEGRATION_JAVASCRIPT_URL %}
+		<script type="text/javascript" src="{{HELPDESK_INTEGRATION_JAVASCRIPT_URL}}"></script>
+	{% endif %}
+    <script type="text/javascript">
+
+  	function setlang(lang){
+		$("#langsel").val(lang);
+		$("#langform").submit();
+	}
+  	$(function(){
+  	    $('#phone-navigation #phone-menu').change(function(){
+  	        var url = $(this).val();
+  	        if(url) {
+  	            window.location = url;
+  	        }
+  	    });
+
+  	 
+  	  
+  	});
+   	 
+</script>
 {% block extrahead %}{% endblock %}
+{% block bottomblock %}{% endblock %}
   </head>
 
   <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
@@ -57,17 +75,16 @@
   <!--[if (gt IE 9)|!(IE)]><!--> 
   <body class=""> 
   <!--<![endif]-->
-    
     <div class="navbar">
         <div class="navbar-inner">
                 <ul class="nav pull-right">
-                    
+                    {% if user.is_authenticated %}
                     <li class="hidden-phone"><a href="{% url profile %}" role="button">My Profile</a></li>
-                    
-                    <li class="dropdown pull-right">
+                    {% endif %}
+                    <li class="dropdown pull-right hidden-phone">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-            <form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform">
+            <ul class="dropdown-menu ">
+            <form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform" >
 								{% csrf_token %}
 								<input name="next" type="hidden" value="{{ next }}" />
 								<input id="langsel" name="language" type="hidden" value="" />
@@ -79,41 +96,50 @@
               {% endfor %}
             </ul>
         </li>
-                    
-                    <li id="fat-menu" class="dropdown">
+                    {% if user.is_authenticated %}
+                    <li id="fat-menu" class="dropdown hidden-phone">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-user"></i> {{user}}
                             <i class="icon-caret-down"></i>
                         </a>
 						
                         <ul class="dropdown-menu">
-                            <li><a tabindex="-1" class="visible-phone" href="{% url profile %}">My Profile</a></li>
+                            <li><a tabindex="-1" href="{% url profile %}">{% trans "My Profile" %}</a></li>
                             <li class="divider visible-phone"></li>
                             <li><a tabindex="-1" href="{% url logout %}">Logout</a></li>
                         </ul>
                     </li>
-                    
+                    {% endif %}
                 </ul>
-                <a class="brand" href="{% url user-instances %}">
-					<img class="logoimg" src="/static/grnet_logo.png">
-				
-					virtual private servers
+                <a  href="{% url user-instances %}">
+					<img class="logoimg brand brandimg" src="/static/grnet_logo.png">				
                 </a>
+                <span class="brand brandtext">virtual private servers</span>
         </div>
     </div>
-
+    {% block navbars %}
+{% if user.is_authenticated %}
     <div id="main-menu">
         
         <div id="phone-navigation">
             <select class="selectnav" id="phone-menu">
                 
-                <option value="{% url user-instances %}" selected="selected"> Dashboard</option>
+                <option value="{% url user-instances %}" selected="selected">Home</option>
+                               
+                <option value="{% url apply %}" >{% trans "Create Instance" %}</option>
+            {% if can_handle_applications %}
+						<option value="{% url application-list %}">{% trans "Applications" %}{% if pending_count %}({{ pending_count }}){% endif %}</option>
+{% endif %}
+            {% if user.is_superuser %}
+                <option value="{% url admin:index %}" >{% trans "Admin" %}</option>
                 
-                <option value="{% url notify %}" > Send Mail</option>
-                    
+			{% endif %}
+			<option value="{% url profile %}" >{% trans "My Profile" %}</option>
+            <option value="{% url logout %}" >{% trans "Logout" %}</option>        
                     
             </select>
         </div>
+        
         <ul class="nav nav-tabs">
             <li {% block homepagetop %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>Home</span></a></li>
             <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="icon-plus-sign"></i> <span>{% trans "Create Instance" %}</span></a></li>
@@ -122,36 +148,23 @@
 {% endif %}
             {% if user.is_superuser %}
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
-{% endif %}
+			{% endif %}
 
-            {% comment %}
-            <li ><a href="components.html" ><i class="icon-cogs"></i> <span>Components</span></a></li>
-            <li ><a href="pricing.html"><i class="icon-magic"></i> <span>Pricing</span></a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i> Settings <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="sign-in.html"><span>Sign-in Page</span></a></li>
-                    <li><a href="sign-up.html"><span>Sign-up Page</span></a></li>
-                    <li><a href="reset-password.html"><span>Forgot Password Page</span></a></li>
-                </ul>
-            </li>
-            {% endcomment %}
         </ul>
     </div>
-    
-    
+
     <div id="sidebar-nav">
         
         <ul id="dashboard-menu" class="nav nav-list">
             
             <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>Home</span></a></li>
-            {% if user.is_superuser %}
+            {% if user.is_superuser or perms.ganeti.view_instances %}
             <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="icon-envelope"></i> <span>Send Mail</span></a></li>
-            <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>Cluster Nodes</span></a></li>
+            <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>Nodes</span></a></li>
             <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>Statistics</span></a></li>
             {% if can_handle_applications %}
 						<li {% block applications %}{% endblock %}><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
-	{% endif %}
+			{% endif %}
             <li {% block owners %}{% endblock %}><a href="{% url instance_owners %}"><i class="icon-briefcase"></i> <span>Instance Owners</span></a></li>
             
             {% endif %}
@@ -159,10 +172,12 @@
             {% if user.is_superuser %}
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
 {% endif %}
+{% endif %}
             
         </ul>
     </div>
-    
+    {% endblock %}
+{% block blockcontainer %}
     <div class="content">
         <div class="container-fluid">
         {% block brcrmb_container %}
@@ -197,8 +212,7 @@
             </div>
         </div>
     </div>
-    
-
+    {% endblock %}
 
     
   </body>
