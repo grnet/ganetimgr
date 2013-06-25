@@ -577,36 +577,40 @@ def prepare_tags(taglist):
             tags.append("%s:group:%s" %(GANETI_TAG_PREFIX, Group.objects.get(pk=i.replace('g_','')).name))
     return list(set(tags))
 
+@login_required
 def stats(request):
-    clusters = Cluster.objects.all()
-    instances = cache.get('leninstances')
-    if instances is None:
-        instances = len(Instance.objects.all())
-        cache.set('leninstances', instances, 90)
-    users = cache.get('lenusers')
-    if users is None:
-        users = len(User.objects.all())
-        cache.set('lenusers', users, 90)
-    groups = cache.get('lengroups')
-    if groups is None:
-        groups = len(Group.objects.all())
-        cache.set('lengroups', groups, 90)
-    instance_apps = cache.get('leninstapps')
-    if instance_apps is None:
-        instance_apps = len(InstanceApplication.objects.all())
-        cache.set('leninstapps', instance_apps, 90)
-    orgs = cache.get('lenorgs')
-    if orgs is None:
-        orgs = len(Organization.objects.all())
-        cache.set('lenorgs', orgs, 90)
-    return render_to_response('statistics.html', {
-                                                  'clusters':clusters, 
-                                                  'instances':instances,
-                                                  'users':users,
-                                                  'groups': groups,
-                                                  'instance_apps': instance_apps,
-                                                  'orgs': orgs},
-                              context_instance=RequestContext(request))
+    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+        clusters = Cluster.objects.all()
+        instances = cache.get('leninstances')
+        if instances is None:
+            instances = len(Instance.objects.all())
+            cache.set('leninstances', instances, 90)
+        users = cache.get('lenusers')
+        if users is None:
+            users = len(User.objects.all())
+            cache.set('lenusers', users, 90)
+        groups = cache.get('lengroups')
+        if groups is None:
+            groups = len(Group.objects.all())
+            cache.set('lengroups', groups, 90)
+        instance_apps = cache.get('leninstapps')
+        if instance_apps is None:
+            instance_apps = len(InstanceApplication.objects.all())
+            cache.set('leninstapps', instance_apps, 90)
+        orgs = cache.get('lenorgs')
+        if orgs is None:
+            orgs = len(Organization.objects.all())
+            cache.set('lenorgs', orgs, 90)
+        return render_to_response('statistics.html', {
+                                                      'clusters':clusters, 
+                                                      'instances':instances,
+                                                      'users':users,
+                                                      'groups': groups,
+                                                      'instance_apps': instance_apps,
+                                                      'orgs': orgs},
+                                  context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
 
 @login_required
 def stats_ajax_instances(request):
