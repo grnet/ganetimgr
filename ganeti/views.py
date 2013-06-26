@@ -168,6 +168,87 @@ def user_index_json(request):
 
     return HttpResponse(json.dumps(res), mimetype='application/json')
 
+@login_required
+def user_sum_stats(request):
+    if request.user.is_anonymous():
+        action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
+        return HttpResponse(json.dumps(action), mimetype='application/json')
+    p = Pool(20)
+    instances = []
+    bad_clusters = []
+
+    def _get_instances(cluster):
+        t = Timeout(5)
+        t.start()
+        try:
+            instances.extend(cluster.get_user_instances(request.user))
+        except (GanetiApiError, Timeout):
+            bad_clusters.append(cluster)
+        finally:
+            t.cancel()
+
+    if not request.user.is_anonymous():
+        p.imap(_get_instances, Cluster.objects.all())
+        p.join()
+
+    if bad_clusters:
+        messages.add_message(request, messages.WARNING,
+                             "Some instances may be missing because the"
+                             " following clusters are unreachable: " +
+                             ", ".join([c.description for c in bad_clusters]))
+    jresp = {}
+    cache_key = "user:%s:index:instance:light" %request.user.username
+    res = cache.get(cache_key)
+    instancedetails = []
+    j = Pool(80)
+    user = request.user
+    def _get_instance_details(instance):
+        t = Timeout(2)
+        t.start()
+        try:
+            instancedetails.extend(generate_json_light(instance, user))
+        except Exception as e:
+            pass
+        finally:
+            t.cancel()
+    
+    if res is None:
+        j.imap(_get_instance_details, instances)
+        j.join()
+        jresp['aaData'] = instancedetails
+        cache.set(cache_key, jresp, 125)
+        res = jresp
+    
+    instances_stats = []
+    user_dict = {}
+    cache_key_stats = "user:%s:index:users:instance:stats" %request.user.username
+    instances_stats = cache.get(cache_key_stats)
+    if instances_stats is None:
+        for i in res['aaData']:
+            if not i.has_key('users'):
+                i['users'] = [{'user':request.user.username}]
+            for useritem in i['users']:
+                if not user_dict.has_key(useritem['user']):
+                    user_dict[useritem['user']] = {'instances':0, 'disk':0, 'cpu':0, 'memory':0}
+                user_dict[useritem['user']]['instances'] = user_dict[useritem['user']]['instances'] + 1
+                user_dict[useritem['user']]['disk'] = user_dict[useritem['user']]['disk'] + int(i['disk'])
+                user_dict[useritem['user']]['cpu'] = user_dict[useritem['user']]['cpu'] + int(i['vcpus'])
+                user_dict[useritem['user']]['memory'] = user_dict[useritem['user']]['memory'] + int(i['memory'])
+        #TODO: Must implement that in a more efficient way
+        instances_stats_list = []
+        for u in user_dict.keys():
+            user_stats_dict = {}
+            user_stats_dict['user'] = u
+            user_stats_dict['instances'] = user_dict[u]['instances']
+            user_stats_dict['disk'] = user_dict[u]['disk']
+            user_stats_dict['cpu'] = user_dict[u]['cpu']
+            user_stats_dict['memory'] = user_dict[u]['memory']
+            instances_stats_list.append(user_stats_dict)
+        return_dict = {'aaData': instances_stats_list}
+        cache.set(cache_key_stats, return_dict, 120)
+        instances_stats = return_dict
+    
+    return HttpResponse(json.dumps(instances_stats), mimetype='application/json')    
 
 def generate_json(instance, user):
     
@@ -217,6 +298,26 @@ def generate_json(instance, user):
         inst_dict['groups'] = [{'group':group.name, 'groupusers':["%s,%s"%(u.username, u.email) for u in group.userset], 'group_href':"%s"%(reverse("user-info",
                             kwargs={'type': 'group', 'usergroup':group.name}
                             ))} for group in i.groups]
+    jresp_list.append(inst_dict)
+    return jresp_list
+
+def generate_json_light(instance, user):
+    
+    jresp_list = []
+    i = instance
+    inst_dict = {}
+    if not i.admin_view_only:
+        inst_dict['name_href'] = "%s"%(reverse("instance-detail",
+                        kwargs={'cluster_slug': i.cluster.slug, 'instance':i.name}
+                        ))
+
+    inst_dict['name'] =  i.name
+    inst_dict['clusterslug'] = i.cluster.slug
+    inst_dict['memory'] = i.beparams['memory']
+    inst_dict['vcpus'] = i.beparams['vcpus']
+    inst_dict['disk'] = sum(i.disk_sizes)
+    if user.is_superuser or user.has_perm('ganeti.view_instances'):
+        inst_dict['users'] = [{'user':user.username} for user in i.users]
     jresp_list.append(inst_dict)
     return jresp_list
 
