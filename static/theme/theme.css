@@ -14,7 +14,6 @@
 body {
   margin: 0px;
   padding: 0px;
-  background: #f9f9f9;
   color: #333;
 }
 a:hover {
@@ -223,6 +222,7 @@ hr {
   position: relative;
   background: #fff;
   margin-left: 200px;
+  padding-bottom: 10px;
   border-left: 1px solid #cfcfd6;
   border-bottom: 1px solid #cfcfd6;
 }
@@ -279,9 +279,10 @@ footer hr {
   border-top: 1px solid #cfcfd6;
   display: none;
 }
+/*
 footer a {
   color: #b4b4bf;
-}
+}*/
 /*Navigation*/
 #sidebar-nav {
   position: absolute;
@@ -900,7 +901,6 @@ body .http-error .http-error-message {
   padding: 3em 0em;
 }
 body .http-error .error-caption {
-  background: #333;
   color: #fff;
   display: inline-block;
   border: 1px solid black;
