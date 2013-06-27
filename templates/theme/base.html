@@ -31,6 +31,14 @@
 }
 
 
+.footer {
+    background-color: #F5F5F5;
+    border-top: 1px solid #E5E5E5;
+    margin-top: 30px;
+    padding: 30px 0;
+    text-align: center;
+}
+
 </style>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -205,18 +213,27 @@
 			
             {% block content %}
                 {% endblock %}
-        
-                <footer>
-                    <hr>
-                    <p>&copy; 2013 <a href="#">GRNET NOC</a></p>
-                </footer>
-                
+               
             </div>
         </div>
     </div>
     {% endblock %}
 
-    
+<footer class="footer">
+      <div class="container" id="footcontainer">
+        
+	<div style="padding-top: 10px;">This is a service provided by <a target="_blank" href="//noc.grnet.gr">GRNET NOC</a> 
+	
+	<a target="_blank" href="//facebook.com/noc.grnet.gr"><font style="color:#3b5998; font-size: 30px"><i class="icon-facebook-sign"></i></font></a>  
+	
+	<a target="_blank" href="//twitter.com/grnetnoc"><font style="color:#00acee; font-size: 30px"><i class="icon-twitter-sign"></i></font></a>  
+	
+	</div>
+	<div style="padding-top: 10px;"><a href="/about/info/{{ LANGUAGE_CODE }}">{% trans "Info" %}</a> | <a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">{% trans "Service Terms" %}</a></div>
+		<div style="padding-top: 10px;">Powered by ganetimgr v0.8.1</div>
+	
+      </div>
+    </footer>    
   </body>
 
 </html>
