@@ -1,14 +1,32 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Activation Complete" %}{% endblock %}
 {% block brcrmb_container %}{% endblock %}
-{% block content %}
-<div align="center" id="registration">
-    <h3>{% trans "Activation Status" %}</h3>
-{% if account %}
-    <p>{{account}} {% trans "succesfully activated" %}</p>
-{% else %}
-    <p>{% trans "The user has probably been already activated." %}</p>
-{% endif %}
+{% block blockcontainer %}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="row-fluid">
+				<div class="span4"></div>
+				<div class="span4 sidebar">
+					<div class="widget">
+						<div class="row-fluid">
+							<h2>
+								<i class="icon-check"></i> {% trans "Activation Status" %}
+							</h2>
+							<div class="padwidget">
+								{% if account %}
+								    <div class="alert alert-success"><p>{{account}} {% trans "succesfully activated" %}</p></div>
+								{% else %}
+								    <div class="alert alert-error"><p>{% trans "The user has probably been already activated." %}</p></div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="span4"></div>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}

@@ -1,7 +1,31 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 
-{% block title %}Access denied{% endblock %}
-{% block content %}
-<h3 align="center">Internal error</h3>
-<h4 align="center">Our administrators have been notified with this problem. We apologize for the inconvenience.</h4>
+{% block title %}Ohhhh a 500 - Internal Error{% endblock %}
+
+{% block blockcontainer %}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="row-fluid">
+				<div class="span4"></div>
+				<div class="span4 sidebar">
+					<div class="widget">
+						<div class="row-fluid">
+							<h2>
+								<i class="icon-meh"></i> Internal error
+							</h2>
+							<div class="padwidget">
+								<div class="alert alert-error">
+									<p>ViMastrators have been notified about this problem. We apologize for the inconvenience.</p>
+									<p>Yeap this is a nice <strong>500</strong>!</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="span4"></div>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
