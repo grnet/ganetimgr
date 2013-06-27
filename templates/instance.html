@@ -10,6 +10,7 @@
 		list-style: none;
 	}
 </style>
+
 {% endblock %}
 {% block homepage %}class="active"{% endblock %}
 {% block homepagetop %}class="active"{% endblock %}
@@ -50,6 +51,15 @@
                 </tbody>
             </table>
         </div>
+        
+        <div class="row-fluid">
+        	<h2>Graphs</h2>
+            <h3>CPU</h3>
+            <img src="{{instance.cpu_url}}" alt="No data available yet..." title="Daily CPU"/>
+            <h3>Network</h3>
+            <img src="{{instance.net_url}}" alt="No data available yet..." title="Daily Network"/>
+        </div>
+        
     </div>
 </div>
 
