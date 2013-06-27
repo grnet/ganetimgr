@@ -240,7 +240,6 @@ $(document).ready( function(){
 } );
  {% else %}
  $.getJSON('{% url user-stats-json %}', function(dt) {
-	 console.log(dt)
 	 var instances = dt.aaData[0].instances;
 	 var mem = dt.aaData[0].memory;
 	 var disk = dt.aaData[0].disk;
