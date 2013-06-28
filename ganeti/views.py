@@ -842,9 +842,15 @@ def memsize(value):
 
 @login_required
 @check_instance_auth
-def graph(request, cluster_slug, instance, graph_type):
+def graph(request, cluster_slug, instance, graph_type, start=None, end=None):
+    if not start:
+        start = "-1d"
+    start = str(start)
+    if not end:
+        end = "-20s"
+    end = str(end)
     try:
-        url = "http://stats.vima.grnet.gr/%s/%s.png" %(instance, graph_type)
+        url = "%s/%s/%s.png/%s,%s" %(settings.COLLECTD_URL, instance, graph_type, start, end)
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
     except urllib2.HTTPError:
