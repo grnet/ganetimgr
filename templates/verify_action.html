@@ -1,6 +1,6 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
-{% block title %}{% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %} instance {{instance}}{% endblock %}
+{% block title %}{% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %}{% if action == 3 %}Rename{% endif %} instance {{instance}}{% endblock %}
 {% block extrahead %}
 <style type="text/css">
 		#toolbar {
@@ -23,19 +23,21 @@
     <div class="row-fluid">
         <div class="row-fluid">
         	<h2>{{ instance }}</h2>
-        	<div class="alert alert-danger">
+        	<div class="alert {% if action != 3 %}alert-danger{% else %}alert-info{% endif %}">
         	{% if not activated %}
-            You are about to {% if action == 1 %}reinstall{% endif %}{% if action == 2 %}destroy{% endif %} instance: <strong>{{instance}}</strong><br>
+            You are about to {% if action == 1 %}reinstall{% endif %}{% if action == 2 %}destroy{% endif %} {% if action == 3 %}rename{% endif %} instance: <strong>{{instance}}</strong>{% if action == 3 %} to <strong>{{action_value}}</strong>{% endif %}<br>
+            {% if action != 3 %}
             <h4>Warning!</h4> 
             {% if action == 1 %}All your data will be lost!{% endif %}
             {% if action == 2 %}Your instance will be deleted!{% endif %}
             <br>Make sure you have a recent backup of your data!
             <br>Once initiated, this process cannot be undone or stop!
-            <br>
+             {% endif %}
+                         <br>
             <br>
              <form method="post" align="center" id="conf_form" class="form">
              {% csrf_token %}
-            		<button type="submit" class="btn btn-danger">{% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %}</button>
+            		<button type="submit" class="btn btn-danger">{% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %}{% if action == 3 %}Rename{% endif %}</button>
              </form>
              {% else %}
               {% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %} on instance <strong>{{instance}}</strong> is no longer available. It has either expired or it is already performed.<br>
