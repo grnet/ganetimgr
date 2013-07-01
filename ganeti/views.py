@@ -251,7 +251,6 @@ def user_sum_stats(request):
     return HttpResponse(json.dumps(instances_stats), mimetype='application/json')    
 
 def generate_json(instance, user):
-    
     jresp_list = []
     i = instance
     inst_dict = {}
@@ -281,7 +280,7 @@ def generate_json(instance, user):
             inst_dict['status'] = "Running"
         else:
             inst_dict['status'] = "Stopped"
-        if admin_state:
+        if i.admin_state:
             inst_dict['status'] = "%s, should be running" %inst_dict['status']
         else:
             inst_dict['status'] = "%s, should be stopped" %inst_dict['status']
@@ -302,6 +301,7 @@ def generate_json(instance, user):
                             ))} for group in i.groups]
     jresp_list.append(inst_dict)
     return jresp_list
+
 
 def generate_json_light(instance, user):
     
@@ -345,19 +345,20 @@ def shutdown(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.shutdown_instance(instance)
     action = {'action': _("Please wait... shutting-down")}
+    clear_cluster_user_cache(request.user.username, cluster_slug)
     return HttpResponse(json.dumps(action))
 
 @login_required
 @csrf_exempt
 @check_instance_auth
-def reinstalldestroy(request, cluster_slug, instance, action_id):
+def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=None):
     action_id = int(action_id)
-    if action_id not in [1,2]:
+    if action_id not in [1,2,3]:
         action = {'action':_("Not allowed action")}
         return HttpResponse(json.dumps(action))
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     instance = cluster.get_instance_or_404(instance)
-    reinstalldestroy_req = InstanceAction.objects.create_action(request.user, instance, cluster, action_id)
+    reinstalldestroy_req = InstanceAction.objects.create_action(request.user, instance, cluster, action_id, action_value)
     fqdn = Site.objects.get_current().domain
     url = "https://%s%s" % \
                (
@@ -370,11 +371,14 @@ def reinstalldestroy(request, cluster_slug, instance, action_id):
                                          {"instance": instance,
                                           "user": request.user,
                                           "action": reinstalldestroy_req.get_action_display(),
+                                          "action_value": reinstalldestroy_req.action_value,
                                           "url": url})
     if action_id == 1:
         action_mail_text = "re-installation"
     if action_id == 2:
         action_mail_text = "destruction"
+    if action_id == 3:
+        action_mail_text = "rename"
     send_mail(_("%sInstance %s requested: %s") % (settings.EMAIL_SUBJECT_PREFIX, action_mail_text, instance),
                   email, settings.SERVER_EMAIL, [request.user.email])
     action = {'action':_("Mail sent")}
@@ -384,7 +388,7 @@ def reinstalldestroy(request, cluster_slug, instance, action_id):
 @csrf_exempt
 def reinstalldestreview(request, application_hash, action_id):
     action_id = int(action_id)
-    if action_id not in [1,2]:
+    if action_id not in [1,2,3]:
         return HttpResponseRedirect(reverse('user-instances'))
     activation_key = application_hash.lower() # Normalize before trying anything with it.
     try:
@@ -393,11 +397,12 @@ def reinstalldestreview(request, application_hash, action_id):
         activated = True
         return render_to_response('verify_action.html', {
                                                          'action': action_id,
-                                                         'activated': activated, 
+                                                         'activated': activated,
                                                          'hash': application_hash},
                                   context_instance=RequestContext(request))
     instance = action.instance
     cluster = action.cluster
+    action_value = action.action_value
     activated = False
     if action.activation_key_expired():
             activated = True
@@ -408,6 +413,8 @@ def reinstalldestreview(request, application_hash, action_id):
                 cluster.reinstall_instance(instance)
             if action_id == 2:
                 cluster.destroy_instance(instance)
+            if action_id == 3:
+                cluster.rename_instance(instance, action_value)
             activated = True
             return HttpResponseRedirect(reverse('instance-detail', kwargs={
                                                     'instance': instance, 
@@ -422,7 +429,8 @@ def reinstalldestreview(request, application_hash, action_id):
         
     elif request.method == 'GET':
         return render_to_response('verify_action.html', {'instance': instance,
-                                                         'action': action_id, 
+                                                         'action': action_id,
+                                                         'action_value': action_value,  
                                                          'cluster':cluster, 
                                                          'activated': activated, 
                                                          'hash': application_hash},
@@ -440,6 +448,7 @@ def startup(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.startup_instance(instance)
     action = {'action': _("Please wait... starting-up")}
+    clear_cluster_user_cache(request.user.username, cluster_slug)
     return HttpResponse(json.dumps(action))
 
 @login_required
@@ -449,6 +458,7 @@ def reboot(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.reboot_instance(instance)
     action = {'action': _("Please wait... rebooting")}
+    clear_cluster_user_cache(request.user.username, cluster_slug)
     return HttpResponse(json.dumps(action))
 
 
@@ -856,3 +866,7 @@ def graph(request, cluster_slug, instance, graph_type, start=None, end=None):
     except urllib2.HTTPError:
         pass
     return HttpResponse(response.read(), mimetype="image/png")
+
+def clear_cluster_user_cache(username, cluster_slug):
+    cache.delete("user:%s:index:instances" %username)
+    cache.delete("cluster:%s:instances" % cluster_slug)
