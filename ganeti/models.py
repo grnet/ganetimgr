@@ -233,6 +233,9 @@ class Instance(object):
     
     def pending_destroy(self):
         return self._pending_action_request(2)
+    
+    def pending_rename(self):
+        return self._pending_action_request(3)
             
 
 class Cluster(models.Model):
@@ -441,6 +444,13 @@ class Cluster(models.Model):
         job_id = self._client.DeleteInstance(instance)
         self._lock_instance(instance, reason=_("deleting"), job_id=job_id)
         return job_id
+    
+    def rename_instance(self, instance, newname):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
+        job_id = self._client.RenameInstance(instance, newname, ip_check=False, name_check=False)
+        self._lock_instance(instance, reason=_("renaming"), job_id=job_id)
+        return job_id
 
     def startup_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
@@ -568,6 +578,7 @@ def preload_instance_data():
 REQUEST_ACTIONS = (
                    (1, 'reinstall'),
                    (2, 'destroy'),
+                   (3, 'rename'),
                    )
 
 
@@ -586,41 +597,12 @@ class InstanceActionManager(models.Manager):
                 instreq.save()
                 return instreq
         return False
-    
-    def create_inactive_user(self, username, password, email,
-                             send_email=True, profile_callback=None):
-       
-        new_user = User.objects.create_user(username, email, password)
-        new_user.is_active = False
-        new_user.save()
-        
-        registration_profile = self.create_profile(new_user)
-        
-        if profile_callback is not None:
-            profile_callback(user=new_user)
-        
-        if send_email:
-            from django.core.mail import send_mail
-            current_site = Site.objects.get_current()
-            
-            subject = render_to_string('registration/activation_email_subject.txt',
-                                       { 'site': current_site })
-            # Email subject *must not* contain newlines
-            subject = ''.join(subject.splitlines())
-            
-            message = render_to_string('registration/activation_email.txt',
-                                       { 'activation_key': registration_profile.activation_key,
-                                         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                                         'site': current_site })
-            
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [new_user.email])
-        return new_user
-    
-    def create_action(self, user, instance, cluster, action):
+   
+    def create_action(self, user, instance, cluster, action, action_value = None):
         
         salt = sha.new(str(random.random())).hexdigest()[:5]
         activation_key = sha.new(salt+user.username).hexdigest()
-        return self.create(applicant=user, instance=instance, cluster=cluster, action=action,
+        return self.create(applicant=user, instance=instance, cluster=cluster, action=action, action_value = action_value,
                            activation_key=activation_key)
 
 class InstanceAction(models.Model):
@@ -628,6 +610,7 @@ class InstanceAction(models.Model):
     instance =  models.CharField(max_length=255)
     cluster = models.ForeignKey(Cluster)
     action = models.IntegerField(choices=REQUEST_ACTIONS)
+    action_value = models.CharField(max_length=255, null=True)
     activation_key = models.CharField(max_length=40)
     filed = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
