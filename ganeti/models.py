@@ -516,6 +516,7 @@ class Network(models.Model):
                             choices=(("bridged", "Bridged"),
                                      ("routed", "Routed")))
     cluster_default = models.BooleanField(default=False)
+    ipv6_prefix = models.CharField(max_length=255, null=True)
     groups = models.ManyToManyField(Group, blank=True, null=True)
 
     def __unicode__(self):
