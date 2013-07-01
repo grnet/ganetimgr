@@ -1,4 +1,5 @@
 <script type="text/javascript">
+var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 	$(function(){
 		$( "#start" )
 		.button({
@@ -110,6 +111,34 @@
     });	 
 		return false; });
 {% endif %}
+
+
+	{% if not instance.pending_rename %}
+	$( "#rename" )
+	.click(function() {
+		clearTimeout(polltimer);
+		$( "#instren" ).modal('show');
+		return false; });
+	
+	
+	$( "#renameapplybutton" )
+	.click(function() {
+		clearTimeout(polltimer);
+		var newname = $("#id_hostname").val();
+		if (! fqdnRegex.test(newname)) {
+			alert('Invalid hostname');
+			return False;
+		}
+		$.ajax({
+	    type: 'POST',
+	    url: "{% url instance-reinstall-destroy cluster.slug instance.name 3 %}"+'/'+newname,
+	    dataType: 'json',
+	    success: function(data) {
+	    	$( "#instrenbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>")
+	    }
+	});
+		return false; });
+	{% endif %}
 	
 	$( "#reboot" )
 	.click(function() {
@@ -142,7 +171,7 @@
 			<div class="row-fluid"><div class="span12"><a class="btn btn-inverse  btn-small btn-fixed" id="console" href="{% url instance-vnc cluster.slug instance.name %}"><i class='icon-terminal'></i> {% trans "Console" %}</a></div></div>
 			</div>
 			<div class="span6">
-			<div class="row-fluid"><div class="span12"><a class="btn btn-small btn-fixed btn-info" id="rename" href="#"><i class="icon-font"></i> {% trans "Rename..." %}</a></div></div>
+			<div class="row-fluid"><div class="span12"><a class="btn btn-small btn-fixed btn-info {% if instance.pending_rename %}disabled{% endif %}" id="rename" href="#"><i class="icon-font"></i> {% trans "Rename..." %}</a></div></div>
 			<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#"><i class='icon-cloud-download'></i> {% trans "Reinstall..." %}</a></div></div>
 			<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='icon-trash'></i> {% trans "Destroy..." %}</a></div></div>
 			</div>
@@ -156,7 +185,7 @@
 			<div class="row-fluid"><div class="span12"><a class="btn btn-warning btn-small btn-fixed " id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div></div>
 			</div>
 			<div class="span6">
-			<div class="row-fluid"><div class="span12"><a class="btn btn-fixed btn-info btn-small" id="rename" href="#"><i class="icon-font"></i> {% trans "Rename..." %}</a></div></div>
+			<div class="row-fluid"><div class="span12"><a class="btn btn-fixed btn-info btn-small {% if instance.pending_rename %}disabled{% endif %}" id="rename" href="#"><i class="icon-font"></i> {% trans "Rename..." %}</a></div></div>
 			<div class="row-fluid"><div class="span12"><a class="btn btn-fixed btn-small btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#"><i class='icon-cloud-download'></i> {% trans "Reinstall..." %}</a></div></div>
 			<div class="row-fluid"><div class="span12"><a class="btn btn-fixed btn-small btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='icon-trash'></i> {% trans "Destroy..." %}</a></div></div>
 			</div>
@@ -215,6 +244,38 @@ You will receive an email with an activation link. Only when you visit the activ
 <br>
 <div>
 <a href="#" id="destroyapplybutton" value="Save" class="btn btn-danger">{% trans "Email link" %}</a>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+</div>
+</div>
+
+<div class="modal hide fade" id="instren" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3>{% trans "Rename Instance" %}: {{instance}}</h3>
+</div>
+<div class="modal-body" id="instrenbody">
+<div class="alert alert-info">
+<h4>Instance Rename</h4>
+{% blocktrans %}You are about to initiate the process of your instance <strong>{{instance}}</strong> rename.<br>
+Once you select a new hostname and click Apply you will receive an email with an activation link. Only when you visit the activation link, your instance will be renamed.
+{% endblocktrans %}
+<form method="POST" class="form-inline" id="renameform">
+<div class="control-group ">
+	                <label for="id_applier" class="control-label required">
+	                	{% trans "Hostname" %}
+	                </label>
+                   <div class="controls"><input type="text" id="id_hostname" name="hostname">
+                    
+                    </div>
+                </div>
+                </form>
+</div>
+<br>
+<div>
+<a href="#" id="renameapplybutton" value="Save" class="btn btn-danger">{% trans "Apply" %}</a>
 </div>
 </div>
 <div class="modal-footer">
