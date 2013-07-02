@@ -129,7 +129,28 @@ $(document).ready( function(){
                       "sClass" : "alignCenter",
                       "bSearchable": true,"bSortable": true
                         },
-                     {"mData":"ipaddress","bSearchable": true,"bSortable": true},
+                     {"mData":"ipaddress","bSearchable": true,"bSortable": true, "sClass" : "alignCenter",
+                         "mRender": function (data, type, full) {
+                       	 status = "";
+                       	 for(var i = 0; i < data.length; i++) {
+                       		status = '<span class="label label-info">'+data[i]+'</span> ' + status;	 
+                       	 }
+                       	 if (data.length == 0){
+                       		status = '<span class="label label-warning">-</span> ';
+                       	 }
+                       	 ipv6s = full.ipv6address;
+                       	 status6 = ""
+                       	for(var i = 0; i < ipv6s.length; i++) {
+                       		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;	 
+                       	 }
+                       	 if (ipv6s.length >= 0){
+                       		status = status+"<br>"+status6
+                       	 }
+                       	 
+                         return status;
+                         }
+                     },
+                     
                      {"mData":"nic_macs","bVisible":false},
                      {% if user.is_superuser or perms.ganeti.view_instances %}
                      {"mData":"nic_links","bSearchable": true,"bSortable": true,"sClass" : "alignCenter",},

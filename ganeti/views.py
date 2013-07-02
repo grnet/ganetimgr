@@ -266,7 +266,8 @@ def generate_json(instance, user):
         inst_dict['cluster'] = i.cluster.description
     inst_dict['memory'] = memsize(i.beparams['memory'])
     inst_dict['vcpus'] = i.beparams['vcpus']
-    inst_dict['ipaddress'] = i.nic_ips[0] if i.nic_ips[0] else "-"
+    inst_dict['ipaddress'] = [ip for ip in i.nic_ips if ip]
+    inst_dict['ipv6address'] = [ip for ip in i.ipv6s if ip]
     #inst_dict['status'] = i.nic_ips[0] if i.nic_ips[0] else "-"
     if i.admin_state == i.oper_state:
         if i.admin_state:

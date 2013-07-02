@@ -32,6 +32,8 @@ from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANE
 import re
 import random
 import sha
+import ipaddr
+
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
@@ -50,13 +52,13 @@ except ImportError:
 class InstanceManager(object):
     def all(self):
         results = []
-        users, orgs, groups, instanceapps = preload_instance_data()
+        users, orgs, groups, instanceapps, networks = preload_instance_data()
         for cluster in Cluster.objects.all():
             results.extend(cluster.get_instances())
         return results
 
     def filter(self, **kwargs):
-        users, orgs, groups, instanceapps = preload_instance_data()
+        users, orgs, groups, instanceapps, networks = preload_instance_data()
         if 'cluster' in kwargs:
             if isinstance(kwargs['cluster'], Cluster):
                 cluster = kwargs['cluster']
@@ -108,18 +110,21 @@ class InstanceManager(object):
 class Instance(object):
     objects = InstanceManager()
 
-    def __init__(self, cluster, name, info=None, listusers=None, listorganizations=None, listgroups=None, listinstanceapplications=None):
+    def __init__(self, cluster, name, info=None, listusers=None, listorganizations=None, listgroups=None, listinstanceapplications=None, networks=None):
         self.cluster = cluster
         self.name = name
         self.listusers = listusers
         self.listorganizations = listorganizations
         self.listgroups = listgroups
         self.listinstanceapplications = listinstanceapplications
+        self.networks = networks
         self.organization = None
         self.application = None
         self.services = []
         self.users = []
         self.groups = []
+        self.links = []
+        self.ipv6s = []
         self._update(info)
         self.admin_view_only = False
 
@@ -189,7 +194,35 @@ class Instance(object):
             self.ctime = datetime.fromtimestamp(self.ctime)
         if getattr(self, 'mtime', None):
             self.mtime = datetime.fromtimestamp(self.mtime)
+        for nlink in self.nic_links:
+            try:
+                self.links.append(self.networks[nlink])
+            except Exception as e:
+                pass
+        
+        for i in range(len(self.links)):
+            try:
+                ipv6addr = self.generate_ipv6(self.links[i], self.nic_macs[i])
+                if not ipv6addr:
+                    continue
+                self.ipv6s.append("%s"%(ipv6addr))
+            except Exception as e:
+                pass
 
+    def generate_ipv6(self, prefix, mac):
+        try:
+            prefix = ipaddr.IPv6Network(prefix)
+            mac_parts = mac.split(":")
+            prefix_parts = prefix.network.exploded.split(':')
+            eui64 = mac_parts[:3] + [ "ff", "fe" ] + mac_parts[3:]
+            eui64[0] = "%02x" % (int(eui64[0], 16) ^ 0x02)
+            ip = ":".join(prefix_parts[:4])
+            for l in range(0, len(eui64), 2):
+                ip += ":%s" % "".join(eui64[l:l+2])
+            return ip
+        except:
+            return False
+        
     def set_params(self, **kwargs):
         job_id = self.cluster._client.ModifyInstance(self.name, **kwargs)
         self.lock(reason=_("modifying"), job_id=job_id)
@@ -305,8 +338,8 @@ class Cluster(models.Model):
 
     def get_instance(self, name):
         info = self.get_instance_info(name)
-        users, orgs, groups, instanceapps = preload_instance_data()
-        return Instance(self, info["name"], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps)
+        users, orgs, groups, instanceapps, networks = preload_instance_data()
+        return Instance(self, info["name"], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks)
 
     def get_instance_or_404(self, name):
         try:
@@ -324,8 +357,8 @@ class Cluster(models.Model):
         if instances is None:
             instances = self._client.GetInstances(bulk=True)
             cache.set("cluster:%s:instances" % self.slug, instances, 45)
-        users, orgs, groups, instanceapps = preload_instance_data()
-        retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps) for info in instances]
+        users, orgs, groups, instanceapps, networks = preload_instance_data()
+        retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks) for info in instances]
         return retinstances
     
 
@@ -516,7 +549,7 @@ class Network(models.Model):
                             choices=(("bridged", "Bridged"),
                                      ("routed", "Routed")))
     cluster_default = models.BooleanField(default=False)
-    ipv6_prefix = models.CharField(max_length=255, null=True)
+    ipv6_prefix = models.CharField(max_length=255, null=True, blank=True)
     groups = models.ManyToManyField(Group, blank=True, null=True)
 
     def __unicode__(self):
@@ -538,6 +571,14 @@ class Network(models.Model):
 
 
 def preload_instance_data():
+    networks = cache.get('networklist')
+    if not networks:
+        networks = Network.objects.select_related('cluster').all()
+        networkdict = {}
+        for network in networks:
+            networkdict[network.link] = network.ipv6_prefix
+        networks = networkdict
+        cache.set('networklist', networks, 30)
     users = cache.get('userlist')
     if not users:
         users = User.objects.select_related('groups').all()
@@ -571,7 +612,7 @@ def preload_instance_data():
             instappdict[str(instapp.pk)] = instapp
         instanceapps = instappdict
         cache.set('instaceapplist', instanceapps, 30)
-    return users, orgs, groups, instanceapps
+    return users, orgs, groups, instanceapps, networks
 
 
 
