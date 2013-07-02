@@ -219,6 +219,7 @@ class Instance(object):
             ip = ":".join(prefix_parts[:4])
             for l in range(0, len(eui64), 2):
                 ip += ":%s" % "".join(eui64[l:l+2])
+            ip = ipaddr.IPAddress(ip).compressed
             return ip
         except:
             return False
