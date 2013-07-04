@@ -622,6 +622,7 @@ REQUEST_ACTIONS = (
                    (1, 'reinstall'),
                    (2, 'destroy'),
                    (3, 'rename'),
+                   (4, 'mailchange')
                    )
 
 
@@ -650,8 +651,8 @@ class InstanceActionManager(models.Manager):
 
 class InstanceAction(models.Model):
     applicant = models.ForeignKey(User)
-    instance =  models.CharField(max_length=255)
-    cluster = models.ForeignKey(Cluster)
+    instance =  models.CharField(max_length=255, blank=True)
+    cluster = models.ForeignKey(Cluster, null=True, blank=True)
     action = models.IntegerField(choices=REQUEST_ACTIONS)
     action_value = models.CharField(max_length=255, null=True)
     activation_key = models.CharField(max_length=40)
@@ -661,13 +662,20 @@ class InstanceAction(models.Model):
     ACTIVATED = u"ALREADY_ACTIVATED"
     objects = InstanceActionManager()
 
-
     def activation_key_expired(self):
+        if self.has_expired():
+            if self.activation_key != self.ACTIVATED:
+                self.activation_key = self.ACTIVATED
+                self.save()
+        return self.has_expired()
+    activation_key_expired.boolean = True
+    
+    def has_expired(self):
         
         expiration_date = timedelta(days=settings.INSTANCE_ACTION_ACTIVE_DAYS)
         return self.activation_key == self.ACTIVATED or \
                (self.filed + expiration_date <= datetime.now())
-    activation_key_expired.boolean = True
+    has_expired.boolean = True
 
     def send_activation_email(self, site):
        
@@ -683,6 +691,4 @@ class InstanceAction(models.Model):
         
         self.user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
         
-
-
-        
+       
