@@ -30,7 +30,7 @@ from django.contrib.sites.models import Site
 
 from ganetimgr.apply.models import *
 from ganetimgr.apply.forms import *
-from ganetimgr.ganeti.models import Cluster, Network
+from ganetimgr.ganeti.models import Cluster, Network, InstanceAction
 from ganetimgr.settings import SERVER_EMAIL, EMAIL_SUBJECT_PREFIX
 
 from django.utils.translation import ugettext as _
@@ -200,19 +200,53 @@ def profile(request):
 @login_required
 def mail_change(request):
     changed = False
+    pending = False
     usermail = request.user.email
     if request.method == "GET":
         form = EmailChangeForm()
+        pending = check_mail_change_pending(request.user)
     elif request.method == "POST":
         form = EmailChangeForm(request.POST)
         if form.is_valid():
             usermail = form.cleaned_data['email1']
             user = User.objects.get(username=request.user)
-            user.email = usermail
-            user.save()
-            changed = True
-            form = EmailChangeForm()
-    return render_to_response("mail_change.html", {'mail':usermail, 'form':form, 'changed':changed}, context_instance=RequestContext(request))
+            if user.email:
+                mailchangereq = InstanceAction.objects.create_action(request.user, '', None, 4, usermail)
+                fqdn = Site.objects.get_current().domain
+                url = "https://%s%s" % \
+                    (fqdn,
+                     reverse("reinstall-destroy-review",
+                     kwargs={'application_hash': mailchangereq.activation_key, 'action_id':4}
+                     )
+                )
+                email = render_to_string("reinstall_mail.txt",
+                                         {"user": request.user,
+                                          "action": mailchangereq.get_action_display(),
+                                          "action_value": mailchangereq.action_value,
+                                          "url": url})
+                send_mail(_("%sUser email change requested") % (EMAIL_SUBJECT_PREFIX),
+                  email, SERVER_EMAIL, [request.user.email])
+                pending = True
+            else:
+                user.email = usermail
+                user.save()
+                changed = True
+                form = EmailChangeForm()
+    return render_to_response("mail_change.html", {'mail':usermail, 'form':form, 'changed':changed, 'pending': pending}, context_instance=RequestContext(request))
+
+def check_mail_change_pending(user):
+    actions = []
+    pending_actions = InstanceAction.objects.filter(applicant=user, action=4)
+    for pending in pending_actions:
+        if pending.activation_key_expired():
+            continue
+        actions.append(pending)
+    if len(actions) == 0:
+        return False
+    elif len(actions) == 1:
+        return True
+    else:
+        return False
 
 @login_required
 def name_change(request):
@@ -244,3 +278,18 @@ def instance_ssh_keys(request, application_id, cookie):
     output.writelines([k.key_line() for k in
                        app.applicant.sshpublickey_set.all()])
     return HttpResponse(output.getvalue(), mimetype="text/plain")
+
+@login_required
+def pass_notify(request):
+    user = User.objects.get(username=request.user)
+    if user.email:
+        fqdn = Site.objects.get_current().domain
+        email = render_to_string("pass_change_notify_mail.txt",
+                                 {"user": request.user})
+        send_mail(_("%sUser password change") % (EMAIL_SUBJECT_PREFIX),
+          email, SERVER_EMAIL, [request.user.email])
+        return HttpResponse("mail sent", mimetype="text/plain")
+    else:
+        return HttpResponse("mail not sent", mimetype="text/plain")
+
+
