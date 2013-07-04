@@ -1,4 +1,8 @@
 <div id="usermailchange_placeholder" class="padwidget">
+{% if pending %}
+<div class="alert alert-info">There is a pending mail change request on your behalf. Check your e-mails for an activation link.</div> 
+
+{% else %}
 <script>
 	$(document).ajaxSend(function(event, xhr, settings) {
     function getCookie(name) {
@@ -57,7 +61,8 @@
 	});
 	</script>
 	{% load i18n %}
-<div>{{user}} {% trans "enter your new mail address twice so we can verify you typed it in correctly." %}</div> 
+<div>{{user}} {% trans "enter your new mail address twice so we can verify you typed it in correctly." %}</div>
+<div>{% trans "Once you submit this form you will receive an activation email with instructions on how to proceed" %}</div> 
 <div>{% trans "Your e-mail" %} {% if changed %} {% trans "has successfully changed to" %} {% endif %}: <strong>{% ifequal mail|length 0 %} {% trans "you have not registered an address yet" %} {% else %}{{mail}}{% endifequal %}</strong></div>
 <form method="POST" id="change_email_form" class="form">
 {% csrf_token %}
@@ -66,5 +71,5 @@
         </table>
 <button id="change_email_btn" class="btn btn-success">{% trans "Change email" %}</button>
 </form>
-
+{% endif %}
 </div>
