@@ -22,7 +22,8 @@
 
     <div class="row-fluid">
         <div class="row-fluid">
-        	<h2>{{ instance }}</h2>
+        	{% if action != 4 %}<h2>{{ instance }}</h2>{% endif %}
+        	{% if action != 4 %}
         	<div class="alert {% if action != 3 %}alert-danger{% else %}alert-info{% endif %}">
         	{% if not activated %}
             You are about to {% if action == 1 %}reinstall{% endif %}{% if action == 2 %}destroy{% endif %} {% if action == 3 %}rename{% endif %} instance: <strong>{{instance}}</strong>{% if action == 3 %} to <strong>{{action_value}}</strong>{% endif %}<br>
@@ -34,6 +35,7 @@
             <br>Once initiated, this process cannot be undone or stop!
              {% endif %}
                          <br>
+                         {% if action == 3 %}<div class="alert alert-warning"><strong>Important</strong>: To rename an instance make sure that it is turned off</div>{% endif %}
             <br>
              <form method="post" align="center" id="conf_form" class="form">
              {% csrf_token %}
@@ -44,7 +46,22 @@
               Apply for a new request via the instance details page.
               {% endif %}
               </div>
-              
+              {% else %}
+              <div class="alert alert-info">
+        	{% if not activated %}
+            You are about to change your email to: <strong>{{action_value}}</strong><br>
+            
+            <br>
+             <form method="post" align="center" id="conf_form" class="form">
+             {% csrf_token %}
+            		<button type="submit" class="btn btn-info">Change Email</button>
+             </form>
+             {% else %}
+              Mail change is no longer available. It has either expired or it is already performed.<br>
+              Apply for a new request via the instance details page.
+              {% endif %}
+              </div>
+              {% endif %}
         </div>
     </div>
 </div>
