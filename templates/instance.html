@@ -1,6 +1,7 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{{ instance.name }} on {{ instance.cluster.description }}{% endblock %}
+{% block extraticketinfo %} about {{ instance.name }} on {{ instance.cluster.description }}{% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="/static/daterangepicker/daterangepicker.js"></script>
