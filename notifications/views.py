@@ -15,7 +15,6 @@
 # OF THIS SOFTWARE.
 
 from django.conf import settings
-from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
@@ -30,7 +29,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 import json
-
+from django.core.mail.message import EmailMessage
 
 @csrf_exempt
 @login_required
@@ -47,8 +46,8 @@ def notify(request, instance=None):
                 mail_list = get_mails(rlist)
                 email = form.cleaned_data['message']
                 if len(mail_list) > 0:
-                    send_mail(_("%s%s") % (settings.EMAIL_SUBJECT_PREFIX, form.cleaned_data['subject']),
-                              email, settings.SERVER_EMAIL, mail_list)
+                    send_new_mail(_("%s%s") % (settings.EMAIL_SUBJECT_PREFIX, form.cleaned_data['subject']),
+                              email, settings.SERVER_EMAIL, [], mail_list)
                 if request.is_ajax():
                     ret = {'result':'success'}
                     return HttpResponse(json.dumps(ret), mimetype='application/json')
@@ -155,4 +154,7 @@ def get_user_group_list(request):
         action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
         return HttpResponse(json.dumps(action), mimetype='application/json')
 
-    
+def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
+    return EmailMessage(subject, message, from_email, recipient_list, bcc_list).send()
+
+
