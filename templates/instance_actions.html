@@ -110,34 +110,20 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
         }
     });	 
 		return false; });
-{% endif %}
+	
+	
+	{% endif %}
 
 
 	{% if not instance.pending_rename %}
 	$( "#rename" )
 	.click(function() {
 		clearTimeout(polltimer);
+		$( "#instrenbody" ).html( "" );
+		$( "#instrenbody" ).load("{% url instance-rename cluster.slug instance.name 3 %}");
 		$( "#instren" ).modal('show');
 		return false; });
-	
-	
-	$( "#renameapplybutton" )
-	.click(function() {
-		clearTimeout(polltimer);
-		var newname = $("#id_hostname").val();
-		if (! fqdnRegex.test(newname)) {
-			alert('Invalid hostname');
-			return False;
-		}
-		$.ajax({
-	    type: 'POST',
-	    url: "{% url instance-reinstall-destroy cluster.slug instance.name 3 %}"+'/'+newname,
-	    dataType: 'json',
-	    success: function(data) {
-	    	$( "#instrenbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>")
-	    }
-	});
-		return false; });
+
 	{% endif %}
 	
 	$( "#reboot" )
@@ -257,22 +243,7 @@ You will receive an email with an activation link. Only when you visit the activ
 <h3>{% trans "Rename Instance" %}: {{instance}}</h3>
 </div>
 <div class="modal-body" id="instrenbody">
-<div class="alert alert-info">
-<h4>Instance Rename</h4>
-{% blocktrans %}You are about to initiate the process of your instance <strong>{{instance}}</strong> rename.<br>
-Once you select a new hostname and click Apply you will receive an email with an activation link. Only when you visit the activation link, your instance will be renamed.
-{% endblocktrans %}
-<form method="POST" class="form-inline" id="renameform">
-<div class="control-group ">
-	                <label for="id_applier" class="control-label required">
-	                	{% trans "Hostname" %}
-	                </label>
-                   <div class="controls"><input type="text" id="id_hostname" name="hostname">
-                    
-                    </div>
-                </div>
-                </form>
-</div>
+
 <br>
 <div>
 <a href="#" id="renameapplybutton" value="Save" class="btn btn-danger">{% trans "Apply" %}</a>
