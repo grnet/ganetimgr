@@ -64,6 +64,27 @@ label.required { font-weight: bold; }
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
      {% if user.is_authenticated and HELPDESK_INTEGRATION_JAVASCRIPT_URL %}
 		<script type="text/javascript" src="{{HELPDESK_INTEGRATION_JAVASCRIPT_URL}}"></script>
+		<script type="text/javascript">
+		$(function(){
+		window.ATL_JQ_PAGE_PROPS = $.extend(window.ATL_JQ_PAGE_PROPS, {
+ 
+    // ==== custom trigger function ====
+    triggerFunction : function( showCollectorDialog ) {
+        $('#atlwdg-trigger').on( 'click', function(e) {
+            e.preventDefault();
+            showCollectorDialog();
+        }); 
+    },
+    // ==== we add the code below to set the field values ====
+    fieldValues: {
+        summary : '',
+        description : 'From user {{user}}{% block extraticketinfo %}{% endblock %}:\n',
+        fullname : '{{user.get_full_name}}',
+        email : '{{user.email}}',
+    }                  
+});
+		});
+		</script>
 	{% endif %}
     <script type="text/javascript">
 
@@ -188,7 +209,7 @@ label.required { font-weight: bold; }
 						<li {% block applications %}{% endblock %}><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
 			{% endif %}
             <li {% block owners %}{% endblock %}><a href="{% url instance_owners %}"><i class="icon-briefcase"></i> <span>Instance Owners</span></a></li>
-            
+            <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="icon-moon"></i> <span>Idle Accounts</span></a></li>
             {% endif %}
             <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="icon-user"></i> <span>My Profile</span></a></li>
             {% if user.is_superuser %}
@@ -242,7 +263,7 @@ label.required { font-weight: bold; }
 	
 	</div>
 	<div style="padding-top: 10px;"><a href="/about/info/{{ LANGUAGE_CODE }}">{% trans "Info" %}</a> | <a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">{% trans "Service Terms" %}</a></div>
-		<div style="padding-top: 10px;">Powered by ganetimgr v0.8.1</div>
+		<div style="padding-top: 10px;">Powered by ganetimgr {{VERSION}}</div>
 	
       </div>
     </footer>    
