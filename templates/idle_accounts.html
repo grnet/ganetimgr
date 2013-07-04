@@ -1,0 +1,62 @@
+{% extends "theme/base.html" %}
+{% load i18n %}
+{% block extrahead %}
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript">
+	$(document).ready( function(){
+			$('#usergroup_instance_table').dataTable( {
+			"bJQueryUI": true,
+			"oLanguage": {
+				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select>'
+			},
+			"iDisplayLength": 25,
+	} );
+		});
+</script>
+{% endblock %}
+{% block title %}
+	
+		{% trans "Idle Accounts" %}
+	
+{% endblock %}
+{% block idle %}class="active"{% endblock %}
+				{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% trans "Idle Accounts" %}</li>
+	    		{% endblock %}
+
+{% block content %}
+
+<div class="span9 main-content">
+
+    <div class="row-fluid">
+        <div class="row-fluid">
+			<h2>{% trans "User Idle Accounts" %}</h2>
+			<table width="100%" id="usergroup_instance_table" class="table table-first-column-number data-table display full">
+<thead>
+<tr>
+	<th style="text-align: center;">{% trans "Username" %}</th>
+	<th>{% trans "First Name" %}</th>
+	<th>{% trans "Last Name" %}</th>
+	<th>{% trans "E-mail" %}</th>
+</tr>
+
+</thead>
+<tbody>
+{% for user in users %}
+<tr class="GradeA">
+	<td style="text-align: center;">{{user.username}}</td>
+	<td>{{user.first_name}}</td>
+	<td>{{user.last_name}}</td>
+	<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
+</tr>
+{% endfor %}
+
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+{% endblock %}
