@@ -43,6 +43,7 @@ from django.utils.translation import ugettext as _
 from django.core.mail import send_mail, mail_managers
 
 from time import sleep, mktime
+import datetime
 
 try:
     import json
@@ -352,6 +353,35 @@ def shutdown(request, cluster_slug, instance):
 @login_required
 @csrf_exempt
 @check_instance_auth
+def rename_instance(request, cluster_slug, instance, action_id, action_value=None):
+    if request.method == 'POST':
+        form = InstanceRenameForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            action_value = data['hostname']
+            return HttpResponseRedirect(reverse('instance-reinstall-destroy',
+                                                kwargs={'cluster_slug': cluster_slug, 
+                                                        'instance':instance,
+                                                        'action_id': int(action_id),
+                                                        'action_value': action_value}))
+        else:
+            return render_to_response('rename_instance.html',
+                {
+                    'form': form, 'instance': instance, 'cluster_slug': cluster_slug
+                }, 
+                context_instance=RequestContext(request)
+                )
+    elif request.method == 'GET':
+        form = InstanceRenameForm()
+        return render_to_response('rename_instance.html', {
+                'form': form, 'instance': instance, 'cluster_slug': cluster_slug}, 
+                context_instance=RequestContext(request)
+            )
+
+
+@login_required
+@csrf_exempt
+@check_instance_auth
 def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=None):
     action_id = int(action_id)
     if action_id not in [1,2,3]:
@@ -389,7 +419,7 @@ def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=No
 @csrf_exempt
 def reinstalldestreview(request, application_hash, action_id):
     action_id = int(action_id)
-    if action_id not in [1,2,3]:
+    if action_id not in [1,2,3,4]:
         return HttpResponseRedirect(reverse('user-instances'))
     activation_key = application_hash.lower() # Normalize before trying anything with it.
     try:
@@ -410,12 +440,23 @@ def reinstalldestreview(request, application_hash, action_id):
     if request.method == 'POST':
         if not activated:
             instance_action = InstanceAction.objects.activate_request(application_hash)
+            if not instance_action:
+                 return render_to_response('verify_action.html', {
+                                                             'action': action_id, 
+                                                             'activated': activated, 
+                                                             'hash': application_hash},
+                              context_instance=RequestContext(request))
             if action_id == 1:
                 cluster.reinstall_instance(instance)
             if action_id == 2:
                 cluster.destroy_instance(instance)
             if action_id == 3:
                 cluster.rename_instance(instance, action_value)
+            if action_id == 4:
+                user = User.objects.get(username=request.user)
+                user.email = action_value
+                user.save()
+                return HttpResponseRedirect(reverse('profile'))
             activated = True
             return HttpResponseRedirect(reverse('instance-detail', kwargs={
                                                     'instance': instance, 
@@ -868,6 +909,17 @@ def graph(request, cluster_slug, instance, graph_type, start=None, end=None):
         pass
     return HttpResponse(response.read(), mimetype="image/png")
 
+@login_required
+def idle_accounts(request):
+    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+        idle_users = []
+        idle_users.extend([u for u in User.objects.filter(is_active=True, last_login__lte=datetime.datetime.now()-datetime.timedelta(days=int(settings.IDLE_ACCOUNT_NOTIFICATION_DAYS))) if u.email])
+        idle_users = list(set(idle_users))
+        return render_to_response('idle_accounts.html', {'users': idle_users},
+                                  context_instance=RequestContext(request))
+
+
 def clear_cluster_user_cache(username, cluster_slug):
     cache.delete("user:%s:index:instances" %username)
     cache.delete("cluster:%s:instances" % cluster_slug)
+
