@@ -20,5 +20,6 @@ def settings_vars(context):
     # return the value you want as a dictionnary. you may add multiple values in there.
     return {
             'HELPDESK_INTEGRATION_JAVASCRIPT_URL': settings.HELPDESK_INTEGRATION_JAVASCRIPT_URL,
+            'VERSION': settings.SW_VERSION,
             
             }
