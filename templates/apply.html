@@ -1,10 +1,11 @@
 {% extends "theme/base.html" %} {% load i18n %} {% block title %}
-{% trans "Create new Virtual Machine" %}{% endblock %} 
+{% trans "Create new Virtual Machine" %}{% endblock %}
 {% block crumbs %}
 	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	    			<li class="active">Create Instance</li>
 	    		{% endblock %}
 {% block createtop%}class="active"{% endblock %}
+{% block extraticketinfo %} about instance creation{% endblock %}
 {% block content %}
 <style type="text/css">
 th {
