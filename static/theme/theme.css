@@ -1912,6 +1912,6 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 }
 
 .btn-fixed{
-	min-width: 120px !important;
-	max-width: 120px !important;
+	min-width: 130px !important;
+	max-width: 130px !important;
 }
