@@ -224,7 +224,7 @@ def mail_change(request):
                                           "action": mailchangereq.get_action_display(),
                                           "action_value": mailchangereq.action_value,
                                           "url": url})
-                send_mail(_("%sUser email change requested") % (EMAIL_SUBJECT_PREFIX),
+                send_mail("%sUser email change requested" % (EMAIL_SUBJECT_PREFIX),
                   email, SERVER_EMAIL, [request.user.email])
                 pending = True
             else:
@@ -286,7 +286,7 @@ def pass_notify(request):
         fqdn = Site.objects.get_current().domain
         email = render_to_string("pass_change_notify_mail.txt",
                                  {"user": request.user})
-        send_mail(_("%sUser password change") % (EMAIL_SUBJECT_PREFIX),
+        send_mail("%sUser password change" % (EMAIL_SUBJECT_PREFIX),
           email, SERVER_EMAIL, [request.user.email])
         return HttpResponse("mail sent", mimetype="text/plain")
     else:

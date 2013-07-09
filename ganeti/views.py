@@ -410,7 +410,7 @@ def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=No
         action_mail_text = "destruction"
     if action_id == 3:
         action_mail_text = "rename"
-    send_mail(_("%sInstance %s requested: %s") % (settings.EMAIL_SUBJECT_PREFIX, action_mail_text, instance),
+    send_mail("%sInstance %s requested: %s" % (settings.EMAIL_SUBJECT_PREFIX, action_mail_text, instance),
                   email, settings.SERVER_EMAIL, [request.user.email])
     action = {'action':_("Mail sent")}
     return HttpResponse(json.dumps(action))
