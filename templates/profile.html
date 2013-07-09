@@ -1,6 +1,6 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
-{% block extraticketinfo %} about my profile{% endblock %}
+{% block extraticketinfo %} {% trans "about my profile" %}{% endblock %}
 {% block extrahead %}
 	<script>
 $(document).ready(function () {
@@ -27,7 +27,7 @@ $(document).ready(function () {
 {% block profile %}class="active"{% endblock %}
 {% block crumbs %}
 	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{{user}} profile</li>
+	    			<li class="active">{{user}} {% trans "profile" %}</li>
 	    		{% endblock %}
 
 {% block title %}{% trans "My profile" %}{% endblock %}

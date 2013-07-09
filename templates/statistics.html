@@ -26,24 +26,24 @@ $(function () {
 	            renderTo: 'container'
 	        },
 	        title: {
-                text: 'Instance Creation History'
+                text: '{% trans "Instance Creation History" %}'
             },
             subtitle: {
                 text: document.ontouchstart === undefined ?
-                    'Click and drag in the plot area to zoom in' :
-                    'Drag your finger over the plot to zoom in'
+                    '{% trans "Click and drag in the plot area to zoom in" %}' :
+                    '{% trans "Drag your finger over the plot to zoom in" %}'
             },
 	        xAxis: {
 	            type:'datetime',
 	            maxZoom: 14 * 24 * 3600000, // fourteen days
 	            title: {
-                    text: "Instance Creation Dates"
+                    text: "{% trans 'Instance Creation Dates' %}"
                 }
 	        },
 	        yAxis: {
 	        	min: 0,
 	            title: {
-                    text: "Number of Instances"
+                    text: "{% trans 'Number of Instances' %}"
                 }
 	        },
 	        series: [],
@@ -51,7 +51,7 @@ $(function () {
 	            shared: false,
 	            formatter: function() {
 	                var s = this.point.vm;
-	                return '<b>'+s + '</b><hr/><br/><b>Created: </b>' + new Date(this.point.x).toDateString() + '<br/>So far: ' + this.y;
+	                return '<b>'+s + '</b><hr/><br/><b>{% trans "Created" %}: </b>' + new Date(this.point.x).toDateString() + '<br/>{% trans "So far" %}: ' + this.y;
 	            }
 	        }
 	    };
@@ -79,35 +79,35 @@ $(function () {
 	            renderTo: 'container2'
 	        },
 	        title: {
-                text: 'Instance Applications History'
+                text: '{% trans "Instance Applications History" %}'
             },
             subtitle: {
                 text: document.ontouchstart === undefined ?
-                    'Click and drag in the plot area to zoom in' :
-                    'Drag your finger over the plot to zoom in'
+                    '{% trans "Click and drag in the plot area to zoom in" %}' :
+                    '{% trans "Drag your finger over the plot to zoom in" %}'
             },
 	        xAxis: {
 	            type:'datetime',
 	            maxZoom: 14 * 24 * 3600000, // fourteen days
 	            title: {
-                    text: "Instance Application Dates"
+                    text: '{% trans "Instance Application Dates" %}'
                 }
 	        },
 	        yAxis: {
 	        	min: 0,
 	            title: {
-                    text: "Number of Applications"
+                    text: '{% trans "Number of Applications" %}'
                 }
 	        },
 	        series: [{
 	        	data: [],
-	        	name: "Instance Applications"
+	        	name: "{% trans 'Instance Applications' %}"
 	        }],
 	        tooltip: {
 	            shared: false,
 	            formatter: function() {
 	                var s = this.point.vm;
-	                return '<b>'+s + '</b><hr/><br/><b>Filed: </b>' + new Date(this.point.x).toDateString() + '<br/>So far: ' + this.y;
+	                return '<b>'+s + '</b><hr/><br/><b>{% trans "Submitted:" %} </b>' + new Date(this.point.x).toDateString() + '<br/>{% trans "So far" %}: ' + this.y;
 	            }
 	        }
 	    };
@@ -329,32 +329,32 @@ $(document).ready( function(){
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">Clusters</p>
                     <p class="pull-right text-success strong">{{clusters|length}}</p>
-                    <p class="info">Managed by ViMa</p>
+                    <p class="info">{% trans "Managed by ViMa" %}</p>
                 </li>
                 <li>
-                    <p style=" line-height: 1em; margin-top: 0em" class="title">Instances</p>
+                    <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Instances " %}</p>
                     <p class="pull-right text-success strong">{{instances}}</p>
-                    <p class="info">Created</p>
+                    <p class="info">{% trans "Created " %}</p>
                 </li>
                 <li>
-                    <p style=" line-height: 1em; margin-top: 0em" class="title">Applications</p>
+                    <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Applications" %}</p>
                     <p class="pull-right text-info strong">{{instance_apps}}</p>
-                    <p class="info">Filed</p>
+                    <p class="info">{% trans "Submitted " %}</p>
                 </li>                
                 <li>
-                    <p style=" line-height: 1em; margin-top: 0em" class="title">Users</p>
+                    <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Users" %}</p>
                     <p class="pull-right text-info strong">{{users}}</p>
-                    <p class="info">Registered</p>
+                    <p class="info">{% trans "Registered" %}</p>
                 </li>
                 <li>
-                    <p style=" line-height: 1em; margin-top: 0em" class="title">Groups</p>
+                    <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Groups" %}</p>
                     <p class="pull-right text-info strong">{{groups}}</p>
-                    <p class="info">Created</p>
+                    <p class="info">{% trans "of users" %}</p>
                 </li>
                 <li>
-                    <p style=" line-height: 1em; margin-top: 0em" class="title">Organizations</p>
+                    <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Organizations" %}</p>
                     <p class="pull-right text-info strong">{{orgs}}</p>
-                    <p class="info">Participating</p>
+                    <p class="info">{% trans "Participating" %}</p>
                 </li>
             </ul>
 </div>
@@ -366,39 +366,39 @@ $(document).ready( function(){
             <h2>{% trans "Your Statistics" %}</h2>
             <ul class="cards">
                 <li>
-                    <p style=" line-height: 1em; margin-top: 0em" class="title">Instances</p>
+                    <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "My Instances" %}</p>
                     <p class="pull-right text-success strong" id="instance_no"></p>
-                    <p class="info">Managed by ViMa</p>
+                    <p class="info">{% trans "Managed by ViMa" %}</p>
                 </li>
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">CPUs</p>
                     <p class="pull-right text-info strong" id="cpu_no"></p>
-                    <p class="info">Total</p>
+                    <p class="info">{% trans "Total" %}</p>
                 </li>
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">Mem (MB)</p>
                     <p class="pull-right text-warning strong" id="mem_no"></p>
-                    <p class="info">Total</p>
+                    <p class="info">{% trans "Total" %}</p>
                 </li>                
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">Disk (MB)</p>
                     <p class="pull-right text-error strong" id="disk_no"></p>
-                    <p class="info">Total</p>
+                    <p class="info">{% trans "Total" %}</p>
                 </li>
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">CPUs/VM</p>
                     <p class="pull-right text-info strong" id="cpu_avg"></p>
-                    <p class="info">Avg.</p>
+                    <p class="info">{% trans "Avg." %}</p>
                 </li>
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">Mem (MB)/VM</p>
                     <p class="pull-right text-warning strong" id="mem_avg"></p>
-                    <p class="info">Avg.</p>
+                    <p class="info">{% trans "Avg." %}</p>
                 </li>
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">Disk (MB)/VM</p>
                     <p class="pull-right text-error strong" id="disk_avg"></p>
-                    <p class="info">Avg.</p>
+                    <p class="info">{% trans "Avg." %}</p>
                 </li>
             </ul>
 </div>

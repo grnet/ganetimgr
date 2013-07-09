@@ -78,7 +78,7 @@ label.required { font-weight: bold; }
     // ==== we add the code below to set the field values ====
     fieldValues: {
         summary : '',
-        description : 'From user {{user}}{% block extraticketinfo %}{% endblock %}:\n',
+        description : '{% trans "From user" %} {{user}}{% block extraticketinfo %}{% endblock %}:\n',
         fullname : '{{user.get_full_name}}',
         email : '{{user.email}}',
     }                  
@@ -120,7 +120,7 @@ label.required { font-weight: bold; }
         <div class="navbar-inner">
                 <ul class="nav pull-right">
                     {% if user.is_authenticated %}
-                    <li class="hidden-phone"><a href="{% url profile %}" role="button">My Profile</a></li>
+                    <li class="hidden-phone"><a href="{% url profile %}" role="button">{% trans "My Profile" %}</a></li>
                     {% endif %}
                     <li class="dropdown pull-right hidden-phone">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<b class="caret"></b></a>
@@ -147,7 +147,7 @@ label.required { font-weight: bold; }
                         <ul class="dropdown-menu">
                             <li><a tabindex="-1" href="{% url profile %}">{% trans "My Profile" %}</a></li>
                             <li class="divider visible-phone"></li>
-                            <li><a tabindex="-1" href="{% url logout %}">Logout</a></li>
+                            <li><a tabindex="-1" href="{% url logout %}">{% trans "Logout" %}</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -165,7 +165,7 @@ label.required { font-weight: bold; }
         <div id="phone-navigation">
             <select class="selectnav" id="phone-menu">
                 
-                <option value="{% url user-instances %}" selected="selected">Home</option>
+                <option value="{% url user-instances %}" selected="selected">{% trans "Home" %}</option>
                                
                 <option value="{% url apply %}" >{% trans "Create Instance" %}</option>
             {% if can_handle_applications %}
@@ -182,7 +182,7 @@ label.required { font-weight: bold; }
         </div>
         
         <ul class="nav nav-tabs">
-            <li {% block homepagetop %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>Home</span></a></li>
+            <li {% block homepagetop %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>{% trans "Home" %}</span></a></li>
             <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="icon-plus-sign"></i> <span>{% trans "Create Instance" %}</span></a></li>
             {% if can_handle_applications %}
 						<li {% block applicationstop %}{% endblock %}><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
@@ -198,20 +198,20 @@ label.required { font-weight: bold; }
         
         <ul id="dashboard-menu" class="nav nav-list">
             
-            <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>Home</span></a></li>
+            <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>{% trans "Home" %}</span></a></li>
             {% if user.is_superuser or perms.ganeti.view_instances %}
-            <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="icon-envelope"></i> <span>Send Mail</span></a></li>
-            <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>Nodes</span></a></li>
+            <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="icon-envelope"></i> <span>{% trans "Send Mail" %}</span></a></li>
+            <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
             {% endif %}
-            <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>Statistics</span></a></li>
+            <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
             {% if user.is_superuser or perms.ganeti.view_instances %}
             {% if can_handle_applications %}
 						<li {% block applications %}{% endblock %}><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
 			{% endif %}
-            <li {% block owners %}{% endblock %}><a href="{% url instance_owners %}"><i class="icon-briefcase"></i> <span>Instance Owners</span></a></li>
-            <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="icon-moon"></i> <span>Idle Accounts</span></a></li>
+            <li {% block owners %}{% endblock %}><a href="{% url instance_owners %}"><i class="icon-briefcase"></i> <span>{% trans "Instance Owners" %}</span></a></li>
+            <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="icon-moon"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
             {% endif %}
-            <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="icon-user"></i> <span>My Profile</span></a></li>
+            <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="icon-user"></i> <span>{% trans "My Profile" %}</span></a></li>
             {% if user.is_superuser %}
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
 {% endif %}
@@ -255,7 +255,7 @@ label.required { font-weight: bold; }
 <footer class="footer">
       <div class="container" id="footcontainer">
         
-	<div style="padding-top: 10px;">This is a service provided by <a target="_blank" href="//noc.grnet.gr">GRNET NOC</a> 
+	<div style="padding-top: 10px;">{% trans "This is a service provided by" %} <a target="_blank" href="//noc.grnet.gr">GRNET NOC</a> 
 	
 	<a target="_blank" href="//facebook.com/noc.grnet.gr"><font style="color:#3b5998; font-size: 30px"><i class="icon-facebook-sign"></i></font></a>  
 	

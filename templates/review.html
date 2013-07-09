@@ -6,7 +6,7 @@
 
 {% block crumbs %}
 	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li><a href="{% url application-list %}">Instance Applications</a><span class="divider">/</span></li>
+	    			<li><a href="{% url application-list %}">{% trans "Instance Applications" %}</a><span class="divider">/</span></li>
 	    			<li class="active">#{{ application.pk }}: {{ application.hostname }}</li>
 	    		{% endblock %}
 
@@ -309,7 +309,7 @@ textarea{
 {% if applications %}
 <div class="span3 sidebar">
     <div class="widget">
-        <h2><i class="icon-inbox"></i>  Pending Instance Applications</h2>
+        <h2><i class="icon-inbox"></i>  {% trans "Pending Instance Applications" %}</h2>
         <ul class="cards">
         	{% for appl in applications %}
             <li>

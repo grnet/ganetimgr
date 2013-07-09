@@ -196,7 +196,7 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 </div>
 <div class="modal-body" id="instreinstbody">
 <div class="alert alert-error">
-<h4>Warning!</h4>
+<h4>{% trans "Warning!" %}</h4>
 {% blocktrans %}You are about to initiate the process of your instance <strong>{{instance}}</strong> re-installation.
 <br>This process <strong>wipes all your data</strong> and re-installs your instance from scratch. You will lose all your data.
 <br>Your instance will not be reinstalled yet, though.<br>
@@ -220,7 +220,7 @@ You will receive an email with an activation link. Only when you visit the activ
 </div>
 <div class="modal-body" id="instdestbody">
 <div class="alert alert-error">
-<h4>Warning!</h4>
+<h4>{% trans "Warning!" %}</h4>
 {% blocktrans %}You are about to initiate the process of your instance <strong>{{instance}}</strong> removal.
 This process will <strong>destroy your instance</strong>. You will lose all your data.
 <br>Your instance will not be destroyed yet, though.<br>

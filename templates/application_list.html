@@ -1,6 +1,6 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Application submitted" %}{% endblock %}
+{% block title %}{% trans "Application list" %}{% endblock %}
 
 {% block extrahead %}
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
@@ -18,7 +18,7 @@ $(document).ready( function(){
             "bInfo": true,
             "bAutoWidth": true,
             "oLanguage": {
-            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> applications'
+            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
             },
             "sPaginationType": "bootstrap",
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -34,7 +34,7 @@ $(document).ready( function(){
 	            "bInfo": true,
 	            "bAutoWidth": true,
 	            "oLanguage": {
-	            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> applications'
+	            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
 	            },
 	            "sPaginationType": "bootstrap",
 	            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -59,7 +59,7 @@ $(document).ready( function(){
 {% block applications %}class="active"{% endblock %}
 {% block crumbs %}
 	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">Instance Applications</li>
+	    			<li class="active">{% trans "Instance Applications" %}</li>
 	    		{% endblock %}
 
 {% block content %}

@@ -32,7 +32,7 @@
     <div class="row-fluid">
         <div class="row-fluid">
             <h2>{% trans "My instances" %}
-                <span class="info">Displaying {{user}} instances</span>
+                <span class="info">{% blocktrans %}Displaying {{user}} instances{% endblocktrans %}</span>
             </h2>
 
 <table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
@@ -42,7 +42,7 @@
 	<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"><span></th>
 	<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"><span></th>
 	<th style="text-align: center;">CPUs <span class="sort-icon"><span></th>
-	<th style="text-align: center;">Status <span class="sort-icon"><span></th>
+	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"><span></th>
 	<th style="text-align: center;">IP <span class="sort-icon"><span></th>
 	<th style="display:none">{% trans "MAC" %}</th>
 	{% if user.is_superuser or perms.ganeti.view_instances %}
@@ -90,7 +90,7 @@ $(document).ready( function(){
 	    "bFilter": true,
 	    "bAutoWidth": true,
 	    "oLanguage": {
-	    	"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> instances'
+	    	"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "instances" %}'
 	    },
 	    "sPaginationType": "bootstrap",
 	    "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -174,11 +174,11 @@ $(document).ready( function(){
                     	 "mRender":  function (data, type, full) {
                              var ret = ''+
                     		 '<div class="btn-group">'+
-                             '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> Options <span class="caret"></span></button>'+
+                             '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
                              '<ul class="dropdown-menu instanceopt">'+
-                               '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">Details</a></li>'+
-                               '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">Tags</a></li>'+
-                               '<li><a href="#" onclick="javascript:showNotify(\''+full.cluster+'\',\''+data+'\'); return false;">Notify</a></li>'+
+                               '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a></li>'+
+                               '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Tags" %}</a></li>'+
+                               '<li><a href="#" onclick="javascript:showNotify(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Notify" %}</a></li>'+
                              '</ul>'+
                            '</div>';
                      return ret;

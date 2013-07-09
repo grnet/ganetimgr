@@ -2,7 +2,7 @@
 {% trans "Create new Virtual Machine" %}{% endblock %}
 {% block crumbs %}
 	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">Create Instance</li>
+	    			<li class="active">{% trans "Create Instance" %}</li>
 	    		{% endblock %}
 {% block createtop%}class="active"{% endblock %}
 {% block extraticketinfo %} about instance creation{% endblock %}
@@ -127,11 +127,9 @@ label.required { font-weight: bold; }
 				
 				<fieldset>
 					<legend>{% trans "Use/Comments" %}</legend>
-					{% blocktrans %}
-					<p>Give a short description of the intended use of this virtual
-						machine, that justifies the parameter selection above. Feel free
-						to include any additional comments.</p>
-					{% endblocktrans %}
+					
+					<p>{% blocktrans %}Give a short description of the intended use of this virtual machine, that justifies the parameter selection above. Feel free to include any additional comments.{% endblocktrans %}</p>
+					
 					<p>
 					 <div class="control-group {% if form.comments.errors %}error{% endif %}">
 		                <label class="control-label {% if form.comments.field.required %}required{% endif %}" for="id_applier">{{ form.comments.label }}</label>
@@ -152,15 +150,10 @@ label.required { font-weight: bold; }
 				
 				<fieldset>
 					<legend>{% trans "Administrative contact" %}</legend>
-					{% blocktrans %}
-					<p>If you are applying on behalf of a NOC under GRNET's
+					
+					<p>{% blocktrans %}If you are applying on behalf of a NOC under GRNET's
 						constituency, please select the appropriate organization.
-						Otherwise, fill-in the admin contact information below.</p>
-					{% endblocktrans %}
-					
-					
-					
-					
+						Otherwise, fill-in the admin contact information below.{% endblocktrans %}</p>		
 					 {% if form.non_field_errors %}
 					<div class="control-group error">
 					<div class="help-block">
@@ -222,15 +215,16 @@ label.required { font-weight: bold; }
 					
 					<fieldset>
 					<legend>{% trans "Miscellaneous" %}</legend>
-					{% blocktrans %}
-					<p>We kindly remind you of the following:</p>
+					<p>{% trans "We kindly remind you of the following:" %}</p>
 					<ul align="left">
+						{% blocktrans %}
 						<li>You are solely responsible for the data on your VM. You
 							have to take care of back-ups etc.</li>
 						<li>We reserve the right to temporarily suspend the operation
 							of your VM in case it causes malfunctions to our infrastructure</li>
+							{% endblocktrans %}
 					</ul>
-					{% endblocktrans %}
+					
 					
 					<div class="control-group {% if form.accept_tos.errors %}error{% endif %}">
 					<label class="control-label" for="id_applier"><b>I Agree</b></label>                

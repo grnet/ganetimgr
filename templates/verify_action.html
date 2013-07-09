@@ -29,36 +29,36 @@
             You are about to {% if action == 1 %}reinstall{% endif %}{% if action == 2 %}destroy{% endif %} {% if action == 3 %}rename{% endif %} instance: <strong>{{instance}}</strong>{% if action == 3 %} to <strong>{{action_value}}</strong>{% endif %}<br>
             {% if action != 3 %}
             <h4>Warning!</h4> 
-            {% if action == 1 %}All your data will be lost!{% endif %}
-            {% if action == 2 %}Your instance will be deleted!{% endif %}
-            <br>Make sure you have a recent backup of your data!
-            <br>Once initiated, this process cannot be undone or stop!
+            {% if action == 1 %}{% trans "All your data will be lost!" %}{% endif %}
+            {% if action == 2 %}{% trans "Your instance will be deleted!" %}{% endif %}
+            <br>{% trans "Make sure you have a recent backup of your data!" %}
+            <br>{% trans "Once initiated, this process cannot be undone or stop!" %}
              {% endif %}
                          <br>
-                         {% if action == 3 %}<div class="alert alert-warning"><strong>Important</strong>: To rename an instance make sure that it is turned off</div>{% endif %}
+                         {% if action == 3 %}<div class="alert alert-warning"><strong>{% trans "Important" %}</strong>: {% trans "To rename an instance make sure that it is turned off" %}</div>{% endif %}
             <br>
              <form method="post" align="center" id="conf_form" class="form">
              {% csrf_token %}
-            		<button type="submit" class="btn btn-danger">{% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %}{% if action == 3 %}Rename{% endif %}</button>
+            		<button type="submit" class="btn btn-danger">{% if action == 1 %}{% trans "Re-install" %}{% endif %}{% if action == 2 %}{% trans "Destroy" %}{% endif %}{% if action == 3 %}{% trans "Rename" %}{% endif %}</button>
              </form>
              {% else %}
-              {% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %} on instance <strong>{{instance}}</strong> is no longer available. It has either expired or it is already performed.<br>
-              Apply for a new request via the instance details page.
+              {% if action == 1 %}{% trans "Re-install" %}{% endif %}{% if action == 2 %}{% trans "Destroy" %}{% endif %} {% blocktrans %}on instance <strong>{{instance}}</strong> is no longer available. It has either expired or it is already performed.{% endblocktrans %}<br>
+              {% trans "Apply for a new request via the instance details page." %}
               {% endif %}
               </div>
               {% else %}
               <div class="alert alert-info">
         	{% if not activated %}
-            You are about to change your email to: <strong>{{action_value}}</strong><br>
+            {% trans "You are about to change your email to" %}: <strong>{{action_value}}</strong><br>
             
             <br>
              <form method="post" align="center" id="conf_form" class="form">
              {% csrf_token %}
-            		<button type="submit" class="btn btn-info">Change Email</button>
+            		<button type="submit" class="btn btn-info">{% trans "Change Email" %}</button>
              </form>
              {% else %}
-              Mail change is no longer available. It has either expired or it is already performed.<br>
-              Apply for a new request via the instance details page.
+              {% trans "Mail change is no longer available. It has either expired or it is already performed.<br>
+              Apply for a new request via the instance details page." %}
               {% endif %}
               </div>
               {% endif %}
