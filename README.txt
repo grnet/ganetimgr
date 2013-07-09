@@ -19,5 +19,17 @@ manage.py syncdb (*** Do not create superuser yet ***)
 manage.py migrate
 manage.py createsuperuser
 
+Migrating to v1.0:
+-install python-ipaddr lib
+-update settings.py and urls.py with latest changes from dist files
+Run:
+manage.py migrate
 
+If your web server is nginx, consider placing:
 
+proxy_set_header X-Forwarded-Host <hostname>;
+in your nginx site location part
+and
+USE_X_FORWARDED_HOST = True
+in your settings.py. 
+The above ensure that i18n operates properly when switching between languages. 
