@@ -46,7 +46,7 @@ def notify(request, instance=None):
                 mail_list = get_mails(rlist)
                 email = form.cleaned_data['message']
                 if len(mail_list) > 0:
-                    send_new_mail(_("%s%s") % (settings.EMAIL_SUBJECT_PREFIX, form.cleaned_data['subject']),
+                    send_new_mail("%s%s" % (settings.EMAIL_SUBJECT_PREFIX, form.cleaned_data['subject']),
                               email, settings.SERVER_EMAIL, [], mail_list)
                 if request.is_ajax():
                     ret = {'result':'success'}
