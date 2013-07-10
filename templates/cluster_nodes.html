@@ -78,7 +78,7 @@ $(document).ready( function(){
 {% load bootstrappercent %}
 {% load noderole %}
 {% for node in nodes %}
-<tr {% if node.role == 'O' %}class="alert alert-error"{% endif %}><td>{% if servermon %}<a href="{{servermon}}/{{node.name}}" target="_blank">{{node.name}}</a>{% else %}{{node.name}}{% endif %}</td>
+<tr {% if node.role == 'O' %}class="alert alert-error"{% endif %}{% if node.role == 'D' %}class="alert alert-warning"{% endif %}><td>{% if servermon %}<a href="{{servermon}}/{{node.name}}" target="_blank">{{node.name}}</a>{% else %}{{node.name}}{% endif %}</td>
 <td>
 <div class="progress progress-{{node.mem_used|perctobootstrap}}">
 <div class="bar" style="width: {{node.mem_used}}%">{{node.mem_used}}%</div>
