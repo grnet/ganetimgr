@@ -30,7 +30,7 @@ import re
 _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
 
 class tagsForm(forms.Form):
-    tags = forms.CharField()
+    tags = forms.CharField(required=False)
     
 
 class InstanceRenameForm(forms.Form):
