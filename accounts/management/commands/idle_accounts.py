@@ -31,5 +31,5 @@ class Command(BaseCommand):
                   email, settings.SERVER_EMAIL, [], idle_users)
         
         
-    def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
+    def send_new_mail(self, subject, message, from_email, recipient_list, bcc_list):
         return EmailMessage(subject, message, from_email, recipient_list, bcc_list).send() 
