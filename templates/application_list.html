@@ -103,6 +103,7 @@ $(document).ready( function(){
 	<th>{% trans "Memory" %} <span class="sort-icon"><span></span></span></th>
 	<th>{% trans "vCPUs" %} <span class="sort-icon"><span></span></span></th>
 	<th>{% trans "Network" %} <span class="sort-icon"><span></span></span></th>
+	<th>{% trans "Status" %} <span class="sort-icon"><span></span></span></th>
 	<th>{% trans "Filed" %} <span class="sort-icon"><span></span></span></th>
 </tr>
 
@@ -110,7 +111,15 @@ $(document).ready( function(){
 
 <tbody>
 {% for app in completed %}
-<tr><td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td><td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td><td>{{ app.network|default_if_none:"&mdash;" }}</td><td>{{ app.filed|date }}</td></tr>
+<tr>
+	<td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td>
+	<td>{{ app.applicant }}</td>
+	<td>{{ app.memory }}</td>
+	<td>{{ app.vcpus }}</td>
+	<td>{{ app.network|default_if_none:"&mdash;" }}</td>
+	<td>{{ app.get_status_display }}</td>
+	<td>{{ app.filed|date }}</td>
+</tr>
 {% endfor %}
 </tbody>
 </table>
