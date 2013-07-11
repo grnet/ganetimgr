@@ -199,7 +199,9 @@ class Instance(object):
                 self.links.append(self.networks[nlink])
             except Exception as e:
                 pass
-        
+        for i in range(len(self.nic_modes)):
+            if self.nic_modes[i] == 'bridged':
+                self.nic_ips[i] = None
         for i in range(len(self.links)):
             try:
                 ipv6addr = self.generate_ipv6(self.links[i], self.nic_macs[i])
