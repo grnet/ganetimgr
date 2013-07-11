@@ -668,9 +668,11 @@ def tagInstance(request, instance):
                     oldtodelete = prepare_tags(deltags)
                     instance.cluster._client.DeleteInstanceTags(instance.name, oldtodelete)
                 newtagstoapply = prepare_tags(newtags)
-                instance.cluster._client.AddInstanceTags(instance.name, newtagstoapply)
+                if len(newtagstoapply) > 0:
+                    instance.cluster._client.AddInstanceTags(instance.name, newtagstoapply)
                 cache_key = instance.cluster._instance_cache_key(instance)
                 cache.delete(cache_key)
+                cache.delete("user:%s:index:instances" %request.user.username)
                 cache.delete("cluster:%s:instances" % instance.cluster.slug)
                 res = {'result':'success'}
                 return HttpResponse(json.dumps(res), mimetype='application/json')
