@@ -445,8 +445,11 @@ class Cluster(models.Model):
         info = cache.get(cache_key)
 
         if info is None:
-            info = self._client.GetInstance(instance)
-            cache.set(cache_key, info, 3)
+            try:
+                info = self._client.GetInstance(instance)
+                cache.set(cache_key, info, 3)
+            except GanetiApiError:
+                info = None
 
         return info
         
