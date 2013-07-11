@@ -268,7 +268,8 @@ def generate_json(instance, user):
     inst_dict['memory'] = memsize(i.beparams['memory'])
     inst_dict['vcpus'] = i.beparams['vcpus']
     inst_dict['ipaddress'] = [ip for ip in i.nic_ips if ip]
-    inst_dict['ipv6address'] = [ip for ip in i.ipv6s if ip]
+    if not user.is_superuser and not user.has_perm('ganeti.view_instances'):
+        inst_dict['ipv6address'] = [ip for ip in i.ipv6s if ip]
     #inst_dict['status'] = i.nic_ips[0] if i.nic_ips[0] else "-"
     if i.admin_state == i.oper_state:
         if i.admin_state:
@@ -295,6 +296,12 @@ def generate_json(instance, user):
     inst_dict['nic_macs'] = ', '.join(i.nic_macs)
     if user.is_superuser or user.has_perm('ganeti.view_instances'):
         inst_dict['nic_links'] = ', '.join(i.nic_links)
+        inst_dict['network'] = []
+        for (nic_i, link) in enumerate(i.nic_links):
+            if i.nic_ips[nic_i] == None:
+                inst_dict['network'].append("%s"%(i.nic_links[nic_i]))  
+            else:
+                inst_dict['network'].append("%s@%s"%(i.nic_ips[nic_i],i.nic_links[nic_i]))        
         inst_dict['users'] = [{'user':user.username, 'email':user.email, 'user_href':"%s"%(reverse("user-info",
                             kwargs={'type': 'user', 'usergroup':user.username}
                             ))} for user in i.users]
@@ -354,16 +361,14 @@ def shutdown(request, cluster_slug, instance):
 @csrf_exempt
 @check_instance_auth
 def rename_instance(request, cluster_slug, instance, action_id, action_value=None):
+    user = request.user
     if request.method == 'POST':
         form = InstanceRenameForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             action_value = data['hostname']
-            return HttpResponseRedirect(reverse('instance-reinstall-destroy',
-                                                kwargs={'cluster_slug': cluster_slug, 
-                                                        'instance':instance,
-                                                        'action_id': int(action_id),
-                                                        'action_value': action_value}))
+            action = notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value)
+            return HttpResponse(json.dumps(action))
         else:
             return render_to_response('rename_instance.html',
                 {
@@ -383,13 +388,18 @@ def rename_instance(request, cluster_slug, instance, action_id, action_value=Non
 @csrf_exempt
 @check_instance_auth
 def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=None):
+    user = request.user
+    notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value)
+    return HttpResponse(json.dumps(action))
+
+def notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value):
     action_id = int(action_id)
     if action_id not in [1,2,3]:
         action = {'action':_("Not allowed action")}
-        return HttpResponse(json.dumps(action))
+        return action
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     instance = cluster.get_instance_or_404(instance)
-    reinstalldestroy_req = InstanceAction.objects.create_action(request.user, instance, cluster, action_id, action_value)
+    reinstalldestroy_req = InstanceAction.objects.create_action(user, instance, cluster, action_id, action_value)
     fqdn = Site.objects.get_current().domain
     url = "https://%s%s" % \
                (
@@ -400,7 +410,7 @@ def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=No
                 )
     email = render_to_string("reinstall_mail.txt",
                                          {"instance": instance,
-                                          "user": request.user,
+                                          "user": user,
                                           "action": reinstalldestroy_req.get_action_display(),
                                           "action_value": reinstalldestroy_req.action_value,
                                           "url": url})
@@ -410,15 +420,16 @@ def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=No
         action_mail_text = "destruction"
     if action_id == 3:
         action_mail_text = "rename"
-    send_mail("%sInstance %s requested: %s" % (settings.EMAIL_SUBJECT_PREFIX, action_mail_text, instance),
-                  email, settings.SERVER_EMAIL, [request.user.email])
+    send_mail("%sInstance %s requested: %s" % (settings.EMAIL_SUBJECT_PREFIX, action_mail_text, instance.name),
+                  email, settings.SERVER_EMAIL, [user.email])
     action = {'action':_("Mail sent")}
-    return HttpResponse(json.dumps(action))
+    return action
 
 @login_required
 @csrf_exempt
 def reinstalldestreview(request, application_hash, action_id):
     action_id = int(action_id)
+    instance = None
     if action_id not in [1,2,3,4]:
         return HttpResponseRedirect(reverse('user-instances'))
     activation_key = application_hash.lower() # Normalize before trying anything with it.
@@ -429,6 +440,7 @@ def reinstalldestreview(request, application_hash, action_id):
         return render_to_response('verify_action.html', {
                                                          'action': action_id,
                                                          'activated': activated,
+                                                         'instance': instance,
                                                          'hash': application_hash},
                                   context_instance=RequestContext(request))
     instance = action.instance
@@ -443,7 +455,8 @@ def reinstalldestreview(request, application_hash, action_id):
             if not instance_action:
                  return render_to_response('verify_action.html', {
                                                              'action': action_id, 
-                                                             'activated': activated, 
+                                                             'activated': activated,
+                                                             'instance': instance,
                                                              'hash': application_hash},
                               context_instance=RequestContext(request))
             if action_id == 1:
@@ -465,7 +478,8 @@ def reinstalldestreview(request, application_hash, action_id):
         else:
             return render_to_response('verify_action.html', {
                                                              'action': action_id, 
-                                                             'activated': activated, 
+                                                             'activated': activated,
+                                                             'instance': instance,
                                                              'hash': application_hash},
                               context_instance=RequestContext(request))
         
