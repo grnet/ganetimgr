@@ -1,13 +1,14 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 {% load i18n %}
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready( function(){
 			$('#usergroup_instance_table').dataTable( {
 			"bJQueryUI": true,
 			"oLanguage": {
-				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> instances'
+				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select>'
 			},
 			"iDisplayLength": 25,
 	} );
@@ -23,15 +24,30 @@
 	{% endifequal %}
 {% endblock %}
 
-{% block content %}
-{% ifequal type 'user' %}
-<h3>{% trans "User Information" %}: {{usergroup}}</h3>
-{% endifequal %}
+				{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% ifequal type 'user' %}
+						{% trans "User Information" %}
+					{% endifequal %}{% ifequal type 'group' %}
+						{% trans "Group Information" %}
+					{% endifequal %}
+					</li>
+	    		{% endblock %}
 
-{% ifequal type 'group' %}
-<h3>{% trans "Group Information" %}: {{usergroup}}</h3>
-{% endifequal %}
-<table class="display" width="100%" id="usergroup_instance_table">
+{% block content %}
+
+<div class="span9 main-content">
+
+    <div class="row-fluid">
+        <div class="row-fluid">
+			{% ifequal type 'user' %}
+			<h2>{% trans "User Information" %}: {{usergroup}}</h2>
+			{% endifequal %}
+
+			{% ifequal type 'group' %}
+			<h2>{% trans "Group Information" %}: {{usergroup}}</h2>
+			{% endifequal %}
+<table width="100%" id="usergroup_instance_table" class="table table-first-column-number data-table display full">
 <thead>
 <tr>
 	{% ifequal type 'user' %}
@@ -58,13 +74,15 @@
 <td>{{usergroup.first_name}}</td>
 <td>{{usergroup.last_name}}</td>
 <td><a href="mailto:{{usergroup.email}}">{{usergroup.email}}</a></td>
-<td>{% for group in usergroup.groups.all %}<a href="{% url user-info 'group' group.name %}">{{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+<td>{% for group in usergroup.groups.all %}<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i> {{ group }}</a>{% if not forloop.last %} {% endif %}{% endfor %}</td></tr>
+{% for group in instance.groups %}<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i>  {{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+
 {% endifequal %}
 {% ifequal type 'group' %}
 {% for user in usergroup.user_set.all %}
 <tr class="GradeA">
 <td style="text-align: center;">{{usergroup.name}}</td>
-<td><a href="{% url user-info 'user' user.username %}">{{user.username}}</a></td>
+<td><a href="{% url user-info 'user' user.username %}" class="btn"><i class="icon-user"></i> {{user.username}}</a></td>
 <td>{{user.first_name}}</td>
 <td>{{user.last_name}}</td>
 <td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
@@ -74,4 +92,7 @@
 
 </tbody>
 </table>
+</div>
+</div>
+</div>
 {% endblock %}

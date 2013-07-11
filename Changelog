@@ -1,0 +1,38 @@
+===========
+1.0 RELEASE
+Major UI/functionality re-desing
+
+Requirements:
+	-south migration to include database changes
+	-new statements in settings.py.dist (make sure you update settings.py)
+	-new urls in urls.py.dist (make sure you update urls.py)
+	-python-ipaddr lib to generate IPv6 statements
+	
+
+Functionality:
+	-Added platrofm statistics
+	-Add instance cpu,network graphs with custom start/end
+	-Added node statistics
+	-Added instance rename, reinstall, destroy
+	-Added ipv6 display
+	-Added instance tagging
+	-Added notifications via email
+	-Added idle users notifications
+	-Enhanced security regarding user profile changes
+	-Integrate with servermon tool
+
+UI:
+	-Total UI re-design with new theme based on boostrap
+	-Responsive design
+	-Latest jquery ui integration
+	-Inclusion of jquery select2 lib
+	-Inclusion of highcharts with json data
+	-Embed ticketing system report (Jira)
+	
+Core functions:
+	-Dual caching layer
+	-Instance fetching via JSON
+	-Performance boosting with abstraction layers
+	
+
+

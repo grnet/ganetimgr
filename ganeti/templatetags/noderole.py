@@ -1,6 +1,5 @@
 #
-# -*- coding: utf-8 -*-
-#
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # Copyright © 2010-2012 Greek Research and Technology Network (GRNET S.A.)
 #
 # Permission to use, copy, modify, and/or distribute this software for any
@@ -15,15 +14,32 @@
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
 # OF THIS SOFTWARE.
 
-import os, sys
-import pycurl
-sys.path.append('/srv/')
-sys.path.append('/srv/ganetimgr/')
+from django import template
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'ganetimgr.settings'
+register = template.Library()
 
-pycurl.global_init(pycurl.GLOBAL_ALL)
-import django.core.handlers.wsgi
+@register.filter
+def noderole(value):
+    if value == "M":
+        return "Master"
+    if value == "C":
+        return "Master Candidate"
+    if value == "R":
+        return "Regular"
+    if value == "D":
+        return "Drained"
+    if value == "O":
+        return "Offline"
 
-application = django.core.handlers.wsgi.WSGIHandler()
-
+@register.filter
+def nodelabel(value):
+    if value == "M":
+        return "success"
+    if value == "C":
+        return "info"
+    if value == "R":
+        return ""
+    if value == "D":
+        return "warning"
+    if value == "O":
+        return "important"

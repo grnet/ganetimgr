@@ -1,24 +1,74 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 {% load i18n %}
+{% block extrahead %}
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript">
+	$(document).ready( function(){
+			$('#user_instance_table').dataTable( {
+				"bPaginate": true,
+	            "bLengthChange": true,
+	            "bFilter": true,
+	            "bSort": true,
+	            "bDeferRender": true,
+	            "bInfo": true,
+	            "bAutoWidth": true,
+			"oLanguage": {
+				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select>'
+			},
+			"sPaginationType": "bootstrap",
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+			"iDisplayLength": 25,
+	} );
+		});
+</script>
+{% endblock %}
 {% block title %}{% trans "Instance owners" %}{% endblock %}
-{% block breadcrumbs %}:: {% trans "Instance owners" %}{% endblock %}
-{% block content %}
+{% block owners %}class="active"{% endblock %}
+{% block crumbs %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li class="active">{% trans "Instance owners" %}</li>
+{% endblock %}{% block content %}
 {% regroup instances by users as user_instances %}
+<div class="span11 main-content">
+
+    <div class="row-fluid">
+        <div class="row-fluid">
+        <h2>{% trans "Instance owners" %}</h2>
+        
+<table width="100%" id="user_instance_table" class="table table-first-column-number data-table display full">
+<thead>
+<tr>
+	<th style="text-align: center; width:140px;">{% trans "User" %}</th>
+	<th>{% trans "Instances" %}</th>
+</tr>
+
+</thead>
+<tbody>
 
 {% for user_list in user_instances %}
-<p>
 {% for i in user_list.list %}
-<em><a href="{% url instance-detail i.cluster.slug i.name %}">{{ i.name }}</a></em><br />
-{% endfor %}
-</p>
+<tr class="GradeA">
+<td style="text-align: center;">{% for u in user_list.grouper %}<a class="btn" href="{% url user-info 'user' u.username %}"><i class="icon-user"></i> {{ u.username }}</a> {% endfor %}</td>
 
-<table>
-<tr><th>{% trans "Username" %}</th><th>{% trans "Name" %}</th><th>{% trans "E-mail" %}</th></tr>
-{% for u in user_list.grouper %}
-<tr><td>{{ u.username }}</td><td>{{ u.get_full_name }}</td><td>{{ u.email }}</td></tr>
+
+<td>
+<a href="{% url instance-detail i.cluster.slug i.name %}">{{ i.name }}</a><br />
+</td>
+</tr>
 {% endfor %}
+
+
+{% endfor %}
+
+</tbody>
 </table>
-<hr />
+</div>
+</div>
+</div>
 
-{% endfor %}
+
+
+
+
 {% endblock %}

@@ -159,8 +159,8 @@ class InstanceApplication(models.Model):
         if "ssh_key_param" in os:
             fqdn = "http://" + Site.objects.get_current().domain
             key_url = self.get_ssh_keys_url(fqdn)
-            osparams[os["ssh_key_param"]] = key_url
-
+            if os["ssh_key_param"]:
+                osparams[os["ssh_key_param"]] = key_url
         job = self.cluster.create_instance(name=self.hostname,
                                            os=provider,
                                            vcpus=self.vcpus,

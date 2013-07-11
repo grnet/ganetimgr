@@ -1,0 +1,12 @@
+Ο χρήστης {{user.username}} ({{user.first_name}} {{user.last_name}}) υπέβαλε το
+ακόλουθο αίτημα:
+------------------------
+
+{% if action == 'reinstall' %}Επανεγκατάσταση:{% endif %}{% if action == 'destroy' %}Διαγραφή:{% endif %}{% if action == 'rename' %}Μετονομασία:{% endif %}{% if action == 'mailchange' %}Αλλαγή email{% endif %}
+{% if action == 'mailchange' %}Νέο email: {{action_value}}{% endif %}{% if action != 'mailchange' %}
+{{instance}}  {% if action == 'rename' %}σε {{action_value}}{% endif %}{% if action != 'rename' %}
+ΠΡΟΣΟΧΗ!: Η παραπάνω ενέργεια πρόκειται να {% if action == 'reinstall' %}διαγράψει τα δεδομένα σας{% endif %}{% if action == 'destroy' %}διαγράψει την εικονική σας μηχανή σας{% endif %}. Βεβαιωθείτε ότι έχετε λάβει αντίγραφα ασφαλείας όσων δεδομένων χρειάζεστε.
+ΠΡΟΣΟΧΗ!: Από τη στιγμή που θα εκκινήσει η διαδικασία, δεν μπορεί να πραγματοποιηθεί αναίρεση.
+{% endif %}
+{% endif %}
+Για να συνεχίσετε, επισκεφθείτε το {{url}}

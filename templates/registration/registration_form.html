@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Register" %}{% endblock %}
 {% block brcrmb_container %}{% endblock %}
-{% block content %}
+{% block blockcontainer %}
 <!-- change recaptcha theme -->
 <script type="text/javascript">
 var RecaptchaOptions = {
@@ -10,17 +10,53 @@ var RecaptchaOptions = {
 };
 </script>
 
-<div align="center" id="registration">
-
-<h3>{% trans "Register new user" %}</h3>
-        <form method="post">
-        	{% csrf_token %}
-        	<table>
-		{% for field in form %}
-          	<tr><th>{% trans field.label|capfirst %}</th><td>{{ field }}{% if field.errors %} <span class="error">{{ field.errors|join:", " }}</span>{% endif %}</td></tr>
-		{% endfor %}
-	        </table>
-          <input class="submit"type="submit" value="{% trans "Create" %}" />
-        </form>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="row-fluid">
+				<div class="span2"></div>
+				<div class="span8 sidebar">
+					<div class="widget">
+						<div class="row-fluid">
+							<h2>
+								<i class="icon-user"></i> {% trans "Register new user" %}
+							</h2>
+							<div class="padwidget">
+								<form method="post" class="form-horizontal">
+									{% csrf_token %}
+									{% if form.non_field_errors %}
+                                        <div class="alert alert-error">
+                                            {{ form.non_field_errors|join:", "}}
+                                        </div>
+                                        {% endif %}
+										{% for field in form %}
+										<div class="control-group {% if field.errors %}error{% endif %}">
+	                <label class="control-label {% if field.field.required %}required{% endif %}" for="id_applier">
+	                	{% trans field.label|capfirst %}
+	                </label>
+                   <div class="controls">{{ field }}
+                    {% if field.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ field.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                    <span class="help-block"> {{ field.help_text }}</span>
+                </div>
+										{% endfor %}
+									<input class="btn btn-primary" type="submit" value="{% trans "Register" %}" />
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="span2"></div>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
+
+
+
+                  

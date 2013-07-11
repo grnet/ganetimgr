@@ -1,4 +1,4 @@
-<div id="pass_form_placeholder">
+<div id="pass_form_placeholder" class="padwidget">
 <script>
 	$(document).ajaxSend(function(event, xhr, settings) {
     function getCookie(name) {
@@ -55,8 +55,8 @@
 	</script>
 {% load i18n %}
 <strong>{{user}}</strong>, {% trans "please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly." %}
-<form method="post" align="left" id="password_change_form">{% csrf_token %}
+<form method="post" align="left" id="password_change_form" class="form">{% csrf_token %}
 {{form.as_p}}
-<button id="passformbtn">{% trans "Change" %}</button>
+<button id="passformbtn" class="btn btn-success">{% trans "Change" %}</button>
 </form>
 </div>

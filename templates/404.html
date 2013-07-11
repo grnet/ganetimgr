@@ -1,7 +1,31 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 
-{% block title %}Page not found{% endblock %}
-{% block content %}
-<h3 align="center">Page not found</h3>
-<h4 align="center">The page that you requested was not found.</h4>
+{% block title %}Nice 404 - Page not found{% endblock %}
+
+{% block blockcontainer %}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="row-fluid">
+				<div class="span4"></div>
+				<div class="span4 sidebar">
+					<div class="widget">
+						<div class="row-fluid">
+							<h2>
+								<i class="icon-bolt"></i> Page not found
+							</h2>
+							<div class="padwidget">
+								<div class="alert alert-error">
+									<p>No matter how you reached this page, it was simply not found</p>
+									<p>Yeap this is a nice <strong>404</strong>!</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="span4"></div>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}

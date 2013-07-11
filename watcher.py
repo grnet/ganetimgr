@@ -43,6 +43,7 @@ from ganeti.models import Cluster
 from apply.models import InstanceApplication, STATUS_FAILED, STATUS_SUCCESS
 from django.core.cache import cache
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import User
 from django.utils.encoding import smart_str
 from django.core.mail import mail_admins, mail_managers, send_mail
 from django.core import urlresolvers
@@ -104,6 +105,10 @@ def monitor_jobs():
         if "type" in data and data["type"] in DISPATCH_TABLE:
             DISPATCH_TABLE[data["type"]](job)
 
+def clear_cluster_users_cache(cluster_slug):
+    for user in User.objects.all():
+        cache.delete("user:%s:index:instances" %user.username)
+    cache.delete("cluster:%s:instances" % cluster_slug)
 
 def handle_job_lock(job):
     global logger
@@ -146,6 +151,7 @@ def handle_job_lock(job):
                     cache.delete(key)
 
             cache.delete(lock_key)
+            clear_cluster_users_cache(cluster.slug)
             job.delete()
             return
         # Touch the key

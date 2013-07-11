@@ -1,0 +1,54 @@
+{% load i18n %}
+
+<div class="span12 main-content">
+
+    <div class="row-fluid">
+        <div class="row-fluid">
+           {% if not ajax %}<h2>{% trans "Send Mail" %}</h2>{% endif %}
+<form method="POST" class="form-inline" id="notifyform">
+                                         <fieldset>
+                                        {% csrf_token %}
+                                        {% if form.non_field_errors %}
+                                        <p class="error">
+                                            {{ form.non_field_errors}}
+                                        </p>
+                                        {% endif %}
+                                    <div class="control-group {% if form.recipient_list.errors %} error {% endif %}">
+                                            <label class="control-label">{% if form.recipient_list.field.required %}<b>{% endif %}{{form.recipient_list.label}}{% if form.recipient_list.field.required %}</b>{% endif %}</label>
+                                            <div class="controls">
+                                                <input type='hidden' id='id_recipient_list' style='width:300px' name="recipient_list"/>
+                                                {% if form.recipient_list.errors %} <span class="help-inline"> {{ form.recipient_list.errors|join:", " }} </span>
+                                                {% endif %} <span class="help-block"> {{ form.recipient_list.help_text }}</span>
+                                            </div>
+                                            </div>
+                                    <div class="control-group {% if form.subject.errors %} error {% endif %}">
+                                            <label class="control-label">{% if form.subject.field.required %}<b>{% endif %}{{form.subject.label}}{% if form.subject.field.required %}</b>{% endif %}</label>
+                                            <div class="controls">
+                                                {{ form.subject }}
+                                                {% if form.subject.errors %} <span class="help-inline"> {{ form.subject.errors|join:", " }} </span>
+                                                {% endif %} <span class="help-block"> {{ form.subject.help_text }}</span>
+                                            </div>
+                                            </div>
+                                    <div class="control-group {% if form.message.errors %} error {% endif %}">
+                                            <label class="control-label">{% if form.message.field.required %}<b>{% endif %}{{form.message.label}}{% if form.message.field.required %}</b>{% endif %}</label>
+                                            <div class="controls">
+                                                {{ form.message }}<div id="livingarea"></div>
+                                                {% if form.message.errors %} <span class="help-inline"> {{ form.message.errors|join:", " }} </span>
+                                                {% endif %} <span class="help-block"> {{ form.message.help_text }}</span>
+                                            </div>
+                                            </div>
+
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <button type="submit" id="mailapplybutton" value="Send" class="btn btn-primary">
+                                                {% trans "Send" %}</button>
+                                            </div>
+                                        </div>
+                                        </fieldset>
+                                    </form>
+
+<input type='hidden' id='e1' style='width:300px' />
+
+</div>
+</div>
+</div>

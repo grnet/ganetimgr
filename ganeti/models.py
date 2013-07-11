@@ -21,13 +21,21 @@ from django.contrib.auth.models import User, Group
 from ganetimgr.apply.models import Organization, InstanceApplication
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
-from datetime import datetime
+from django.conf import settings
+from datetime import datetime, timedelta
 from socket import gethostbyname
 from time import sleep
 
 from util import vapclient
 from util.ganeti_client import GanetiRapiClient, GanetiApiError
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
+import re
+import random
+import sha
+import ipaddr
+
+
+SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
 try:
     from ganetimgr.settings import BEANSTALK_TUBE
@@ -44,13 +52,13 @@ except ImportError:
 class InstanceManager(object):
     def all(self):
         results = []
-        users, orgs, groups, instanceapps = preload_instance_data()
+        users, orgs, groups, instanceapps, networks = preload_instance_data()
         for cluster in Cluster.objects.all():
             results.extend(cluster.get_instances())
         return results
 
     def filter(self, **kwargs):
-        users, orgs, groups, instanceapps = preload_instance_data()
+        users, orgs, groups, instanceapps, networks = preload_instance_data()
         if 'cluster' in kwargs:
             if isinstance(kwargs['cluster'], Cluster):
                 cluster = kwargs['cluster']
@@ -81,10 +89,12 @@ class InstanceManager(object):
                 results = [result for result in results if val in result.groups]
             elif arg == 'name':
                 results = [result for result in results if result.name == val]
+            elif arg == 'name__icontains':
+                valre = re.compile(val)
+                results = [result for result in results if valre.search(result.name) is not None]
             else:
                 results = [result for result in results
                            if '%s:%s' % (arg, val) in result.tags] 
-
         return results
 
     def get(self, **kwargs):
@@ -100,18 +110,21 @@ class InstanceManager(object):
 class Instance(object):
     objects = InstanceManager()
 
-    def __init__(self, cluster, name, info=None, listusers=None, listorganizations=None, listgroups=None, listinstanceapplications=None):
+    def __init__(self, cluster, name, info=None, listusers=None, listorganizations=None, listgroups=None, listinstanceapplications=None, networks=None):
         self.cluster = cluster
         self.name = name
         self.listusers = listusers
         self.listorganizations = listorganizations
         self.listgroups = listgroups
         self.listinstanceapplications = listinstanceapplications
+        self.networks = networks
         self.organization = None
         self.application = None
         self.services = []
         self.users = []
         self.groups = []
+        self.links = []
+        self.ipv6s = []
         self._update(info)
         self.admin_view_only = False
 
@@ -181,7 +194,38 @@ class Instance(object):
             self.ctime = datetime.fromtimestamp(self.ctime)
         if getattr(self, 'mtime', None):
             self.mtime = datetime.fromtimestamp(self.mtime)
+        for nlink in self.nic_links:
+            try:
+                self.links.append(self.networks[nlink])
+            except Exception as e:
+                pass
+        for i in range(len(self.nic_modes)):
+            if self.nic_modes[i] == 'bridged':
+                self.nic_ips[i] = None
+        for i in range(len(self.links)):
+            try:
+                ipv6addr = self.generate_ipv6(self.links[i], self.nic_macs[i])
+                if not ipv6addr:
+                    continue
+                self.ipv6s.append("%s"%(ipv6addr))
+            except Exception as e:
+                pass
 
+    def generate_ipv6(self, prefix, mac):
+        try:
+            prefix = ipaddr.IPv6Network(prefix)
+            mac_parts = mac.split(":")
+            prefix_parts = prefix.network.exploded.split(':')
+            eui64 = mac_parts[:3] + [ "ff", "fe" ] + mac_parts[3:]
+            eui64[0] = "%02x" % (int(eui64[0], 16) ^ 0x02)
+            ip = ":".join(prefix_parts[:4])
+            for l in range(0, len(eui64), 2):
+                ip += ":%s" % "".join(eui64[l:l+2])
+            ip = ipaddr.IPAddress(ip).compressed
+            return ip
+        except:
+            return False
+        
     def set_params(self, **kwargs):
         job_id = self.cluster._client.ModifyInstance(self.name, **kwargs)
         self.lock(reason=_("modifying"), job_id=job_id)
@@ -203,6 +247,32 @@ class Instance(object):
 
     def set_admin_view_only_True(self):
         self.admin_view_only = True
+        
+    def _pending_action_request(self, action):
+        '''This should return either 1 or 0 instance actions'''
+        actions = []
+        pending_actions = InstanceAction.objects.filter(instance=self.name, cluster=self.cluster, action=action)
+        for pending in pending_actions:
+            if pending.activation_key_expired():
+                continue
+            actions.append(pending)
+        if len(actions) == 0:
+            return False
+        elif len(actions) == 1:
+            return True
+        else:
+            raise Exception
+        
+    
+    def pending_reinstall(self):
+        return self._pending_action_request(1)
+    
+    def pending_destroy(self):
+        return self._pending_action_request(2)
+    
+    def pending_rename(self):
+        return self._pending_action_request(3)
+            
 
 class Cluster(models.Model):
     hostname = models.CharField(max_length=128)
@@ -271,8 +341,8 @@ class Cluster(models.Model):
 
     def get_instance(self, name):
         info = self.get_instance_info(name)
-        users, orgs, groups, instanceapps = preload_instance_data()
-        return Instance(self, info["name"], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps)
+        users, orgs, groups, instanceapps, networks = preload_instance_data()
+        return Instance(self, info["name"], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks)
 
     def get_instance_or_404(self, name):
         try:
@@ -290,8 +360,8 @@ class Cluster(models.Model):
         if instances is None:
             instances = self._client.GetInstances(bulk=True)
             cache.set("cluster:%s:instances" % self.slug, instances, 45)
-        users, orgs, groups, instanceapps = preload_instance_data()
-        retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps) for info in instances]
+        users, orgs, groups, instanceapps, networks = preload_instance_data()
+        retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks) for info in instances]
         return retinstances
     
 
@@ -331,7 +401,11 @@ class Cluster(models.Model):
         return info
 
     def get_cluster_nodes(self):
-        return self._client.GetNodes()
+        info = cache.get("cluster:%s:nodes" % self.slug)
+        if info is None:
+            info = self._client.GetNodes()
+            cache.set("cluster:%s:nodes" % self.slug, info, 180)
+        return info
 
     def get_cluster_instances(self):
         return self._client.GetInstances()
@@ -340,7 +414,31 @@ class Cluster(models.Model):
         return self._client.GetInstances(bulk=True)
 
     def get_node_info(self, node):
-        return self._client.GetNode(node)
+        info = cache.get("cluster:%s:node:%s" % (self.slug, node))
+        if info is None:
+            info = self._client.GetNode(node)
+            info['cluster'] = self.slug
+            if info['mfree'] is None:
+                info['mfree'] = 0
+            if info['mtotal'] is None:
+                info['mtotal'] = 0
+            if info['dtotal'] is None:
+                info['dtotal'] = 0
+            if info['dfree'] is None:
+                info['dfree'] = 0
+            try:
+                info['mem_used'] = 100*(info['mtotal']-info['mfree'])/info['mtotal']
+            except ZeroDivisionError:
+                '''this is the case where the node is offline and reports none, thus it is 0'''
+                info['mem_used'] = 0
+            try:
+                info['disk_used'] = 100*(info['dtotal']-info['dfree'])/info['dtotal']
+            except ZeroDivisionError:
+                '''this is the case where the node is offline and reports none, thus it is 0'''
+                info['disk_used'] = 0
+            info['shared_storage'] = self.get_cluster_info()['shared_file_storage_dir'] if self.get_cluster_info()['shared_file_storage_dir'] else None
+            cache.set("cluster:%s:node:%s" % (self.slug, node), info, 180)
+        return info
 
     def get_instance_info(self, instance):
         cache_key = self._instance_cache_key(instance)
@@ -367,6 +465,27 @@ class Cluster(models.Model):
         cache.delete(cache_key)
         job_id = self._client.ShutdownInstance(instance)
         self._lock_instance(instance, reason=_("shutting down"), job_id=job_id)
+        return job_id
+    
+    def reinstall_instance(self, instance):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
+        job_id = self._client.ReinstallInstance(instance)
+        self._lock_instance(instance, reason=_("reinstalling"), job_id=job_id)
+        return job_id
+    
+    def destroy_instance(self, instance):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
+        job_id = self._client.DeleteInstance(instance)
+        self._lock_instance(instance, reason=_("deleting"), job_id=job_id)
+        return job_id
+    
+    def rename_instance(self, instance, newname):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
+        job_id = self._client.RenameInstance(instance, newname, ip_check=False, name_check=False)
+        self._lock_instance(instance, reason=_("renaming"), job_id=job_id)
         return job_id
 
     def startup_instance(self, instance):
@@ -433,10 +552,11 @@ class Network(models.Model):
                             choices=(("bridged", "Bridged"),
                                      ("routed", "Routed")))
     cluster_default = models.BooleanField(default=False)
+    ipv6_prefix = models.CharField(max_length=255, null=True, blank=True)
     groups = models.ManyToManyField(Group, blank=True, null=True)
 
     def __unicode__(self):
-        return self.description
+        return "%s (%s)" %(self.description, self.cluster.slug)
 
     def save(self, *args, **kwargs):
         # Ensure that only one cluster_default exists per cluster
@@ -454,9 +574,17 @@ class Network(models.Model):
 
 
 def preload_instance_data():
+    networks = cache.get('networklist')
+    if not networks:
+        networks = Network.objects.select_related('cluster').all()
+        networkdict = {}
+        for network in networks:
+            networkdict[network.link] = network.ipv6_prefix
+        networks = networkdict
+        cache.set('networklist', networks, 30)
     users = cache.get('userlist')
     if not users:
-        users = User.objects.all()
+        users = User.objects.select_related('groups').all()
         userdict = {}
         for user in users:
             userdict[user.username] = user
@@ -472,9 +600,10 @@ def preload_instance_data():
         cache.set('orgslist', orgs, 30)
     groups = cache.get('groupslist')
     if not groups:
-        groups = Group.objects.all()
+        groups = Group.objects.all().select_related('user_set').all()
         groupsdict = {}
         for group in groups:
+            group.userset = group.user_set.all()
             groupsdict[group.name] = group
         groups = groupsdict
         cache.set('groupslist', groups, 30)
@@ -486,5 +615,82 @@ def preload_instance_data():
             instappdict[str(instapp.pk)] = instapp
         instanceapps = instappdict
         cache.set('instaceapplist', instanceapps, 30)
-    return users, orgs, groups, instanceapps
+    return users, orgs, groups, instanceapps, networks
 
+
+
+
+REQUEST_ACTIONS = (
+                   (1, 'reinstall'),
+                   (2, 'destroy'),
+                   (3, 'rename'),
+                   (4, 'mailchange')
+                   )
+
+
+class InstanceActionManager(models.Manager):
+    
+    def activate_request(self, activation_key):
+        
+        if SHA1_RE.search(activation_key):
+            try:
+                instreq = self.get(activation_key=activation_key)
+            except self.model.DoesNotExist:
+                return False
+            if not instreq.activation_key_expired():
+                instance = instreq.instance
+                instreq.activation_key = self.model.ACTIVATED
+                instreq.save()
+                return instreq
+        return False
+   
+    def create_action(self, user, instance, cluster, action, action_value = None):
+        
+        salt = sha.new(str(random.random())).hexdigest()[:5]
+        activation_key = sha.new(salt+user.username).hexdigest()
+        return self.create(applicant=user, instance=instance, cluster=cluster, action=action, action_value = action_value,
+                           activation_key=activation_key)
+
+class InstanceAction(models.Model):
+    applicant = models.ForeignKey(User)
+    instance =  models.CharField(max_length=255, blank=True)
+    cluster = models.ForeignKey(Cluster, null=True, blank=True)
+    action = models.IntegerField(choices=REQUEST_ACTIONS)
+    action_value = models.CharField(max_length=255, null=True)
+    activation_key = models.CharField(max_length=40)
+    filed = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+    
+    ACTIVATED = u"ALREADY_ACTIVATED"
+    objects = InstanceActionManager()
+
+    def activation_key_expired(self):
+        if self.has_expired():
+            if self.activation_key != self.ACTIVATED:
+                self.activation_key = self.ACTIVATED
+                self.save()
+        return self.has_expired()
+    activation_key_expired.boolean = True
+    
+    def has_expired(self):
+        
+        expiration_date = timedelta(days=settings.INSTANCE_ACTION_ACTIVE_DAYS)
+        return self.activation_key == self.ACTIVATED or \
+               (self.filed + expiration_date <= datetime.now())
+    has_expired.boolean = True
+
+    def send_activation_email(self, site):
+       
+        ctx_dict = {'activation_key': self.activation_key,
+                    'expiration_days': settings.INSTANCE_ACTION_ACTIVE_DAYS,
+                    'site': site}
+        subject = "test"
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        
+        message = render_to_string('instance_actions/action_mail.txt',
+                                   ctx_dict)
+        
+        self.user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+        
+       

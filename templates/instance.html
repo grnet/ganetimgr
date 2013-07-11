@@ -1,13 +1,190 @@
-{% extends "base.html" %}
+{% extends "theme/base.html" %}
 {% load i18n %}
 {% block title %}{{ instance.name }} on {{ instance.cluster.description }}{% endblock %}
+{% block extraticketinfo %} {% trans "about" %} {{ instance.name }} {% trans "on cluster" %} {{ instance.cluster.description }}{% endblock %}
 {% block extrahead %}
+<script type="text/javascript" src="/static/daterangepicker/moment.min.js"></script>
+<script type="text/javascript" src="/static/daterangepicker/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/daterangepicker/daterangepicker.css">
 <style type="text/css">
 		#toolbar {
 		padding: 10px 4px;
 	}
-
+	li{
+		list-style: none;
+	}
+	#reportrange {
+    background: none repeat scroll 0 0 #FFFFFF;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+    color: #333333;
+    cursor: pointer;
+    line-height: 18px;
+    padding: 8px;
+}
+#reportrange .caret {
+    margin-left: 2px;
+    margin-top: 8px;
+}
 </style>
+<script type="text/javascript">
+	var utc_end = Math.round((new Date()).getTime() / 1000);
+    $(function(){
+		
+    	$('#reportrange').daterangepicker(
+                {
+                   ranges: {
+                      'Today': [new Date(), new Date()],
+                      'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                      'Last 7 Days': [moment().subtract('days', 6), new Date()],
+                      'Last 30 Days': [moment().subtract('days', 29), new Date()],
+                      'This Month': [moment().startOf('month'), moment().endOf('month')],
+                      'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                   },
+                   opens: 'left',
+                   format: 'DD/MM/YYYY',
+                   separator: ' to ',
+                   startDate: moment().subtract('days', 29),
+                   endDate: new Date(),
+                   minDate: moment().subtract('days', 900),
+                   maxDate: new Date(),
+                   locale: {
+                       applyLabel: 'Submit',
+                       fromLabel: 'From',
+                       toLabel: 'To',
+                       customRangeLabel: 'Custom Range',
+                       daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr','Sa'],
+                       monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                       firstDay: 1
+                   },
+                   showWeekNumbers: true,
+                   buttonClasses: ['btn-danger'],
+                   dateLimit: false
+                },
+                function(start, end) {
+                
+                   $('#reportrange span').html(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
+                   var start_date = Math.round((start.toDate()).getTime() / 1000);
+                   var end_date = Math.round((end.toDate()).getTime() / 1000);
+                   if (end_date > utc_end){
+                	   end_date = utc_end;
+                   }
+                $('#cpu_graph').attr('src', "{{instance.cpu_url}}" + "/" + start_date + "," + end_date);
+   				$('#net_graph').attr('src', "{{instance.net_url}}" + "/" + start_date + "," + end_date);
+                }
+             );
+             //Set the initial state of the picker label
+             $('#reportrange span').html(moment().subtract('days', 1).format('D MMMM, YYYY') + ' - ' + moment().format('D MMMM, YYYY'));
+
+
+            
+    });
+	</script>
+{% endblock %}
+{% block homepage %}class="active"{% endblock %}
+{% block homepagetop %}class="active"{% endblock %}
+{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{{ instance.name }}</li>
+	    		{% endblock %}
+
+{% block content %}
+{% load disksizes %}
+
+
+
+<div class="span6 main-content">
+
+    <div class="row-fluid">
+        <div class="row-fluid">
+        	<h2>{{ instance.name }}</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th class="span12" colspan="2">{% trans "Details" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+					<tr><td class="">{% trans "Status" %}</td><td id="status"></td></tr>
+					<tr><td class="">{% trans "Cluster" %}</td><td>{{ instance.cluster.description }}</td></tr>
+					<tr><td class="">{% trans "Memory" %}</td><td>{{ instance.beparams.memory|memsize }}</td></tr>
+					<tr><td class="">{% trans "CPUs" %}</td><td>{{ instance.beparams.vcpus }}</td></tr>
+					<tr><td class="">Hard disk{{ instance.disk_sizes|pluralize }}</td><td>{{ instance.disk_sizes|disksizes|join:", " }}</td></tr>
+					<tr><td class="">{% trans "Network cards" %}</td><td>{{ instance.nic_macs|length }}</td></tr>
+					<tr><td class="">MAC address{{ instance.nic_macs|pluralize:"es" }}</td><td>{{ instance.nic_macs|join:", " }}</td></tr>
+					{% if instance.nic_ips %}
+					<tr><td class="">IP address{{ instance.nic_ips|pluralize:"es" }}</td><td>{{ instance.nic_ips|join:", " }}</td></tr>
+					{% endif %}
+					{% if instance.ipv6s %}
+					<tr><td class="">IPv6 address{{ instance.ipv6s|pluralize:"es" }}</td><td>{{ instance.ipv6s|join:", " }}</td></tr>
+					{% endif %}
+					<tr><td class="">{% trans "Created on" %}</td><td>{{ instance.ctime|date }}</td></tr>
+					<tr><td class="">{% trans "Last modified" %}</td><td>{{ instance.mtime|date }}</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="row-fluid">
+        	<h2>Graphs</h2>
+        	<div class="row-fluid">
+        	<div id="reportrange" class="pull-left">
+        		<i class="icon-calendar icon-large"></i>
+        			<span></span><b class="caret"></b>
+   			 </div>
+			</div>
+            <h3>CPU</h3>
+            <img src="{{instance.cpu_url}}" alt="{% trans 'No data available yet...' %}" title="Daily CPU" id="cpu_graph"/>
+            <h3>Network</h3>
+            <img src="{{instance.net_url}}" alt="{% trans 'No data available yet...' %}" title="Daily Network" id="net_graph"/>
+        </div>
+        
+    </div>
+</div>
+
+<div class="span6 sidebar">
+        <div class="row-fluid">
+    <div class="row-fluid">
+    <h2>{% trans "Configuration Options" %}</h2>
+        <form method="post" align="center" id="conf_form" class="form">
+{% csrf_token %}
+<table class="table">
+<thead>
+                    <tr>
+                      <th class="span12" colspan="2">{% trans "Configuration" %}</th>
+                    </tr>
+                </thead>
+{{ configform.as_table }}
+<tr><td colspan="2" style="text-align:center; padding: 5px;" >
+<button class="btn btn-primary" id="update" type="Submit" value="Update" />{% trans "Update" %}</button></td></tr>
+
+</table>
+
+</form>
+        </div>
+        </div>
+       
+       <div class="row-fluid">
+    <div class="row-fluid">
+       <table class="table">
+       <thead>
+                    <tr>
+                      <th class="span12" colspan="2">{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+<tr>
+	<td id="actions_container">&nbsp;</td>
+		<!-- Here a setTimeout jquery script populates the instance control every 5 seconds -->
+</tr>
+</table>
+</div>
+</div>
+ 
+       
+        </div>
+
+
+
+{% endblock %}
+{% block bottomblock %}
 <script type="text/javascript">
 var polltimer;
 var timer = 2500;
@@ -33,54 +210,4 @@ $(function() {
 });
 
 </script>
-{% endblock %}
-
-{% block breadcrumbs %}:: {{ instance.name }} {% endblock %}
-
-{% block content %}
-{% load disksizes %}
-
-
-<h3>{{ instance.name }}</h3>
-<div id="fl_l">
-<table class="instance_det_table">
-<tr><th class="table_top_header" colspan=2>{% trans "Details" %}</th></tr>
-<tr><td class="table_title">{% trans "Status" %}</td><td id="status"></td></tr>
-<tr><td class="table_title">{% trans "Cluster" %}</td><td>{{ instance.cluster.description }}</td></tr>
-<tr><td class="table_title">{% trans "Memory" %}</td><td>{{ instance.beparams.memory|memsize }}</td></tr>
-<tr><td class="table_title">{% trans "CPUs" %}</td><td>{{ instance.beparams.vcpus }}</td></tr>
-<tr><td class="table_title">Hard disk{{ instance.disk_sizes|pluralize }}</td><td>{{ instance.disk_sizes|disksizes|join:", " }}</td></tr>
-<tr><td class="table_title">{% trans "Network cards" %}</td><td>{{ instance.nic_macs|length }}</td></tr>
-<tr><td class="table_title">MAC address{{ instance.nic_macs|pluralize:"es" }}</td><td>{{ instance.nic_macs|join:", " }}</td></tr>
-{% if instance.nic_ips %}
-<tr><td class="table_title">IP address{{ instance.nic_ips|pluralize:"es" }}</td><td>{{ instance.nic_ips|join:", " }}</td></tr>
-{% endif %}
-<tr><td class="table_title">{% trans "Created on" %}</td><td>{{ instance.ctime|date }}</td></tr>
-<tr><td class="table_title">{% trans "Last modified" %}</td><td>{{ instance.mtime|date }}</td></tr>
-</table>
-</div>
-
-
-<div id="configuration">
-
-<form method="post" align="center" id="conf_form">
-{% csrf_token %}
-<table class="conf_table">
-	<tr><th colspan="2" style="text-align:center;" class="table_topper_header">{% trans "Configuration" %}</th></tr>
-{{ configform.as_table }}
-<tr><td colspan="2" style="text-align:center; padding: 5px;" ><input style="font-size: 12px;" id="update" type="Submit" value="Update" /></td></tr>
-
-</table>
-
-</form>
-
-<table class="actions_table">
-<tr><th class="table_top_header" colspan=3 style="text-align: center;">{% trans "Actions" %}</th></tr>
-<tr>
-	<td id="actions_container">&nbsp;</td>
-		<!-- Here a setTimeout jquery script populates the instance control every 5 seconds -->
-</tr>
-</table>
-</div>
-
 {% endblock %}
