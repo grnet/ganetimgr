@@ -216,6 +216,15 @@ textarea{
 		<legend>
                     {% trans "Instance information" %}
                 </legend>
+                
+                <div class="control-group">
+	                <label class="control-label required" for="id_applier">
+	                	Status
+	                </label>
+                   <div class="controls padcontrol">{{ application.get_status_display }}
+                   
+                    </div>
+                </div>
                   <div class="control-group">
 	                <label class="control-label required" for="id_applier">
 	                	{{ appform.hostname.label }}
