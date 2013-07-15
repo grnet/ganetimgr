@@ -1,5 +1,5 @@
 # Django settings for ganetimgr project.
-SW_VERSION = '1.0'
+SW_VERSION = '1.1'
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
