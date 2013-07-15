@@ -113,6 +113,8 @@ DATE_FORMAT = "d/m/Y H:i"
 DATETIME_FORMAT = "d/m/Y H:i"
 
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=1500'
+# If you work with multiple instances on the same server, include this to be on the safe side:
+CACHE_MIDDLEWARE_KEY_PREFIX = 'ganetimgr<choose a suffix>'
 GANETI_TAG_PREFIX = "ganetimgr"
 
 LOGIN_URL = '/user/login'
