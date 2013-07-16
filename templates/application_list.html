@@ -9,6 +9,7 @@
 <script type="text/javascript">
 
 $(document).ready( function(){
+	{% if pending %}
 			var oTable1 = $('#pending_instance_table').dataTable( {
 			"bPaginate": true,
             "bLengthChange": true,
@@ -25,6 +26,9 @@ $(document).ready( function(){
             "sPaginationType": "bootstrap",
 			"iDisplayLength": 25,
 	} );
+			oTable1.fnDraw();
+	{% endif %}
+	{% if completed %}
 			var oTable2 = $('#completed_instance_table').dataTable( {
 				"bPaginate": true,
 	            "bLengthChange": true,
@@ -41,9 +45,9 @@ $(document).ready( function(){
 	            "sPaginationType": "bootstrap",
 				"iDisplayLength": 25,
 		} );
-	oTable1.fnDraw();
-	oTable2.fnDraw();
 	
+	oTable2.fnDraw();
+	{% endif %}
 
 });
 
@@ -93,7 +97,7 @@ $(document).ready( function(){
 </table>
 
 {% endif %}
-
+{% if completed %}
  <h2>{% trans "Completed applications" %}</h2>
 <table class="table table-first-column-number data-table display full" id="completed_instance_table">
 <thead>
@@ -123,7 +127,7 @@ $(document).ready( function(){
 {% endfor %}
 </tbody>
 </table>
-
+{% endif %}
 
 </div>
 </div>
