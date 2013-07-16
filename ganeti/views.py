@@ -118,6 +118,7 @@ def user_index(request):
                               context_instance=RequestContext(request))
 @login_required
 def user_index_json(request):
+    messages = None
     if request.user.is_anonymous():
         action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
         return HttpResponse(json.dumps(action), mimetype='application/json')
@@ -138,12 +139,10 @@ def user_index_json(request):
     if not request.user.is_anonymous():
         p.imap(_get_instances, Cluster.objects.all())
         p.join()
-
     if bad_clusters:
-        messages.add_message(request, messages.WARNING,
-                             "Some instances may be missing because the"
-                             " following clusters are unreachable: " +
-                             ", ".join([c.description for c in bad_clusters]))
+        messages = "Some instances may be missing because the" \
+                             " following clusters are unreachable: %s" \
+                             %(", ".join([c.description for c in bad_clusters]))
     jresp = {}
     cache_key = "user:%s:index:instances" %request.user.username
     res = cache.get(cache_key)
@@ -164,6 +163,8 @@ def user_index_json(request):
         j.imap(_get_instance_details, instances)
         j.join()
         jresp['aaData'] = instancedetails
+        if messages:
+            jresp['messages'] = messages
         cache.set(cache_key, jresp, 90)
         res = jresp
 
@@ -762,10 +763,27 @@ def prepare_tags(taglist):
 @login_required
 def stats(request):
     clusters = Cluster.objects.all()
+    exclude_pks = []
     if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
         instances = cache.get('leninstances')
         if instances is None:
-            instances = len(Instance.objects.all())
+            p = Pool(20)
+            instances = []
+            bad_clusters = []
+
+            def _get_instances(cluster):
+                t = Timeout(5)
+                t.start()
+                try:
+                    instances.extend(cluster.get_user_instances(request.user))
+                except (GanetiApiError, Timeout):
+                    exclude_pks.append(cluster.pk)
+                finally:
+                    t.cancel()
+            if not request.user.is_anonymous():
+                p.imap(_get_instances, clusters)
+                p.join()
+            instances = len(instances)
             cache.set('leninstances', instances, 90)
         users = cache.get('lenusers')
         if users is None:
@@ -783,6 +801,8 @@ def stats(request):
         if orgs is None:
             orgs = len(Organization.objects.all())
             cache.set('lenorgs', orgs, 90)
+        if exclude_pks:
+            clusters = clusters.exclude(pk__in=exclude_pks)
         return render_to_response('statistics.html', {
                                                       'clusters':clusters, 
                                                       'instances':instances,
@@ -807,6 +827,7 @@ def stats_ajax_instances(request):
         i = 0
         cluster_list = []
         for cluster in clusters:
+            cinstances = []
             i = 0
             cluster_dict = {}
             if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
@@ -814,7 +835,11 @@ def stats_ajax_instances(request):
             else:
                 cluster_dict['name'] = cluster.description
             cluster_dict['instances'] = []
-            for instance in cluster.get_user_instances(request.user):
+            try:
+                cinstances.extend(cluster.get_user_instances(request.user))
+            except (GanetiApiError, Timeout):
+                cinstances = []
+            for instance in cinstances:
                 inst_dict = {}
                 inst_dict['time'] = (1000*mktime(instance.ctime.timetuple()))
                 inst_dict['name'] = instance.name
@@ -838,7 +863,12 @@ def stats_ajax_vms_per_cluster(request, cluster_slug):
         cluster_dict = {}
         cluster_dict['name'] = cluster.slug
         cluster_dict['instances'] = {'up':0,'down':0}
-        for instance in cluster.get_user_instances(request.user):
+        cinstances = []
+        try:
+            cinstances.extend(cluster.get_user_instances(request.user))
+        except (GanetiApiError, Timeout):
+            return HttpResponse(json.dumps([]), mimetype='application/json')
+        for instance in cinstances:
             if instance.admin_state:
                 cluster_dict['instances']['up'] = cluster_dict['instances']['up'] + 1
             else:

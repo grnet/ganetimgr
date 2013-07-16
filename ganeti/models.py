@@ -26,6 +26,9 @@ from datetime import datetime, timedelta
 from socket import gethostbyname
 from time import sleep
 
+from gevent.pool import Pool
+from gevent.timeout import Timeout
+
 from util import vapclient
 from util.ganeti_client import GanetiRapiClient, GanetiApiError
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
@@ -50,16 +53,31 @@ except ImportError:
     import simplejson as json
 
 class InstanceManager(object):
+
     def all(self):
-        results = []
         users, orgs, groups, instanceapps, networks = preload_instance_data()
-        for cluster in Cluster.objects.all():
-            results.extend(cluster.get_instances())
-        return results
+        p = Pool(20)
+        instances = []
+        bad_clusters = []
+
+        def _get_instances(cluster):
+            t = Timeout(5)
+            t.start()
+            try:
+                instances.extend(cluster.get_instances())
+            except (GanetiApiError, Timeout):
+                pass
+            finally:
+                t.cancel()
+        clusters = Cluster.objects.all()
+        p.imap(_get_instances, clusters)
+        p.join()
+        return instances
 
     def filter(self, **kwargs):
         users, orgs, groups, instanceapps, networks = preload_instance_data()
         if 'cluster' in kwargs:
+            results = []
             if isinstance(kwargs['cluster'], Cluster):
                 cluster = kwargs['cluster']
             else:
@@ -67,7 +85,10 @@ class InstanceManager(object):
                     cluster = Cluster.object.get(slug=kwargs['cluster'])
                 except:
                     return []
-            results = cluster.get_instances()
+            try:
+                results = cluster.get_instances()
+            except GanetiApiError:
+                results = []
             del kwargs['cluster']
         else:
             results = self.all()

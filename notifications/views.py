@@ -31,6 +31,12 @@ from django.contrib import messages
 import json
 from django.core.mail.message import EmailMessage
 
+from gevent.pool import Pool
+from gevent.timeout import Timeout
+
+from util.ganeti_client import GanetiApiError
+
+
 @csrf_exempt
 @login_required
 def notify(request, instance=None):
@@ -115,8 +121,23 @@ def get_user_group_list(request):
             pass
         users = User.objects.all()
         groups = Group.objects.all()
-        instances = Instance.objects.all()
+        instances = []
         clusters = Cluster.objects.all()
+        p = Pool(20)
+        bad_clusters = []
+
+        def _get_instances(cluster):
+            t = Timeout(5)
+            t.start()
+            try:
+                instances.extend(cluster.get_user_instances(request.user))
+            except (GanetiApiError, Timeout):
+                bad_clusters.append(cluster)
+            finally:
+                t.cancel()
+        if not request.user.is_anonymous():
+            p.imap(_get_instances, Cluster.objects.all())
+            p.join()
         if q_params:
             users = users.filter(username__icontains=q_params)
             groups = groups.filter(name__icontains=q_params)

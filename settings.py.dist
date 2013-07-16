@@ -114,7 +114,7 @@ DATETIME_FORMAT = "d/m/Y H:i"
 
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=1500'
 # (Works only for Django >= 1.3: If you work with multiple instances on the same server, include this to be on the safe side:
-KEY_PREFIX = 'ganetimgr<choose a suffix>'
+#KEY_PREFIX = 'ganetimgr<choose a suffix>'
 GANETI_TAG_PREFIX = "vima"
 
 LOGIN_URL = '/user/login'

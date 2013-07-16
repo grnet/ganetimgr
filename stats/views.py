@@ -20,11 +20,31 @@ from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 
 from ganetimgr.ganeti.models import Cluster
+from gevent.pool import Pool
+from gevent.timeout import Timeout
 
+from util.ganeti_client import GanetiApiError
 
 def instance_owners(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
-        instances = [i for i in Cluster.get_all_instances() if i.users]
+        p = Pool(20)
+        instancesall = []
+        bad_clusters = []
+
+        def _get_instances(cluster):
+            t = Timeout(5)
+            t.start()
+            try:
+                instancesall.extend(cluster.get_user_instances(request.user))
+            except (GanetiApiError, Timeout):
+                bad_clusters.append(cluster)
+            finally:
+                t.cancel()
+
+        if not request.user.is_anonymous():
+            p.imap(_get_instances, Cluster.objects.all())
+            p.join()
+        instances = [i for i in instancesall if i.users]
         def cmp_users(x, y):
             return cmp(",".join([ u.username for u in x.users]),
                        ",".join([ u.username for u in y.users]))

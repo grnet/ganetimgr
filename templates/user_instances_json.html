@@ -100,6 +100,12 @@ $(document).ready( function(){
 		"bProcessing": true,
         "sAjaxSource": "{% url user-instances-json %}",
         "bDeferRender": true,
+        "fnInitComplete": function(oSettings, json) {
+            if(json.hasOwnProperty('messages')){
+            	$('#jsonmessages').show();
+            	$('#jsonmessage').html(json.messages);
+            }
+          },
         "aoColumns":[
                      {"mData": "name" ,
                     	 "mRender": function (data, type, full) {
