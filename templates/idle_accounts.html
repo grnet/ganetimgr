@@ -56,7 +56,7 @@
 <tbody>
 {% for user in users %}
 <tr class="GradeA">
-	<td style="text-align: center;">{{user.username}}</td>
+	<td style="text-align: center;"><a href="{% url user-info 'user' user.username %}">{{user.username}}</a></td>
 	<td>{{user.first_name}}</td>
 	<td>{{user.last_name}}</td>
 	<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
