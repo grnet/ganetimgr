@@ -91,7 +91,12 @@ $(document).ready( function(){
 
 <tbody>
 {% for app in pending %}
-<tr><td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td><td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td><td>{{ app.network|default_if_none:"&mdash;" }}</td><td>{{ app.filed|date }}</td></tr>
+<tr>
+    <td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td>
+    <td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td>
+    <td>{{ app.network|default_if_none:"&mdash;" }}</td>
+    <td><span style="display:none">{{ app.filed|date:"U" }}</span>{{ app.filed }}</td>
+</tr>
 {% endfor %}
 </tbody>
 </table>
@@ -122,7 +127,7 @@ $(document).ready( function(){
 	<td>{{ app.vcpus }}</td>
 	<td>{{ app.network|default_if_none:"&mdash;" }}</td>
 	<td>{{ app.get_status_display }}</td>
-	<td>{{ app.filed|date }}</td>
+	<td><span style="display:none">{{ app.filed|date:"U" }}</span>{{ app.filed }}</td>
 </tr>
 {% endfor %}
 </tbody>
