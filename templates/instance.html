@@ -119,6 +119,11 @@
 					{% endif %}
 					<tr><td class="">{% trans "Created on" %}</td><td>{{ instance.ctime|date }}</td></tr>
 					<tr><td class="">{% trans "Last modified" %}</td><td>{{ instance.mtime|date }}</td></tr>
+					{% if user.is_superuser or perms.ganeti.view_instances %}
+    					{% if instance.application %}
+    					<tr><td class="">{% trans "Application" %}</td><td><a href="{% url application-review instance.application.pk %}">#{{instance.application.pk}}</a></td></tr>
+    					{% endif %}
+					{% endif %}
                 </tbody>
             </table>
         </div>
