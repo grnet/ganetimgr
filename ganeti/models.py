@@ -362,6 +362,8 @@ class Cluster(models.Model):
 
     def get_instance(self, name):
         info = self.get_instance_info(name)
+        if info is None:
+            raise Http404()
         users, orgs, groups, instanceapps, networks = preload_instance_data()
         return Instance(self, info["name"], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks)
 
