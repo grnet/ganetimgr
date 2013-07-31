@@ -6,10 +6,18 @@
 <script type="text/javascript">
 	$(document).ready( function(){
 			$('#usergroup_instance_table').dataTable( {
-			"bJQueryUI": true,
+			"bPaginate": true,
+            "bLengthChange": true,
+            "bFilter": true,
+            "bSort": true,
+            "bDeferRender": true,
+            "bInfo": true,
+            "bAutoWidth": true,
 			"oLanguage": {
 				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select>'
 			},
+			"sPaginationType": "bootstrap",
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
 			"iDisplayLength": 25,
 	} );
 		});
