@@ -1,6 +1,5 @@
 # Django settings for ganetimgr project.
-SW_VERSION = '1.1'
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -242,6 +241,8 @@ COLLECTD_URL = "http://stats.example.com"
 
 USE_X_FORWARDED_HOST = True
 
+import _version
+SW_VERSION = _version.VERSION
 
 
 
