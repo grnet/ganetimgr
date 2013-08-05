@@ -391,7 +391,7 @@ def rename_instance(request, cluster_slug, instance, action_id, action_value=Non
 @check_instance_auth
 def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=None):
     user = request.user
-    notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value)
+    action = notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value)
     return HttpResponse(json.dumps(action))
 
 def notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value):
