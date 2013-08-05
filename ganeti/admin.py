@@ -31,6 +31,11 @@ class NetworkAdmin(admin.ModelAdmin):
     list_display = ('description', 'cluster', 'cluster_default', 'mode', 'link')
     list_filter = ('cluster',)
 
+class InstanceActionAdmin(admin.ModelAdmin):
+    list_display = ('instance', 'cluster', 'action', 'action_value', 'activation_key')
+    list_filter = ('instance',)
 
 admin.site.register(Cluster, ClusterAdmin)
 admin.site.register(Network, NetworkAdmin)
+admin.site.register(InstanceAction, InstanceActionAdmin)
+
