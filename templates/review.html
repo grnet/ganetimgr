@@ -187,11 +187,11 @@ textarea{
 <fieldset>
 <legend>{% trans "Decision" %}</legend>
 
-<div class="control-group {% if appform.network.errors %}error{% endif %}">
+<div class="control-group {% if appform.admin_comments.errors %}error{% endif %}">
 		                <label class="control-label {% if appform.admin_comments.field.required %}required{% endif %}" for="id_applier">{% trans "Comments to the user" %}</label>
 	                    <div class="controls">{{ appform.admin_comments }}
 	                    {% if appform.admin_comments.errors %}
-	                    <span class="help-inline" style="clear:both;">
+	                    <span class="help-inline" style="clear:both; color: #B94A48;">
 	                        {{ appform.admin_comments.errors|join:", " }}
 	                    </span>
 	                    {% endif %}
