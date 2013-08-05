@@ -37,6 +37,7 @@ import random
 import sha
 import ipaddr
 
+RAPI_TIMEOUT = settings.RAPI_TIMEOUT
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
@@ -61,7 +62,7 @@ class InstanceManager(object):
         bad_clusters = []
 
         def _get_instances(cluster):
-            t = Timeout(5)
+            t = Timeout(RAPI_TIMEOUT)
             t.start()
             try:
                 instances.extend(cluster.get_instances())

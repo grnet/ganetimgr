@@ -22,8 +22,10 @@ from django.http import HttpResponseRedirect
 from ganetimgr.ganeti.models import Cluster
 from gevent.pool import Pool
 from gevent.timeout import Timeout
-
+from django.conf import settings
 from util.ganeti_client import GanetiApiError
+
+RAPI_TIMEOUT = settings.RAPI_TIMEOUT
 
 def instance_owners(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
@@ -32,7 +34,7 @@ def instance_owners(request):
         bad_clusters = []
 
         def _get_instances(cluster):
-            t = Timeout(5)
+            t = Timeout(RAPI_TIMEOUT)
             t.start()
             try:
                 instancesall.extend(cluster.get_user_instances(request.user))

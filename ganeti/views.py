@@ -52,6 +52,7 @@ except ImportError:
 
 from ganetimgr.settings import GANETI_TAG_PREFIX
 
+RAPI_TIMEOUT = settings.RAPI_TIMEOUT
 
 def cluster_overview(request):
     clusters = Cluster.objects.all()
@@ -127,7 +128,7 @@ def user_index_json(request):
     bad_clusters = []
 
     def _get_instances(cluster):
-        t = Timeout(5)
+        t = Timeout(RAPI_TIMEOUT)
         t.start()
         try:
             instances.extend(cluster.get_user_instances(request.user))
@@ -150,11 +151,11 @@ def user_index_json(request):
     j = Pool(80)
     user = request.user
     def _get_instance_details(instance):
-        t = Timeout(2)
+        t = Timeout(RAPI_TIMEOUT)
         t.start()
         try:
             instancedetails.extend(generate_json(instance, user))
-        except Exception as e:
+        except Exception:
             pass
         finally:
             t.cancel()
@@ -180,7 +181,7 @@ def user_sum_stats(request):
     bad_clusters = []
 
     def _get_instances(cluster):
-        t = Timeout(5)
+        t = Timeout(RAPI_TIMEOUT)
         t.start()
         try:
             instances.extend(cluster.get_user_instances(request.user))
@@ -205,7 +206,7 @@ def user_sum_stats(request):
     j = Pool(80)
     user = request.user
     def _get_instance_details(instance):
-        t = Timeout(5)
+        t = Timeout(RAPI_TIMEOUT)
         t.start()
         try:
             instancedetails.extend(generate_json_light(instance, user))
@@ -718,7 +719,7 @@ def get_clusternodes(request):
             bad_nodes = []
             servermon_url = None
             def _get_nodes(cluster):
-                t = Timeout(5)
+                t = Timeout(RAPI_TIMEOUT)
                 t.start()
                 try:
                     nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
@@ -772,7 +773,7 @@ def stats(request):
             bad_clusters = []
 
             def _get_instances(cluster):
-                t = Timeout(5)
+                t = Timeout(RAPI_TIMEOUT)
                 t.start()
                 try:
                     instances.extend(cluster.get_user_instances(request.user))

@@ -244,5 +244,7 @@ USE_X_FORWARDED_HOST = True
 import _version
 SW_VERSION = _version.VERSION
 
+# Rapi request timeout in gevent calls in seconds
+RAPI_TIMEOUT = 15
 
 
