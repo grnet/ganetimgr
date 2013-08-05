@@ -146,7 +146,6 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 
 </script>
 {% load i18n %}
-<table>
 {% if not instance.is_locked %}
 	{% if instance.oper_state %}
 		<div id="actions_container_inner" class="row-fluid" style="text-align:center;">
@@ -184,8 +183,6 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 		<div class="span4" id="show_no_actions"><em>{{ instance.is_locked|capfirst }}</em></div>
 	</div>
 {% endif %}
-
-</table>
 
 <div id="instance_status" style="display:none;">{{ instance.oper_state|yesno:"Running,Stopped" }}</div>
 

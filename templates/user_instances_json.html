@@ -38,18 +38,18 @@
 <table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
 <thead>
 <tr>
-	<th style="text-align: center;">{% trans "Name" %} <span class="sort-icon"><span></th>
-	<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"><span></th>
-	<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"><span></th>
-	<th style="text-align: center;">CPUs <span class="sort-icon"><span></th>
-	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"><span></th>
+	<th style="text-align: center;">{% trans "Name" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
 	{% if not user.is_superuser and not perms.ganeti.view_instances %}
-	<th style="text-align: center;">IP <span class="sort-icon"><span></th>
+	<th style="text-align: center;">IP <span class="sort-icon"></span></th>
 	{% endif %}
 	<th style="display:none">{% trans "MAC" %}</th>
 	{% if user.is_superuser or perms.ganeti.view_instances %}
-	<th style="text-align: center;">{% trans "Network" %} <span class="sort-icon"><span></th>
-	<th style="text-align: center;">{% trans "Owner" %} <span class="sort-icon"><span></th>
+	<th style="text-align: center;">{% trans "Network" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Owner" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Options" %}</th>
 	<th style="display:none">{% trans "HiddenContactDetails" %}</th>
 	{% endif %}
@@ -85,7 +85,7 @@
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <script type="text/javascript">
-
+var status;
 $(document).ready( function(){
 	$('#vm_instance_table').dataTable( {
 		"bPaginate": true,
@@ -124,8 +124,7 @@ $(document).ready( function(){
                      {"mData":"vcpus", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
                      {"mData":"status",
                          "mRender": function (data, type, full) {
-                       
-                         status = '<span class="label label-'+full.status_style+'">'+data+'</span>';
+	                         status = '<span class="label label-'+full.status_style+'">'+data+'</span>';
                          if (full.hasOwnProperty("cdrom")){
                        	  status = status + ' <span class="label label-warning">CDROM</span>';
                          }
