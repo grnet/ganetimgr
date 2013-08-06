@@ -293,6 +293,12 @@ def generate_json(instance, user):
     
     if i.is_locked():
         inst_dict['locked'] = True
+        inst_dict['locked_reason'] = "%s" %((i.is_locked()).capitalize())
+        if inst_dict['locked_reason'] in ['Deleting', 'Renaming']:
+            try:
+                del inst_dict['name_href']
+            except KeyError:
+                pass
     if i.hvparams['cdrom_image_path'] and i.hvparams['boot_order'] == 'cdrom':
          inst_dict['cdrom'] = True
     inst_dict['nic_macs'] = ', '.join(i.nic_macs)
@@ -473,10 +479,7 @@ def reinstalldestreview(request, application_hash, action_id):
                 user.save()
                 return HttpResponseRedirect(reverse('profile'))
             activated = True
-            return HttpResponseRedirect(reverse('instance-detail', kwargs={
-                                                    'instance': instance, 
-                                                    'cluster_slug':cluster.slug 
-                                                     }))
+            return HttpResponseRedirect(reverse('user-instances'))
         else:
             return render_to_response('verify_action.html', {
                                                              'action': action_id, 
@@ -953,7 +956,7 @@ def graph(request, cluster_slug, instance, graph_type, start=None, end=None):
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
     except urllib2.HTTPError:
-        pass
+        response = open(settings.NODATA_IMAGE, "r")
     return HttpResponse(response.read(), mimetype="image/png")
 
 @login_required
