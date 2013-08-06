@@ -247,4 +247,5 @@ SW_VERSION = _version.VERSION
 # Rapi request timeout in gevent calls in seconds
 RAPI_TIMEOUT = 15
 
+NODATA_IMAGE = "/path/to/static/nodata.jpg"
 
