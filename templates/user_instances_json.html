@@ -131,6 +131,9 @@ $(document).ready( function(){
                          if (full.hasOwnProperty("locked")){
                        	  status = status + ' <span class="label label-inverse">Locked</span>';
                          }
+                         if (full.hasOwnProperty("locked_reason")){
+                          	  status = status + ' <span class="label label-inverse">'+full.locked_reason+'</span>';
+                            }
                          return status;
                          },
                       "sClass" : "alignCenter",
