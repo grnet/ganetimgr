@@ -119,9 +119,13 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 	$( "#rename" )
 	.click(function() {
 		clearTimeout(polltimer);
+		{% if instance.oper_state %}
+		$( "#instrenerr" ).modal('show');
+		{% else %}
 		$( "#instrenbody" ).html( "" );
 		$( "#instrenbody" ).load("{% url instance-rename cluster.slug instance.name 3 %}");
 		$( "#instren" ).modal('show');
+		{% endif %}
 		return false; });
 
 	{% endif %}
@@ -250,3 +254,23 @@ You will receive an email with an activation link. Only when you visit the activ
 <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
 </div>
 </div>
+
+<div class="modal hide fade" id="instrenerr" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3>{% trans "Rename Instance" %}: {{instance}}</h3>
+</div>
+<div class="modal-body" id="instrenerrbody">
+<div class="alert alert-error">
+<h4>{% trans "Warning!" %}</h4>
+{% blocktrans %}You cannot rename instance <strong>{{instance}}</strong>.
+To rename an instance make sure it is turned off.
+{% endblocktrans %}
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+</div>
+</div>
+
+
