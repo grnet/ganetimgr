@@ -287,7 +287,9 @@ class Instance(object):
         elif len(actions) == 1:
             return True
         else:
-            raise Exception
+            for action in actions:
+                action.expire_now()
+            return False
         
     
     def pending_reinstall(self):
@@ -723,6 +725,10 @@ class InstanceAction(models.Model):
         return self.activation_key == self.ACTIVATED or \
                (self.filed + expiration_date <= datetime.now())
     has_expired.boolean = True
+    
+    def expire_now(self):
+        self.activation_key = self.ACTIVATED
+        self.save()
 
     def send_activation_email(self, site):
        
