@@ -31,7 +31,9 @@ _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
 
 class tagsForm(forms.Form):
     tags = forms.CharField(required=False)
-    
+
+class lockForm(forms.Form):
+    lock = forms.BooleanField(required=False)
 
 class InstanceRenameForm(forms.Form):
     hostname = forms.CharField(help_text=ugettext_lazy("A fully qualified domain name,"
