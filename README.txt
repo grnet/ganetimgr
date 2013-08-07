@@ -33,3 +33,6 @@ and
 USE_X_FORWARDED_HOST = True
 in your settings.py. 
 The above ensure that i18n operates properly when switching between languages. 
+
+Migrating to 1.2
+- Make sure to point to the right NODATA_IMAGE file in settings.py
