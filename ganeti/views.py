@@ -80,6 +80,23 @@ def user_info(request, type, usergroup):
      else:
         return HttpResponseRedirect(reverse('user-instances'))
 
+def check_admin_lock(view_fn):
+    def check_lock(request, *args, **kwargs):
+        try:
+            instance_name = kwargs["instance"]
+        except KeyError:
+            instance_name = args[0]
+        instance = Instance.objects.get(name=instance_name)
+        res = instance.adminlock
+        if request.user.is_superuser:
+                res = False
+        if not res:
+            return view_fn(request, *args, **kwargs)
+        else:
+            t = get_template("403.html")
+            return HttpResponseForbidden(content=t.render(RequestContext(request)))
+    return check_lock
+
 def check_instance_auth(view_fn):
     def check_auth(request, *args, **kwargs):
         try:
@@ -291,6 +308,9 @@ def generate_json(instance, user):
             inst_dict['status'] = "%s, should be stopped" %inst_dict['status']
         inst_dict['status_style'] = "warning"
     
+    if i.adminlock:
+        inst_dict['adminlock'] = True
+    
     if i.is_locked():
         inst_dict['locked'] = True
         inst_dict['locked_reason'] = "%s" %((i.is_locked()).capitalize())
@@ -358,6 +378,7 @@ def vnc(request, cluster_slug, instance):
 @login_required
 @csrf_exempt
 @check_instance_auth
+@check_admin_lock
 def shutdown(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.shutdown_instance(instance)
@@ -368,6 +389,7 @@ def shutdown(request, cluster_slug, instance):
 @login_required
 @csrf_exempt
 @check_instance_auth
+@check_admin_lock
 def rename_instance(request, cluster_slug, instance, action_id, action_value=None):
     user = request.user
     if request.method == 'POST':
@@ -395,6 +417,7 @@ def rename_instance(request, cluster_slug, instance, action_id, action_value=Non
 @login_required
 @csrf_exempt
 @check_instance_auth
+@check_admin_lock
 def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=None):
     user = request.user
     action = notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value)
@@ -505,6 +528,7 @@ def reinstalldestreview(request, application_hash, action_id):
 @login_required
 @csrf_exempt
 @check_instance_auth
+@check_admin_lock
 def startup(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.startup_instance(instance)
@@ -515,6 +539,7 @@ def startup(request, cluster_slug, instance):
 @login_required
 @csrf_exempt
 @check_instance_auth
+@check_admin_lock
 def reboot(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     cluster.reboot_instance(instance)
@@ -522,7 +547,40 @@ def reboot(request, cluster_slug, instance):
     clear_cluster_user_cache(request.user.username, cluster_slug)
     return HttpResponse(json.dumps(action))
 
-
+@csrf_exempt
+@login_required
+def lock(request, instance, action):
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+        if instance:
+            instance = Instance.objects.get(name=instance)
+        action = action
+        instance_adminlock = instance.adminlock
+        if request.method == 'POST':
+            form = lockForm(request.POST)
+            if form.is_valid():
+                adminlock = form.cleaned_data['lock']
+                if adminlock == True:
+                    instance.cluster.tag_instance(instance.name, ["%s:adminlock" %GANETI_TAG_PREFIX])
+                if adminlock == False:
+                    instance.cluster.untag_instance(instance.name, ["%s:adminlock" %GANETI_TAG_PREFIX])
+                res = {'result':'success'}
+                return HttpResponse(json.dumps(res), mimetype='application/json')
+            else:
+                return render_to_response('tagging/lock.html',
+                        {
+                        'form': form, 'instance': instance
+                    }, 
+                    context_instance=RequestContext(request)
+                    )
+        elif request.method == 'GET':
+            form = lockForm(initial={'lock': instance_adminlock})
+            return render_to_response('tagging/lock.html', {
+                    'form': form, 'instance': instance}, 
+                    context_instance=RequestContext(request)
+                )
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
+    
 class InstanceConfigForm(forms.Form):
     nic_type = forms.ChoiceField(label=ugettext_lazy("Network adapter model"),
                                  choices=(('paravirtual', 'Paravirtualized'),
@@ -671,14 +729,10 @@ def tagInstance(request, instance):
                 if len(deltags)>0:
                     #we have tags to delete
                     oldtodelete = prepare_tags(deltags)
-                    instance.cluster._client.DeleteInstanceTags(instance.name, oldtodelete)
+                    instance.cluster.untag_instance(instance.name, oldtodelete)
                 newtagstoapply = prepare_tags(newtags)
                 if len(newtagstoapply) > 0:
-                    instance.cluster._client.AddInstanceTags(instance.name, newtagstoapply)
-                cache_key = instance.cluster._instance_cache_key(instance)
-                cache.delete(cache_key)
-                cache.delete("user:%s:index:instances" %request.user.username)
-                cache.delete("cluster:%s:instances" % instance.cluster.slug)
+                    instance.cluster.tag_instance(instance.name, newtagstoapply)
                 res = {'result':'success'}
                 return HttpResponse(json.dumps(res), mimetype='application/json')
             else:
