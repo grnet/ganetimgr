@@ -49,7 +49,7 @@
 {% for user_list in user_instances %}
 {% for i in user_list.list %}
 <tr class="GradeA">
-<td style="text-align: center;">{% for u in user_list.grouper %}<a class="btn" href="{% url user-info 'user' u.username %}"><i class="icon-user"></i> {{ u.username }}</a> {% endfor %}</td>
+<td style="text-align: center;">{% for u in user_list.grouper %}<a href="{% url user-info 'user' u.username %}">{{u.username}}</a> {% endfor %}</td>
 
 
 <td>

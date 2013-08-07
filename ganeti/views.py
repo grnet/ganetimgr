@@ -258,6 +258,9 @@ def user_sum_stats(request):
         instances_stats_list = []
         for u in user_dict.keys():
             user_stats_dict = {}
+            user_stats_dict['user_href'] = "%s"%(reverse("user-info",
+                        kwargs={'type': 'user', 'usergroup':u}
+                        ))
             user_stats_dict['user'] = u
             user_stats_dict['instances'] = user_dict[u]['instances']
             user_stats_dict['disk'] = user_dict[u]['disk']
