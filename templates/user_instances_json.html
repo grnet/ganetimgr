@@ -97,7 +97,7 @@ $(document).ready( function(){
 	    	"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "instances" %}'
 	    },
 	    "sPaginationType": "bootstrap",
-	    "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+	    "sDom": "<'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
 	    "iDisplayLength": 20,
 		"bProcessing": true,
         "sAjaxSource": "{% url user-instances-json %}",
