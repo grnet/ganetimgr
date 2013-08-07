@@ -909,7 +909,8 @@ def stats_ajax_instances(request):
             for item in cluster_dict['instances']:
                 i = i + 1
                 item['count'] = i
-            cluster_list.append(cluster_dict)
+            if len(cinstances) > 0:
+                cluster_list.append(cluster_dict)
         cache.set('%s:ajaxinstances' %username, cluster_list, 90)
     return HttpResponse(json.dumps(cluster_list), mimetype='application/json')
 
