@@ -22,6 +22,8 @@
 	overflow: visible;
 }
 </style>
+<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.css">
+
 {% endblock %}
 {% block title %}{% trans "My instances" %}{% endblock %}
 {% block homepage %}class="active"{% endblock %}
@@ -131,6 +133,9 @@ $(document).ready( function(){
                          if (full.hasOwnProperty("locked")){
                        	  status = status + ' <span class="label label-inverse">Locked</span>';
                          }
+                         if (full.hasOwnProperty("adminlock")){
+                          	  status = status + ' <span class="label label-important"><i class="icon-lock"></i> Admin Lock</span>';
+                            }
                          if (full.hasOwnProperty("locked_reason")){
                           	  status = status + ' <span class="label label-inverse">'+full.locked_reason+'</span>';
                             }
@@ -203,6 +208,12 @@ $(document).ready( function(){
                      },
                      {"mData": "name", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
                     	 "mRender":  function (data, type, full) {
+                    		 if (full.hasOwnProperty("adminlock")){
+                    			 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'unlock\'); return false;">{% trans "Unlock" %}</a></li>';
+                    		 }
+                    		 else{
+                    			 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'lock\'); return false;">{% trans "Lock" %}</a></li>';
+                    		 }
                              var ret = ''+
                     		 '<div class="btn-group">'+
                              '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
@@ -210,6 +221,7 @@ $(document).ready( function(){
                                '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a></li>'+
                                '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Tags" %}</a></li>'+
                                '<li><a href="#" onclick="javascript:showNotify(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Notify" %}</a></li>'+
+                               lock +
                              '</ul>'+
                            '</div>';
                      return ret;
@@ -261,5 +273,12 @@ $(document).ready( function(){
 		return false;
 	}
 
+	function showLock(cluster, instance, action){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text(action + ': '+instance);
+		$( "#instDetsbody" ).load("{% url lock %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
 </script>
 {% endblock %}
