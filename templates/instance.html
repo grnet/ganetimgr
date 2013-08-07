@@ -96,7 +96,7 @@
 
     <div class="row-fluid">
         <div class="row-fluid">
-        	<h2>{{ instance.name }}</h2>
+        	<h2>{{ instance.name }} {% if instance.adminlock %}<span class="label label-important"><i class="icon-lock"></i> Admin Lock</span>{% endif %}</h2>
             <table class="table">
                 <thead>
                     <tr>
