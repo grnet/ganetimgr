@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # Django settings for ganetimgr project.
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -25,8 +26,8 @@ TIME_ZONE = 'Europe/Athens'
 _ = lambda s: s
 
 LANGUAGES = (
-    ('el', _('Greek')),
-    ('en', _('English')),
+    ('el', u'Ελληνικά'),
+    ('en', u'English'),
 )
 
 # Language code for this installation. All choices can be found here:

@@ -18,13 +18,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: settings.py:29
-msgid "Greek"
-msgstr "Ελληνικά"
-
 #: settings.py:30
 msgid "English"
-msgstr "Αγγλικά"
+msgstr "English"
 
 #: accounts/forms.py:51
 msgid "Invalid captcha"
