@@ -1,4 +1,33 @@
 ===========
+1.2 RELEASE
+Functionality/bugfixing release
+
+Requirements:
+	- Set the RAPI_TIMEOUT in settings.py (see .dist)
+	- Set the NODATA_IMAGE path in settings.py.dist
+	- Update urls.py to urls.py.dist
+
+Functionality:
+	- Add pagination and instane count on top of user instances table
+	- Add link in admin statistics/user instances to user info
+	- Add instances in user info page
+	- Add instance lock
+	- Add pagination to idle user accounts
+
+Core:
+	- Add version in separate file
+	- Better cache handling in case of a cluster lock
+	- Make RAPI connect timeout a variable in settings
+
+Fixes:
+	- Show language names in their native format
+	- Hide clusters in stats where user has no VMs
+	- Add visual feedback once the user verifies an action
+	- Add a warning if instance is up on rename request
+	- Fix a bug that blocks visual feedback to user in advanced actions
+	- Fix error notification in review form
+	
+
 1.0 RELEASE
 Major UI/functionality re-desing
 

@@ -34,5 +34,8 @@ USE_X_FORWARDED_HOST = True
 in your settings.py. 
 The above ensure that i18n operates properly when switching between languages. 
 
-Migrating to 1.2
-- Make sure to point to the right NODATA_IMAGE file in settings.py
+Migrating to v1.2
+- Make sure to:
+	- Set the RAPI_TIMEOUT in settings.py (see .dist)
+	- Set the NODATA_IMAGE path in settings.py.dist
+	- Update urls.py to urls.py.dist
