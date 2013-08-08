@@ -62,7 +62,7 @@
 	});
 	</script>
 	{% load i18n %}
-<div>{{user}} {% trans "enter your new mail address twice so we can verify you typed it in correctly." %}</div>
+<div><strong>{{ user }}</strong>, {% trans "enter your new mail address twice so we can verify you typed it in correctly." %}</div>
 <div>{% trans "Once you submit this form you will receive an activation email with instructions on how to proceed" %}</div> 
 <div>{% trans "Your e-mail" %} {% if changed %} {% trans "has successfully changed to" %} {% endif %}: <strong>{% ifequal mail|length 0 %} {% trans "you have not registered an address yet" %} {% else %}{{mail}}{% endifequal %}</strong></div>
 <form method="POST" id="change_email_form" class="form">

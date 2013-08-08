@@ -27,7 +27,7 @@ _ = lambda s: s
 
 LANGUAGES = (
     ('el', u'Ελληνικά'),
-    ('en', u'English'),
+    ('en', _('English')),
 )
 
 # Language code for this installation. All choices can be found here:
