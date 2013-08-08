@@ -394,6 +394,20 @@ class Cluster(models.Model):
         retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks) for info in instances]
         return retinstances
     
+    def force_cluster_cache_refresh(self, instance):
+        '''Used in cases of actions that could potentially lock the cluster
+        thus preventing users from listing, even for some seconds, their instances
+        and delay node listing for admins
+        '''
+        retinstances = []        
+        instances = self._client.GetInstances(bulk=True)
+        for i in instances:
+            if i['name'] == instance:
+                i['action_lock'] = True
+        cache.set("cluster:%s:instances" % self.slug, instances, 45)
+        users, orgs, groups, instanceapps, networks = preload_instance_data()
+        retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks) for info in instances]
+        return retinstances
 
     def get_user_instances(self, user):
         instances = self.get_instances()

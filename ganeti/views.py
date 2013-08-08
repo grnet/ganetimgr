@@ -314,6 +314,14 @@ def generate_json(instance, user):
     if i.adminlock:
         inst_dict['adminlock'] = True
     
+    # When renaming disable clicking on instance for everyone
+    if hasattr(i,'admin_lock'):
+        if i.admin_lock:
+            try:
+                del inst_dict['name_href']
+            except KeyError:
+                pass
+    
     if i.is_locked():
         inst_dict['locked'] = True
         inst_dict['locked_reason'] = "%s" %((i.is_locked()).capitalize())
@@ -498,6 +506,9 @@ def reinstalldestreview(request, application_hash, action_id):
             if action_id == 2:
                 cluster.destroy_instance(instance)
             if action_id == 3:
+                # As rename causes cluster lock we perform some cache engineering on the cluster instances, 
+                # nodes and the users cache
+                refresh_cluster_cache(cluster, instance)
                 cluster.rename_instance(instance, action_value)
             if action_id == 4:
                 user = User.objects.get(username=request.user)
@@ -771,44 +782,52 @@ def tagInstance(request, instance):
 def get_clusternodes(request):
     if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
         nodes = cache.get('allclusternodes')
+        bad_clusters = cache.get('badclusters')
+        bad_nodes = cache.get('badnodes')
         if nodes is None:
-            clusters = Cluster.objects.all()
-            p = Pool(20)
-            nodes = []
-            bad_clusters = []
-            bad_nodes = []
-            servermon_url = None
-            def _get_nodes(cluster):
-                t = Timeout(RAPI_TIMEOUT)
-                t.start()
-                try:
-                    nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
-                    bad_nodes.extend(cluster.get_node_info(node)['name'] for node in cluster.get_cluster_nodes() if cluster.get_node_info(node)['offline'] == True)
-                except (GanetiApiError, Timeout):
-                    bad_clusters.append(cluster)
-                finally:
-                    t.cancel()
-        
-            if not request.user.is_anonymous():
-                p.imap(_get_nodes, clusters)
-                p.join()
-                
-            if bad_clusters:
-                messages.add_message(request, messages.WARNING,
-                                     "Some nodes may be missing because the" +
-                                     " following clusters are unreachable: " +
-                                     ", ".join([c.description for c in bad_clusters]))
-            if bad_nodes:
-                messages.add_message(request, messages.ERROR,
-                                     "Some nodes appear to be offline: "+
-                                     ", ".join(bad_nodes))
+            nodes, bad_clusters, bad_nodes = prepare_clusternodes()
             cache.set('allclusternodes', nodes, 90)
+        if bad_clusters:
+            messages.add_message(request, messages.WARNING,
+                             "Some nodes may be missing because the" +
+                             " following clusters are unreachable: " +
+                             ", ".join([c.description for c in bad_clusters]))
+            cache.set('badclusters', bad_clusters, 90)
+        if bad_nodes:
+            messages.add_message(request, messages.ERROR,
+                             "Some nodes appear to be offline: "+
+                             ", ".join(bad_nodes))
+            cache.set('badnodes', bad_nodes, 90)
         if settings.SERVER_MONITORING_URL:
             servermon_url = settings.SERVER_MONITORING_URL 
         return render_to_response('cluster_nodes.html', {'nodes': nodes, 'servermon':servermon_url},
                                   context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect(reverse('user-instances'))
+
+def prepare_clusternodes():
+    clusters = Cluster.objects.all()
+    p = Pool(20)
+    nodes = []
+    bad_clusters = []
+    bad_nodes = []
+    servermon_url = None
+    def _get_nodes(cluster):
+        t = Timeout(RAPI_TIMEOUT)
+        t.start()
+        try:
+            nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
+            bad_nodes.extend(cluster.get_node_info(node)['name'] for node in cluster.get_cluster_nodes() if cluster.get_node_info(node)['offline'] == True)
+        except (GanetiApiError, Timeout):
+            bad_clusters.append(cluster)
+        finally:
+            t.cancel()
+    
+    p.imap(_get_nodes, clusters)
+    p.join()
+    return nodes, bad_clusters, bad_nodes
+            
+        
 
 def prepare_tags(taglist):
     tags = []
@@ -1030,4 +1049,14 @@ def idle_accounts(request):
 def clear_cluster_user_cache(username, cluster_slug):
     cache.delete("user:%s:index:instances" %username)
     cache.delete("cluster:%s:instances" % cluster_slug)
+
+
+def refresh_cluster_cache(cluster, instance):
+    cluster.force_cluster_cache_refresh(instance)
+    for u in User.objects.all():
+        cache.delete("user:%s:index:instances" %u.username)
+    nodes , bc, bn = prepare_clusternodes()
+    cache.set('allclusternodes', nodes, 90)
+    cache.set('badclusters', bc, 90)
+    cache.set('badnodes', bn, 90)
 
