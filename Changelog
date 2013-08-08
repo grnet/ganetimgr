@@ -1,4 +1,3 @@
-===========
 1.2 RELEASE
 Functionality/bugfixing release
 
@@ -26,7 +25,18 @@ Fixes:
 	- Add a warning if instance is up on rename request
 	- Fix a bug that blocks visual feedback to user in advanced actions
 	- Fix error notification in review form
-	
+
+===========
+
+1.1 RELEASE
+Minor fix release
+
+Fixes:
+	- Add some existence checks in applications list
+	- Fix a bug where non reachable clusters caused exceptions
+	- Update flatpages template
+
+===========
 
 1.0 RELEASE
 Major UI/functionality re-desing
