@@ -26,6 +26,8 @@
 </style>
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.css">
 <script type="text/javascript">
+
+
 	$(document).ready( function(){
 			$('#usergroup_instance_table').dataTable( {
 			"bJQueryUI": true,
@@ -37,6 +39,24 @@
 		});
 	
 	var status;
+	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+	    "file-size-pre": function ( a ) {
+	        var x = a.substring(0,a.length - 2);
+	             
+	        var x_unit = (a.substring(a.length - 2, a.length) == "MB" ?
+	            1000 : (a.substring(a.length - 2, a.length) == "GB" ? 1000000 : 1));
+	          
+	        return parseInt( x * x_unit, 10 );
+	    },
+	 
+	    "file-size-asc": function ( a, b ) {
+	        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+	    },
+	 
+	    "file-size-desc": function ( a, b ) {
+	        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+	    }
+	} );
 	$(document).ready( function(){
 		var oTable = $('#vm_instance_table').dataTable( {
 			"bPaginate": false,
@@ -66,7 +86,7 @@
 	                    	 "sClass" : "alignLeft","bSearchable": true,"bSortable": true
 	                     },
 	                     {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-	                     {"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+	                     {"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,"sType": "file-size"},
 	                     {"mData":"vcpus", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
 	                     {"mData":"status",
 	                         "mRender": function (data, type, full) {
