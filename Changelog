@@ -25,6 +25,8 @@ Fixes:
 	- Add a warning if instance is up on rename request
 	- Fix a bug that blocks visual feedback to user in advanced actions
 	- Fix error notification in review form
+	- Fix sorting by memsize
+	- Minor UI fix in error pages 404 500 403
 
 ===========
 
