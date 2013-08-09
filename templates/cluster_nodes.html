@@ -5,7 +5,20 @@
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <script type="text/javascript">
-
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "dataattr-string-pre": function ( a ) {
+        var x = a.match(/data-size="(.*?)"/)[1].toLowerCase();
+        return parseFloat( x );
+    },
+ 
+    "dataattr-string-asc": function ( a, b ) {
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    },
+ 
+    "dataattr-string-desc": function ( a, b ) {
+        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    }
+} );
 $(document).ready( function(){
 			var oTable = $('#vm_instance_table').dataTable( {
 			"bPaginate": true,
@@ -22,8 +35,8 @@ $(document).ready( function(){
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
 			"aoColumns": [ {"bSearchable": true,"bSortable": true },
-						{"bSearchable": true,"bSortable": true},
-						{"bSearchable": true,"bSortable": true},
+						{"bSearchable": true,"bSortable": true, "sType":"dataattr-string"},
+						{"bSearchable": true,"bSortable": true, "sType":"dataattr-string"},
 						{"bSearchable": true,"bSortable": true},
 						{"bSearchable": true,"bSortable": true},
 						{"bSearchable": true,"bSortable": true},
@@ -81,13 +94,13 @@ $(document).ready( function(){
 <tr {% if node.role == 'O' %}class="alert alert-error"{% endif %}{% if node.role == 'D' %}class="alert alert-warning"{% endif %}><td>{% if servermon %}<a href="{{servermon}}/{{node.name}}" target="_blank">{{node.name}}</a>{% else %}{{node.name}}{% endif %}</td>
 <td>
 <div class="progress progress-{{node.mem_used|perctobootstrap}}">
-<div class="bar" style="width: {{node.mem_used}}%">{{node.mem_used}}%</div>
+<div class="bar" style="width: {{node.mem_used}}%" data-size="{{node.mem_used}}">{{node.mem_used}}%</div>
 </div>
 Free: <span class="badge badge-{{node.mem_used|perctobootstrapbadge}}">{{node.mfree|memsize}} </span> Total: <span class="badge badge-inverse">{{node.mtotal|memsize}}</span></td>
 <td>
-{% if node.shared_storage %}<span class="label label-info">Shared Storage</span>{% else %}
+{% if node.shared_storage %}<span class="label label-info" data-size="0">Shared Storage</span>{% else %}
 <div class="progress progress-{{node.disk_used|perctobootstrap}}">
-<div class="bar" style="width: {{node.disk_used}}%">{{node.disk_used}}%</div>
+<div class="bar" style="width: {{node.disk_used}}%" data-size="{{node.disk_used}}">{{node.disk_used}}%</div>
 </div>
 Free: <span class="badge badge-{{node.disk_used|perctobootstrapbadge}}">{{node.dfree|memsize}} </span> Total: <span class="badge badge-inverse">{{node.dtotal|memsize}}</span>
 {% endif %}
