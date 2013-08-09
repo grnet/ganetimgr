@@ -3,3 +3,4 @@ urls.py
 ganeti.db
 *.pyc
 apache/django.wsgi
+templates/analytics.html

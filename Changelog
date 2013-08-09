@@ -5,6 +5,8 @@ Requirements:
 	- Set the RAPI_TIMEOUT in settings.py (see .dist)
 	- Set the NODATA_IMAGE path in settings.py.dist
 	- Update urls.py to urls.py.dist
+	- Copy templates/analytics.html.dist to templates/analytics.html and change 
+	provider if needed or leave the file empty
 
 Functionality:
 	- Add pagination and instane count on top of user instances table
@@ -12,6 +14,7 @@ Functionality:
 	- Add instances in user info page
 	- Add instance lock
 	- Add pagination to idle user accounts
+	- Add analytics support
 
 Core:
 	- Add version in separate file
