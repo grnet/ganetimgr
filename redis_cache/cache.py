@@ -30,7 +30,11 @@ class CacheClass(BaseCache):
     def __init__(self, server, params):
         "Connect to Redis, and set up cache backend."
         BaseCache.__init__(self, params)
-        self._cache = redis.Redis(server.split(':')[0], db=1)
+        if 'db' in params:
+            db = int(params['db'])
+        else:
+            db = 1
+        self._cache = redis.Redis(server.split(':')[0], db=db)
         self._headers = {'zlib': '!zlib!',
                          'pickle': '!pickle!'}
 

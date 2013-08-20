@@ -112,7 +112,11 @@ RAPI_RESPONSE_TIMEOUT = 5
 DATE_FORMAT = "d/m/Y H:i"
 DATETIME_FORMAT = "d/m/Y H:i"
 
-CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=1500'
+# If you deploy more than one ganeti instances on the same server, 
+# and want to use Redis for both, make sure you select a different db for each instance
+# Warning!!! Redis db should ALWAYS be an integer, denoting db index.
+#CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=1500'
+CACHE_BACKEND = "redis_cache.cache://127.0.0.1:6379/?timeout=1500&db=1"
 # (Works only for Django >= 1.3: If you work with multiple instances on the same server, include this to be on the safe side:
 #KEY_PREFIX = 'ganetimgr<choose a suffix>'
 GANETI_TAG_PREFIX = "vima"
