@@ -38,7 +38,7 @@ The above ensure that i18n operates properly when switching between languages.
 
 =====================================================================
 
-Migrating to v1.2
+Migrating to >= v1.2
 - Make sure to:
 	- Set the RAPI_TIMEOUT in settings.py (see .dist)
 	- Set the NODATA_IMAGE path in settings.py.dist

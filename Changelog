@@ -1,3 +1,11 @@
+1.2.1 RELEASE
+Bugfixing release
+
+Fixes:
+	- Handle exceptions in instance json generation
+
+===========
+
 1.2 RELEASE
 Functionality/bugfixing release
 
