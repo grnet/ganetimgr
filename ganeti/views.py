@@ -143,7 +143,7 @@ def user_index_json(request):
     p = Pool(20)
     instances = []
     bad_clusters = []
-
+    bad_instances = []
     def _get_instances(cluster):
         t = Timeout(RAPI_TIMEOUT)
         t.start()
@@ -172,14 +172,23 @@ def user_index_json(request):
         t.start()
         try:
             instancedetails.extend(generate_json(instance, user))
-        except Exception:
-            pass
+        except (Exception, Timeout):
+            bad_instances.append(instance)
         finally:
             t.cancel()
-    
+
     if res is None:
         j.imap(_get_instance_details, instances)
         j.join()
+        
+        if bad_instances:
+            bad_inst_text = "Could not get details for " + str(len(bad_instances)) + " instances.<br>" \
+                "Please try again later."
+            if messages:
+                messages = messages + "<br>" + bad_inst_text
+            else:
+                messages = bad_inst_text
+        
         jresp['aaData'] = instancedetails
         if messages:
             jresp['messages'] = messages
@@ -227,7 +236,7 @@ def user_sum_stats(request):
         t.start()
         try:
             instancedetails.extend(generate_json_light(instance, user))
-        except Exception as e:
+        except (Exception, Timeout):
             pass
         finally:
             t.cancel()
