@@ -18,35 +18,24 @@ To setup an instance:
 manage.py syncdb (*** Do not create superuser yet ***)
 manage.py migrate
 manage.py createsuperuser
+run the watcher.py
+
+
+Migrating to v1.2.2
+
+- Make sure to restart watcher.py
 
 ======================================================================
 
-Migrating to v1.0:
--install python-ipaddr lib
--update settings.py and urls.py with latest changes from dist files
-Run:
-manage.py migrate
-
-If your web server is nginx, consider placing:
-
-proxy_set_header X-Forwarded-Host <hostname>;
-in your nginx site location part
-and
-USE_X_FORWARDED_HOST = True
-in your settings.py. 
-The above ensure that i18n operates properly when switching between languages. 
-
-=====================================================================
-
 Migrating to >= v1.2
 - Make sure to:
-	- Set the RAPI_TIMEOUT in settings.py (see .dist)
-	- Set the NODATA_IMAGE path in settings.py.dist
-	- Update urls.py to urls.py.dist
+    - Set the RAPI_TIMEOUT in settings.py (see .dist)
+    - Set the NODATA_IMAGE path in settings.py.dist
+    - Update urls.py to urls.py.dist
 Copy templates/analytics.html.dist to templates/analytics.html.
 Set your prefered (we use piwik) analytics inclussion script in templates/analytics.html:
 
-Eg. 
+Eg.
     <!-- Piwik -->
 <script type="text/javascript">
   var _paq = _paq || [];
@@ -62,9 +51,26 @@ Eg.
 
 </script>
 <noscript><p><img src="http://piwik.example.com/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
-<!-- End Piwik Code --> 
+<!-- End Piwik Code -->
 
 If you do not wish analytics, leave this file empty.
+
+=====================================================================
+
+Migrating to v1.0:
+-install python-ipaddr lib
+-update settings.py and urls.py with latest changes from dist files
+Run:
+manage.py migrate
+
+If your web server is nginx, consider placing:
+
+proxy_set_header X-Forwarded-Host <hostname>;
+in your nginx site location part
+and
+USE_X_FORWARDED_HOST = True
+in your settings.py. 
+The above ensure that i18n operates properly when switching between languages. 
 
 =====================================================================
 

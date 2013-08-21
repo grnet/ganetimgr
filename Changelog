@@ -1,3 +1,14 @@
+1.2.2 RELEASE
+Bugfixing release
+
+Requirements:
+    - Restart the watcher.py as application performance affecting changes took place
+
+Fixes:
+    - Fix a bug caused by repeated memcache gets in a gevent Pool job
+
+===========
+
 1.2.1 RELEASE
 Bugfixing release
 
