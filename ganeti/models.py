@@ -149,6 +149,7 @@ class Instance(object):
         self.ipv6s = []
         self.admin_view_only = False
         self.adminlock = False
+        self.joblock = False
         self._update(info)
 
     def _update(self, info=None):
@@ -341,6 +342,12 @@ class Cluster(models.Model):
                        timeout=30, job_id=None):
         lock_key = self._instance_lock_key(instance)
         cache.set(lock_key, reason, timeout)
+        locked_instances = cache.get('locked_instances')
+        if locked_instances is not None:
+            locked_instances["%s"%instance]=reason
+            cache.set('locked_instances', locked_instances, 90)
+        else:
+            cache.set('locked_instances', {'%s'%instance:"%s"%reason}, 90)
         if job_id is not None:
             b = None
             for i in range(5):
@@ -356,6 +363,7 @@ class Cluster(models.Model):
                 b.use(BEANSTALK_TUBE)
             b.put(json.dumps({"type": "JOB_LOCK",
                               "cluster": self.slug,
+                              "instance": instance,
                               "job_id": job_id,
                               "lock_key": lock_key,
                               "flush_keys": [self._instance_cache_key(instance)]}))

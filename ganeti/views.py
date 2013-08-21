@@ -167,10 +167,15 @@ def user_index_json(request):
     instancedetails = []
     j = Pool(80)
     user = request.user
+    locked_instances = cache.get('locked_instances')
     def _get_instance_details(instance):
         t = Timeout(RAPI_TIMEOUT)
         t.start()
         try:
+            if locked_instances is not None and locked_instances.has_key('%s'%instance.name):
+                instance.joblock = locked_instances['%s'%instance.name]
+            else:
+                instance.joblock = False
             instancedetails.extend(generate_json(instance, user))
         except (Exception, Timeout):
             bad_instances.append(instance)
@@ -331,9 +336,9 @@ def generate_json(instance, user):
             except KeyError:
                 pass
     
-    if i.is_locked():
+    if i.joblock:
         inst_dict['locked'] = True
-        inst_dict['locked_reason'] = "%s" %((i.is_locked()).capitalize())
+        inst_dict['locked_reason'] = "%s" %((i.joblock).capitalize())
         if inst_dict['locked_reason'] in ['Deleting', 'Renaming']:
             try:
                 del inst_dict['name_href']

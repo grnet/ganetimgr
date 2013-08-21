@@ -114,6 +114,7 @@ def handle_job_lock(job):
     global logger
     data = json.loads(job.body)
     lock_key = data["lock_key"]
+    instance = data["instance"]
     job_id = int(data["job_id"])
     logger.info("Handling lock key %s (job %d)" % (lock_key, job_id))
 
@@ -151,6 +152,20 @@ def handle_job_lock(job):
                     cache.delete(key)
 
             cache.delete(lock_key)
+            locked_instances = cache.get('locked_instances')
+            # This should contain at least 1 instance
+            if locked_instances is not None:
+                try:
+                    locked_instances.pop("%s"%instance)
+                except KeyError:
+                    pass
+                if len(locked_instances.items()) == 0:
+                    cache.delete('locked_instances')
+                else:
+                    cache.set('locked_instances', locked_instances, 90)
+            else:
+                # This could be due to a cache fail or restart. For the time log it
+                logger.warn("Unable to find instance %s in locked instances cache key" %instance)
             clear_cluster_users_cache(cluster.slug)
             job.delete()
             return
