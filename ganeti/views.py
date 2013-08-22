@@ -833,6 +833,8 @@ def prepare_clusternodes():
             nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
             bad_nodes.extend(cluster.get_node_info(node)['name'] for node in cluster.get_cluster_nodes() if cluster.get_node_info(node)['offline'] == True)
         except (GanetiApiError, Timeout):
+            # Maybe we should look if this is the proper way of doing this
+            cluster._client = None
             bad_clusters.append(cluster)
         finally:
             t.cancel()
