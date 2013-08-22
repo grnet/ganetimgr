@@ -12,7 +12,6 @@ $(document).ready(function() {
 			type: "POST",
 			cache: false,
 			success:function(data){
-					console.log(data);
 					try {
 						result = data.result;
 						if (typeof result === 'undefined'){

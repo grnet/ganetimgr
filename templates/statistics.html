@@ -209,7 +209,6 @@ $(document).ready( function(){
                      {"mData": "user" ,
                     	"bSearchable": true,"bSortable": true,
                     	"mRender": function (data, type, full) {
-                    		console.log(full)
                    		 if (full.hasOwnProperty("user_href")){
                    			 name = '<a href="'+full.user_href+'">'+data+'</a>';
                    		 }
