@@ -237,6 +237,10 @@ class Instance(object):
                 self.ipv6s.append("%s"%(ipv6addr))
             except Exception as e:
                 pass
+        if self.admin_state == 'up':
+            self.admin_state = True
+        if self.admin_state == 'down':
+            self.admin_state = False
 
     def generate_ipv6(self, prefix, mac):
         try:
