@@ -105,7 +105,7 @@
                 </thead>
                 <tbody>
 					<tr><td class="">{% trans "Status" %}</td><td id="status"></td></tr>
-					<tr><td class="">{% trans "Cluster" %}</td><td>{{ instance.cluster.description }}</td></tr>
+					<tr><td class="">{% trans "Cluster" %}</td><td>{% if user.is_superuser or perms.ganeti.view_instances %}{{ instance.cluster.slug }}{% else %}{{ instance.cluster.description }}{% endif %}</td></tr>
 					<tr><td class="">{% trans "Memory" %}</td><td>{{ instance.beparams.memory|memsize }}</td></tr>
 					<tr><td class="">{% trans "CPUs" %}</td><td>{{ instance.beparams.vcpus }}</td></tr>
 					<tr><td class="">Hard disk{{ instance.disk_sizes|pluralize }}</td><td>{{ instance.disk_sizes|disksizes|join:", " }}</td></tr>
