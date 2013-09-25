@@ -699,7 +699,12 @@ def instance(request, cluster_slug, instance):
 #    else:
     instance.cpu_url = reverse(graph, args=(cluster.slug, instance.name,'cpu-ts'))
     instance.net_url = reverse(graph, args=(cluster.slug, instance.name,'net-ts'))
-
+    instance.netw = []
+    for (nic_i, link) in enumerate(instance.nic_links):
+        if instance.nic_ips[nic_i] == None:
+            instance.netw.append("%s"%(instance.nic_links[nic_i]))
+        else:
+            instance.netw.append("%s@%s"%(instance.nic_ips[nic_i],instance.nic_links[nic_i]))
     return render_to_response("instance.html",
                               {'cluster': cluster,
                                'instance': instance,

@@ -117,6 +117,9 @@
 					{% if instance.ipv6s %}
 					<tr><td class="">IPv6 address{{ instance.ipv6s|pluralize:"es" }}</td><td>{{ instance.ipv6s|join:", " }}</td></tr>
 					{% endif %}
+					{% if user.is_superuser or perms.ganeti.view_instances %}
+					<tr><td class="">Networks</td><td>{{ instance.netw|join:", " }}</td></tr>
+					{% endif %}
 					<tr><td class="">{% trans "Created on" %}</td><td>{{ instance.ctime|date }}</td></tr>
 					<tr><td class="">{% trans "Last modified" %}</td><td>{{ instance.mtime|date }}</td></tr>
 					{% if user.is_superuser or perms.ganeti.view_instances %}
