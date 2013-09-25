@@ -25,7 +25,28 @@
     margin-left: 2px;
     margin-top: 8px;
 }
+
+.dropdown-menu.instanceopt{
+	right: 0px;
+	left: auto;
+	text-align: left !important;
+}
+
+.alignCenter{
+	text-align: center !important;
+}
+.alignLeft{
+	text-align: left !important;
+}
+.alignRight{
+	text-align: right !important;
+}
+.visoverflow{
+	overflow: visible;
+}
+
 </style>
+<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.css">
 <script type="text/javascript">
 	var utc_end = Math.round((new Date()).getTime() / 1000);
     $(function(){
@@ -97,7 +118,7 @@
     <div class="row-fluid">
         <div class="row-fluid">
         	<h2>{{ instance.name }} {% if instance.adminlock %}<span class="label label-important"><i class="icon-lock"></i> Admin Lock</span>{% endif %}</h2>
-            <table class="table">
+            <table class="table visoverflow">
                 <thead>
                     <tr>
                       <th class="span12" colspan="2">{% trans "Details" %}</th>
@@ -122,7 +143,33 @@
 					{% endif %}
 					<tr><td class="">{% trans "Created on" %}</td><td>{{ instance.ctime|date }}</td></tr>
 					<tr><td class="">{% trans "Last modified" %}</td><td>{{ instance.mtime|date }}</td></tr>
-					{% if user.is_superuser or perms.ganeti.view_instances %}
+					{% if user.is_superuser %}
+					{% if instance.users or instance.groups %}
+					<tr><td class="">{% trans "Users" %}</td><td>
+						{% for u in instance.users %}
+						<a class="btn" href="{% url user-info type='user' usergroup=u.username %}"><i class="icon-user"></i> {{u.username}}</a>
+						{% endfor %}
+						{% for g in instance.groups %}
+						<a class="btn" href="{% url user-info type='group' usergroup=g.name %}"><i class="icon-group"></i> {{g.name}}</a>
+						{% endfor %}
+						
+						</td></tr>
+					<tr><td class="">{% trans "Admin Options" %}</td><td>
+						<div class="btn-group">
+                             <button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> {% trans "Options" %} <span class="caret"></span></button>
+                             <ul class="dropdown-menu instanceopt pull-right">
+                               <li><a href="#" onclick="javascript:showDetails('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Details" %}</a></li>
+                               <li><a href="#" onclick="javascript:showTags('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Tags" %}</a></li>
+                               <li><a href="#" onclick="javascript:showNotify('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Notify" %}</a></li>
+                               {% if instance.adminlock %}
+                    			 <li><a href="#" onclick="javascript:showLock('{{instance.cluster.slug}}','{{instance.name}}', 'unlock'); return false;">{% trans "Unlock" %}</a></li>
+                    		   {% else %}
+                    		    <li><a href="#" onclick="javascript:showLock('{{instance.cluster.slug}}','{{instance.name}}', 'lock'); return false;">{% trans "Lock" %}</a></li>
+                    		    {% endif %}
+                             </ul>
+                           </div>
+					</td></tr>
+					{% endif %}
     					{% if instance.application %}
     					<tr><td class="">{% trans "Application" %}</td><td><a href="{% url application-review instance.application.pk %}">#{{instance.application.pk}}</a></td></tr>
     					{% endif %}
@@ -190,7 +237,18 @@
         </div>
 
 
+<div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabelservdets">{% trans "Instance Tags" %}</h3>
+</div>
+<div class="modal-body" id="instDetsbody">
 
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+</div>
+</div>
 {% endblock %}
 {% block bottomblock %}
 <script type="text/javascript">
@@ -217,5 +275,38 @@ $(function() {
     load_data();
 });
 
+{% if user.is_superuser  %}
+	function showDetails(cluster, instance){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Instance Details: '+instance);
+		$( "#instDetsbody" ).load("{% url instance-popup %}/?cluster="+cluster+"&instance="+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+	
+	function showTags(cluster, instance){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Instance Tags: '+instance);
+		$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+	
+	function showNotify(cluster, instance){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Notify: '+instance);
+		$( "#instDetsbody" ).load("{% url notify %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+
+	function showLock(cluster, instance, action){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text(action + ': '+instance);
+		$( "#instDetsbody" ).load("{% url lock %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+{% endif %}
 </script>
 {% endblock %}
