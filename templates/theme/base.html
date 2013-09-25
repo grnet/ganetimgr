@@ -81,6 +81,11 @@ label.required { font-weight: bold; }
         description : '{% trans "From user" %} {{user}}{% block extraticketinfo %}{% endblock %}:\n',
         fullname : '{{user.get_full_name}}',
         email : '{{user.email}}',
+        {% if HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS %}
+        	{% for key, value in HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS.items %}
+        	'{{key}}':'{{value}}',
+        	{% endfor %}
+        {% endif %}
     }                  
 });
 		});

@@ -252,7 +252,9 @@ INSTANCE_ACTION_ACTIVE_DAYS = 7
 
 # If Jira is deployed it works soooo nicely... eg. https://jira.example.com/<jira_collector_plugin_location>
 HELPDESK_INTEGRATION_JAVASCRIPT_URL = "https://jira.example.com/<jira_collector_plugin_location>"
-
+HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = {
+                                          'key' : 'value' # eg. 'customfield_23123': '1stline'
+                                          }
 
 COLLECTD_URL = "http://stats.example.com"
 
