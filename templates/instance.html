@@ -154,6 +154,7 @@
 						{% endfor %}
 						
 						</td></tr>
+						{% endif %}
 					<tr><td class="">{% trans "Admin Options" %}</td><td>
 						<div class="btn-group">
                              <button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> {% trans "Options" %} <span class="caret"></span></button>
@@ -169,7 +170,6 @@
                              </ul>
                            </div>
 					</td></tr>
-					{% endif %}
     					{% if instance.application %}
     					<tr><td class="">{% trans "Application" %}</td><td><a href="{% url application-review instance.application.pk %}">#{{instance.application.pk}}</a></td></tr>
     					{% endif %}
