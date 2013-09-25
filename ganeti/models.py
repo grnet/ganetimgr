@@ -602,7 +602,8 @@ class Cluster(models.Model):
                                              start=False, ip_check=False,
                                              name_check=False,
                                              beparams=beparams,
-                                             tags=tags, osparams=osparams)
+                                             tags=tags, osparams=osparams,
+                                             wait_for_sync=False)
 
         self._lock_instance(name, reason=_("creating"), job_id=job_id)
         return job_id
