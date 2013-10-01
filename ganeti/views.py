@@ -1055,6 +1055,10 @@ def graph(request, cluster_slug, instance, graph_type, start=None, end=None):
         response = urllib2.urlopen(req)
     except urllib2.HTTPError:
         response = open(settings.NODATA_IMAGE, "r")
+    except urllib2.URLError:
+        response = open(settings.NODATA_IMAGE, "r")
+    except Exception:
+        response = open(settings.NODATA_IMAGE, "r")
     return HttpResponse(response.read(), mimetype="image/png")
 
 @login_required
