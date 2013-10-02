@@ -211,8 +211,8 @@
 	                     
 	         ]
 	} );
-		var filter = "{{usergroup}}"
-		oTable.fnFilter( filter, 7 );
+		var filter = '"{% url user-info type usergroup %}"';
+		oTable.fnFilter( filter, null, false, true, true, true);
 	});
 
 		function showDetails(cluster, instance){
