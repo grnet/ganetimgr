@@ -20,6 +20,14 @@ manage.py migrate
 manage.py createsuperuser
 run the watcher.py
 
+Migrating to v.1.2.3
+
+- Make sure to include HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS in settings.py.
+If you deploy Jira and want to set custom javascript parameters, set
+HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = { 'key' : 'value' # eg. 'customfield_23123': '1stline' }
+In any other case set HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = False
+
+======================================================================
 
 Migrating to v1.2.2
 

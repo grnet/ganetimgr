@@ -1,3 +1,31 @@
+1.2.3 RELEASE
+Bugfixing/Minor feature enhancements
+
+Requirements:
+	- Add the HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS in settings.py and set
+	a key,value pair. Read README.txt for details
+
+Fixes:
+	- Use filtering by user/group url to show exact matches
+	- Catch more graph fetch errors
+	- Fix an endif statement placement
+	- Handle cache exception with malformated object
+	- Cleanup console.log statements
+	- Add missing closing div. This closes #4334
+
+Functionality:
+
+	- Add stateSave to store search preferences in cookie
+	- Add disk size warning
+	- Add custom field support in collector. This closes #4323
+	- Add admin options in instance view for admins. This closes #4348
+	- Add nic_link in instance view for admins. This closes #4349
+	- Show cluster slug when user is admin. This one closes #4286
+	- Add wait for sync = False in instance creation
+	- Add support for ganeti 2.6.2 instance admin_state parsing
+
+===========
+
 1.2.2 RELEASE
 Bugfixing release
 
