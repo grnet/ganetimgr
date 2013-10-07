@@ -104,7 +104,7 @@ class CacheClass(BaseCache):
 
         return result
 
-    def get(self, key, default=None):
+    def get(self, key, default=None, version=None):
         """Retrieve a value from the cache.
         Returns unpicked value if key is found, ``None`` if not.
         """
