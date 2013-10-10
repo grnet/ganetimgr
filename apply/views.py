@@ -27,6 +27,7 @@ from django.template.context import RequestContext
 from django.template.loader import render_to_string, get_template
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.sites.models import Site
+from django.core.cache import cache
 
 from ganetimgr.apply.models import *
 from ganetimgr.apply.forms import *
@@ -83,6 +84,7 @@ def apply(request):
                                  _("Your request has been filed with id #%d and"
                                  " will be processed shortly.") %
                                  application.id)
+            
             return HttpResponseRedirect(urlresolvers.reverse("user-instances"))
         else:
             return render_to_response('apply.html', {'form': form},
@@ -140,6 +142,7 @@ def review_application(request, application_id):
                 messages.add_message(request, messages.INFO,
                                      "Application #%d accepted and submitted"
                                      " to %s" % (app.pk, application.cluster))
+            cache.delete('pendingapplications')
             return HttpResponseRedirect(urlresolvers.reverse("application-list"))
         else:
             return render_to_response('review.html',
