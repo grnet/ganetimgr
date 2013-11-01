@@ -37,6 +37,16 @@ from ganetimgr.settings import SERVER_EMAIL, EMAIL_SUBJECT_PREFIX
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
+from django.contrib.auth.decorators import user_passes_test
+
+
+def any_permission_required(*args):
+    def test_func(user):
+        for perm in args:
+            if user.has_perm(perm):
+                return True
+        return False
+    return user_passes_test(test_func)
 
 @login_required
 def apply(request):
@@ -91,7 +101,7 @@ def apply(request):
                                       context_instance=RequestContext(request))
 
 
-@permission_required("apply.change_instanceapplication")
+@any_permission_required("apply.change_instanceapplication", "apply.view_applications")
 def application_list(request):
     applications = InstanceApplication.objects.all()
     pending = applications.filter(status=STATUS_PENDING)
