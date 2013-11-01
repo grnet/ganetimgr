@@ -1,0 +1,78 @@
+<script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-switch.min.js"></script>
+
+<script>
+$(document).ready(function() {
+
+    
+	$("#lockapplybutton").click(function(){
+		var instance = $("#instanceisolateform").data('instance');
+		$.ajax({
+			url:"{% url isolate %}"+instance,
+			data:$("#instanceisolateform").serialize(),
+			type: "POST",
+			cache: false,
+			success:function(data){
+					try {
+						result = data.result;
+						if (typeof result === 'undefined'){
+							$('#instDetsbody').html(data);
+						}
+						else{
+							$('#instDets').modal('hide');
+							window.setTimeout('location.reload()', 3000);
+						}
+					}
+					catch (exception) {
+						$('#instDetsbody').html(data);
+					}			
+				}
+				});
+		return false;
+	});
+	
+	
+	
+});
+
+
+
+</script>
+
+<style type="text/css">
+th {
+	text-align: right;
+	padding-right: 0.5em;
+	vertical-align: top;
+}
+
+.help {
+	font-style: italic;
+
+}
+</style>
+
+<form method="POST" class="form-horizontal" id="instanceisolateform" data-instance="{{instance}}">
+                                         <fieldset>
+                                        {% csrf_token %}
+                                        {% if form.non_field_errors %}
+                                        <p class="error">
+                                            {{ form.non_field_errors}}
+                                        </p>
+                                        {% endif %}
+                                    <div class="control-group {% if form.tags.errors %} error {% endif %}">
+                                            <div class="controls make-switch" data-on="danger" data-off="success" data-on-label="<i class='icon-shield'></i>" 
+                                            		data-off-label="<i class='icon-ok-circle'></i>">
+                                                {{ form.isolate }}
+                                            </div>
+                                            </div>
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <a href="#" id="lockapplybutton" value="Save" class="btn">Save</a>
+                                            </div>
+                                        </div>
+                                        </fieldset>
+                                    </form>
+
+<input type='hidden' id='e1' style='width:300px' />
+

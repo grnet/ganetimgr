@@ -149,6 +149,7 @@ class Instance(object):
         self.ipv6s = []
         self.admin_view_only = False
         self.adminlock = False
+        self.isolate = False
         self.joblock = False
         self._update(info)
 
@@ -169,6 +170,7 @@ class Instance(object):
             app_pfx = "%s:application:" % GANETI_TAG_PREFIX
             serv_pfx = "%s:service:" % GANETI_TAG_PREFIX
             adminlock_tag = "%s:adminlock" % GANETI_TAG_PREFIX
+            isolate_tag = "%s:isolate" % GANETI_TAG_PREFIX
             if tag.startswith(group_pfx):
                 group = tag.replace(group_pfx,'')
                 if group not in group_cache:
@@ -217,6 +219,8 @@ class Instance(object):
                     self.services.append(serv_cache[serv])
             elif tag == adminlock_tag:
                 self.adminlock = True
+            elif tag == isolate_tag:
+                self.isolate = True
         if getattr(self, 'ctime', None):
             self.ctime = datetime.fromtimestamp(self.ctime)
         if getattr(self, 'mtime', None):
@@ -574,6 +578,14 @@ class Cluster(models.Model):
         job_id = self._client.DeleteInstanceTags(instance, tags)
         self._lock_instance(instance, reason="untagging", job_id=job_id)
         return job_id
+    
+    def migrate_instance(self, instance):
+        cache_key = self._instance_cache_key(instance)
+        cache.delete(cache_key)
+        job_id = self._client.MigrateInstance(instance)
+        self._lock_instance(instance, reason="migrating", job_id=job_id)
+        return job_id
+        
 
     def create_instance(self, name=None, disk_template=None, disks=None,
                         nics=None, os=None, memory=None, vcpus=None, tags=None,

@@ -328,6 +328,9 @@ def generate_json(instance, user):
     if i.adminlock:
         inst_dict['adminlock'] = True
     
+    if i.isolate:
+        inst_dict['isolate'] = True
+    
     # When renaming disable clicking on instance for everyone
     if hasattr(i,'admin_lock'):
         if i.admin_lock:
@@ -577,11 +580,10 @@ def reboot(request, cluster_slug, instance):
 
 @csrf_exempt
 @login_required
-def lock(request, instance, action):
+def lock(request, instance):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         if instance:
             instance = Instance.objects.get(name=instance)
-        action = action
         instance_adminlock = instance.adminlock
         if request.method == 'POST':
             form = lockForm(request.POST)
@@ -608,7 +610,43 @@ def lock(request, instance, action):
                 )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
+
+@csrf_exempt
+@login_required
+def isolate(request, instance):
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+        if instance:
+            instance = Instance.objects.get(name=instance)
+        instance_isolate = instance.isolate
+        if request.method == 'POST':
+            form = isolateForm(request.POST)
+            if form.is_valid():
+                isolate = form.cleaned_data['isolate']
+                if isolate == True:
+                    instance.cluster.tag_instance(instance.name, ["%s:isolate" %GANETI_TAG_PREFIX])
+                    instance.cluster.migrate_instance(instance.name)
+                if isolate == False:
+                    instance.cluster.untag_instance(instance.name, ["%s:isolate" %GANETI_TAG_PREFIX])
+                    instance.cluster.migrate_instance(instance.name)
+                res = {'result':'success'}
+                return HttpResponse(json.dumps(res), mimetype='application/json')
+            else:
+                return render_to_response('tagging/isolate.html',
+                        {
+                        'form': form, 'instance': instance
+                    }, 
+                    context_instance=RequestContext(request)
+                    )
+        elif request.method == 'GET':
+            form = isolateForm(initial={'isolate': instance_isolate})
+            return render_to_response('tagging/isolate.html', {
+                    'form': form, 'instance': instance}, 
+                    context_instance=RequestContext(request)
+                )
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
     
+
 class InstanceConfigForm(forms.Form):
     nic_type = forms.ChoiceField(label=ugettext_lazy("Network adapter model"),
                                  choices=(('paravirtual', 'Paravirtualized'),

@@ -35,6 +35,9 @@ class tagsForm(forms.Form):
 class lockForm(forms.Form):
     lock = forms.BooleanField(required=False)
 
+class isolateForm(forms.Form):
+    isolate = forms.BooleanField(required=False)
+
 class InstanceRenameForm(forms.Form):
     hostname = forms.CharField(help_text=ugettext_lazy("A fully qualified domain name,"
                                          " e.g. host.domain.com"), label=ugettext_lazy("Hostname"))
