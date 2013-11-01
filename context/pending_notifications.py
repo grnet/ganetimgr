@@ -22,9 +22,13 @@ from django.core.cache import cache
 
 def notify(request):
     res = {}
-    if (request.user and
-        request.user.has_perm("apply.change_instanceapplication")):
-        res.update(can_handle_applications=True)
+    if request.user:
+        if request.user.has_perm("apply.change_instanceapplication"):
+            res.update(can_handle_applications=True)
+        elif request.user.has_perm("apply.view_applications"):
+            res.update(can_view_applications=True)
+        else:
+            return res
         cres = cache.get('pendingapplications')
         if cres is None:
             pend = InstanceApplication.objects.filter(status=STATUS_PENDING)
