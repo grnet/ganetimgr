@@ -143,7 +143,7 @@ label.required { font-weight: bold; }
             </ul>
         </li>
                     {% if user.is_authenticated %}
-                    <li id="fat-menu" class="dropdown hidden-phone">
+                    <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-user"></i> {{user}}
                             <i class="icon-caret-down"></i>
@@ -173,9 +173,9 @@ label.required { font-weight: bold; }
                 <option value="{% url user-instances %}" selected="selected">{% trans "Home" %}</option>
                                
                 <option value="{% url apply %}" >{% trans "Create Instance" %}</option>
-            {% if can_handle_applications %}
+            {% if can_handle_applications or can_view_applications %}
 						<option value="{% url application-list %}">{% trans "Applications" %}{% if pending_count %}({{ pending_count }}){% endif %}</option>
-{% endif %}
+			{% endif %}
             {% if user.is_superuser %}
                 <option value="{% url admin:index %}" >{% trans "Admin" %}</option>
                 
@@ -189,7 +189,7 @@ label.required { font-weight: bold; }
         <ul class="nav nav-tabs">
             <li {% block homepagetop %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>{% trans "Home" %}</span></a></li>
             <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="icon-plus-sign"></i> <span>{% trans "Create Instance" %}</span></a></li>
-            {% if can_handle_applications %}
+            {% if can_handle_applications or can_view_applications %}
 						<li {% block applicationstop %}{% endblock %}><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
 {% endif %}
             {% if user.is_superuser %}
@@ -210,7 +210,7 @@ label.required { font-weight: bold; }
             {% endif %}
             <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
             {% if user.is_superuser or perms.ganeti.view_instances %}
-            {% if can_handle_applications %}
+            {% if can_handle_applications or can_view_applications %}
 						<li {% block applications %}{% endblock %}><a href="{% url application-list %}"><i class="icon-inbox"></i> <span>{% trans "Applications" %}{% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a></li>
 			{% endif %}
             <li {% block owners %}{% endblock %}><a href="{% url instance_owners %}"><i class="icon-briefcase"></i> <span>{% trans "Instance Owners" %}</span></a></li>
@@ -265,7 +265,7 @@ label.required { font-weight: bold; }
 <footer class="footer">
       <div class="container" id="footcontainer">
         
-	<div style="padding-top: 10px;">{% trans "This is a service provided by" %} <a target="_blank" href="//noc.grnet.gr">GRNET NOC</a> 
+	<div style="padding-top: 10px;">{% trans "This is a service provided by" %} <a target="_blank" href="//noc.grnet.gr">GRNET NOC</a>
 	
 	<a target="_blank" href="//facebook.com/noc.grnet.gr"><font style="color:#3b5998; font-size: 30px"><i class="icon-facebook-sign"></i></font></a>  
 	
