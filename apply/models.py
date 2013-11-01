@@ -106,6 +106,12 @@ class InstanceApplication(models.Model):
                               default=generate_cookie)
     filed = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        permissions = (
+            ("view_applications", "Can view all applications"),
+        )
+
 
     def __unicode__(self):
         return self.hostname
