@@ -92,7 +92,7 @@ $(document).ready( function(){
 <tbody>
 {% for app in pending %}
 <tr>
-    <td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td>
+    <td>{% if perms.apply.change_instanceapplication %}<a href="{% url application-review app.pk %}">{{ app.hostname }}</a>{% else %}{{ app.hostname }}{% endif %}</td>
     <td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td>
     <td>{{ app.network|default_if_none:"&mdash;" }}</td>
     <td><span style="display:none">{{ app.filed|date:"U" }}</span>{{ app.filed }}</td>
@@ -121,7 +121,7 @@ $(document).ready( function(){
 <tbody>
 {% for app in completed %}
 <tr>
-	<td><a href="{% url application-review app.pk %}">{{ app.hostname }}</a></td>
+	<td>{% if perms.apply.change_instanceapplication %}<a href="{% url application-review app.pk %}">{{ app.hostname }}</a>{% else %}{{ app.hostname }}{% endif %}</td>
 	<td>{{ app.applicant }}</td>
 	<td>{{ app.memory }}</td>
 	<td>{{ app.vcpus }}</td>
