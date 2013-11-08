@@ -150,6 +150,7 @@ class Instance(object):
         self.admin_view_only = False
         self.adminlock = False
         self.isolate = False
+        self.whitelistip = None
         self.joblock = False
         self._update(info)
 
@@ -171,6 +172,7 @@ class Instance(object):
             serv_pfx = "%s:service:" % GANETI_TAG_PREFIX
             adminlock_tag = "%s:adminlock" % GANETI_TAG_PREFIX
             isolate_tag = "%s:isolate" % GANETI_TAG_PREFIX
+            whitelist_pfx = "%s:whitelist_ip:" % GANETI_TAG_PREFIX
             if tag.startswith(group_pfx):
                 group = tag.replace(group_pfx,'')
                 if group not in group_cache:
@@ -221,6 +223,8 @@ class Instance(object):
                 self.adminlock = True
             elif tag == isolate_tag:
                 self.isolate = True
+            elif tag.startswith(whitelist_pfx):
+                self.whitelistip = tag.replace(whitelist_pfx,'')
         if getattr(self, 'ctime', None):
             self.ctime = datetime.fromtimestamp(self.ctime)
         if getattr(self, 'mtime', None):
