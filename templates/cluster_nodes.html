@@ -28,12 +28,12 @@ $(document).ready( function(){
             "bDeferRender": true,
             "bInfo": true,
             "bAutoWidth": true,
+            "oSearch": {"bSmart": false, "bRegex":true},
             "oLanguage": {
             	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> nodes'
             },
             "sPaginationType": "bootstrap",
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-            "sPaginationType": "bootstrap",
 			"aoColumns": [ {"bSearchable": true,"bSortable": true },
 						{"bSearchable": true,"bSortable": true, "sType":"dataattr-string"},
 						{"bSearchable": true,"bSortable": true, "sType":"dataattr-string"},
@@ -46,6 +46,52 @@ $(document).ready( function(){
 	} );
 	oTable.fnDraw();
 	
+	    var reg_exp = '';
+    var checkboxs = document.getElementsByName('status_filter');
+    for (var i = 0, inp; inp = checkboxs[i]; i++) {
+        checkCookie = readCookie("cookie_" + inp.value);
+        if (checkCookie) {
+            if (checkCookie == 'true') {
+                $(inp).addClass('active');
+            }
+            else {
+                $(inp).removeClass('active');
+            }
+        }
+        
+        if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
+            reg_exp = reg_exp + inp.value + '|';
+        }
+        
+    }
+	if (reg_exp == '') {
+            reg_exp = '|'
+        }
+	console.log(reg_exp.slice(0, -1))
+	
+    oTable.fnFilter(reg_exp.slice(0, -1), 5, true, false, false);
+    
+    
+    $('button[name="status_filter"]').click(function(){
+    	var reg_exp = '';
+        var checkboxs = document.getElementsByName('status_filter');
+        $(this).button('toggle');
+        for (var i = 0, inp; inp = checkboxs[i]; i++) {
+            if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
+                reg_exp = reg_exp + inp.value + '|';
+            }
+            createCookie("cookie_" + inp.value, $(inp).hasClass('active'), 30);
+        }
+        //passing an empty string will result in no filter
+        //thus, it must be set to something that will not exist in the column
+        if (reg_exp == '') {
+            reg_exp = '|'
+        }
+        oTable.fnFilter(reg_exp.slice(0, -1), 5, true, false, false);
+        console.log(reg_exp.slice(0, -1))
+        return false;
+    });
+    
 
 });
 
@@ -72,6 +118,21 @@ $(document).ready( function(){
         <div class="row-fluid">
             <h2>{% trans "Nodes" %}
             </h2>
+
+<div class="row-fluid" style="padding-top:10px;">
+
+<div id='itoggle' class="span12" style="text-align:center;">
+   <div class="btn-group" data-toggle="buttons-checkbox">
+    <button type="button" class="btn" name="status_filter" value="Master" id="show_master"><span class="badge badge-success">Master {{statuses.master}}</span></button>
+    <button type="button" class="btn" name="status_filter" value="Regular" id="show_regular"><span class="badge badge">Regular {{statuses.regular}}</span></button>
+    <button type="button" class="btn" name="status_filter" value="Candidate" id="show_candidate"><span class="badge badge-info">Candidate {{statuses.candidate}}</span></button>
+    <button type="button" class="btn" name="status_filter" value="Drained" id="show_drained"><span class="badge badge-warning">Drained {{statuses.drained}}</span></button>
+    <button type="button" class="btn" name="status_filter" value="Offline" id="show_offline"><span class="badge badge-important">Offline {{statuses.offline}}</span></button>
+    
+    </div>
+			</div>
+
+</div>
 
 <table class="table table-first-column-number data-table display full" id="vm_instance_table">
 <thead>
