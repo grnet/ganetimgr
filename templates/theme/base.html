@@ -65,6 +65,7 @@ label.required { font-weight: bold; }
     <!-- Le fav and touch icons -->
 
     <script src="/static/js/jquery-1.10.1.min.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
      {% if user.is_authenticated and HELPDESK_INTEGRATION_JAVASCRIPT_URL %}
 		<script type="text/javascript" src="{{HELPDESK_INTEGRATION_JAVASCRIPT_URL}}"></script>
