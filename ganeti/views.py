@@ -44,6 +44,7 @@ from django.core.mail import send_mail, mail_managers
 
 from time import sleep, mktime
 import datetime
+from ipaddr import *
 
 try:
     import json
@@ -51,6 +52,13 @@ except ImportError:
     import simplejson as json
 
 from ganetimgr.settings import GANETI_TAG_PREFIX
+
+from django.contrib.messages import constants as msgs
+
+MESSAGE_TAGS = {
+    msgs.ERROR: '',
+    50: 'danger',
+}
 
 RAPI_TIMEOUT = settings.RAPI_TIMEOUT
 
@@ -671,6 +679,8 @@ class InstanceConfigForm(forms.Form):
     use_localtime = forms.BooleanField(label=ugettext_lazy("Hardware clock uses local time"
                                              " instead of UTC"),
                                        required=False)
+    whitelist_ip = forms.CharField(required=False,
+                                       label=ugettext_lazy("Allow From"))
 
     def clean_cdrom_image_path(self):
         data = self.cleaned_data['cdrom_image_path']
@@ -692,6 +702,26 @@ class InstanceConfigForm(forms.Form):
                     socket.setdefaulttimeout(oldtimeout)
                     raise forms.ValidationError(_('Invalid URL'))
         return data
+    
+    def clean_whitelist_ip(self):
+        data = self.cleaned_data['whitelist_ip']
+        if data:
+            try:
+                address = IPNetwork(data)
+                if address.version == 4:
+                    if address.prefixlen < settings.WHITELIST_IP_MAX_SUBNET_V4:
+                        error = _("Currently no prefix lengths < %s are allowed") %settings.WHITELIST_IP_MAX_SUBNET_V4
+                        raise forms.ValidationError(error)
+                if address.version == 6:
+                    if address.prefixlen < settings.WHITELIST_IP_MAX_SUBNET_V6:
+                        error = _("Currently no prefix lengths < %s are allowed") %settings.WHITELIST_IP_MAX_SUBNET_V6
+                        raise forms.ValidationError(error)
+                if address.is_unspecified:
+                    raise forms.ValidationError('Address is unspecified')
+            except ValueError:
+                raise forms.ValidationError(_('%(address)s is not a valid address') % { 'address': data})
+                   
+        return data
 
     
 @login_required
@@ -712,17 +742,35 @@ def instance(request, cluster_slug, instance):
                     # Remove this, we don't want them to be able to read local files
                     del configform.cleaned_data['cdrom_image_path']
             data = {}
+            whitelistip = None
             for key, val in configform.cleaned_data.items():
                 if key == "cdrom_type":
                     continue
+                if key == "whitelist_ip":
+                    whitelistip = val
+                    if len(val) == 0:
+                        whitelistip = None
+                    continue
                 data[key] = val
             instance.set_params(hvparams=data)
+            if instance.whitelistip and whitelistip is None:
+                instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
+                instance.cluster.migrate_instance(instance.name)
+            if whitelistip:
+                instance.cluster.tag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, whitelistip)])
+                instance.cluster.migrate_instance(instance.name)
+            
+                
 
     else:
         if instance.hvparams['cdrom_image_path']:
             instance.hvparams['cdrom_type'] = 'iso'
         else:
             instance.hvparams['cdrom_type'] = 'none'
+        if instance.whitelistip:
+            instance.hvparams['whitelist_ip'] = instance.whitelistip
+        else:
+            instance.hvparams['whitelist_ip'] = ''
         configform = InstanceConfigForm(instance.hvparams)
     instance.cpu_url = reverse(graph, args=(cluster.slug, instance.name,'cpu-ts'))
     instance.net_url = reverse(graph, args=(cluster.slug, instance.name,'net-ts'))
@@ -732,6 +780,12 @@ def instance(request, cluster_slug, instance):
             instance.netw.append("%s"%(instance.nic_links[nic_i]))
         else:
             instance.netw.append("%s@%s"%(instance.nic_ips[nic_i],instance.nic_links[nic_i]))
+    if instance.isolate and instance.whitelistip is None:
+        messages.add_message(request, messages.ERROR,
+                                 "Your instance is isolated from the network and" +
+                                 " you have not set an \"Allowed From\" address." +
+                                 " To access your instance from a specific network range," +
+                                 " you can set it via the instance configuration form")
     return render_to_response("instance.html",
                               {'cluster': cluster,
                                'instance': instance,
