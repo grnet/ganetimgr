@@ -899,8 +899,25 @@ def get_clusternodes(request):
                              ", ".join(bad_nodes))
             cache.set('badnodes', bad_nodes, 90)
         if settings.SERVER_MONITORING_URL:
-            servermon_url = settings.SERVER_MONITORING_URL 
-        return render_to_response('cluster_nodes.html', {'nodes': nodes, 'servermon':servermon_url},
+            servermon_url = settings.SERVER_MONITORING_URL
+        status_dict = {}
+        status_dict['offline'] = 0
+        status_dict['regular'] = 0
+        status_dict['drained'] = 0
+        status_dict['master'] = 0
+        status_dict['candidate'] = 0
+        for n in nodes:
+            if n['role'] == 'O':
+                status_dict['offline'] += 1
+            if n['role'] == 'D':
+                status_dict['drained'] += 1
+            if n['role'] == 'R':
+                status_dict['regular'] += 1
+            if n['role'] == 'C':
+                status_dict['candidate'] += 1
+            if n['role'] == 'M':
+                status_dict['master'] += 1
+        return render_to_response('cluster_nodes.html', {'nodes': nodes, 'statuses':status_dict, 'servermon':servermon_url},
                                   context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect(reverse('user-instances'))
