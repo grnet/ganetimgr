@@ -149,13 +149,20 @@ class InstanceApplication(models.Model):
         if self.organization:
             tags.append("%s:org:%s" % (GANETI_TAG_PREFIX,
                                        self.organization.tag))
-
-        nic_dict = dict(link=self.network.link,
-                        mode=self.network.mode)
+        uses_gnt_network = self.network.cluster.use_gnt_network
+        
+        nic_dict = dict(mode=self.network.mode)
+        
+        if uses_gnt_network:
+            nic_dict.update(network=self.network.link)
+            if self.network.mode == 'routed':
+                del nic_dict['mode']
+        else:
+            nic_dict.update(link=self.network.link)
 
         if self.network.mode == "routed":
             nic_dict.update(ip="pool")
-
+        
         os = OPERATING_SYSTEMS[self.operating_system]
         provider = os["provider"]
         osparams = {}
