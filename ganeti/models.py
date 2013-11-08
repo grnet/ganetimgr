@@ -329,6 +329,9 @@ class Cluster(models.Model):
                                                 " on this cluster using the"
                                                 " admin interface")
     default_disk_template = models.CharField(max_length=255, default="plain")
+    use_gnt_network = models.BooleanField(default=False,
+                                          verbose_name="Cluster uses gnt-network",
+                                      help_text="Set to True only if you use gnt-network.")
 
     class Meta:
         permissions = (
@@ -500,7 +503,11 @@ class Cluster(models.Model):
             except ZeroDivisionError:
                 '''this is the case where the node is offline and reports none, thus it is 0'''
                 info['disk_used'] = 0
-            info['shared_storage'] = self.get_cluster_info()['shared_file_storage_dir'] if self.get_cluster_info()['shared_file_storage_dir'] else None
+            info['shared_storage'] = False
+            if self.default_disk_template in ['drbd', 'plain']:
+                info['shared_storage'] = False
+            if self.default_disk_template == 'sharedfile':
+                info['shared_storage'] = True
             cache.set("cluster:%s:node:%s" % (self.slug, node), info, 180)
         return info
 
