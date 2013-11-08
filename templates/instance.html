@@ -205,21 +205,121 @@
         <div class="row-fluid">
     <div class="row-fluid">
     <h2>{% trans "Configuration Options" %}</h2>
-        <form method="post" align="center" id="conf_form" class="form">
-{% csrf_token %}
-<table class="table">
-<thead>
+
+
+<form method="POST" class="form-horizontal" id="conf_form">
+	<table class="table">
+       <thead>
                     <tr>
                       <th class="span12" colspan="2">{% trans "Configuration" %}</th>
                     </tr>
                 </thead>
-{{ configform.as_table }}
-<tr><td colspan="2" style="text-align:center; padding: 5px;" >
-<button class="btn btn-primary" id="update" type="Submit" value="Update" >{% trans "Update" %}</button></td></tr>
+<tr>
+	<td>
+				{% csrf_token %}
+				
 
+                  <div class="control-group {% if configform.nic_type.errors %}error{% endif %}">
+	                <label class="control-label {% if configform.nic_type.field.required %}required{% endif %}" for="id_applier">
+	                	{{ configform.nic_type.label }}
+	                </label>
+                   <div class="controls">{{ configform.nic_type }}
+                    {% if configform.nic_type.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ configform.nic_type.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                    <span class="help-block"> {{ configform.nic_type.help_text }}</span>
+                </div>
+                
+                <div class="control-group {% if configform.disk_type.errors %}error{% endif %}">
+	                <label class="control-label {% if configform.disk_type.field.required %}required{% endif %}" for="id_applier">{{ configform.disk_type.label }}</label>
+                   <div class="controls">{{ configform.disk_type }}
+                    {% if configform.disk_type.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ configform.disk_type.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                    <span class="help-block"> {{ configform.disk_type.help_text }}</span>
+                </div>
+                
+                <div class="control-group {% if configform.boot_order.errors %}error{% endif %}">
+	                <label class="control-label {% if configform.boot_order.field.required %}required{% endif %}" for="id_applier">{{ configform.boot_order.label }}</label>
+                   <div class="controls">{{ configform.boot_order }}
+                    {% if configform.boot_order.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ configform.boot_order.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                    <span class="help-block"> {{ configform.boot_order.help_text }}</span>
+                </div>
+                
+                <div class="control-group {% if configform.cdrom_type.errors %}error{% endif %}">
+	                <label class="control-label {% if configform.cdrom_type.field.required %}required{% endif %}" for="id_applier">{{ configform.cdrom_type.label }}</label>
+                   <div class="controls">{{ configform.cdrom_type }}
+                    {% if configform.cdrom_type.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ configform.cdrom_type.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                    <span class="help-block"> {{ configform.cdrom_type.help_text }}</span>
+                </div>
+                
+                <div class="control-group {% if configform.cdrom_image_path.errors %}error{% endif %}">
+	                <label class="control-label {% if configform.cdrom_image_path.field.required %}required{% endif %}" for="id_applier">{{ configform.cdrom_image_path.label }}</label>
+                   <div class="controls">{{ configform.cdrom_image_path }}
+                    {% if configform.cdrom_image_path.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ configform.cdrom_image_path.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                    <span class="help-block"> {{ configform.cdrom_image_path.help_text }}</span>
+                </div>
+                
+                <div class="control-group {% if configform.use_localtime.errors %}error{% endif %}">
+	                <label class="control-label {% if configform.use_localtime.field.required %}required{% endif %}" for="id_applier">{{ configform.use_localtime.label }}</label>
+                   <div class="controls">{{ configform.use_localtime }}
+                    {% if configform.use_localtime.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ configform.use_localtime.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                    <span class="help-block"> {{ configform.use_localtime.help_text }}</span>
+                </div>
+                
+                
+                <div class="control-group {% if configform.whitelist_ip.errors %}error{% endif %}" {% if not instance.isolate %}style="display:none;"{% endif %}>
+	                <label class="control-label {% if configform.whitelist_ip.field.required %}required{% endif %}" for="id_applier">{{ configform.whitelist_ip.label }}</label>
+                   <div class="controls">{{ configform.whitelist_ip }}
+                    {% if configform.whitelist_ip.errors %}
+                    <span class="help-inline" style="clear:both;">
+                        {{ configform.whitelist_ip.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    </div>
+                    <span class="help-block"> {{ configform.whitelist_ip.help_text }}</span>
+                </div>
+                
+                				
+				<div class="control-group">
+			<div class="controls">
+			<button class="btn btn-primary" id="update" type="submit" value="Update" >{% trans "Update" %}</button>
+			</div>
+			</div>
+
+
+</td>
+		
+</tr>
 </table>
-
 </form>
+
         </div>
         </div>
        
