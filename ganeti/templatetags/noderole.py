@@ -23,7 +23,7 @@ def noderole(value):
     if value == "M":
         return "Master"
     if value == "C":
-        return "Master Candidate"
+        return "Candidate"
     if value == "R":
         return "Regular"
     if value == "D":
