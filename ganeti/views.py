@@ -720,7 +720,7 @@ class InstanceConfigForm(forms.Form):
                     raise forms.ValidationError('Address is unspecified')
             except ValueError:
                 raise forms.ValidationError(_('%(address)s is not a valid address') % { 'address': data})
-                   
+            data = address.compressed
         return data
 
     
