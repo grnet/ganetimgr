@@ -151,14 +151,11 @@ class InstanceApplication(models.Model):
                                        self.organization.tag))
         uses_gnt_network = self.network.cluster.use_gnt_network
         
-        nic_dict = dict(mode=self.network.mode)
+        nic_dict = dict(link=self.network.link,
+                        mode=self.network.mode)
         
-        if uses_gnt_network:
-            nic_dict.update(network=self.network.link)
-            if self.network.mode == 'routed':
-                del nic_dict['mode']
-        else:
-            nic_dict.update(link=self.network.link)
+        if self.network.mode == 'routed' & uses_gnt_network:
+            nic_dict = dict(network=self.network.link)
 
         if self.network.mode == "routed":
             nic_dict.update(ip="pool")
