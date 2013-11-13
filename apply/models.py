@@ -154,7 +154,7 @@ class InstanceApplication(models.Model):
         nic_dict = dict(link=self.network.link,
                         mode=self.network.mode)
         
-        if self.network.mode == 'routed' & uses_gnt_network:
+        if ((self.network.mode == 'routed') and (uses_gnt_network)):
             nic_dict = dict(network=self.network.link)
 
         if self.network.mode == "routed":
