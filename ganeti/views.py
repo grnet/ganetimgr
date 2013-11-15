@@ -680,7 +680,8 @@ class InstanceConfigForm(forms.Form):
                                              " instead of UTC"),
                                        required=False)
     whitelist_ip = forms.CharField(required=False,
-                                       label=ugettext_lazy("Allow From"))
+                                       label=ugettext_lazy("Allow From"),
+                                       help_text="If isolated, allow access from v4/v6 address/network")
 
     def clean_cdrom_image_path(self):
         data = self.cleaned_data['cdrom_image_path']
@@ -757,11 +758,12 @@ def instance(request, cluster_slug, instance):
                 instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
                 instance.cluster.migrate_instance(instance.name)
             if whitelistip:
+                if instance.whitelistip:
+                    instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
                 instance.cluster.tag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, whitelistip)])
                 instance.cluster.migrate_instance(instance.name)
-            
-                
-
+            # Prevent form re-submission via browser refresh             
+            return HttpResponseRedirect(reverse('instance-detail',kwargs={'cluster_slug':cluster_slug, 'instance': instance}))
     else:
         if instance.hvparams['cdrom_image_path']:
             instance.hvparams['cdrom_type'] = 'iso'
