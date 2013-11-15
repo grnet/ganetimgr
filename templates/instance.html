@@ -294,13 +294,18 @@
                 </div>
                 
                 
-                <div class="control-group {% if configform.whitelist_ip.errors %}error{% endif %}" {% if not instance.isolate %}style="display:none;"{% endif %}>
+                <div class="control-group {% if configform.whitelist_ip.errors %}error{% endif %} {% if instance.isolate and not instance.whitelistip %}error{% endif %}" {% if not instance.isolate %}style="display:none;"{% endif %}>
 	                <label class="control-label {% if configform.whitelist_ip.field.required %}required{% endif %}" for="id_applier">{{ configform.whitelist_ip.label }}</label>
                    <div class="controls">{{ configform.whitelist_ip }}
                     {% if configform.whitelist_ip.errors %}
                     <span class="help-inline" style="clear:both;">
                         {{ configform.whitelist_ip.errors|join:", " }}
                     </span>
+                    {% endif %}
+                    {% if instance.isolate and not instance.whitelistip %}
+                    	<span class="help-inline" style="clear:both;">
+                    		<span class="badge badge-important">{% trans "!" %}{{instance.whitelist_ip}}</span>
+                    	</span>
                     {% endif %}
                     </div>
                     <span class="help-block"> {{ configform.whitelist_ip.help_text }}</span>
@@ -360,6 +365,7 @@
 <script type="text/javascript">
 var polltimer;
 var timer = 2500;
+var state = "show";
 var load_data = function () {
         $.ajax({
             type: 'GET',
@@ -369,8 +375,12 @@ var load_data = function () {
                 $('#actions_container').html(data);
 				if ($('#show_no_actions').size()==1){
 					$('#conf_form').hide();
+					state = "hide";
 				}else if ($('#show_no_actions').size()==0){
 					$('#conf_form').show();
+					if (state == "hide"){
+						window.setTimeout('location.reload()', 500);
+					}
 				}
 				$("#status").html($("#instance_status").html());
                 polltimer = setTimeout(load_data, timer);
