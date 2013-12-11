@@ -52,12 +52,13 @@ Excellent!
 
 Platform Setup
 --------------
-Get the source::
+Get the source and checkout to latest stable::
 
     mkdir /srv/www/
     cd /srv/www/
     git clone https://code.grnet.gr/git/ganetimgr
     cd ganetimgr
+    git checkout stable
 
 Create a settings file for the django application::
 
