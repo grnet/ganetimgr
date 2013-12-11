@@ -20,6 +20,14 @@ manage.py migrate
 manage.py createsuperuser
 run the watcher.py
 
+Migrating to v.1.3.0
+
+- Set the WHITELIST_IP_MAX_SUBNET_V4/V6 to desired max 
+	whitelist IP subnets in settings.py
+- Perform south migration
+
+======================================================================
+
 Migrating to v.1.2.3
 
 - Make sure to include HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS in settings.py.
