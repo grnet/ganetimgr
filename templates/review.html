@@ -229,7 +229,7 @@ textarea{
 	                <label class="control-label required" for="id_applier">
 	                	{{ appform.hostname.label }}
 	                </label>
-                   <div class="controls padcontrol">{{ application.hostname }}
+                   <div class="controls padcontrol">{% if application.cluster.slug %}<a href="{% url instance-detail cluster_slug=application.cluster.slug instance=application.hostname %}">{{ application.hostname }}</a>{% else %}{{ application.hostname }}{% endif %}
                    
                     </div>
                 </div>
