@@ -31,6 +31,7 @@ Functionality:
 	- Add a status dict to count node roles
 	- Add services indicator starting with email icon. This closes #4653
 	- Link application hostname with instance view. This closes #4680
+	- Add node in vms and instance view for admin
 	===========
 
 1.2.3 RELEASE
