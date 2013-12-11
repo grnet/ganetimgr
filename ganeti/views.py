@@ -303,6 +303,7 @@ def generate_json(instance, user):
     inst_dict['name'] =  i.name
     if user.is_superuser or user.has_perm('ganeti.view_instances'):
         inst_dict['cluster'] = i.cluster.slug
+        inst_dict['pnode'] = i.pnode
     else:
         inst_dict['cluster'] = i.cluster.description
     inst_dict['memory'] = memsize(i.beparams['memory'])

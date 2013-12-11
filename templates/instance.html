@@ -128,6 +128,9 @@
                 <tbody>
 					<tr><td class="">{% trans "Status" %}</td><td id="status"></td></tr>
 					<tr><td class="">{% trans "Cluster" %}</td><td>{% if user.is_superuser or perms.ganeti.view_instances %}{{ instance.cluster.slug }}{% else %}{{ instance.cluster.description }}{% endif %}</td></tr>
+					{% if user.is_superuser or perms.ganeti.view_instances %}
+					<tr><td class="">{% trans "Node" %}</td><td>{{instance.pnode}}</td></tr>
+					{% endif %}
 					<tr><td class="">{% trans "Memory" %}</td><td>{{ instance.beparams.memory|memsize }}</td></tr>
 					<tr><td class="">{% trans "CPUs" %}</td><td>{{ instance.beparams.vcpus }}</td></tr>
 					<tr><td class="">Hard disk{{ instance.disk_sizes|pluralize }}</td><td>{{ instance.disk_sizes|disksizes|join:", " }}</td></tr>
@@ -380,7 +383,7 @@ var load_data = function () {
 				}else if ($('#show_no_actions').size()==0){
 					$('#conf_form').show();
 					if (state == "hide"){
-						window.setTimeout('location.reload()', 500);
+						window.setTimeout('location.reload()', 800);
 					}
 				}
 				$("#status").html($("#instance_status").html());
