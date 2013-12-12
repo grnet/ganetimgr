@@ -89,6 +89,12 @@ and the superuser::
 
     ./manage.py createsuperuser
 
+.. attention::
+   If installing for the first time do not forget to copy templates/analytics.html.dist 
+   to templates/analytics.html. Set your prefered (we suggest piwik) analytics inclussion 
+   script in templates/analytics.html or leave the file empty if no analytics 
+   is desired/available.
+
 Run the watcher.py::
 
     mkdir /var/log/ganetimgr
@@ -145,7 +151,7 @@ If you visit your webserver's address you should see ganetimgr welcome page
 Now it's time to through the :doc:`Admin guide <admin>` to setup your application.
 
 Administration
-===========================
+==============
 
 .. toctree::
    :maxdepth: 2

@@ -20,6 +20,11 @@ manage.py migrate
 manage.py createsuperuser
 run the watcher.py
 
+If installing for the first time do not forget to copy templates/analytics.html.dist 
+to templates/analytics.html. Set your prefered (we use piwik) analytics inclussion 
+script in templates/analytics.html or leave the file empty if no analytics 
+is desired/available.
+
 Migrating to v.1.3.0
 
 - Set the WHITELIST_IP_MAX_SUBNET_V4/V6 to desired max 
