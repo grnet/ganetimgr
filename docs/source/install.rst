@@ -41,6 +41,7 @@ Get the source::
     cd /srv/www/
     git clone https://code.grnet.gr/git/ganetimgr
     cd ganetimgr
+    git checkout wheezy
 
 Create a settings file for the django application::
 
