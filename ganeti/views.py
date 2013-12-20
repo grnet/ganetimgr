@@ -352,8 +352,9 @@ def generate_json(instance, user):
                 del inst_dict['name_href']
             except KeyError:
                 pass
-    if i.hvparams['cdrom_image_path'] and i.hvparams['boot_order'] == 'cdrom':
-         inst_dict['cdrom'] = True
+    if 'cdrom_image_path' in i.hvparams.keys():
+        if i.hvparams['cdrom_image_path'] and i.hvparams['boot_order'] == 'cdrom':
+            inst_dict['cdrom'] = True
     inst_dict['nic_macs'] = ', '.join(i.nic_macs)
     if user.is_superuser or user.has_perm('ganeti.view_instances'):
         inst_dict['nic_links'] = ', '.join(i.nic_links)
@@ -766,8 +767,11 @@ def instance(request, cluster_slug, instance):
             # Prevent form re-submission via browser refresh             
             return HttpResponseRedirect(reverse('instance-detail',kwargs={'cluster_slug':cluster_slug, 'instance': instance}))
     else:
-        if instance.hvparams['cdrom_image_path']:
-            instance.hvparams['cdrom_type'] = 'iso'
+        if 'cdrom_image_path' in instance.hvparams.keys():
+            if instance.hvparams['cdrom_image_path']:
+                instance.hvparams['cdrom_type'] = 'iso'
+            else:
+                instance.hvparams['cdrom_type'] = 'none'
         else:
             instance.hvparams['cdrom_type'] = 'none'
         if instance.whitelistip:
