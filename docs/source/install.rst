@@ -35,6 +35,18 @@ and install packages::
     apt-get install gunicorn=0.12.2-2
     apt-get install python-gevent=0.13.0-1
 
+If you want to use all the features of ganetimgr you will need to install our packages of ganeti-instance-image and ganeti::
+
+    apt-get install ganeti-instance-image
+    apt-get install ganeti=2.8.1-1~bpo70+httpboot
+
+And finally create an operating system image for ganeti-instance-image. You can download an image of debian wheezy from us::
+
+    wget http://repo.noc.grnet.gr/debian-wheezy-x86_64.tgz -P /srv/ganeti-instance-image/
+
+Our ganeti-instance-image injects ssh keys into an instance.
+You will need our ganeti package in order to use the boot from url feature of ganetimgr.
+
 Database Setup
 --------------
 Login to the mysql interface::
@@ -76,6 +88,20 @@ Edit the settings.py file and change the django database config to match your se
     RECAPTCHA_PUBLIC_KEY = '<key>'
     RECAPTCHA_PRIVATE_KEY = '<key>'
     to match your own api key.
+
+If you are gonna use our ganeti-instance-image and the debian wheezy image we provide you will need to define it into the settings.py::
+
+    OPERATING_SYSTEMS = {
+    "debian-wheezy": {
+        "description": "Debian Wheezy 64 bit",
+        "provider": "image+default",
+        "osparams": {
+            "img_id": "debian-wheezy",
+            "img_format": "tarball",
+        	},
+        "ssh_key_param": "img_ssh_key_url",
+    	},
+    }
 
 .. attention::
     When running the syncdb command that follows DO NOT create a superuser yet!
