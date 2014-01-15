@@ -35,14 +35,18 @@ and install packages::
     apt-get install gunicorn=0.12.2-2
     apt-get install python-gevent=0.13.0-1
 
-If you want to use all the features of ganetimgr you will need to install our packages of ganeti-instance-image and ganeti::
+If you want to use all the features of ganetimgr you will need to install our packages of ganeti-instance-image and ganeti on your clusters::
 
     apt-get install ganeti-instance-image
     apt-get install ganeti=2.8.1-1~bpo70+httpboot
 
+    ln -s /usr/share/ganeti/os/image /srv/ganeti-instance-image/
+
 And finally create an operating system image for ganeti-instance-image. You can download an image of debian wheezy from us::
 
     wget http://repo.noc.grnet.gr/debian-wheezy-x86_64.tgz -P /srv/ganeti-instance-image/
+
+Repeat those two steps for each node.
 
 Our ganeti-instance-image injects ssh keys into an instance.
 You will need our ganeti package in order to use the boot from url feature of ganetimgr.
