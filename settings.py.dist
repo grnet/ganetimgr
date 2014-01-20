@@ -129,6 +129,7 @@ DATE_FORMAT = "d/m/Y H:i"
 DATETIME_FORMAT = "d/m/Y H:i"
 
 
+# TODO: Switch this to Django 1.4 syntax
 # Caching is a vital part of ganetimgr.
 # If you deploy more than one ganetimgr instances on the same server, 
 # and want to use Redis for both, make sure you select a different db for each instance
