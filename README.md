@@ -10,21 +10,22 @@ The main project repository is at [code.grnet.gr](https://code.grnet.gr/projects
 
 ## Setup Instructions
 
-To setup an instance:
-
+To setup an instance:  
+```sh
 manage.py syncdb (*** Do not create superuser yet ***)
 manage.py migrate
 manage.py createsuperuser
 run the watcher.py
+```
 
 For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.org/en/latest/) page.
 
 ## Analytics Setup
 
-If installing for the first time do not forget to copy templates/analytics.html.dist 
-to templates/analytics.html. 
+If installing for the first time do not forget to copy `templates/analytics.html.dist` 
+to `templates/analytics.html`.
 
-Set your prefered (we use piwik) analytics inclussion script in templates/analytics.html:
+Set your prefered (we use piwik) analytics inclussion script in templates/analytics.html:  
 Eg.
 ```javascript
     <!-- Piwik -->
@@ -46,35 +47,34 @@ Eg.
 
 If you do not wish to use analytics, leave this file empty.
 
-
-
 ## Changelog
 
- * Migrating to v.1.3.0
+### Migrating to v.1.3.0
 
-- Set the WHITELIST_IP_MAX_SUBNET_V4/V6 to desired max 
+ - Set the WHITELIST_IP_MAX_SUBNET_V4/V6 to desired max 
 	whitelist IP subnets in settings.py
-- Perform south migration
+ - Perform south migration
 
 ======================================================================
 
- * Migrating to v.1.2.3
-
-- Make sure to include HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS in settings.py.
+### Migrating to v.1.2.3
+ - Make sure to include `HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS` in settings.py.
 If you deploy Jira and want to set custom javascript parameters, set
+```
 HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = { 'key' : 'value' # eg. 'customfield_23123': '1stline' }
-In any other case set HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = False
-
+```
+In any other case set 
+```
+HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = False
+```
 ======================================================================
 
- * Migrating to v1.2.2
-
+### Migrating to v1.2.2
 - Make sure to restart watcher.py
 
 ======================================================================
 
- * Migrating to >= v1.2
-
+### Migrating to >= v1.2
 - Make sure to:
     - Set the RAPI_TIMEOUT in settings.py (see .dist)
     - Set the NODATA_IMAGE path in settings.py.dist
@@ -83,26 +83,26 @@ In any other case set HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = False
 
 =====================================================================
 
- * Migrating to v1.0:
-
--install python-ipaddr lib
--update settings.py and urls.py with latest changes from dist files
+### Migrating to v1.0:
+ - install python-ipaddr lib
+ - update settings.py and urls.py with latest changes from dist files
 Run:
 manage.py migrate
 
 If your web server is nginx, consider placing:
 ```
 proxy_set_header X-Forwarded-Host <hostname>;
-in your nginx site location part
-and
-USE_X_FORWARDED_HOST = True
-in your settings.py. 
-The above ensure that i18n operates properly when switching between languages. 
 ```
+in your nginx site location part and
+```
+USE_X_FORWARDED_HOST = True
+```
+in your settings.py. 
+The above ensures that i18n operates properly when switching between languages. 
+
 =====================================================================
 
 ## License
-
 Copyright © 2010-2012 Greek Research and Technology Network (GRNET S.A.)
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -116,4 +116,3 @@ CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
 DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
 ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
-
