@@ -42,9 +42,9 @@ urlpatterns = patterns('',
     url(r'^apply/?$', 'ganetimgr.apply.views.apply', name="apply"),
     
     url(r'^accounts/activate/(?P<activation_key>\w+)/$', 'accounts.views.activate', name='activate_account'),
-    url(r'^accounts/register/$','registration.views.register', {'form_class': RegistrationForm},
+    url(r'^accounts/register/$','registration.views.register', {'backend':'regbackends.ganetimgr.GanetimgrBackend', 'form_class': RegistrationForm},
 							        name='registration.views.register'),
-    (r'^accounts/', include('registration.urls')),
+    (r'^accounts/', include('registration.backends.default.urls')),
     
     url(r'^notify/(?P<instance>[^/]+)?$', 'ganetimgr.notifications.views.notify', name="notify"),
     url(r'^lock/(?P<instance>[^/]+)?$', 'ganetimgr.ganeti.views.lock', {'action':'lock'}, name="lock"),

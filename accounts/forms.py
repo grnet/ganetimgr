@@ -72,6 +72,7 @@ class RegistrationForm(_RegistrationForm):
     surname = forms.CharField()
     recaptcha = ReCaptchaField(label=_("Verify"), required=False)
 
+    # As of django-registration 0.8, this part is not needed any more....
     def save(self, profile_callback=None):
         """
         Override registration.forms.RegistrationForm's save() method to save
