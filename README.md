@@ -10,14 +10,6 @@ The main project repository is at [code.grnet.gr](https://code.grnet.gr/projects
 
 ## Setup Instructions
 
-To setup an instance:  
-```sh
-manage.py syncdb (*** Do not create superuser yet ***)
-manage.py migrate
-manage.py createsuperuser
-run the watcher.py
-```
-
 For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.org/en/latest/) page.
 
 ## Analytics Setup
@@ -25,10 +17,12 @@ For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.
 If installing for the first time do not forget to copy `templates/analytics.html.dist` 
 to `templates/analytics.html`.
 
+If you do not wish to use analytics, leave this file empty.
+
 Set your prefered (we use piwik) analytics inclussion script in templates/analytics.html:  
 Eg.
 ```javascript
-    <!-- Piwik -->
+<!-- Piwik -->
 <script type="text/javascript">
   var _paq = _paq || [];
   _paq.push(['trackPageView']);
@@ -44,8 +38,6 @@ Eg.
 <noscript><p><img src="http://piwik.example.com/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
 <!-- End Piwik Code -->
 ```
-
-If you do not wish to use analytics, leave this file empty.
 
 ## Changelog
 
@@ -67,6 +59,7 @@ In any other case set
 ```
 HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = False
 ```
+
 ======================================================================
 
 ### Migrating to v1.2.2
@@ -103,7 +96,7 @@ The above ensures that i18n operates properly when switching between languages.
 =====================================================================
 
 ## License
-Copyright © 2010-2012 Greek Research and Technology Network (GRNET S.A.)
+Copyright © 2010-2014 Greek Research and Technology Network (GRNET S.A.)
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
