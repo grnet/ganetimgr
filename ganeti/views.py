@@ -306,6 +306,7 @@ def generate_json(instance, user):
     inst_dict['name'] =  i.name
     if user.is_superuser or user.has_perm('ganeti.view_instances'):
         inst_dict['cluster'] = i.cluster.slug
+        inst_dict['pnode'] = i.pnode
     else:
         inst_dict['cluster'] = i.cluster.description
     inst_dict['memory'] = memsize(i.beparams['memory'])
@@ -354,8 +355,9 @@ def generate_json(instance, user):
                 del inst_dict['name_href']
             except KeyError:
                 pass
-    if i.hvparams['cdrom_image_path'] and i.hvparams['boot_order'] == 'cdrom':
-         inst_dict['cdrom'] = True
+    if 'cdrom_image_path' in i.hvparams.keys():
+        if i.hvparams['cdrom_image_path'] and i.hvparams['boot_order'] == 'cdrom':
+            inst_dict['cdrom'] = True
     inst_dict['nic_macs'] = ', '.join(i.nic_macs)
     if user.is_superuser or user.has_perm('ganeti.view_instances'):
         inst_dict['nic_links'] = ', '.join(i.nic_links)
@@ -683,7 +685,8 @@ class InstanceConfigForm(forms.Form):
                                              " instead of UTC"),
                                        required=False)
     whitelist_ip = forms.CharField(required=False,
-                                       label=ugettext_lazy("Allow From"))
+                                       label=ugettext_lazy("Allow From"),
+                                       help_text="If isolated, allow access from v4/v6 address/network")
 
     def clean_cdrom_image_path(self):
         data = self.cleaned_data['cdrom_image_path']
@@ -760,14 +763,18 @@ def instance(request, cluster_slug, instance):
                 instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
                 instance.cluster.migrate_instance(instance.name)
             if whitelistip:
+                if instance.whitelistip:
+                    instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
                 instance.cluster.tag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, whitelistip)])
                 instance.cluster.migrate_instance(instance.name)
-            
-                
-
+            # Prevent form re-submission via browser refresh             
+            return HttpResponseRedirect(reverse('instance-detail',kwargs={'cluster_slug':cluster_slug, 'instance': instance}))
     else:
-        if instance.hvparams['cdrom_image_path']:
-            instance.hvparams['cdrom_type'] = 'iso'
+        if 'cdrom_image_path' in instance.hvparams.keys():
+            if instance.hvparams['cdrom_image_path']:
+                instance.hvparams['cdrom_type'] = 'iso'
+            else:
+                instance.hvparams['cdrom_type'] = 'none'
         else:
             instance.hvparams['cdrom_type'] = 'none'
         if instance.whitelistip:

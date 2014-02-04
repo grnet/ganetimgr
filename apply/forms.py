@@ -63,7 +63,6 @@ class InstanceForm(forms.ModelForm):
 
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"].rstrip(".")
-
         # Check copied from ganeti's code
         if (not _VALID_NAME_RE.match(hostname) or
             # double-dots, meaning empty label
@@ -139,7 +138,8 @@ class InstanceApplicationReviewForm(InstanceForm):
     
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"].rstrip(".")
-
+        if self.data and "reject" in self.data:
+            return hostname
         # Check copied from ganeti's code
         if (not _VALID_NAME_RE.match(hostname) or
             # double-dots, meaning empty label

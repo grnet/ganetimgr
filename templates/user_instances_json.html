@@ -34,7 +34,6 @@
     <div class="row-fluid">
         <div class="row-fluid">
             <h2>{% trans "My instances" %}
-                <span class="info">{% blocktrans %}Displaying {{user}} instances{% endblocktrans %}</span>
             </h2>
 
 <table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
@@ -42,6 +41,9 @@
 <tr>
 	<th style="text-align: center;">{% trans "Name" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
+	{% if user.is_superuser or perms.ganeti.view_instances %}
+	<th style="text-align: center;">{% trans "Node" %} <span class="sort-icon"></span></th>
+	{% endif %}
 	<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
@@ -141,6 +143,9 @@ $(document).ready( function(){
                     	 "sClass" : "alignLeft","bSearchable": true,"bSortable": true
                      },
                      {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+                     {% if user.is_superuser or perms.ganeti.view_instances %}
+                     {"mData":"pnode", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+                     {% endif %}
                      {"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true, "sType": "file-size"},
                      {"mData":"vcpus", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
                      {"mData":"status",

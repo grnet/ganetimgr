@@ -35,7 +35,7 @@ Excellent!
 
 Platform Setup
 --------------
-Get the source::
+Get the source and checkout to latest stable::
 
     mkdir /srv/www/
     cd /srv/www/
@@ -71,6 +71,12 @@ Run the following commands to create the database entries::
 and the superuser::
 
     ./manage.py createsuperuser
+
+.. attention::
+   If installing for the first time do not forget to copy templates/analytics.html.dist 
+   to templates/analytics.html. Set your prefered (we suggest piwik) analytics inclussion 
+   script in templates/analytics.html or leave the file empty if no analytics 
+   is desired/available.
 
 Run the watcher.py::
 
@@ -122,7 +128,7 @@ If you visit your webserver's address you should see ganetimgr welcome page
 Now it's time to through the :doc:`Admin guide <admin>` to setup your application.
 
 Administration
-===========================
+==============
 
 .. toctree::
    :maxdepth: 2

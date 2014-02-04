@@ -27,7 +27,7 @@ ganetimgr is a web platform that eases the provisioning of virtual machines over
 
 Compatibility
 =============
-ganetimgr has been tested with ganeti versions 2.4-2.7. Unless something really big has changed with the ganeti REST API client, ganetimgr should be able to interoperate with later versions.
+ganetimgr has been tested with ganeti versions 2.4-2.9. Unless something really big has changed with the ganeti REST API client, ganetimgr should be able to interoperate with later versions.
 
 Installation
 ============
