@@ -1,0 +1,185 @@
+{% extends "theme/base.html" %}
+{% load i18n %}
+{% block homepage %}class="active"{% endblock %}
+{% block homepagetop %}class="active"{% endblock %}
+{% block title %}{{ instance }} - {% trans "Console" %}{% endblock %}
+{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
+<style>
+	#actions {
+		margin-bottom: 30px;
+	}
+</style>
+<script type="text/javascript" src="/static/noVNC/include/util.js"></script>
+
+<script type="text/javascript">
+	// Set include path for noVNC scripts
+	var INCLUDE_URI = "/static/noVNC/include/";
+	// Set path for proxy requests
+	var PROXY_REQUEST_URI = "{% url instance-novnc-proxy cluster_slug instance %}";
+
+	var rfb;
+	var vnc_canvas;
+
+	Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js", "keysymdef.js", "keyboard.js", "input.js", "display.js", "jsunzip.js", "rfb.js"]);
+
+	window.onscriptsload = function() {
+		var rfb;
+		var connect = $('#connect');
+		var connected = false;
+		var ctrlaltdelete = $('#ctrlaltdelete');
+		var vnc_errors = $("#vnc_errors");
+		var vnc_status_bar = $("#VNC_status_bar");
+		var vnc_canvas = $('#VNC_canvas');
+		var vnc_screen = $('#VNC_screen');
+		ctrlaltdelete.addClass('disabled');
+
+		function stop() {
+			var rfb;
+			console.log('load');
+			if (rfb != undefined) {
+				rfb.disconnect();
+				rfb = undefined;
+			}
+		}
+
+		function start() {
+			data = {}
+			$.ajax({
+				"async" : false,
+				"url" : PROXY_REQUEST_URI,
+				"type" : "POST",
+				"data" : data,
+				"dataType" : "json",
+				"success" : function(data) {
+					host = data[0];
+					port = data[1];
+					password = data[2];
+				}
+			});
+			// if (!show_errors()) return false;
+
+			rfb = new RFB({
+				'target' : document.getElementById('VNC_canvas'),
+				'encrypt' : true,
+				'true_color' : true,
+				'local_cursor' : true,
+				'shared' : true,
+				'updateState' : updateState,
+			});
+			rfb.connect(host, port, password);
+			return false;
+		}
+
+		function show_errors() {
+			if (host === false || port === false || password === false) {
+				connected = false;
+				vnc_status_bar.attr("class", "label label-error").html("Probably your proxy is not running or some errors occured. Try again.");
+				return false;
+			}
+			return true;
+		}
+
+		function updateState(rfb, state, oldstate, msg) {
+			var klass;
+			switch (state) {
+				case 'failed':
+				case 'fatal':
+					klass = "label label-error";
+					break;
+				case 'normal':
+					klass = "label label-success";
+					break;
+				case 'disconnected':
+				case 'loaded':
+					klass = "label label-info";
+					break;
+				case 'password':
+					msg = 'Password required';
+					klass = "label";
+					break;
+				default:
+					klass = "label";
+			}
+
+			if (state == "normal") {
+				connected = true;
+				connect.addClass('enabled').removeClass('btn-success').addClass('btn-danger').text('Disconnect');
+				ctrlaltdelete.removeClass('disabled');
+				vnc_canvas.addClass("connected");
+			} else {
+				vnc_canvas.removeClass("connected");
+				connected = false;
+				connect.removeClass('enabled').removeClass('btn-danger').addClass('btn-success').text('Connect');
+				ctrlaltdelete.addClass('disabled');
+			}
+
+			if (msg != undefined) {
+				vnc_status_bar.attr("class", klass).html(msg);
+			}
+		}
+
+
+		connect.click(function(event) {
+			event.preventDefault();
+			var $this = $(this);
+			if ($this.hasClass('enabled')) {
+				rfb.disconnect();
+				connected = false;
+			} else {
+				connected = true;
+				start();
+			}
+
+		});
+
+		ctrlaltdelete.click(function(event) {
+			event.preventDefault();
+			if (!$(this).hasClass('disabled')) {
+				rfb.sendCtrlAltDel();
+			}
+		});
+
+		$(window).bind("unload", stop);
+
+	};
+
+</script>
+{% endblock %}
+{% block crumbs %}
+<li>
+	<a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span>
+</li>
+<li>
+	<a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a><span class="divider">/</span>
+</li>
+<li class="active">
+	{% trans "Console" %}
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="span11 main-content">
+
+	<div class="row-fluid">
+		<div class="row-fluid">
+			<h2><i class="icon-terminal"></i> {% trans "VNC session on" %} {{ instance }}</h2>
+			<button id="connect" class="btn btn-success">
+				Connect
+			</button>
+			<button class="btn" id="ctrlaltdelete">
+				Ctrl+Alt+Del
+			</button>
+			<div id="VNC_screen">
+				<span id="VNC_status_bar" class="label label-info">Click Connect to... connect</span>
+				<br>
+				<br>
+				<canvas id="VNC_canvas">
+					{% blocktrans %}Canvas is not supported in your browser. Please use new versions
+					of Chrome or Firefox.{% endblocktrans %}
+				</canvas>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

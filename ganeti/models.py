@@ -534,6 +534,17 @@ class Cluster(models.Model):
         res = vapclient.request_forwarding(0, node_ip, port, password)
         return (res["source_port"], password)
 
+    def setup_novnc_forwarding(self, instance, sport=0, tls=False):
+        password = User.objects.make_random_password(length=8)
+        info = self.get_instance_info(instance)
+        port = info['network_port']
+        node = info['pnode']
+        node_ip = gethostbyname(node)
+        proxy_server = settings.NOVNC_PROXY.split(":")
+        res = vapclient.request_novnc_forwarding(proxy_server, node, port, password,
+                                        sport=sport, tls=tls)
+        return proxy_server[0], int(res["source_port"]), password
+
     def shutdown_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)

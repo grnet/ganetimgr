@@ -411,6 +411,27 @@ def vnc(request, cluster_slug, instance):
                                'password': password},
                                context_instance=RequestContext(request))
 
+@login_required
+@check_instance_auth
+def novnc(request, cluster_slug, instance):
+    cluster = get_object_or_404(Cluster, slug=cluster_slug)
+    return render_to_response("novnc.html",
+                              {'cluster_slug': cluster_slug,
+                               'instance': instance
+                               },
+                               context_instance=RequestContext(request))
+
+
+@login_required
+@check_instance_auth
+def novnc_proxy(request, cluster_slug, instance):
+    use_tls = False
+    cluster = get_object_or_404(Cluster, slug=cluster_slug)
+    use_tls = bool(request.POST.get("tls"))
+    result = json.dumps(cluster.setup_novnc_forwarding(instance, tls=use_tls))
+
+    return HttpResponse(result, mimetype="application/json")
+
 
 @login_required
 @csrf_exempt
