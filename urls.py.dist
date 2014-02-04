@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     url(r'^user/pass_change/done/$',  'django.contrib.auth.views.password_change_done', {'template_name':'pass_change_done.html'}, name="pass_change_done" ),
     url(r'^user/pass_change/notify/$', 'ganetimgr.apply.views.pass_notify', name="pass_change_notify"),
     url(r'^apply/?$', 'ganetimgr.apply.views.apply', name="apply"),
+    url(r'^news/?$', 'ganetimgr.ganeti.views.news', name="news"),
     
     url(r'^accounts/activate/(?P<activation_key>\w+)/$', 'accounts.views.activate', name='activate_account'),
     url(r'^accounts/register/$','registration.views.register', {'backend':'regbackends.ganetimgr.GanetimgrBackend', 'form_class': RegistrationForm},

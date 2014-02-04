@@ -222,6 +222,9 @@ label.required { font-weight: bold; }
             <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="icon-moon"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
             {% endif %}
             <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="icon-user"></i> <span>{% trans "My Profile" %}</span></a></li>
+            {% if FEED_URL %}
+             <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="icon-rss"></i> <span>{% trans "Latest News" %}</span></a></li>
+             {% endif %}
             {% if user.is_superuser %}
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
 {% endif %}

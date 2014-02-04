@@ -287,3 +287,8 @@ NODATA_IMAGE = "/path/to/static/nodata.jpg"
 WHITELIST_IP_MAX_SUBNET_V4 = 26
 WHITELIST_IP_MAX_SUBNET_V6 = 64
 
+# If you want to keep your users up-to-date with your news you can display an RSS feed with news/updates. Otherwise leave it to None
+# eg. "http://lists.noc.grnet.gr/sympa/rss/latest_arc/vima-users?count=20&for=30" (GRNET ViMa service Sympa RSS feed)
+# TODO: Investigate twitter support
+FEED_URL=None
+

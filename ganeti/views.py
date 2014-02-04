@@ -73,6 +73,9 @@ def cluster_detail(request, slug):
         object = Cluster.objects.all()
     return render_to_response('cluster.html', {'object': object}, context_instance=RequestContext(request))
 
+def news(request):
+    return render_to_response('news.html', context_instance=RequestContext(request))
+
 @login_required
 def user_info(request, type, usergroup):
      if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):

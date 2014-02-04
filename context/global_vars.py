@@ -22,5 +22,5 @@ def settings_vars(context):
             'HELPDESK_INTEGRATION_JAVASCRIPT_URL': settings.HELPDESK_INTEGRATION_JAVASCRIPT_URL,
             'HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS': settings.HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS,
             'VERSION': settings.SW_VERSION,
-            
+            'FEED_URL': settings.FEED_URL,            
             }
