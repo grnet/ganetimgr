@@ -23,7 +23,7 @@
 // To force WebSocket emulator even when native WebSocket available
 //window.WEB_SOCKET_FORCE_FLASH = true;
 // To enable WebSocket emulator debug:
-window.WEB_SOCKET_DEBUG=1;
+//window.WEB_SOCKET_DEBUG=1;
 
 if (window.WebSocket && !window.WEB_SOCKET_FORCE_FLASH) {
     Websock_native = true;
@@ -282,7 +282,7 @@ function init(protocols) {
     // TODO: this sucks, the property should exist on the prototype
     // but it does not.
     try {
-        if (bt && ('binaryType' in (new WebSocket("wss://netdev.grnet.gr:7008")))) {
+        if (bt && ('binaryType' in (new WebSocket("ws://localhost:17523")))) {
             Util.Info("Detected binaryType support in WebSockets");
             wsbt = true;
         }

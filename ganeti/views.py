@@ -416,7 +416,7 @@ def vnc(request, cluster_slug, instance):
 def novnc(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     return render_to_response("novnc.html",
-                              {'cluster_slug': cluster_slug,
+                              {'cluster': cluster,
                                'instance': instance
                                },
                                context_instance=RequestContext(request))
