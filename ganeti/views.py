@@ -415,9 +415,11 @@ def vnc(request, cluster_slug, instance):
 @check_instance_auth
 def novnc(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
+    use_tls = settings.NOVNC_USE_TLS
     return render_to_response("novnc.html",
                               {'cluster': cluster,
-                               'instance': instance
+                               'instance': instance,
+                               'use_tls': use_tls,
                                },
                                context_instance=RequestContext(request))
 
@@ -427,7 +429,7 @@ def novnc(request, cluster_slug, instance):
 def novnc_proxy(request, cluster_slug, instance):
     use_tls = False
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
-    use_tls = bool(request.POST.get("tls"))
+    use_tls = settings.NOVNC_USE_TLS
     result = json.dumps(cluster.setup_novnc_forwarding(instance, tls=use_tls))
 
     return HttpResponse(result, mimetype="application/json")

@@ -54,7 +54,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
 
-def request_novnc_forwarding(server, daddr, dport, password, sport=None, tls=False):
+def request_novnc_forwarding(server, daddr, dport, password, sport=None, tls=True):
     """
     Ask TVAP/VNCAP for a forwarding port.
 
@@ -98,4 +98,3 @@ def request_novnc_forwarding(server, daddr, dport, password, sport=None, tls=Fal
     # XXX bare except
     except:
         return False
-

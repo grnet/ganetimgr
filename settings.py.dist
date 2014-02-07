@@ -293,3 +293,12 @@ WHITELIST_IP_MAX_SUBNET_V6 = 64
 # TODO: Investigate twitter support
 FEED_URL=None
 
+# If you want to keep your users up-to-date you can display an RSS feed with news/updates, else leave it to None
+# TODO: Add twitter support (maybe)
+FEED_URL=None
+
+# This is meant to be used with twistednovncauthproxy
+# twistd --pidfile=/tmp/proxy.pid -n vncap -c tcp:8888:interface=0.0.0.0
+NOVNC_PROXY = "example.vom:8888"
+NOVNC_USE_TLS = True
+

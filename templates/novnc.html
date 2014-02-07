@@ -58,10 +58,10 @@
 				}
 			});
 			// if (!show_errors()) return false;
-
+			use_tls = {% if use_tls %}true{% else %}false{% endif %};
 			rfb = new RFB({
 				'target' : document.getElementById('VNC_canvas'),
-				'encrypt' : true,
+				'encrypt' : use_tls,
 				'true_color' : true,
 				'local_cursor' : true,
 				'shared' : true,
