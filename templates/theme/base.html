@@ -109,9 +109,18 @@ label.required { font-weight: bold; }
   	            window.location = url;
   	        }
   	    });
-
-  	 
-  	  
+	 {% if user.is_superuser %}
+  	 $("#clearcache").click(function(){
+  	 	$.ajax({
+        	type: 'GET',
+        	url: "{% url clearcache %}",
+        	dataType: 'json',
+  			success: function(data) {
+				window.setTimeout('location.reload()', 100);
+  			}
+  	  	});
+  	  	});
+  	  	{% endif %}
   	});
    	 
 </script>
@@ -199,6 +208,7 @@ label.required { font-weight: bold; }
 {% endif %}
             {% if user.is_superuser %}
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
+						<li ><a href="#" id="clearcache"> <span class="badge badge-warning"><i class="icon-adjust"></i> {% trans "Clear Cache" %}</span></a></li>
 			{% endif %}
 
         </ul>
