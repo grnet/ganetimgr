@@ -129,7 +129,21 @@ class CacheClass(BaseCache):
             self._cache.delete(key)
         except redis.RedisError, e:
             logging.warning("Unable to delete key: %s", str(e))
-
+    
+    def keys(self, pattern="*"):
+        "Fetch all keys from the cache."
+        pattern = self._prepare_key(pattern)
+        try:
+            ret = self._cache.keys(pattern=pattern)
+        except redis.RedisError, e:
+            logging.warning("Unable to fetch keys")
+            ret = None
+        
+        if ret is None:
+            return ret
+        else:
+            return self._unpack_value(ret)
+        
     def flush(self, all_dbs=False):
         try:
             self._cache.flush(all_dbs)
