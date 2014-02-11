@@ -4,6 +4,7 @@
 {% block homepagetop %}class="active"{% endblock %}
 {% block title %}{{ instance }} - {% trans "Console" %}{% endblock %}
 {% block extrahead %}
+{% if WEBSOCK_VNC_ENABLED %}
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <style>
 	#actions {
@@ -145,6 +146,7 @@
 	};
 
 </script>
+{% endif %}
 {% endblock %}
 {% block crumbs %}
 <li>
@@ -159,6 +161,7 @@
 {% endblock %}
 
 {% block content %}
+{% if WEBSOCK_VNC_ENABLED %}
 <div class="span11 main-content">
 
 	<div class="row-fluid">
@@ -182,4 +185,11 @@
 		</div>
 	</div>
 </div>
+{% else %}
+<div class="span11 main-content">
+	<div class="row-fluid">
+		WebSockets VNC is not enabled.
+	</div>
+</div>
+{% endif %}
 {% endblock %}

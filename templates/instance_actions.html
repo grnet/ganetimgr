@@ -158,7 +158,9 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 				<div class="span6">
 				<div class="row-fluid"><div class="span12"><a class="btn btn-danger btn-small btn-fixed" id="shutdown" href="#"><i class="icon-off"></i> {% trans "Shutdown" %}</a></div></div>
 				<div class="row-fluid"><div class="span12"><a class="btn btn-warning  btn-small btn-fixed" id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div></div>
-				<div class="row-fluid"><div class="span12"><a class="btn btn-inverse  btn-small btn-fixed" id="consolenovnc" href="{% url instance-novnc cluster.slug instance.name %}"><i class='icon-terminal'></i> {% trans "Console" %} (noVNC)</a></div></div>
+				{% if WEBSOCK_VNC_ENABLED %}
+				<div class="row-fluid"><div class="span12"><a class="btn btn-inverse  btn-small btn-fixed" id="consolenovnc" href="{% url instance-novnc cluster.slug instance.name %}"><i class='icon-terminal'></i> {% trans "Console" %} (WebSock)</a></div></div>
+				{% endif %}
 				<div class="row-fluid"><div class="span12"><a class="btn btn-inverse  btn-small btn-fixed" id="console" href="{% url instance-vnc cluster.slug instance.name %}"><i class='icon-terminal'></i> {% trans "Console" %} (Java)</a></div></div>
 				
 				</div>

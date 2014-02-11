@@ -431,7 +431,6 @@ def novnc_proxy(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     use_tls = settings.NOVNC_USE_TLS
     result = json.dumps(cluster.setup_novnc_forwarding(instance, tls=use_tls))
-
     return HttpResponse(result, mimetype="application/json")
 
 
