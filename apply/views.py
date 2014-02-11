@@ -118,7 +118,7 @@ def application_list(request):
 def review_application(request, application_id):
     applications = InstanceApplication.objects.filter(status=STATUS_PENDING)
     app = get_object_or_404(InstanceApplication, pk=application_id)
-    fast_clusters = Cluster.objects.filter(fast_create=True)
+    fast_clusters = Cluster.objects.filter(fast_create=True).exclude(disable_instance_creation=True)
 
     if request.method == "GET":
         form = InstanceApplicationReviewForm(instance=app)

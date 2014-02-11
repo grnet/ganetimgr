@@ -26,8 +26,12 @@ from django.utils.translation import ugettext_lazy
 from django.template.defaultfilters import filesizeformat
 
 from ganetimgr.apply.models import *
-from ganetimgr.ganeti.models import Instance
-
+from ganetimgr.ganeti.models import Instance, Cluster, Network
+from django.forms.models import ModelChoiceIterator, ModelChoiceField
+from itertools import groupby
+from django.forms.widgets import Select
+from django.utils.encoding import force_unicode
+from django.utils.html import escape, conditional_escape
 
 # Taken from ganeti and patched to avoid non-bind9 friendly VM names
 _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
@@ -37,6 +41,70 @@ VALID_MEMORY_VALUES = ['512', '768', '1024', '1500', '2048', '3072', '4096']
 MEMORY_CHOICES = [(m, filesizeformat(int(m) * 1024**2))
                   for m in VALID_MEMORY_VALUES]
 
+
+
+class GroupedModelChoiceField(ModelChoiceField):
+    def __init__(self, group_by_field, disabled_field=False, group_label=None, *args, **kwargs):
+        """
+        group_by_field is the name of a field on the model
+        group_label is a function to return a label for each choice group
+        """
+        super(GroupedModelChoiceField, self).__init__(*args, **kwargs)
+        self.group_by_field = group_by_field
+        self.disabled_field = disabled_field       
+        if group_label is None:
+            self.group_label = lambda x: x
+        else:
+            self.group_label = group_label
+        
+    
+    def _get_choices(self):
+        """
+        Exactly as per ModelChoiceField except returns new iterator class
+        """
+        if hasattr(self, '_choices'):
+            return self._choices
+        return GroupedModelChoiceIterator(self)
+    choices = property(_get_choices, ModelChoiceField._set_choices)
+
+class GroupedModelChoiceIterator(ModelChoiceIterator):
+    def __iter__(self):
+        if self.field.empty_label is not None:
+            yield (u"", self.field.empty_label)
+        if self.field.cache_choices:
+            if self.field.choice_cache is None:
+                self.field.choice_cache = [
+                    (self.field.group_label(group), [self.choice(ch) for ch in choices])
+                        for group,choices in groupby(self.queryset.all(),
+                            key=lambda row: getattr(row, self.field.group_by_field))
+                ]
+            for choice in self.field.choice_cache:
+                yield choice
+        else:
+            for group, choices in groupby(self.queryset.all(),
+                    key=lambda row: getattr(row, self.field.group_by_field)):
+                yield (self.field.group_label(group), [[self.choice(ch)[0], {'label':self.choice(ch)[1], 'disabled':getattr(group, self.field.disabled_field)}] for ch in choices])
+
+class SelectWithDisabled(Select):
+    """
+    Subclass of Django's select widget that allows disabling options.
+    To disable an option, pass a dict instead of a string for its label,
+    of the form: {'label': 'option label', 'disabled': True}
+    """
+    def render_option(self, selected_choices, option_value, option_label):
+        option_value = force_unicode(option_value)
+        if (option_value in selected_choices):
+            selected_html = u' selected="selected"'
+        else:
+            selected_html = ''
+        disabled_html = ''
+        if isinstance(option_label, dict):
+            if dict.get(option_label, 'disabled'):
+                disabled_html = u' disabled="disabled"'
+            option_label = option_label['label']
+        return u'<option value="%s"%s%s>%s</option>' % (
+            escape(option_value), selected_html, disabled_html,
+            conditional_escape(force_unicode(option_label)))
 
 class InstanceForm(forms.ModelForm):
     hostname = forms.CharField(help_text=ugettext_lazy("A fully qualified domain name,"
@@ -119,6 +187,10 @@ class InstanceApplicationReviewForm(InstanceForm):
     vcpus = forms.IntegerField(min_value=1, initial=1, label="Virtual CPUs")
     disk_size = forms.IntegerField(min_value=2, initial=5,
                                    label=ugettext_lazy("Disk size (GB)"))
+    network = GroupedModelChoiceField("cluster", disabled_field="disable_instance_creation",
+                                      queryset=Network.objects.all().order_by('cluster__slug'),
+                                      widget=SelectWithDisabled())
+    
     class Meta:
         model = InstanceApplication
         fields = InstanceForm.Meta.fields + ('admin_comments',)
