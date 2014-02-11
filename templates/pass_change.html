@@ -31,7 +31,7 @@
     function safeMethod(method) {
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
-
+	
     if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
         xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
     }
@@ -44,17 +44,19 @@
             $.ajax({
                 type: "POST",
                 url: "{% url pass_change %}?csrf_token={{csrf_token}}",
-                data: str,
-                success: function(msg){
+                data: str})
+                .done(function(msg){
                 	$("#pass_form_placeholder").html(msg);
-                        }
+                 });
+                 return false;
         });
-    return false;
+    
         });
-	});
+
 	</script>
 {% load i18n %}
 <strong>{{user}}</strong>, {% trans "please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly." %}
+<p><span class="label label-important">{% trans "Important" %}!</span> {% trans "Changing your password will log you out" %}</p>
 <form method="post" align="left" id="password_change_form" class="form">{% csrf_token %}
 {{form.as_p}}
 <button id="passformbtn" class="btn btn-success">{% trans "Change" %}</button>

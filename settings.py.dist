@@ -258,6 +258,9 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# Cookie age set to 3 hours
+SESSION_COOKIE_AGE = 10800
+
 
 IDLE_ACCOUNT_NOTIFICATION_DAYS = '180'
 
