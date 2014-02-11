@@ -332,6 +332,9 @@ class Cluster(models.Model):
     use_gnt_network = models.BooleanField(default=False,
                                           verbose_name="Cluster uses gnt-network",
                                       help_text="Set to True only if you use gnt-network.")
+    disable_instance_creation = models.BooleanField(default=False,
+                                          verbose_name="Disable Instance Creation",
+                                      help_text="True disables setting a network at the application review form and blocks instance creation")
 
     class Meta:
         permissions = (
