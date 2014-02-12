@@ -242,7 +242,7 @@ $(document).ready( function(){
                     			 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'lock\'); return false;">{% trans "Lock" %}</a></li>';
                     		 }
                     		 if (full.hasOwnProperty("isolate")){
-                    			 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'connect\'); return false;">{% trans "Connect" %}</a></li>';
+                    			 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'connect\'); return false;">{% trans "De-Isolate" %}</a></li>';
                     		 }
                     		 else{
                     			 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'isolate\'); return false;">{% trans "Isolate" %}</a></li>';

@@ -78,6 +78,7 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 		
 		$( "#reinstallapplybutton" )
 		.click(function() {
+			$(this).html('Sending Email...');
 			clearTimeout(polltimer);
 			$.ajax({
 	        type: 'POST',
@@ -100,6 +101,7 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 	
 	$( "#destroyapplybutton" )
 	.click(function() {
+		$(this).html('Sending Email...')
 		clearTimeout(polltimer);
 		$.ajax({
         type: 'POST',

@@ -30,7 +30,7 @@ import re
 _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
 
 class tagsForm(forms.Form):
-    tags = forms.CharField(required=False)
+    tags = forms.CharField(required=False, help_text=ugettext_lazy("Type a username or group name"))
 
 class lockForm(forms.Form):
     lock = forms.BooleanField(required=False)

@@ -879,62 +879,77 @@ def poll(request, cluster_slug, instance):
                                    },
                                   context_instance=RequestContext(request))
 
+
+
 @csrf_exempt
-@login_required     
+@login_required
 def tagInstance(request, instance):
-    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
-        instance = Instance.objects.get(name=instance)
-        if request.method == 'POST':
-            users = []
-            for user in instance.users:
-                users.append("u_%s"%user.pk)
-            groups = []
-            for group in instance.groups:
-                groups.append("g_%s"%group.pk)
-            existingugtags = users+groups
-            form = tagsForm(request.POST)
-            if form.is_valid():
-                newtags = form.cleaned_data['tags']
-                newtags = newtags.split(',')
-                common = list(set(existingugtags).intersection(set(newtags)))
-                deltags = list(set(existingugtags)-set(common))
-                if len(deltags)>0:
-                    #we have tags to delete
-                    oldtodelete = prepare_tags(deltags)
-                    instance.cluster.untag_instance(instance.name, oldtodelete)
-                newtagstoapply = prepare_tags(newtags)
-                if len(newtagstoapply) > 0:
-                    instance.cluster.tag_instance(instance.name, newtagstoapply)
-                res = {'result':'success'}
-                return HttpResponse(json.dumps(res), mimetype='application/json')
-            else:
-                return render_to_response('tagging/itags.html',
-                    {
-                        'form': form, 'users': users, 'instance': instance
-                    }, 
-                    context_instance=RequestContext(request)
-                    )
-        elif request.method == 'GET':
-            form = tagsForm()
-            users = []
-            for user in instance.users:
-                userd = {}
-                userd['text']=user.username
-                userd['id']="u_%s"%user.pk
-                userd['type']="user"
-                users.append(userd)
-            for group in instance.groups:
-                groupd = {}
-                groupd['text']=group.name
-                groupd['id']="u_%s"%group.pk
-                groupd['type']="group"
-                users.append(groupd)
-            return render_to_response('tagging/itags.html', {
-                    'form': form, 'users': users, 'instance': instance}, 
-                    context_instance=RequestContext(request)
+    instance = Instance.objects.get(name=instance)
+    cluster = instance.cluster
+    cache_key = "cluster:%s:instance:%s:user:%s" % (cluster.slug, instance.name,
+                                                        request.user.username)
+    res = cache.get(cache_key)
+    if res is None:
+        res = False
+        if (request.user.is_superuser or
+            request.user in instance.users or
+            set.intersection(set(request.user.groups.all()), set(instance.groups))):
+            res = True
+        cache.set(cache_key, res, 60)
+    if not res:
+        t = get_template("403.html")
+        return HttpResponseForbidden(content=t.render(RequestContext(request)))
+    
+    if request.method == 'POST':
+        users = []
+        for user in instance.users:
+            users.append("u_%s"%user.pk)
+        groups = []
+        for group in instance.groups:
+            groups.append("g_%s"%group.pk)
+        existingugtags = users+groups
+        form = tagsForm(request.POST)
+        if form.is_valid():
+            newtags = form.cleaned_data['tags']
+            newtags = newtags.split(',')
+            common = list(set(existingugtags).intersection(set(newtags)))
+            deltags = list(set(existingugtags)-set(common))
+            if len(deltags)>0:
+                #we have tags to delete
+                oldtodelete = prepare_tags(deltags)
+                instance.cluster.untag_instance(instance.name, oldtodelete)
+            newtagstoapply = prepare_tags(newtags)
+            if len(newtagstoapply) > 0:
+                instance.cluster.tag_instance(instance.name, newtagstoapply)
+            res = {'result':'success'}
+            return HttpResponse(json.dumps(res), mimetype='application/json')
+        else:
+            return render_to_response('tagging/itags.html',
+                {
+                    'form': form, 'users': users, 'instance': instance
+                }, 
+                context_instance=RequestContext(request)
                 )
-    else:
-        return HttpResponseRedirect(reverse('user-instances'))
+    elif request.method == 'GET':
+        form = tagsForm()
+        users = []
+        for user in instance.users:
+            userd = {}
+            userd['text']=user.username
+            userd['id']="u_%s"%user.pk
+            userd['type']="user"
+            users.append(userd)
+        for group in instance.groups:
+            groupd = {}
+            groupd['text']=group.name
+            groupd['id']="g_%s"%group.pk
+            groupd['type']="group"
+            users.append(groupd)
+        return render_to_response('tagging/itags.html', {
+                'form': form, 'users': users, 'instance': instance}, 
+                context_instance=RequestContext(request)
+            )
+
 
 @login_required
 def get_clusternodes(request):
@@ -1159,36 +1174,33 @@ def stats_ajax_applications(request):
 
 @login_required
 def get_user_groups(request):
-    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
-        q_params = None
-        try:
-            q_params = request.GET['q']
-        except:
-            pass
-        users = User.objects.all()
-        groups = Group.objects.all()
-        if q_params:
-            users = users.filter(username__icontains=q_params)
-            groups = groups.filter(name__icontains=q_params)
-        ret_list = []
-        for user in users:
-            userd = {}
-            userd['text']=user.username
+    q_params = None
+    try:
+        q_params = request.GET['q']
+    except:
+        pass
+    users = User.objects.all()
+    groups = Group.objects.all()
+    if q_params:
+        users = users.filter(username__icontains=q_params)
+        groups = groups.filter(name__icontains=q_params)
+    ret_list = []
+    for user in users:
+        userd = {}
+        userd['text']=user.username
+        if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
             userd['email']=user.email
-            userd['id']="u_%s"%user.pk
-            userd['type']="user"
-            ret_list.append(userd)
-        for group in groups:
-            groupd = {}
-            groupd['text']=group.name
-            groupd['id']="g_%s"%group.pk
-            groupd['type']="group"
-            ret_list.append(groupd)
-        action = ret_list
-        return HttpResponse(json.dumps(action), mimetype='application/json')
-    else:
-        action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
-        return HttpResponse(json.dumps(action), mimetype='application/json')
+        userd['id']="u_%s"%user.pk
+        userd['type']="user"
+        ret_list.append(userd)
+    for group in groups:
+        groupd = {}
+        groupd['text']=group.name
+        groupd['id']="g_%s"%group.pk
+        groupd['type']="group"
+        ret_list.append(groupd)
+    action = ret_list
+    return HttpResponse(json.dumps(action), mimetype='application/json')
 
 def disksizes(value):
     return [filesizeformat(v * 1024**2) for v in value]
