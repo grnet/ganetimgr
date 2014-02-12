@@ -45,6 +45,7 @@
 	<th style="text-align: center;">{% trans "Node" %} <span class="sort-icon"></span></th>
 	{% endif %}
 	<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Disk" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
 	{% if not user.is_superuser and not perms.ganeti.view_instances %}
@@ -56,6 +57,8 @@
 	<th style="text-align: center;">{% trans "Owner" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Options" %}</th>
 	<th style="display:none">{% trans "HiddenContactDetails" %}</th>
+	{% else %}
+	<th style="text-align: center;">{% trans "Shortcuts" %}</th>
 	{% endif %}
 </tr>
 
@@ -92,12 +95,31 @@
 var status;
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "file-size-pre": function ( a ) {
-        var x = a.substring(0,a.length - 2);
-             
+    	//Let's see if instance has many disks
+    	xm = a.split(", ")
+    	if (xm.length > 1){
+    		// Found many disks, let's sum
+    		var total = 0;
+    		for (var i = 0;i < xm.length; i++){
+    			
+    			var x = xm[i].substring(0,xm[i].length - 3);
+        		var x_unit = (xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ?
+            		1000 : (xm[i].substring(xm[i].length - 2, xm[i].length) == "GB" ? 1000000 : 1));
+            	total += parseInt( x * x_unit, 10 );
+            	
+            	
+    		}
+    		return total;
+    		
+    	}
+    	else{
+        var x = a.substring(0,a.length - 3);
+        
         var x_unit = (a.substring(a.length - 2, a.length) == "MB" ?
             1000 : (a.substring(a.length - 2, a.length) == "GB" ? 1000000 : 1));
-          
+        console.log(x, x_unit, a)  
         return parseInt( x * x_unit, 10 );
+       }
     },
  
     "file-size-asc": function ( a, b ) {
@@ -109,6 +131,7 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     }
 } );
 $(document).ready( function(){
+	
 	$('#vm_instance_table').dataTable( {
 		"bPaginate": true,
 	    "bFilter": true,
@@ -128,6 +151,53 @@ $(document).ready( function(){
             	$('#jsonmessages').show();
             	$('#jsonmessage').html(json.messages);
             }
+            {% if not user.is_superuser and not perms.ganeti.view_instances %}
+            $(".stopbutton").click(function(){
+            	var my = $(this);
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var stopurl = "{% url instance-shutdown 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
+				$.ajax({
+        			type: 'POST',
+        			url: stopurl,
+        			dataType: 'json',
+        			success: function(data) {
+					my.parent().html("<span class='label label-inverse'>"+data.action + " (requires refresh)</span>");
+	        		}
+	    		});
+				return false;
+			});
+			$(".rebootbutton").click(function(){
+				var my = $(this);
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var rebooturl = "{% url instance-reboot 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
+				$.ajax({
+        			type: 'POST',
+        			url: rebooturl,
+        			dataType: 'json',
+        			success: function(data) {
+					my.parent().html("<span class='label label-inverse'>"+data.action + " (requires refresh)</span>");
+        		}
+    		});
+				return false;
+			});
+			$(".startbutton").click(function(){
+				var my = $(this);
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var starturl = "{% url instance-startup 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
+				$.ajax({
+        			type: 'POST',
+        			url: starturl,
+        			dataType: 'json',
+        			success: function(data) {
+					my.parent().html("<span class='label label-inverse'>"+data.action + " (requires refresh)</span>");
+        		}
+    		});
+				return false;
+			});
+			{% endif %}
           },
         "aoColumns":[
                      {"mData": "name" ,
@@ -147,6 +217,7 @@ $(document).ready( function(){
                      {"mData":"pnode", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
                      {% endif %}
                      {"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true, "sType": "file-size"},
+                     {"mData":"disk", "sClass" : "alignCenter","bSearchable": true,"bSortable": true, "sType": "file-size"},
                      {"mData":"vcpus", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
                      {"mData":"status",
                          "mRender": function (data, type, full) {
@@ -276,10 +347,36 @@ $(document).ready( function(){
                     	return users;
                     	 }
                      },
+                     {% else %}
+                      {"mData": "status", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
+                    	 "mRender":  function (data, type, full) {
+                    			var lock = "-"
+                    			if (full.hasOwnProperty('adminlock')){
+                    				return '<div class="shortcuts"><span class="label label-important">Actions Disabled</span></div>';
+                    			}
+                    			if (full.hasOwnProperty('locked')){
+                    				return '<div class="shortcuts"><span class="label label-inverse">Action Pending</span></div>';
+                    			}
+                    			if (full.status == 'Running'){
+                    			 lock = '<a href="#"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="stopbutton btn btn-small btn-danger"><i class="icon-off"></i></a> ';
+                    			 lock += '<a href="#"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="rebootbutton btn btn-small btn-warning"><i class="icon-refresh"></i></a> ';
+                    			 consoleurl = "{% url instance-vnc 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', full.clusterslug.toString()).replace('instance_placeholder', full.name.toString());
+                    			 lock += '<a href="'+consoleurl+'"  class="btn btn-small btn-inverse"><i class="icon-terminal"></i></a> ';
+                    			}
+                    			if (full.status == 'Stopped'){
+                    			 lock = '<a href="#"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="startbutton btn btn-small btn-success"><i class="icon-play"></i></a> ';
+                    			}
+                    		ret = '<div class="shortcuts">' + lock + '</div>';
+                     return ret;
+                     }
+                     },
                      {% endif %}
                      
          ]
 } );
+
+
+
 });
 
 	function showDetails(cluster, instance){

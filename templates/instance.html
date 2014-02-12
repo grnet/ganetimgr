@@ -149,25 +149,32 @@
 					<tr><td class="">{% trans "Created on" %}</td><td>{{ instance.ctime|date }}</td></tr>
 					<tr><td class="">{% trans "Last modified" %}</td><td>{{ instance.mtime|date }}</td></tr>
 					
-					<tr><td class="">{% trans "Users" %}</td><td>
-						{% for u in instance.users %}
-						<a class="btn" href="{% if user.is_superuser %}{% url user-info type='user' usergroup=u.username %}{% else %}#{% endif %}"><i class="icon-user"></i> {{u.username}}</a>
-						{% endfor %}
-						{% for g in instance.groups %}
-						<a class="btn" href="{% if user.is_superuser %}{% url user-info type='group' usergroup=g.name %}{% else %}#{% endif %}"><i class="icon-group"></i> {{g.name}}</a>
-						{% endfor %}
-						
+					<tr><td class="">{% trans "Owners" %}</td><td>
+						{% if user.is_superuser or perms.ganeti.view_instances %}
+							{% for u in instance.users %}
+							<a class="btn" href="{% if user.is_superuser %}{% url user-info type='user' usergroup=u.username %}{% else %}#{% endif %}"><i class="icon-user"></i> {{u.username}}</a>
+							{% endfor %}
+							{% for g in instance.groups %}
+							<a class="btn" href="{% if user.is_superuser %}{% url user-info type='group' usergroup=g.name %}{% else %}#{% endif %}"><i class="icon-group"></i> {{g.name}}</a>
+							{% endfor %}
+						{% else %} 
+							{% for u in instance.users %}
+							<span class="label label-inverse"><i class="icon-user"></i> {{u.username}}</span>
+							{% endfor %}
+							{% for g in instance.groups %}
+							<span class="label label-inverse"><i class="icon-group"></i> {{g.name}}</span>
+							{% endfor %} 
+							<a href="#" class="btn btn-info btn-small" onclick="javascript:showTags('{{instance.cluster.slug}}','{{instance.name}}'); return false;"><i class="icon-sitemap"></i> {% trans "Manage Owners" %}</a>
+						{% endif %}
 						</td></tr>
-					
+					{% if user.is_superuser or perms.ganeti.view_instances %}
 					<tr><td class="">{% trans "Admin Options" %}</td><td>
 						<div class="btn-group">
                              <button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> {% trans "Options" %} <span class="caret"></span></button>
                              <ul class="dropdown-menu instanceopt pull-right">
-                             	{% if user.is_superuser %}
+                             	
                                <li><a href="#" onclick="javascript:showDetails('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Details" %}</a></li>
-                               {% endif %}
                                <li><a href="#" onclick="javascript:showTags('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Tags" %}</a></li>
-                               {% if user.is_superuser %}
                                <li><a href="#" onclick="javascript:showNotify('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Notify" %}</a></li>
                                {% if instance.adminlock %}
                     			 <li><a href="#" onclick="javascript:showLock('{{instance.cluster.slug}}','{{instance.name}}', 'unlock'); return false;">{% trans "Unlock" %}</a></li>
@@ -186,6 +193,7 @@
     					<tr><td class="">{% trans "Application" %}</td><td><a href="{% url application-review instance.application.pk %}">#{{instance.application.pk}}</a></td></tr>
     					{% endif %}
 					{% endif %}
+					
                 </tbody>
             </table>
         </div>
@@ -398,7 +406,7 @@ $(function() {
 });
 	function showTags(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
-		$( "#myModalLabelservdets" ).text('Instance Tags: '+instance);
+		$( "#myModalLabelservdets" ).text('Instance Owners: '+instance);
 		$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"");
 		$( "#instDets" ).modal('show');
 		return false;

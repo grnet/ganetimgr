@@ -335,7 +335,9 @@ def generate_json(instance, user):
         inst_dict['pnode'] = i.pnode
     else:
         inst_dict['cluster'] = i.cluster.description
+        inst_dict['clusterslug'] = i.cluster.slug
     inst_dict['memory'] = memsize(i.beparams['memory'])
+    inst_dict['disk'] = ", ".join(disksizes(i.disk_sizes))
     inst_dict['vcpus'] = i.beparams['vcpus']
     inst_dict['ipaddress'] = [ip for ip in i.nic_ips if ip]
     if not user.is_superuser and not user.has_perm('ganeti.view_instances'):

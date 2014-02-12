@@ -295,6 +295,7 @@ def instance_ssh_keys(request, application_id, cookie):
 @login_required
 def pass_notify(request):
     user = User.objects.get(username=request.user)
+    up = user.get_profile().force_logout()
     if user.email:
         fqdn = Site.objects.get_current().domain
         email = render_to_string("pass_change_notify_mail.txt",
