@@ -31,10 +31,10 @@ class UserProfile(models.Model):
         self.save()
 
 def create_user_profile(sender, instance, created, **kwargs):
-    if created:
+    if created and not kwargs.get('raw', False):
         UserProfile.objects.create(user=instance)
 
-post_save.connect(create_user_profile, sender=User)
+post_save.connect(create_user_profile, sender=User, dispatch_uid='create_UserProfile')
 
 def update_session_last_login(sender, user, request, **kwargs):
     if request:
