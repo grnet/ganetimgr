@@ -323,7 +323,7 @@ $(document).ready( function(){
                              '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
                              '<ul class="dropdown-menu instanceopt">'+
                                '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a></li>'+
-                               '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Tags" %}</a></li>'+
+                               '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Owners" %}</a></li>'+
                                '<li><a href="#" onclick="javascript:showNotify(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Notify" %}</a></li>'+
                                lock + isolate +
                              '</ul>'+
@@ -389,7 +389,7 @@ $(document).ready( function(){
 	
 	function showTags(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
-		$( "#myModalLabelservdets" ).text('Instance Tags: '+instance);
+		$( "#myModalLabelservdets" ).text('Instance Owners: '+instance);
 		$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"");
 		$( "#instDets" ).modal('show');
 		return false;
