@@ -73,7 +73,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'ganetimgr.middleware.UserMessages.UserMessageMiddleware',
-#    'middleware.MobileDetectionMiddleware.MobileDetectionMiddleware',
 )
 
 STATIC_URL = '/static'
@@ -305,8 +304,8 @@ NOVNC_PROXY = "example.com:8888"
 NOVNC_USE_TLS = True
 
 # This section affects the way banners, logos and footers are displayed. If no social networks is to be displayed, 
-set SOCIAL_NETWORKS to an empty list - []. Inside the static/branging folder you can find the logo.png and logo.xcf 
-blank logos. 
+# set SOCIAL_NETWORKS to an empty list - []. Inside the static/branging folder you can find the logo.png and logo.xcf 
+# blank logos. 
 BRANDING = {
             "SERVICE_PROVIDED_BY": {
                                     "NAME":"ACME ORG", 
