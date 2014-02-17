@@ -52,7 +52,8 @@ Create a settings file for the django application::
 
 Edit the settings.py file and change the django database config to match your setup. Pay attention to the following::
 
-    Change STATIC_URL to STATIC_URL = '/static/' and STATIC_ROOT to STATIC_ROOT = '/srv/www/ganetimgr/static/'
+    Change STATIC_URL to the url serving your static files, eg. STATIC_URL = 'https://example.com/static' 
+    and STATIC_ROOT to STATIC_ROOT = '/srv/www/ganetimgr/static/'
     TEMPLATE_DIRS to TEMPLATE_DIRS = (
         '/srv/www/ganetimgr/templates',
     )
@@ -128,10 +129,14 @@ and the superuser::
     python manage.py createsuperuser
 
 .. attention::
-   If installing for the first time do not forget to copy templates/analytics.html.dist 
-   to templates/analytics.html. Set your prefered (we suggest piwik) analytics inclussion 
-   script in templates/analytics.html or leave the file empty if no analytics 
+   If installing for the first time and want to have analytics, alter the templates/analytics.html file.
+   Set your prefered (we suggest piwik) analytics inclussion script or leave the file as is (commented) if no analytics 
    is desired/available.
+
+To get the admin interface files, invoke collectstatic::
+
+	python manage.py collectstatic
+
 
 Run the watcher.py::
 
@@ -174,13 +179,6 @@ Restart nginx and gunicorn::
 
     service nginx restart
     service gunicorn restart
-
-
-If your admin page does not display properly (missing css, js files), collect your static files::
-
-	python manage.py collectstatic
-
-and restart gunicorn.
 
 
 
