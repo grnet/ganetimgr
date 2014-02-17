@@ -21,23 +21,28 @@
 
 	var rfb;
 	var vnc_canvas;
+	var ctrlOn = false;
+	var altOn = false;
 
-	Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js", "keysymdef.js", "keyboard.js", "input.js", "display.js", "jsunzip.js", "rfb.js"]);
+	Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js", "keysymdef.js", "keyboard.js", "input.js", "display.js", "jsunzip.js", "rfb.js", "keysym.js"]);
 
 	window.onscriptsload = function() {
 		var rfb;
 		var connect = $('#connect');
 		var connected = false;
 		var ctrlaltdelete = $('#ctrlaltdelete');
+		var toggleCtrlButton = $('#toggleCtrlButton');
+		var toggleAltButton = $('#toggleAltButton');
 		var vnc_errors = $("#vnc_errors");
 		var vnc_status_bar = $("#VNC_status_bar");
 		var vnc_canvas = $('#VNC_canvas');
 		var vnc_screen = $('#VNC_screen');
 		ctrlaltdelete.addClass('disabled');
+		toggleCtrlButton.addClass('disabled');
+		toggleAltButton.addClass('disabled');
 
 		function stop() {
 			var rfb;
-			console.log('load');
 			if (rfb != undefined) {
 				rfb.disconnect();
 				rfb = undefined;
@@ -107,12 +112,16 @@
 				connected = true;
 				connect.addClass('enabled').removeClass('btn-success').addClass('btn-danger').text('Disconnect');
 				ctrlaltdelete.removeClass('disabled');
+				toggleCtrlButton.removeClass('disabled');
+				toggleAltButton.removeClass('disabled');
 				vnc_canvas.addClass("connected");
 			} else {
 				vnc_canvas.removeClass("connected");
 				connected = false;
 				connect.removeClass('enabled').removeClass('btn-danger').addClass('btn-success').text('Connect');
 				ctrlaltdelete.addClass('disabled');
+				toggleCtrlButton.addClass('disabled');
+				toggleAltButton.addClass('disabled');
 			}
 
 			if (msg != undefined) {
@@ -139,6 +148,36 @@
 			if (!$(this).hasClass('disabled')) {
 				rfb.sendCtrlAltDel();
 			}
+		});
+		toggleCtrlButton.click(function(event) {
+			event.preventDefault();
+			if (!$(this).hasClass('disabled')) {
+				if(ctrlOn === false) {
+        			rfb.sendKey(XK_Control_L, true);
+        			$(this).button('toggle');
+        			ctrlOn = true;
+    		} else if(ctrlOn === true) {
+        		rfb.sendKey(XK_Control_L, false);
+        		$(this).button('toggle');
+        		ctrlOn = false;
+    		}
+			}
+			return false;
+		});
+		toggleAltButton.click(function(event) {
+			event.preventDefault();
+			if (!$(this).hasClass('disabled')) {
+				if(altOn === false) {
+        			rfb.sendKey(XK_Alt_L, true);
+        			$(this).button('toggle');
+        			altOn = true;
+    		} else if(altOn === true) {
+        		rfb.sendKey(XK_Alt_L, false);
+        		$(this).button('toggle');
+        		altOn = false;
+    		}
+			}
+			return false;
 		});
 
 		$(window).bind("unload", stop);
@@ -173,6 +212,9 @@
 			<button class="btn" id="ctrlaltdelete">
 				Ctrl+Alt+Del
 			</button>
+			
+			 <button id="toggleCtrlButton" class="btn">Toggle Ctrl</button>
+			 <button id="toggleAltButton" class="btn">Toggle Alt</button>
 			<div id="VNC_screen">
 				<span id="VNC_status_bar" class="label label-info">Click Connect to... connect</span>
 				<br>
