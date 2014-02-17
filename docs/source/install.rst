@@ -120,12 +120,12 @@ Software Setup
 
 Run the following commands to create the database entries::
 
-    ./manage.py syncdb
-    ./manage.py migrate
+    python manage.py syncdb
+    python manage.py migrate
 
 and the superuser::
 
-    ./manage.py createsuperuser
+    python manage.py createsuperuser
 
 .. attention::
    If installing for the first time do not forget to copy templates/analytics.html.dist 
