@@ -296,10 +296,6 @@ WHITELIST_IP_MAX_SUBNET_V6 = 64
 # TODO: Investigate twitter support
 FEED_URL=None
 
-# If you want to keep your users up-to-date you can display an RSS feed with news/updates, else leave it to None
-# TODO: Add twitter support (maybe)
-FEED_URL=None
-
 
 # Choose whether to support websockets console or not. 
 WEBSOCK_VNC_ENABLED = False
