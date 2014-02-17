@@ -1,3 +1,34 @@
+1.4.0 RELEASE
+Bugfixing/Major feature enhancements. Debian wheezy/Django 1.4 compatibility
+
+Requirements:
+	- Set the FEED_URL to an RSS news feed if desired
+	- Setup WebSockets VNCAuthProxy if desired
+	- If WebSockets NoVNC is setup, set the WEBSOCK_VNC_ENABLED to True
+	and the NOVNC_PROXY and NOVNC_USE_TLS to match your setup
+	- Update the BRANDING dict to match your needs
+	- Perform south migration
+
+Fixes:
+	- Handle Xen-PVM hypervisor missing cdrom_image_path in instance listing
+	- Fix major issue with signal received twice upon profile creation
+
+Features/Functionality:
+	- Debian wheezy/Django 1.4 compatibility
+	- Add support for django-registration>=0.8
+	- Add RSS feed support to display service news to users
+	- NoVNC/Websockets support
+	- Block VM creation per cluster via disabled network selection
+	- Increase security with session timeout & passchange logout
+	- Patch redis Django client to support the redis keys() function
+	- Implement clear cache for admins
+	- Allow users to change their instance owners
+	- Enhancements for users. Add disks and instance action shortcuts in VM listing
+	- Check for unique email upon user registration
+	- Branding features (logo, motto, footer, etc)
+
+===========
+
 1.3.0 RELEASE
 Bugfixing/Major feature enhancements
 

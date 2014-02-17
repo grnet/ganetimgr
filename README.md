@@ -14,10 +14,9 @@ For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.
 
 ## Analytics Setup
 
-If installing for the first time do not forget to copy `templates/analytics.html.dist` 
-to `templates/analytics.html`.
+If installing for the first time do not forget to alter `templates/analytics.html` to suit your needs.
 
-If you do not wish to use analytics, leave this file empty.
+If you do not wish to use analytics, leave this file intact (it is commented with Django template comments).
 
 Set your prefered (we use piwik) analytics inclussion script in templates/analytics.html:  
 Eg.
@@ -40,6 +39,19 @@ Eg.
 ```
 
 ## Changelog
+
+### Migrating to v.1.4.0
+Debian wheezy/Django 1.4 compatibility
+
+settings.py:
+ - Set the FEED_URL to an RSS news feed if desired
+ - Setup WebSockets VNCAuthProxy if desired
+ - If WebSockets NoVNC is setup, set the WEBSOCK_VNC_ENABLED to True
+   and the NOVNC_PROXY and NOVNC_USE_TLS to match your setup
+ - Update the BRANDING dict to match your needs
+ - Perform south migration
+
+======================================================================
 
 ### Migrating to v.1.3.0
 
