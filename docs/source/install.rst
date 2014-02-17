@@ -14,7 +14,7 @@ Update and install the required packages (you will be asked for a mysql username
 
     apt-get update
     apt-get upgrade
-    apt-get install git nginx mysql-server python-mysqldb python-django python-redis python-django-south python-django-registration python-django-extensions python-paramiko python-simplejson python-daemon python-setproctitle python-pycurl python-recaptcha python-ipaddr beanstalkd
+    apt-get install git nginx mysql-server python-mysqldb python-django python-redis python-django-south python-django-registration  python-paramiko python-simplejson python-daemon python-setproctitle python-pycurl python-recaptcha python-ipaddr beanstalkd
     apt-get install redis-server
     apt-get install gunicorn python-gevent
 
