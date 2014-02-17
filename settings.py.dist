@@ -308,3 +308,25 @@ WEBSOCK_VNC_ENABLED = False
 NOVNC_PROXY = "example.com:8888"
 NOVNC_USE_TLS = True
 
+# This section affects the way banners, logos and footers are displayed. If no social networks is to be displayed, 
+set SOCIAL_NETWORKS to an empty list - []. Inside the static/branging folder you can find the logo.png and logo.xcf 
+blank logos. 
+BRANDING = {
+            "SERVICE_PROVIDED_BY": {
+                                    "NAME":"ACME ORG", 
+                                    "URL":"http://acme.org",
+                                    "SOCIAL_NETWORKS":[
+                                                       {"URL":"//facebook.com/acme.org", 
+                                                        "FONT_AWSOME_NAME":"icon-facebook-sign",
+                                                         "FONT_COLOR": "#3b5998"},
+                                                       {"URL":"//twitter.com/acme", 
+                                                        "FONT_AWSOME_NAME":"icon-twitter-sign",
+                                                         "FONT_COLOR": "#00acee"},
+                                                        ]
+                                    },
+            "LOGO": "/static/logo.png",
+            "MOTTO": "virtual private servers",
+            "FOOTER_ICONS_IFRAME":  False,
+            }
+
+

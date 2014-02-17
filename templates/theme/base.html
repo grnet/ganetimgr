@@ -172,9 +172,13 @@ label.required { font-weight: bold; }
                     {% endif %}
                 </ul>
                 <a  href="{% url user-instances %}">
-					<img class="logoimg brand brandimg" src="/static/grnet_logo.png">				
+                	{% if BRANDING.LOGO %}
+					<img class="logoimg brand brandimg" src="{{BRANDING.LOGO}}">
+					{% endif %}				
                 </a>
-                <span class="brand brandtext">virtual private servers</span>
+                {% if BRANDING.MOTTO %}
+                <span class="brand brandtext">{{BRANDING.MOTTO}}</span>
+                {% endif %}
         </div>
     </div>
     {% block navbars %}
@@ -282,19 +286,22 @@ label.required { font-weight: bold; }
 
 <footer class="footer">
       <div class="container" id="footcontainer">
-        
-	<div style="padding-top: 10px;">{% trans "This is a service provided by" %} <a target="_blank" href="//noc.grnet.gr">GRNET NOC</a>
-	
-	<a target="_blank" href="//facebook.com/noc.grnet.gr"><font style="color:#3b5998; font-size: 30px"><i class="icon-facebook-sign"></i></font></a>  
-	
-	<a target="_blank" href="//twitter.com/grnetnoc"><font style="color:#00acee; font-size: 30px"><i class="icon-twitter-sign"></i></font></a>  
-	
+    {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
+	<div style="padding-top: 10px;">{% trans "This is a service provided by" %} {% if BRANDING.SERVICE_PROVIDED_BY.URL %}<a target="_blank" href="//noc.grnet.gr">{% endif %}{% if BRANDING.SERVICE_PROVIDED_BY.NAME %}{{BRANDING.SERVICE_PROVIDED_BY.NAME}}{% endif %}{% if BRANDING.SERVICE_PROVIDED_BY.URL %}</a>{% endif %}
+	{% endif %}
+	{% if BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
+		{% for sn in BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
+			<a target="_blank" href="{{sn.URL}}"><font style="color:{{sn.FONT_COLOR|safe}}; font-size: 30px"><i class="{{sn.FONT_AWSOME_NAME}}"></i></font></a>  
+		{% endfor %}  
+	{% endif %}
 	</div>
 	<div style="padding-top: 10px;"><a href="/about/info/{{ LANGUAGE_CODE }}">{% trans "Info" %}</a> | <a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">{% trans "Service Terms" %}</a></div>
 		<div style="padding-top: 10px;">Powered by <a href="https://code.grnet.gr/projects/ganetimgr/">ganetimgr</a> v{{VERSION}}</div>
 	
       </div>
+      {% if BRANDING.FOOTER_ICONS_IFRAME %}
 		{% include "banners.html" %}
+	{% endif %}
     </footer>
     {% include "analytics.html" %}
   </body>
