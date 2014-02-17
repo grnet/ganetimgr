@@ -31,7 +31,7 @@ ganetimgr has been tested with ganeti versions 2.4-2.9. Unless something really 
 
 Installation
 ============
-For the time, installation requires the inclussion of GRNET's repository in your sources, but we are working hard to overcome such minor issues. You can go through the installation at the :doc:`Install ganetimgr <install>` section.
+You can go through the installation at the :doc:`Install ganetimgr <install>` section.
 
 .. toctree::
    :maxdepth: 2
