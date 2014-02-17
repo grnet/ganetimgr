@@ -75,8 +75,8 @@ MIDDLEWARE_CLASSES = (
     'ganetimgr.middleware.UserMessages.UserMessageMiddleware',
 )
 
-STATIC_URL = '/static'
-STATIC_ROOT = '/path/to/static'
+STATIC_URL = 'https://example.com/static/'
+STATIC_ROOT = '/path/to/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
