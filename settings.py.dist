@@ -119,7 +119,7 @@ INSTALLED_APPS = (
     'ganetimgr.apply',
     'ganetimgr.notifications',
     'ganetimgr.stats',
-    'django_extensions',
+    #'django_extensions',
 )
 
 RAPI_CONNECT_TIMEOUT = 3
