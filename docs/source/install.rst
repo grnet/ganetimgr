@@ -176,6 +176,14 @@ Restart nginx and gunicorn::
     service gunicorn restart
 
 
+If your admin page does not display properly (missing css, js files), collect your static files::
+
+	python manage.py collectstatic
+
+and restart gunicorn.
+
+
+
 WebSockets
 ==========
 
