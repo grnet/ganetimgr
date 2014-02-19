@@ -112,7 +112,9 @@ The above ensures that i18n operates properly when switching between languages.
 
 ## License
 Copyright © 2010-2014 Greek Research and Technology Network (GRNET S.A.)
+
 Copyright © 2010-2012 Apollon Oikonomopoulos (@apoikos)
+
 Copyright © 2011-2014 Leonidas Poulopoulos (@leopoul)
 
 Permission to use, copy, modify, and/or distribute this software for any
