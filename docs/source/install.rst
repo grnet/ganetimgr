@@ -69,7 +69,7 @@ Then set your cache backend::
 
 Set your supported operating systems via the corresponding OPERATING_SYSTEMS dict-of-dicts variable.
 
-Set your re-CAPTCHA keys::
+Set your re-CAPTCHA keys. Generate a key pair here: http://www.google.com/recaptcha ::
 
     RECAPTCHA_PUBLIC_KEY = '<key>'
     RECAPTCHA_PRIVATE_KEY = '<key>'
