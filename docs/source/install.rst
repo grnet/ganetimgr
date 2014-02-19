@@ -7,6 +7,9 @@ ganetimgr installation
 .. note::
     This guide assumes a clean debian wheezy (stable) installation
 
+.. attention::
+    If updating from a squeeze installation, pay attention to changes in setting.py
+
 Install packages
 ----------------
 

@@ -44,6 +44,9 @@ Eg.
 Debian wheezy/Django 1.4 compatibility
 
 settings.py:
+ - If migrating from a squeeze installation pay attention to
+   Django 1.4 changes as depicted in settings.py file, especially the
+   introduction of the staticfiles django app
  - Set the FEED_URL to an RSS news feed if desired
  - Setup WebSockets VNCAuthProxy if desired
  - If WebSockets NoVNC is setup, set the WEBSOCK_VNC_ENABLED to True
