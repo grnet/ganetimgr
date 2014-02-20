@@ -189,7 +189,7 @@ WebSockets
 ==========
 
 To enable WebSocket support you will need to install VNCAuthProxy following the guides of OSL:
-https://code.osuosl.org/projects/twisted-vncauthproxy and https://code.osuosl.org/projects/ganeti-webmgr/wiki/VNC#VNC-AuthProxy
+https://github.com/osuosl/twisted_vncauthproxy and https://code.osuosl.org/projects/ganeti-webmgr/wiki/VNC#VNC-AuthProxy
 
 You will also need at least the following packages: python-twisted, python-openssl
 
