@@ -237,7 +237,7 @@ label.required { font-weight: bold; }
             {% endif %}
             <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="icon-user"></i> <span>{% trans "My Profile" %}</span></a></li>
             {% if FEED_URL %}
-             <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="icon-rss"></i> <span>{% trans "Latest News" %}</span></a></li>
+             <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="icon-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
              {% endif %}
             {% if user.is_superuser %}
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
