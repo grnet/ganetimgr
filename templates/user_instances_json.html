@@ -132,10 +132,13 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
 } );
+
+
+
 $(document).ready( function(){
     
 
-	$('#vm_instance_table').dataTable( {
+	var oTable = $('#vm_instance_table').dataTable( {
 		"bPaginate": true,
 	    "bFilter": true,
 	    "bAutoWidth": true,
@@ -429,8 +432,15 @@ $(document).ready( function(){
                      
          ]
 } );
-
-
+  $(window).resize(function() {
+    clearTimeout(window.refresh_size);
+    window.refresh_size = setTimeout(function() { update_size(); }, 250);
+  });
+  
+var update_size = function() {
+    $(oTable).css({ width: $(oTable).parent().width() });
+    oTable.fnAdjustColumnSizing(); 
+  }
 
 });
 
