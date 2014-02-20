@@ -158,9 +158,9 @@ Edit /etc/gunicorn.d/ganetimgr::
             '--workers=2',
             '--worker-class=egg:gunicorn#gevent',
             '--timeout=30',
-                    '--debug',
+            '--debug',
             '--log-level=debug',
-            '--log-file=/tmp/ganetimgr.log',
+            '--log-file=/var/log/ganetimgr.log',
         ),
     }
 
@@ -189,7 +189,9 @@ WebSockets
 ==========
 
 To enable WebSocket support you will need to install VNCAuthProxy following the guides of OSL:
-https://code.osuosl.org/projects/twisted-vncauthproxy and https://code.osuosl.org/projects/ganeti-webmgr/wiki/VNC#VNC-AuthProxy
+https://github.com/osuosl/twisted_vncauthproxy and https://code.osuosl.org/projects/ganeti-webmgr/wiki/VNC#VNC-AuthProxy
+
+You will also need at least the following packages: python-twisted, python-openssl
 
 Start your twisted-vncauthproxy with::
 
@@ -197,7 +199,25 @@ Start your twisted-vncauthproxy with::
 
 Make sure your setup fullfils all the required firewall rules (https://code.osuosl.org/projects/ganeti-webmgr/wiki/VNC#Firewall-Rules)
 
+The relevant options in settings.py are::
 
+    WEBSOCK_VNC_ENABLED = True
+    NOVNC_PROXY = "example.domain.com:8888"
+
+Modern browsers block ws:// connections initiated from HTTPS websites, so if you want to open wss:// connections and encrypt your noVNC sessions you need to edit settings.py and set::
+
+    NOVNC_USE_TLS = True
+
+Then you will also need signed a certificate for the 'example.domain.com' host and place it under twisted-vncauthproxy/keys directory. The paths are currently hardcoded so one needs to install these 2 files (keep the filenames)::
+
+    twisted_vncauthproxy/keys/vncap.crt
+    twisted_vncauthproxy/keys/vncap.key
+
+
+IPv6 Warning
+""""""""""""
+Since twisted (at least until version 12) does not support IPv6, make sure the host running twisted-vncauthproxy
+does not advertise any AAAA records, else your clients won't be able to connect.
 
 Now what?
 =========
