@@ -145,7 +145,7 @@
 					{% if user.is_superuser or perms.ganeti.view_instances %}
 					<tr><td class="">Networks</td><td>{{ instance.netw|join:", " }}</td></tr>
 					{% endif %}
-					{% if instance.services %}<tr><td class="">Services</td><td>{% for service in instance.services %}{% if service == "mail" %}<i class="icon-envelope"></i>{% else %}{{service}} {% endif %}{% endfor %}</td></tr>{% endif %}
+					{% if instance.services %}<tr><td class="">Services</td><td>{% for service in instance.services %}{% if service == "mail" %}<i class="icon-envelope" title="{{service}}" data-toggle="tooltip"></i>{% else %}{{service}} {% endif %}{% endfor %}</td></tr>{% endif %}
 					<tr><td class="">{% trans "Created on" %}</td><td>{{ instance.ctime|date }}</td></tr>
 					<tr><td class="">{% trans "Last modified" %}</td><td>{{ instance.mtime|date }}</td></tr>
 					
