@@ -1,10 +1,10 @@
 ganetimgr
 =========
 
-ganetimgr is a web platform that eases the provisioning of virtual machines over miltiple ganeti clusters. 
+ganetimgr is a web platform that eases the provisioning of virtual machines over miltiple ganeti clusters.
 It leverages Ganeti's RAPI functionality to administrer the clusters and is stateless from the vm perspective.
 The project is written in Django and uses Bootstrap for the frontend.
-In essence, ganetimgr aims to be the frontend of a VPS service. 
+In essence, ganetimgr aims to be the frontend of a VPS service.
 
 The main project repository is at [code.grnet.gr](https://code.grnet.gr/projects/ganetimgr).
 
@@ -18,7 +18,7 @@ If installing for the first time do not forget to alter `templates/analytics.htm
 
 If you do not wish to use analytics, leave this file intact (it is commented with Django template comments).
 
-Set your prefered (we use piwik) analytics inclussion script in templates/analytics.html:  
+Set your prefered (we use piwik) analytics inclussion script in templates/analytics.html:
 Eg.
 ```javascript
 <!-- Piwik -->
@@ -40,6 +40,11 @@ Eg.
 
 ## Changelog
 
+### Migrating to v.1.4.1
+Bugfix release
+
+	- No major actions required. This release introduces cosmetic enhancements
+
 ### Migrating to v.1.4.0
 Debian wheezy/Django 1.4 compatibility
 
@@ -58,7 +63,7 @@ settings.py:
 
 ### Migrating to v.1.3.0
 
- - Set the WHITELIST_IP_MAX_SUBNET_V4/V6 to desired max 
+ - Set the WHITELIST_IP_MAX_SUBNET_V4/V6 to desired max
 	whitelist IP subnets in settings.py
  - Perform south migration
 
@@ -70,7 +75,7 @@ If you deploy Jira and want to set custom javascript parameters, set
 ```
 HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = { 'key' : 'value' # eg. 'customfield_23123': '1stline' }
 ```
-In any other case set 
+In any other case set
 ```
 HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = False
 ```
@@ -105,8 +110,8 @@ in your nginx site location part and
 ```
 USE_X_FORWARDED_HOST = True
 ```
-in your settings.py. 
-The above ensures that i18n operates properly when switching between languages. 
+in your settings.py.
+The above ensures that i18n operates properly when switching between languages.
 
 =====================================================================
 

@@ -1,3 +1,18 @@
+1.4.1 RELEASE
+Bugfixing release
+
+Fixes/Enhancements:
+	- Fix issue with inputfields not being resized properly on window resize. This closes #1 (reported via github)
+	- Add django widget twaeks to ease form field rendering with bootstrap params
+	- Resize datatable on page resize. This closes #2 (reported via github)
+	- Add tooltip on mail service. This closes #3 (reported via github)
+	- Add shortcuts confirmation. This closes #5 (reported via github)
+	- Instructions on github for twisted-vncauthproxy are more up-to-date
+	- Documentation fixes regarding usage of twisted-vncauthproxy
+	- Change news icon. This closes #6 (reported via github)
+
+===========
+
 1.4.0 RELEASE
 Bugfixing/Major feature enhancements. Debian wheezy/Django 1.4 compatibility
 
@@ -34,17 +49,17 @@ Features/Functionality:
 Bugfixing/Major feature enhancements
 
 Requirements:
-	- Set the WHITELIST_IP_MAX_SUBNET_V4/V6 to desired max 
+	- Set the WHITELIST_IP_MAX_SUBNET_V4/V6 to desired max
 	whitelist IP subnets in settings.py
 	- Perform south migration
 
 Fixes:
 	- Minor UI fixes
 	- Some minor typo errors fixes
-	- Fix issues with new ganeti version and invalid 
+	- Fix issues with new ganeti version and invalid
 	bridged ntwrk request
 	- Ignore hostname checks if a reject occurs. This closes #4726
-	- Update theme template with view apps perm. 
+	- Update theme template with view apps perm.
 	Fix responsive hidden menu issue
 
 Functionality:
@@ -120,7 +135,7 @@ Requirements:
 	- Set the RAPI_TIMEOUT in settings.py (see .dist)
 	- Set the NODATA_IMAGE path in settings.py.dist
 	- Update urls.py to urls.py.dist
-	- Copy templates/analytics.html.dist to templates/analytics.html and change 
+	- Copy templates/analytics.html.dist to templates/analytics.html and change
 	provider if needed or leave the file empty
 
 Functionality:
@@ -166,7 +181,7 @@ Requirements:
 	-new statements in settings.py.dist (make sure you update settings.py)
 	-new urls in urls.py.dist (make sure you update urls.py)
 	-python-ipaddr lib to generate IPv6 statements
-	
+
 
 Functionality:
 	-Added platrofm statistics
@@ -187,11 +202,11 @@ UI:
 	-Inclusion of jquery select2 lib
 	-Inclusion of highcharts with json data
 	-Embed ticketing system report (Jira)
-	
+
 Core functions:
 	-Dual caching layer
 	-Instance fetching via JSON
 	-Performance boosting with abstraction layers
-	
+
 
 
