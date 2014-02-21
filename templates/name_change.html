@@ -1,3 +1,5 @@
+	{% load widget_tweaks %}
+
 <div id="user_namechange_placeholder" class="padwidget">
 <script>
 	$(document).ajaxSend(function(event, xhr, settings) {
@@ -57,11 +59,19 @@
 <div><strong>{{user}}</strong>, {% trans "enter your first and last name" %}.</div> 
 <div>{% trans "Your name" %}{% if changed %} {% trans "was successfully changed" %}{% endif %}: <strong>{% ifequal name|length 0 %}{% trans "we don't know your name yet" %}{% else %}{{name}}{% endifequal %}</strong></div>
 <form method="POST" id="change_name_form" class="form">
-{% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-<button id="change_name_btn" class="btn btn-success">{% trans "Change" %}</button>
-</form>
-
+				{% csrf_token %}
+				{% for field in form %}
+                  <div class="control-group {% if field.errors %}error{% endif %}">
+                   <div class="controls">
+                   	{% render_field field class+="input-xlarge" style+="width:95%;" placeholder=field.label|capfirst  %}
+                    {% if field.errors %}
+                    <span class="help-block"> {{ field.errors|join:", " }} </span>
+            		{% endif %}
+                    </div>
+                </div>
+				{% endfor %}
+                <div class="control-group">
+			<div class="controls">
+			<button id="change_name_btn" class="btn btn-success">{% trans "Change" %}</button>
+			</form>
 </div>

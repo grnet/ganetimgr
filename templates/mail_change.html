@@ -1,4 +1,7 @@
+
 {% load i18n %}
+	{% load widget_tweaks %}
+
 <div id="usermailchange_placeholder" class="padwidget">
 {% if pending %}
 <div class="alert alert-info">{% trans "There is a pending mail change request on your behalf. Check your e-mails for an activation link." %}</div> 
@@ -66,11 +69,21 @@
 <div>{% trans "Once you submit this form you will receive an activation email with instructions on how to proceed" %}</div> 
 <div>{% trans "Your e-mail" %} {% if changed %} {% trans "has successfully changed to" %} {% endif %}: <strong>{% ifequal mail|length 0 %} {% trans "you have not registered an address yet" %} {% else %}{{mail}}{% endifequal %}</strong></div>
 <form method="POST" id="change_email_form" class="form">
-{% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-<button id="change_email_btn" class="btn btn-success">{% trans "Change email" %}</button>
-</form>
+				{% csrf_token %}
+				{% for field in form %}
+                  <div class="control-group {% if field.errors %}error{% endif %}">
+                   <div class="controls">
+                   	{% render_field field class+="input-xlarge" style+="width:95%;" placeholder=field.label|capfirst  %}
+                    {% if field.errors %}
+                    <span class="help-block"> {{ field.errors|join:", " }} </span>
+            		{% endif %}
+                    </div>
+                </div>
+				{% endfor %}
+                <div class="control-group">
+			<div class="controls">
+			<button id="change_email_btn" class="btn btn-success">{% trans "Change email" %}</button>
+			</form>
 {% endif %}
 </div>
+

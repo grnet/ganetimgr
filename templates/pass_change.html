@@ -1,3 +1,5 @@
+	{% load widget_tweaks %}
+
 <div id="pass_form_placeholder" class="padwidget">
 <script>
 	$(document).ajaxSend(function(event, xhr, settings) {
@@ -57,8 +59,23 @@
 {% load i18n %}
 <strong>{{user}}</strong>, {% trans "please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly." %}
 <p><span class="label label-important">{% trans "Important" %}!</span> {% trans "Changing your password will log you out" %}</p>
-<form method="post" align="left" id="password_change_form" class="form">{% csrf_token %}
-{{form.as_p}}
-<button id="passformbtn" class="btn btn-success">{% trans "Change" %}</button>
-</form>
+<form method="POST" align="left" id="password_change_form" class="form">
+				{% csrf_token %}
+				{% for field in form %}
+                  <div class="control-group {% if field.errors %}error{% endif %}">
+                   <div class="controls">
+                   	{% render_field field class+="input-xlarge" style+="width:95%;" placeholder=field.label|capfirst  %}
+                    {% if field.errors %}
+                    <span class="help-block"> {{ field.errors|join:", " }} </span>
+            		{% endif %}
+                    </div>
+                </div>
+				{% endfor %}
+                <div class="control-group">
+			<div class="controls">
+			<button id="passformbtn" class="btn btn-success">{% trans "Change" %}</button>
+			</form>
 </div>
+
+
+
