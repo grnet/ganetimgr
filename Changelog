@@ -3,7 +3,7 @@ Bugfixing release
 
 Fixes/Enhancements:
 	- Fix issue with inputfields not being resized properly on window resize. This closes #1 (reported via github)
-	- Add django widget twaeks to ease form field rendering with bootstrap params
+	- Add django widget tweaks to ease form field rendering with bootstrap params
 	- Resize datatable on page resize. This closes #2 (reported via github)
 	- Add tooltip on mail service. This closes #3 (reported via github)
 	- Add shortcuts confirmation. This closes #5 (reported via github)
@@ -56,8 +56,7 @@ Requirements:
 Fixes:
 	- Minor UI fixes
 	- Some minor typo errors fixes
-	- Fix issues with new ganeti version and invalid
-	bridged ntwrk request
+	- Fix issues with new ganeti version and invalid bridged network request
 	- Ignore hostname checks if a reject occurs. This closes #4726
 	- Update theme template with view apps perm.
 	Fix responsive hidden menu issue
@@ -74,7 +73,7 @@ Functionality:
 	- Add any_permission decorator to applications listing
 	- Update context with view applications permission
 	- Update template with view applications permission
-	- Add a gnt network bool field in cluster model
+	- Add a gnt-network bool field in cluster model
 	- Add a status dict to count node roles
 	- Add services indicator starting with email icon. This closes #4653
 	- Link application hostname with instance view. This closes #4680
