@@ -1,3 +1,4 @@
+======================
 ganetimgr installation
 ======================
 
@@ -37,7 +38,7 @@ Create database and user::
 Excellent!
 
 Pre-Setup
---------------
+---------
 Get the source and checkout to latest stable::
 
     mkdir /srv/www/
@@ -81,7 +82,7 @@ If desired, enable LDAP authentication via the AUTH_LDAP_* variables.
 
 If you deploy a servermon instance (https://github.com/servermon/servermon) that generates statistics for your cluster nodes instances, enter its url at::
 
-	SERVER_MONITORING_URL
+    SERVER_MONITORING_URL
 
 to link a node with its servermon page.
 
@@ -89,32 +90,31 @@ to link a node with its servermon page.
 If you deploy a Jira installation then you can append a tab on the left of ganetimgr web interface via an issue
 collection plugin that can be setup via::
 
-	HELPDESK_INTEGRATION_JAVASCRIPT_URL
-	HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS
+    HELPDESK_INTEGRATION_JAVASCRIPT_URL
+    HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS
 
 If you want to embed collectd statistics in ganetimgr instance page fill the::
 
-	COLLECTD_URL
+    COLLECTD_URL
 
 You can limit the whitelisted subnets (in case of isolated instances) available via::
 
-	WHITELIST_IP_MAX_SUBNET_V4
-	WHITELIST_IP_MAX_SUBNET_V6
+    WHITELIST_IP_MAX_SUBNET_V4
+    WHITELIST_IP_MAX_SUBNET_V6
 
 parameters
 
 
 If you want to keep your users updated with the latest news around the service, fill in an RSS feed url at::
 
-	FEED_URL
+    FEED_URL
 
 
 Eventually, you can change the logo, motto and some footer details via the::
 
-	BRANDING
+    BRANDING
 
 dictionary. You can create your own logo starting with the static/branding/logo.* files.
-
 
 Software Setup
 --------------
@@ -138,7 +138,7 @@ and the superuser::
 
 To get the admin interface files, invoke collectstatic::
 
-	python manage.py collectstatic
+    python manage.py collectstatic
 
 
 Run the watcher.py::
@@ -167,16 +167,16 @@ Edit /etc/gunicorn.d/ganetimgr::
 Add to your nginx config::
 
    location /static {
-          	root   /srv/www/ganetimgr;
-   	}
+          root   /srv/www/ganetimgr;
+   }
 
-   	location / {
-          	proxy_pass http://127.0.0.1:8088;
-   	}
+   location / {
+          proxy_pass http://127.0.0.1:8088;
+   }
 
-   	location /admin {
-          	proxy_pass http://127.0.0.1:8088;
-   	}
+   location /admin {
+          proxy_pass http://127.0.0.1:8088;
+   }
 
 Restart nginx and gunicorn::
 
@@ -184,9 +184,33 @@ Restart nginx and gunicorn::
     service gunicorn restart
 
 
+Analytics Setup
+***************
+
+If installing for the first time do not forget to alter `templates/analytics.html` to suit your needs.
+
+If you do not wish to use analytics, leave this file intact (it is commented with Django template comments).
+
+Set your preferred (we use piwik) analytics inclusion script in templates/analytics.html.
+Eg::
+    <!-- Piwik -->
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u=(("https:" == document.location.protocol) ? "https" : "http") + "://piwik.example.com//";
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', 1]);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+        g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <noscript><p><img src="http://piwik.example.com/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+    <!-- End Piwik Code -->
 
 WebSockets
-==========
+**********
 
 To enable WebSocket support you will need to install VNCAuthProxy following the guides of OSL:
 https://github.com/osuosl/twisted_vncauthproxy and https://code.osuosl.org/projects/ganeti-webmgr/wiki/VNC#VNC-AuthProxy
@@ -195,7 +219,7 @@ You will also need at least the following packages: python-twisted, python-opens
 
 Start your twisted-vncauthproxy with::
 
-	twistd --pidfile=/tmp/proxy.pid -n vncap -c tcp:8888:interface=0.0.0.0
+    twistd --pidfile=/tmp/proxy.pid -n vncap -c tcp:8888:interface=0.0.0.0
 
 Make sure your setup fullfils all the required firewall rules (https://code.osuosl.org/projects/ganeti-webmgr/wiki/VNC#Firewall-Rules)
 
@@ -220,7 +244,7 @@ Since twisted (at least until version 12) does not support IPv6, make sure the h
 does not advertise any AAAA records, else your clients won't be able to connect.
 
 Now what?
-=========
+---------
 You are done!!!
 
 If you visit your webserver's address you should see ganetimgr welcome page
@@ -228,7 +252,7 @@ If you visit your webserver's address you should see ganetimgr welcome page
 Now it's time to through the :doc:`Admin guide <admin>` to setup your application.
 
 Administration
-==============
+--------------
 
 .. toctree::
    :maxdepth: 2

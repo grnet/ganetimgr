@@ -12,33 +12,7 @@ The main project repository is at [code.grnet.gr](https://code.grnet.gr/projects
 
 For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.org/en/latest/) page.
 
-## Analytics Setup
-
-If installing for the first time do not forget to alter `templates/analytics.html` to suit your needs.
-
-If you do not wish to use analytics, leave this file intact (it is commented with Django template comments).
-
-Set your preferred (we use piwik) analytics inclusion script in templates/analytics.html:
-Eg.
-```javascript
-<!-- Piwik -->
-<script type="text/javascript">
-  var _paq = _paq || [];
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://piwik.example.com//";
-    _paq.push(['setTrackerUrl', u+'piwik.php']);
-    _paq.push(['setSiteId', 1]);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
-    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-  })();
-</script>
-<noscript><p><img src="http://piwik.example.com/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
-<!-- End Piwik Code -->
-```
-
-## Changelog
+## Actions needed on version upgrades
 
 ### Migrating to v.1.4.1
 Bugfix release
