@@ -22,7 +22,6 @@ from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
 from ganetimgr.notifications.forms import *
 from ganetimgr.ganeti.models import *
 from django.contrib.auth.decorators import login_required
@@ -173,7 +172,7 @@ def get_user_group_list(request):
         action = ret_list
         return HttpResponse(json.dumps(action), mimetype='application/json')
     else:
-        action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
+        action = {'error':"Permissions' violation. This action has been logged and our admins will be notified about it"}
         return HttpResponse(json.dumps(action), mimetype='application/json')
 
 def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
