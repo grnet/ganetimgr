@@ -30,7 +30,7 @@ Login to the mysql interface::
 
 Create database and user::
 
-    mysql> CREATE DATABASE ganetimgr;
+    mysql> CREATE DATABASE ganetimgr CHARACTER SET utf8;
     mysql> CREATE USER 'ganetimgr'@'localhost' IDENTIFIED BY '12345';
     mysql> GRANT ALL PRIVILEGES ON ganetimgr.* TO 'ganetimgr';
     mysql> flush privileges;
@@ -109,12 +109,25 @@ If you want to keep your users updated with the latest news around the service, 
 
     FEED_URL
 
-
-Eventually, you can change the logo, motto and some footer details via the::
+You can change the logo, motto and some footer details via the::
 
     BRANDING
 
 dictionary. You can create your own logo starting with the static/branding/logo.* files.
+
+Ganetimgr provides 3 flatpages - Service Info, Terms of Service and FAQ. Flatpages can be enabled or disabled via the::
+
+    FLATPAGES
+
+dictionary. 
+
+We provide 6 flatpages placeholders (3 flatpages x 2 languages - English and Greek) for the flatpages mentioned. By invoking the command::
+
+    python manage.py loaddata flatpages.json
+
+the flatpages placeholders are inserted in the database and become available for editing via the admin interface (Flat Pages).
+
+
 
 Software Setup
 --------------
