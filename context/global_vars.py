@@ -25,4 +25,5 @@ def settings_vars(context):
             'FEED_URL': settings.FEED_URL,
             'WEBSOCK_VNC_ENABLED': settings.WEBSOCK_VNC_ENABLED,
             'BRANDING': settings.BRANDING,
+            'FLATPAGES':settings.FLATPAGES,
             }

@@ -324,4 +324,11 @@ BRANDING = {
             "FOOTER_ICONS_IFRAME":  False,
             }
 
+# Flatpages manipulation. Show or hide flatpages links in page.
+FLATPAGES = {
+             "INFO": False,
+             "TOS": False,
+             "FAQ": False,
+             }
+
 
