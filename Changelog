@@ -10,6 +10,7 @@ Fixes/Enhancements:
 	- Instructions on github for twisted-vncauthproxy are more up-to-date
 	- Documentation fixes regarding usage of twisted-vncauthproxy
 	- Change news icon. This closes #6 (reported via github)
+	- Add flatpages in fixtures; Info, ToS and the new one, FAQ.
 
 ===========
 
