@@ -5,6 +5,7 @@ $(document).ready(function() {
 	
 	
 	$("#renamebutton").click(function(){
+		$(this).html('Sending Email...');
 		var instance = $("#instancetagsform").data('instance');
 		var cluster = $("#instancetagsform").data('cluster');
 		$.ajax({
@@ -58,7 +59,7 @@ Once you select a new hostname and click Apply you will receive an email with an
                                             </div>
                                         <div class="control-group">
                                             <div class="controls">
-                                                <a href="#" id="renamebutton" value="Apply" class="btn btn-primary">{% trans "Apply" %}</a>
+                                                <a href="#" id="renamebutton" value="Apply" class="btn btn-primary">{% trans "Email link" %}</a>
                                             </div>
                                         </div>
                                         </fieldset>

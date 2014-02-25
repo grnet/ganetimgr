@@ -5,6 +5,7 @@
 <script>
 $(document).ready(function() {
 	$("#mailapplybutton").click(function(){
+		$(this).html('Sending...')
 		$.ajax({
 			
 			url:"{% url notify %}",

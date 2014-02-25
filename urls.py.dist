@@ -15,6 +15,8 @@ urlpatterns = patterns('',
     url(r'^instances_stats_json/?$', 'ganetimgr.ganeti.views.user_sum_stats', name="user-stats-json"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/poll/?$', 'ganetimgr.ganeti.views.poll', name="instance-poll"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/vnc/?$', 'ganetimgr.ganeti.views.vnc', name="instance-vnc"),
+    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/novnc/?$', 'ganetimgr.ganeti.views.novnc', name="instance-novnc"),
+    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/novnc-proxy/?$', 'ganetimgr.ganeti.views.novnc_proxy', name="instance-novnc-proxy"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/shutdown/?$', 'ganetimgr.ganeti.views.shutdown', name="instance-shutdown"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/startup/?$', 'ganetimgr.ganeti.views.startup', name="instance-startup"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/reboot/?$', 'ganetimgr.ganeti.views.reboot', name="instance-reboot"),
@@ -40,11 +42,13 @@ urlpatterns = patterns('',
     url(r'^user/pass_change/done/$',  'django.contrib.auth.views.password_change_done', {'template_name':'pass_change_done.html'}, name="pass_change_done" ),
     url(r'^user/pass_change/notify/$', 'ganetimgr.apply.views.pass_notify', name="pass_change_notify"),
     url(r'^apply/?$', 'ganetimgr.apply.views.apply', name="apply"),
+    url(r'^news/?$', 'ganetimgr.ganeti.views.news', name="news"),
+    url(r'^clearcache/?$', 'ganetimgr.ganeti.views.clear_cache', name="clearcache"),
     
     url(r'^accounts/activate/(?P<activation_key>\w+)/$', 'accounts.views.activate', name='activate_account'),
-    url(r'^accounts/register/$','registration.views.register', {'form_class': RegistrationForm},
+    url(r'^accounts/register/$','registration.views.register', {'backend':'regbackends.ganetimgr.GanetimgrBackend', 'form_class': RegistrationForm},
 							        name='registration.views.register'),
-    (r'^accounts/', include('registration.urls')),
+    (r'^accounts/', include('registration.backends.default.urls')),
     
     url(r'^notify/(?P<instance>[^/]+)?$', 'ganetimgr.notifications.views.notify', name="notify"),
     url(r'^lock/(?P<instance>[^/]+)?$', 'ganetimgr.ganeti.views.lock', name="lock"),
@@ -68,6 +72,7 @@ urlpatterns = patterns('',
 
     (r'^admin/', include(admin.site.urls)),
 )
+
 if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)', 'django.views.static.serve',\

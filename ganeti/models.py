@@ -6,9 +6,9 @@
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH REGARD
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
 # TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-# FITNESS. IN NO EVENT SHALL ISC BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
+# FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
 # OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
 # USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
@@ -332,6 +332,9 @@ class Cluster(models.Model):
     use_gnt_network = models.BooleanField(default=False,
                                           verbose_name="Cluster uses gnt-network",
                                       help_text="Set to True only if you use gnt-network.")
+    disable_instance_creation = models.BooleanField(default=False,
+                                          verbose_name="Disable Instance Creation",
+                                      help_text="True disables setting a network at the application review form and blocks instance creation")
 
     class Meta:
         permissions = (
@@ -533,6 +536,17 @@ class Cluster(models.Model):
         node_ip = gethostbyname(node)
         res = vapclient.request_forwarding(0, node_ip, port, password)
         return (res["source_port"], password)
+
+    def setup_novnc_forwarding(self, instance, sport=0, tls=False):
+        password = User.objects.make_random_password(length=8)
+        info = self.get_instance_info(instance)
+        port = info['network_port']
+        node = info['pnode']
+        node_ip = gethostbyname(node)
+        proxy_server = settings.NOVNC_PROXY.split(":")
+        res = vapclient.request_novnc_forwarding(proxy_server, node_ip, port, password,
+                                        sport=sport, tls=tls)
+        return proxy_server[0], int(res), password
 
     def shutdown_instance(self, instance):
         cache_key = self._instance_cache_key(instance)

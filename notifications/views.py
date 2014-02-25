@@ -6,9 +6,9 @@
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH REGARD
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
 # TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-# FITNESS. IN NO EVENT SHALL ISC BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
+# FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
 # OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
 # USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
@@ -22,7 +22,6 @@ from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
 from ganetimgr.notifications.forms import *
 from ganetimgr.ganeti.models import *
 from django.contrib.auth.decorators import login_required
@@ -173,7 +172,7 @@ def get_user_group_list(request):
         action = ret_list
         return HttpResponse(json.dumps(action), mimetype='application/json')
     else:
-        action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
+        action = {'error':"Permissions' violation. This action has been logged and our admins will be notified about it"}
         return HttpResponse(json.dumps(action), mimetype='application/json')
 
 def send_new_mail(subject, message, from_email, recipient_list, bcc_list):

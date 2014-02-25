@@ -45,6 +45,7 @@
 	<th style="text-align: center;">{% trans "Node" %} <span class="sort-icon"></span></th>
 	{% endif %}
 	<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Disk" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
 	{% if not user.is_superuser and not perms.ganeti.view_instances %}
@@ -56,6 +57,8 @@
 	<th style="text-align: center;">{% trans "Owner" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Options" %}</th>
 	<th style="display:none">{% trans "HiddenContactDetails" %}</th>
+	{% else %}
+	<th style="text-align: center;">{% trans "Shortcuts" %}</th>
 	{% endif %}
 </tr>
 
@@ -90,14 +93,35 @@
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <script type="text/javascript">
 var status;
+var oldhtml;
+var last_element = false;
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "file-size-pre": function ( a ) {
-        var x = a.substring(0,a.length - 2);
-             
+    	//Let's see if instance has many disks
+    	xm = a.split(", ")
+    	if (xm.length > 1){
+    		// Found many disks, let's sum
+    		var total = 0;
+    		for (var i = 0;i < xm.length; i++){
+    			
+    			var x = xm[i].substring(0,xm[i].length - 3);
+        		var x_unit = (xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ?
+            		1000 : (xm[i].substring(xm[i].length - 2, xm[i].length) == "GB" ? 1000000 : 1));
+            	total += parseInt( x * x_unit, 10 );
+            	
+            	
+    		}
+    		return total;
+    		
+    	}
+    	else{
+        var x = a.substring(0,a.length - 3);
+        
         var x_unit = (a.substring(a.length - 2, a.length) == "MB" ?
             1000 : (a.substring(a.length - 2, a.length) == "GB" ? 1000000 : 1));
-          
+        console.log(x, x_unit, a)  
         return parseInt( x * x_unit, 10 );
+       }
     },
  
     "file-size-asc": function ( a, b ) {
@@ -108,8 +132,13 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
 } );
+
+
+
 $(document).ready( function(){
-	$('#vm_instance_table').dataTable( {
+    
+
+	var oTable = $('#vm_instance_table').dataTable( {
 		"bPaginate": true,
 	    "bFilter": true,
 	    "bAutoWidth": true,
@@ -128,6 +157,105 @@ $(document).ready( function(){
             	$('#jsonmessages').show();
             	$('#jsonmessage').html(json.messages);
             }
+            {% if not user.is_superuser and not perms.ganeti.view_instances %}
+            $('body').on('click', '.revertbutton', function () {
+            	var my = $(this);
+            	my.parent().html(oldhtml);
+            	last_element = false;
+            	return false;
+            });
+            $('body').on('click', ".stopbuttonpre", function(){
+            	var my = $(this);
+            	if (last_element != false){
+            		last_element.html(oldhtml);
+            	}
+            	oldhtml = my.parent().html();
+            	last_element = my.parent();
+            	var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="stopbutton btn btn-small btn-danger"><i class="icon-off"></i> Shutdown</a>'
+				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="icon-chevron-sign-left"></i></a>';
+            	my.parent().html(back+" "+btn);
+            	return false;
+            });
+            $('body').on('click', ".startbuttonpre", function(){
+            	var my = $(this);
+            	if (last_element != false){
+            		last_element.html(oldhtml);
+            	}
+            	oldhtml = my.parent().html();
+            	last_element = my.parent();
+            	var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="startbutton btn btn-small btn-success"><i class="icon-play"></i> Start</a>'
+				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="icon-chevron-sign-left"></i></a>';
+            	my.parent().html(back+" "+btn);
+            	return false;
+            });
+            $('body').on('click', ".rebootbuttonpre", function(){
+            	var my = $(this);
+            	if (last_element != false){
+            		last_element.html(oldhtml);
+            	}
+            	oldhtml = my.parent().html();
+            	last_element = my.parent();
+            	var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="rebootbutton btn btn-small btn-warning"><i class="icon-refresh"></i> Reboot</a>'
+				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="icon-chevron-sign-left"></i></a>';
+            	my.parent().html(back+" "+btn);
+            	return false;
+            });
+
+            $('body').on('click', ".stopbutton", function(){
+            	last_element = false;
+            	var my = $(this);
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var stopurl = "{% url instance-shutdown 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
+				$.ajax({
+        			type: 'POST',
+        			url: stopurl,
+        			dataType: 'json',
+        			success: function(data) {
+					my.parent().html("<span class='label label-inverse'>"+data.action + " (requires refresh)</span>");
+	        		}
+	    		});
+				return false;
+			});
+			$('body').on('click', ".rebootbutton", function(){
+				last_element = false;
+				var my = $(this);
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var rebooturl = "{% url instance-reboot 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
+				$.ajax({
+        			type: 'POST',
+        			url: rebooturl,
+        			dataType: 'json',
+        			success: function(data) {
+					my.parent().html("<span class='label label-inverse'>"+data.action + " (requires refresh)</span>");
+        		}
+    		});
+				return false;
+			});
+			$('body').on('click', ".startbutton", function(){
+				last_element = false;
+				var my = $(this);
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var starturl = "{% url instance-startup 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
+				$.ajax({
+        			type: 'POST',
+        			url: starturl,
+        			dataType: 'json',
+        			success: function(data) {
+					my.parent().html("<span class='label label-inverse'>"+data.action + " (requires refresh)</span>");
+        		}
+    		});
+				return false;
+			});
+			{% endif %}
           },
         "aoColumns":[
                      {"mData": "name" ,
@@ -147,6 +275,7 @@ $(document).ready( function(){
                      {"mData":"pnode", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
                      {% endif %}
                      {"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true, "sType": "file-size"},
+                     {"mData":"disk", "sClass" : "alignCenter","bSearchable": true,"bSortable": true, "sType": "file-size"},
                      {"mData":"vcpus", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
                      {"mData":"status",
                          "mRender": function (data, type, full) {
@@ -242,7 +371,7 @@ $(document).ready( function(){
                     			 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'lock\'); return false;">{% trans "Lock" %}</a></li>';
                     		 }
                     		 if (full.hasOwnProperty("isolate")){
-                    			 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'connect\'); return false;">{% trans "Connect" %}</a></li>';
+                    			 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'connect\'); return false;">{% trans "De-Isolate" %}</a></li>';
                     		 }
                     		 else{
                     			 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'isolate\'); return false;">{% trans "Isolate" %}</a></li>';
@@ -252,7 +381,7 @@ $(document).ready( function(){
                              '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
                              '<ul class="dropdown-menu instanceopt">'+
                                '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a></li>'+
-                               '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Tags" %}</a></li>'+
+                               '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Owners" %}</a></li>'+
                                '<li><a href="#" onclick="javascript:showNotify(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Notify" %}</a></li>'+
                                lock + isolate +
                              '</ul>'+
@@ -276,10 +405,43 @@ $(document).ready( function(){
                     	return users;
                     	 }
                      },
+                     {% else %}
+                      {"mData": "status", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
+                    	 "mRender":  function (data, type, full) {
+                    			var lock = "-"
+                    			if (full.hasOwnProperty('adminlock')){
+                    				return '<div class="shortcuts"><span class="label label-important">Actions Disabled</span></div>';
+                    			}
+                    			if (full.hasOwnProperty('locked')){
+                    				return '<div class="shortcuts"><span class="label label-inverse">Action Pending</span></div>';
+                    			}
+                    			if (full.status == 'Running'){
+                    			 lock = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="stopbuttonpre btn btn-small btn-danger"><i class="icon-off"></i></a> ';
+                    			 lock += '<a href="#" data-toggle="tooltip" title="Reboot" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="rebootbuttonpre btn btn-small btn-warning"><i class="icon-refresh"></i></a> ';
+                    			 consoleurl = "{% url instance-vnc 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', full.clusterslug.toString()).replace('instance_placeholder', full.name.toString());
+                    			 lock += '<a href="'+consoleurl+'" data-toggle="tooltip" title="Console" class="consolebutton btn btn-small btn-inverse"><i class="icon-terminal"></i></a> ';
+                    			}
+                    			if (full.status == 'Stopped'){
+                    			 lock = '<a href="#" data-toggle="tooltip" title="Start" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="startbuttonpre btn btn-small btn-success"><i class="icon-play"></i></a> ';
+                    			}
+                    		ret = '<div class="shortcuts">' + lock + '</div>';
+                     return ret;
+                     }
+                     },
                      {% endif %}
                      
          ]
 } );
+  $(window).resize(function() {
+    clearTimeout(window.refresh_size);
+    window.refresh_size = setTimeout(function() { update_size(); }, 250);
+  });
+  
+var update_size = function() {
+    $(oTable).css({ width: $(oTable).parent().width() });
+    oTable.fnAdjustColumnSizing(); 
+  }
+
 });
 
 	function showDetails(cluster, instance){
@@ -292,7 +454,7 @@ $(document).ready( function(){
 	
 	function showTags(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
-		$( "#myModalLabelservdets" ).text('Instance Tags: '+instance);
+		$( "#myModalLabelservdets" ).text('Instance Owners: '+instance);
 		$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"");
 		$( "#instDets" ).modal('show');
 		return false;

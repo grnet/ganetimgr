@@ -6,9 +6,9 @@
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH REGARD
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
 # TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-# FITNESS. IN NO EVENT SHALL ISC BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
+# FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
 # OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
 # USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
@@ -25,7 +25,7 @@ from django.utils.encoding import smart_unicode
 
 from recaptcha.client import captcha
 from registration.models import RegistrationProfile
-from registration.forms import RegistrationForm as _RegistrationForm
+from registration.forms import RegistrationFormUniqueEmail as _RegistrationForm
 
 
 # Add the new google service URLs, as the old ones to recaptcha.net are
@@ -72,39 +72,3 @@ class RegistrationForm(_RegistrationForm):
     surname = forms.CharField()
     recaptcha = ReCaptchaField(label=_("Verify"), required=False)
 
-    def save(self, profile_callback=None):
-        """
-        Override registration.forms.RegistrationForm's save() method to save
-        the user's full name as well.
-
-        See the original method's documentation about profile_callback.
-        """
-
-        # Sadly, we can't call super().save(), since we want to keep the
-        # application from sending an e-mail
-        user = RegistrationProfile.objects.create_inactive_user(username=self.cleaned_data['username'],
-                                                                password=self.cleaned_data['password1'],
-                                                                email=self.cleaned_data['email'],
-                                                                send_email=False,
-                                                                profile_callback=profile_callback)
-        user.first_name = self.cleaned_data["name"]
-        user.last_name = self.cleaned_data["surname"]
-        user.save()
-
-        # This is partly the same as registration's original code, but we want
-        # to send the notification to the managers instead.
-        current_site = Site.objects.get_current()
-        subject = render_to_string('registration/activation_email_subject.txt',
-                                   { 'site': current_site })
-        # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
-
-        registration_profile = RegistrationProfile.objects.get(user=user)
-        message = render_to_string('registration/activation_email.txt',
-                                   { 'activation_key': registration_profile.activation_key,
-                                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                                     'site': current_site,
-                                     'user': user })
-
-        mail_managers(subject, message)
-        return user

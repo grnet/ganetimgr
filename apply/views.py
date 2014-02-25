@@ -6,9 +6,9 @@
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH REGARD
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
 # TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-# FITNESS. IN NO EVENT SHALL ISC BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
+# FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
 # OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
 # USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
@@ -118,7 +118,7 @@ def application_list(request):
 def review_application(request, application_id):
     applications = InstanceApplication.objects.filter(status=STATUS_PENDING)
     app = get_object_or_404(InstanceApplication, pk=application_id)
-    fast_clusters = Cluster.objects.filter(fast_create=True)
+    fast_clusters = Cluster.objects.filter(fast_create=True).exclude(disable_instance_creation=True)
 
     if request.method == "GET":
         form = InstanceApplicationReviewForm(instance=app)
@@ -295,6 +295,7 @@ def instance_ssh_keys(request, application_id, cookie):
 @login_required
 def pass_notify(request):
     user = User.objects.get(username=request.user)
+    up = user.get_profile().force_logout()
     if user.email:
         fqdn = Site.objects.get_current().domain
         email = render_to_string("pass_change_notify_mail.txt",

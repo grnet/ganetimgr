@@ -1,3 +1,4 @@
+======================
 ganetimgr installation
 ======================
 
@@ -5,7 +6,10 @@ ganetimgr installation
    :maxdepth: 2
 
 .. note::
-    This guide assumes a clean debian squeeze (old-stable) installation
+    This guide assumes a clean debian wheezy (stable) installation
+
+.. attention::
+    If updating from a squeeze installation, pay attention to changes in setting.py
 
 Install packages
 ----------------
@@ -14,26 +18,9 @@ Update and install the required packages (you will be asked for a mysql username
 
     apt-get update
     apt-get upgrade
-    apt-get install nginx mysql-server python-mysqldb python-django python-redis python-django-south python-django-registration python-django-extensions python-paramiko python-simplejson python-daemon python-setproctitle python-pycurl python-recaptcha python-ipaddr beanstalkd
+    apt-get install git nginx mysql-server python-mysqldb python-django python-redis python-django-south python-django-registration  python-paramiko python-simplejson python-daemon python-setproctitle python-pycurl python-recaptcha python-ipaddr beanstalkd
     apt-get install redis-server
-
-Add our repository::
-
-    vim /etc/apt/sources.list.d/grnet.list
-
-and add::
-
-    deb http://repo.noc.grnet.gr/    squeeze main backports
-
-add our gpg key::
-
-    wget -O - http://repo.noc.grnet.gr/grnet.gpg.key|apt-key add -
-
-and install packages::
-
-    apt-get update
-    apt-get install gunicorn=0.12.2-2
-    apt-get install python-gevent=0.13.0-1
+    apt-get install gunicorn python-gevent
 
 If you want to use all the features of ganetimgr you will need to install our packages of ganeti-instance-image and ganeti on your clusters::
 
@@ -59,15 +46,15 @@ Login to the mysql interface::
 
 Create database and user::
 
-    mysql> CREATE DATABASE ganetimgr;
-    mysql> CREATE USER 'ganetimgr' IDENTIFIED BY '12345';
+    mysql> CREATE DATABASE ganetimgr CHARACTER SET utf8;
+    mysql> CREATE USER 'ganetimgr'@'localhost' IDENTIFIED BY '12345';
     mysql> GRANT ALL PRIVILEGES ON ganetimgr.* TO 'ganetimgr';
     mysql> flush privileges;
 
 Excellent!
 
-Platform Setup
---------------
+Pre-Setup
+---------
 Get the source and checkout to latest stable::
 
     mkdir /srv/www/
@@ -76,22 +63,77 @@ Get the source and checkout to latest stable::
     cd ganetimgr
     git checkout stable
 
+
 Create a settings file for the django application::
 
     cp settings.py.dist settings.py
     cp urls.py.dist urls.py
 
+
 Edit the settings.py file and change the django database config to match your setup. Pay attention to the following::
 
-    Change STATIC_URL to STATIC_URL = '/static'
+    Change STATIC_URL to the url serving your static files, eg. STATIC_URL = 'https://example.com/static' 
+    and STATIC_ROOT to STATIC_ROOT = '/srv/www/ganetimgr/static/'
     TEMPLATE_DIRS to TEMPLATE_DIRS = (
         '/srv/www/ganetimgr/templates',
     )
+
+
+Then set your cache backend::
+
     CACHE_BACKEND to CACHE_BACKEND = "redis_cache.cache://127.0.0.1:6379/?timeout=1500"
-    And finally:
+
+
+Set your supported operating systems via the corresponding OPERATING_SYSTEMS dict-of-dicts variable.
+
+Set your re-CAPTCHA keys. Generate a key pair here: http://www.google.com/recaptcha ::
+
     RECAPTCHA_PUBLIC_KEY = '<key>'
     RECAPTCHA_PRIVATE_KEY = '<key>'
-    to match your own api key.
+
+to match your API key.
+
+
+If desired, enable LDAP authentication via the AUTH_LDAP_* variables.
+
+If you deploy a servermon instance (https://github.com/servermon/servermon) that generates statistics for your cluster nodes instances, enter its url at::
+
+    SERVER_MONITORING_URL
+
+to link a node with its servermon page.
+
+
+If you deploy a Jira installation then you can append a tab on the left of ganetimgr web interface via an issue
+collection plugin that can be setup via::
+
+    HELPDESK_INTEGRATION_JAVASCRIPT_URL
+    HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS
+
+If you want to embed collectd statistics in ganetimgr instance page fill the::
+
+    COLLECTD_URL
+
+You can limit the whitelisted subnets (in case of isolated instances) available via::
+
+    WHITELIST_IP_MAX_SUBNET_V4
+    WHITELIST_IP_MAX_SUBNET_V6
+
+parameters
+
+
+If you want to keep your users updated with the latest news around the service, fill in an RSS feed url at::
+
+    FEED_URL
+
+You can change the logo, motto and some footer details via the::
+
+    BRANDING
+
+dictionary. You can create your own logo starting with the static/branding/logo.* files.
+
+
+Software Setup
+--------------
 
 If you are gonna use our ganeti-instance-image and the debian wheezy image we provide you will need to define it into the settings.py::
 
@@ -112,18 +154,33 @@ If you are gonna use our ganeti-instance-image and the debian wheezy image we pr
 
 Run the following commands to create the database entries::
 
-    ./manage.py syncdb
-    ./manage.py migrate
+    python manage.py syncdb
+    python manage.py migrate
 
 and the superuser::
 
-    ./manage.py createsuperuser
+    python manage.py createsuperuser
 
 .. attention::
-   If installing for the first time do not forget to copy templates/analytics.html.dist 
-   to templates/analytics.html. Set your prefered (we suggest piwik) analytics inclussion 
-   script in templates/analytics.html or leave the file empty if no analytics 
+   If installing for the first time and want to have analytics, alter the templates/analytics.html file.
+   Set your prefered (we suggest piwik) analytics inclussion script or leave the file as is (commented) if no analytics 
    is desired/available.
+
+To get the admin interface files, invoke collectstatic::
+
+    python manage.py collectstatic
+
+Ganetimgr provides 3 flatpages - Service Info, Terms of Service and FAQ. Flatpages can be enabled or disabled via the::
+
+    FLATPAGES
+
+dictionary. 
+
+We provide 6 flatpages placeholders (3 flatpages x 2 languages - English and Greek) for the flatpages mentioned. By invoking the command::
+
+    python manage.py loaddata flatpages.json
+
+the flatpages placeholders are inserted in the database and become available for editing via the admin interface (Flat Pages).
 
 Run the watcher.py::
 
@@ -142,31 +199,25 @@ Edit /etc/gunicorn.d/ganetimgr::
             '--workers=2',
             '--worker-class=egg:gunicorn#gevent',
             '--timeout=30',
-                    '--debug',
+            '--debug',
             '--log-level=debug',
-            '--log-file=/tmp/ganetimgr.log',
-            'settings.py',
+            '--log-file=/var/log/ganetimgr.log',
         ),
     }
 
 Add to your nginx config::
 
-      location /static {
-                root   /srv/www/ganetimgr;
-        }
+   location /static {
+          root   /srv/www/ganetimgr;
+   }
 
-        location /media {
-                root  /usr/share/pyshared/django/contrib/admin;
-        }
+   location / {
+          proxy_pass http://127.0.0.1:8088;
+   }
 
-        location / {
-                proxy_pass http://127.0.0.1:8088;
-        }
-
-        location /admin {
-                proxy_pass http://127.0.0.1:8088;
-        }
-
+   location /admin {
+          proxy_pass http://127.0.0.1:8088;
+   }
 
 Restart nginx and gunicorn::
 
@@ -174,14 +225,75 @@ Restart nginx and gunicorn::
     service gunicorn restart
 
 
-And.... you are done!!!
+Analytics Setup
+***************
+
+If installing for the first time do not forget to alter `templates/analytics.html` to suit your needs.
+
+If you do not wish to use analytics, leave this file intact (it is commented with Django template comments).
+
+Set your preferred (we use piwik) analytics inclusion script in templates/analytics.html.
+Eg::
+    <!-- Piwik -->
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u=(("https:" == document.location.protocol) ? "https" : "http") + "://piwik.example.com//";
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', 1]);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+        g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <noscript><p><img src="http://piwik.example.com/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+    <!-- End Piwik Code -->
+
+WebSockets
+**********
+
+To enable WebSocket support you will need to install VNCAuthProxy following the guides of OSL:
+https://github.com/osuosl/twisted_vncauthproxy and https://code.osuosl.org/projects/ganeti-webmgr/wiki/VNC#VNC-AuthProxy
+
+You will also need at least the following packages: python-twisted, python-openssl
+
+Start your twisted-vncauthproxy with::
+
+    twistd --pidfile=/tmp/proxy.pid -n vncap -c tcp:8888:interface=0.0.0.0
+
+Make sure your setup fullfils all the required firewall rules (https://code.osuosl.org/projects/ganeti-webmgr/wiki/VNC#Firewall-Rules)
+
+The relevant options in settings.py are::
+
+    WEBSOCK_VNC_ENABLED = True
+    NOVNC_PROXY = "example.domain.com:8888"
+
+Modern browsers block ws:// connections initiated from HTTPS websites, so if you want to open wss:// connections and encrypt your noVNC sessions you need to edit settings.py and set::
+
+    NOVNC_USE_TLS = True
+
+Then you will also need signed a certificate for the 'example.domain.com' host and place it under twisted-vncauthproxy/keys directory. The paths are currently hardcoded so one needs to install these 2 files (keep the filenames)::
+
+    twisted_vncauthproxy/keys/vncap.crt
+    twisted_vncauthproxy/keys/vncap.key
+
+
+IPv6 Warning
+""""""""""""
+Since twisted (at least until version 12) does not support IPv6, make sure the host running twisted-vncauthproxy
+does not advertise any AAAA records, else your clients won't be able to connect.
+
+Now what?
+---------
+You are done!!!
 
 If you visit your webserver's address you should see ganetimgr welcome page
 
 Now it's time to through the :doc:`Admin guide <admin>` to setup your application.
 
 Administration
-==============
+--------------
 
 .. toctree::
    :maxdepth: 2

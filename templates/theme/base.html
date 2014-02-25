@@ -55,6 +55,9 @@ label.required { font-weight: bold; }
     margin-bottom: 10px;
 }
 
+.content{
+	min-height:400px;
+}
 </style>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -109,9 +112,18 @@ label.required { font-weight: bold; }
   	            window.location = url;
   	        }
   	    });
-
-  	 
-  	  
+	 {% if user.is_superuser %}
+  	 $("#clearcache").click(function(){
+  	 	$.ajax({
+        	type: 'GET',
+        	url: "{% url clearcache %}",
+        	dataType: 'json',
+  			success: function(data) {
+				window.setTimeout('location.reload()', 100);
+  			}
+  	  	});
+  	  	});
+  	  	{% endif %}
   	});
    	 
 </script>
@@ -131,7 +143,11 @@ label.required { font-weight: bold; }
                 <ul class="nav pull-right">
                     {% if user.is_authenticated %}
                     <li class="hidden-phone"><a href="{% url profile %}" role="button">{% trans "My Profile" %}</a></li>
+                    {% if FLATPAGES.FAQ %}
+             		<li class="hidden-phone"><a href="/about/faq/{{ LANGUAGE_CODE }}">{% trans "FAQ" %}</a></li>
+             		{% endif %}
                     {% endif %}
+                    
                     <li class="dropdown pull-right hidden-phone">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<b class="caret"></b></a>
             <ul class="dropdown-menu ">
@@ -163,9 +179,13 @@ label.required { font-weight: bold; }
                     {% endif %}
                 </ul>
                 <a  href="{% url user-instances %}">
-					<img class="logoimg brand brandimg" src="/static/grnet_logo.png">				
+                	{% if BRANDING.LOGO %}
+					<img class="logoimg brand brandimg" src="{{BRANDING.LOGO}}">
+					{% endif %}				
                 </a>
-                <span class="brand brandtext">virtual private servers</span>
+                {% if BRANDING.MOTTO %}
+                <span class="brand brandtext">{{BRANDING.MOTTO}}</span>
+                {% endif %}
         </div>
     </div>
     {% block navbars %}
@@ -199,6 +219,7 @@ label.required { font-weight: bold; }
 {% endif %}
             {% if user.is_superuser %}
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
+						<li ><a href="#" id="clearcache"> <i class="icon-adjust"></i> {% trans "Clear Cache" %}</a></li>
 			{% endif %}
 
         </ul>
@@ -222,6 +243,12 @@ label.required { font-weight: bold; }
             <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="icon-moon"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
             {% endif %}
             <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="icon-user"></i> <span>{% trans "My Profile" %}</span></a></li>
+            {% if FEED_URL %}
+             <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="icon-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
+             {% endif %}
+             {% if FLATPAGES.FAQ %}
+             <li {% block faq %}{% endblock %}><a href="/about/faq/{{ LANGUAGE_CODE }}"><i class="icon-question-sign"></i> <span>{% trans "FAQ" %}</span></a></li>
+             {% endif %}
             {% if user.is_superuser %}
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
 {% endif %}
@@ -269,19 +296,24 @@ label.required { font-weight: bold; }
 
 <footer class="footer">
       <div class="container" id="footcontainer">
-        
-	<div style="padding-top: 10px;">{% trans "This is a service provided by" %} <a target="_blank" href="//noc.grnet.gr">GRNET NOC</a>
-	
-	<a target="_blank" href="//facebook.com/noc.grnet.gr"><font style="color:#3b5998; font-size: 30px"><i class="icon-facebook-sign"></i></font></a>  
-	
-	<a target="_blank" href="//twitter.com/grnetnoc"><font style="color:#00acee; font-size: 30px"><i class="icon-twitter-sign"></i></font></a>  
-	
+    {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
+	<div style="padding-top: 10px;">{% trans "This is a service provided by" %} {% if BRANDING.SERVICE_PROVIDED_BY.URL %}<a target="_blank" href="//noc.grnet.gr">{% endif %}{% if BRANDING.SERVICE_PROVIDED_BY.NAME %}{{BRANDING.SERVICE_PROVIDED_BY.NAME}}{% endif %}{% if BRANDING.SERVICE_PROVIDED_BY.URL %}</a>{% endif %}
+	{% endif %}
+	{% if BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
+		{% for sn in BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
+			<a target="_blank" href="{{sn.URL}}"><font style="color:{{sn.FONT_COLOR|safe}}; font-size: 30px"><i class="{{sn.FONT_AWSOME_NAME}}"></i></font></a>  
+		{% endfor %}  
+	{% endif %}
 	</div>
-	<div style="padding-top: 10px;"><a href="/about/info/{{ LANGUAGE_CODE }}">{% trans "Info" %}</a> | <a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">{% trans "Service Terms" %}</a></div>
+	{% if FLATPAGES.INFO or FLATPAGES.TOS %}
+	<div style="padding-top: 10px;">{% if FLATPAGES.INFO %}<a href="/about/info/{{ LANGUAGE_CODE }}">{% trans "Info" %}</a>{% endif %} {% if FLATPAGES.INFO and FLATPAGES.TOS %}|{% endif %} {% if FLATPAGES.TOS %}<a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">{% trans "Service Terms" %}</a>{% endif %}</div>
+	{% endif %}
 		<div style="padding-top: 10px;">Powered by <a href="https://code.grnet.gr/projects/ganetimgr/">ganetimgr</a> v{{VERSION}}</div>
 	
       </div>
+      {% if BRANDING.FOOTER_ICONS_IFRAME %}
 		{% include "banners.html" %}
+	{% endif %}
     </footer>
     {% include "analytics.html" %}
   </body>

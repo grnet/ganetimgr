@@ -1,0 +1,43 @@
+{% extends "theme/base.html" %}
+{% load i18n %}
+	{% block extrahead %}
+	{% if FEED_URL %}
+<script type="text/javascript" src="/static/feedek/feedek.js"></script>
+<script type="text/javascript" src="/static/js/Moment.js"></script>
+<link rel="stylesheet" href="/static/feedek/feedek.css">
+
+<script>
+	$(document).ready(function () {
+		$('#divRss').FeedEk({
+  FeedUrl: '{{FEED_URL}}',
+  MaxCount: 5,
+  DateFormat: 'DD MMMM YYYY',
+  DateFormatLang: 'en'
+});
+	});
+</script>
+{% endif %}
+{% endblock %}
+{% block title %}
+	
+		{% trans "Latest News" %}
+	
+{% endblock %}
+{% block news %}class="active"{% endblock %}
+				{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% trans "Latest News" %}</li>
+	    		{% endblock %}
+
+{% block content %}
+
+<div class="span9 main-content">
+
+    <div class="row-fluid">
+        <div class="row-fluid">
+			<h2>{% trans "Latest News" %}</h2>
+			{% if FEED_URL %}<div id="divRss"></div>{% else %}No news channel set.{% endif %}
+</div>
+</div>
+</div>
+{% endblock %}

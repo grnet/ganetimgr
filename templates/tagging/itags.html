@@ -1,4 +1,4 @@
-
+{% load i18n %}
 <link rel="stylesheet" href="/static/select2/select2.css">
 <script src="/static/select2/select2.js"></script>
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
@@ -34,6 +34,7 @@ $(document).ready(function() {
 			"data", [{% for u in users %}{id: "{{u.id}}", text: formatDjangoObject("{{u.type}}")+ '{{u.text}}'},{% endfor %}]);
 	
 	$("#tagsapplybutton").click(function(){
+		$(this).html('Saving...');
 		var instance = $("#instancetagsform").data('instance');
 		$.ajax({
 			
@@ -107,7 +108,9 @@ th {
 
 }
 </style>
-
+{% if not user.is_superuser %}
+	<p class="alert alert-danger"><span class="label label-important">{% trans "Warning" %}</span> {% trans "Adding or removing users and groups is done on your own responsibility" %}</p>
+{% endif %}
 <form method="POST" class="form-inline" id="instancetagsform" data-instance="{{instance}}">
                                          <fieldset>
                                         {% csrf_token %}

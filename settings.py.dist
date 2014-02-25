@@ -9,12 +9,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = ''           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = ''             # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+DATABASES = {
+    'default' : {
+        'ENGINE' : 'django.db.backends.',	# 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME' : '',				# Or path to database file if using sqlite3.
+        'USER' : '',				# Not used with sqlite3.
+        'PASSWORD' : '',			# Not used with sqlite3.
+        'HOST' : '',				# Set to empty string for localhost. Not used with sqlite3.
+        'PORT' : '',				# Set to empty string for default. Not used with sqlite3.
+    }
+}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -49,18 +53,13 @@ MEDIA_ROOT = ''
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = ''
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
-
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '!c&bm88vo=gby*vxf2gydv8hc!+f+eo+yu&!g&!)#n5quwsr82'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.load_template_source',
 )
 
@@ -74,10 +73,25 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'ganetimgr.middleware.UserMessages.UserMessageMiddleware',
-#    'middleware.MobileDetectionMiddleware.MobileDetectionMiddleware',
 )
 
-STATIC_URL = '/path/to/static'
+STATIC_URL = 'https://example.com/static/'
+STATIC_ROOT = '/path/to/static/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
 
 ROOT_URLCONF = 'ganetimgr.urls'
 
@@ -96,6 +110,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.messages',
     'django.contrib.admin',
+	'django.contrib.staticfiles',
     'ganetimgr.accounts',
     'south',
     'registration',
@@ -103,7 +118,7 @@ INSTALLED_APPS = (
     'ganetimgr.apply',
     'ganetimgr.notifications',
     'ganetimgr.stats',
-    'django_extensions',
+    #'django_extensions',
 )
 
 RAPI_CONNECT_TIMEOUT = 3
@@ -113,6 +128,7 @@ DATE_FORMAT = "d/m/Y H:i"
 DATETIME_FORMAT = "d/m/Y H:i"
 
 
+# TODO: Switch this to Django 1.4 syntax
 # Caching is a vital part of ganetimgr.
 # If you deploy more than one ganetimgr instances on the same server, 
 # and want to use Redis for both, make sure you select a different db for each instance
@@ -178,7 +194,7 @@ OPERATING_SYSTEMS = {
             "img_format": "tarball",
         },
         "ssh_key_param": "img_ssh_key_url",
-    }
+    },
     "none": {
         "description": "No operating system",
         "provider": "noop",
@@ -241,6 +257,9 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# Cookie age set to 3 hours
+SESSION_COOKIE_AGE = 10800
+
 
 IDLE_ACCOUNT_NOTIFICATION_DAYS = '180'
 
@@ -270,4 +289,46 @@ NODATA_IMAGE = "/path/to/static/nodata.jpg"
 
 WHITELIST_IP_MAX_SUBNET_V4 = 26
 WHITELIST_IP_MAX_SUBNET_V6 = 64
+
+# If you want to keep your users up-to-date with your news you can display an RSS feed with news/updates. Otherwise leave it to None
+# eg. "http://lists.noc.grnet.gr/sympa/rss/latest_arc/vima-users?count=20&for=30" (GRNET ViMa service Sympa RSS feed)
+# TODO: Investigate twitter support
+FEED_URL=None
+
+
+# Choose whether to support websockets console or not. 
+WEBSOCK_VNC_ENABLED = False
+# This is meant to be used with twistednovncauthproxy
+# twistd --pidfile=/tmp/proxy.pid -n vncap -c tcp:8888:interface=0.0.0.0
+NOVNC_PROXY = "example.com:8888"
+NOVNC_USE_TLS = True
+
+# This section affects the way banners, logos and footers are displayed. If no social networks is to be displayed, 
+# set SOCIAL_NETWORKS to an empty list - []. Inside the static/branging folder you can find the logo.png and logo.xcf 
+# blank logos. 
+BRANDING = {
+            "SERVICE_PROVIDED_BY": {
+                                    "NAME":"ACME ORG", 
+                                    "URL":"http://acme.org",
+                                    "SOCIAL_NETWORKS":[
+                                                       {"URL":"//facebook.com/acme.org", 
+                                                        "FONT_AWSOME_NAME":"icon-facebook-sign",
+                                                         "FONT_COLOR": "#3b5998"},
+                                                       {"URL":"//twitter.com/acme", 
+                                                        "FONT_AWSOME_NAME":"icon-twitter-sign",
+                                                         "FONT_COLOR": "#00acee"},
+                                                        ]
+                                    },
+            "LOGO": "/static/logo.png",
+            "MOTTO": "virtual private servers",
+            "FOOTER_ICONS_IFRAME":  False,
+            }
+
+# Flatpages manipulation. Show or hide flatpages links in page.
+FLATPAGES = {
+             "INFO": False,
+             "TOS": False,
+             "FAQ": False,
+             }
+
 

@@ -6,6 +6,7 @@ $(document).ready(function() {
 
     
 	$("#lockapplybutton").click(function(){
+		$(this).html('Saving...');
 		var instance = $("#instanceisolateform").data('instance');
 		$.ajax({
 			url:"{% url isolate %}"+instance,
