@@ -115,19 +115,6 @@ You can change the logo, motto and some footer details via the::
 
 dictionary. You can create your own logo starting with the static/branding/logo.* files.
 
-Ganetimgr provides 3 flatpages - Service Info, Terms of Service and FAQ. Flatpages can be enabled or disabled via the::
-
-    FLATPAGES
-
-dictionary. 
-
-We provide 6 flatpages placeholders (3 flatpages x 2 languages - English and Greek) for the flatpages mentioned. By invoking the command::
-
-    python manage.py loaddata flatpages.json
-
-the flatpages placeholders are inserted in the database and become available for editing via the admin interface (Flat Pages).
-
-
 
 Software Setup
 --------------
@@ -153,6 +140,17 @@ To get the admin interface files, invoke collectstatic::
 
     python manage.py collectstatic
 
+Ganetimgr provides 3 flatpages - Service Info, Terms of Service and FAQ. Flatpages can be enabled or disabled via the::
+
+    FLATPAGES
+
+dictionary. 
+
+We provide 6 flatpages placeholders (3 flatpages x 2 languages - English and Greek) for the flatpages mentioned. By invoking the command::
+
+    python manage.py loaddata flatpages.json
+
+the flatpages placeholders are inserted in the database and become available for editing via the admin interface (Flat Pages).
 
 Run the watcher.py::
 
