@@ -1,6 +1,9 @@
 1.4.1 RELEASE
 Bugfixing release
 
+Requirements:
+	- Set the FLATPAGES dict according to your needs in settings.py (check settings.py.dist)
+
 Fixes/Enhancements:
 	- Fix issue with inputfields not being resized properly on window resize. This closes #1 (reported via github)
 	- Add django widget tweaks to ease form field rendering with bootstrap params

@@ -15,9 +15,10 @@ For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.
 ## Actions needed on version upgrades
 
 ### Migrating to v.1.4.1
-Bugfix release
+Bugfix/Feature Enhancements release
 
-	- No major actions required. This release introduces cosmetic enhancements
+settings.py:
+- Copy the FLATPAGES dict from settings.py.dist to allow handling of flatpages
 
 ### Migrating to v.1.4.0
 Debian wheezy/Django 1.4 compatibility
