@@ -22,7 +22,21 @@ Update and install the required packages (you will be asked for a mysql username
     apt-get install redis-server
     apt-get install gunicorn python-gevent
 
-If you want to use all the features of ganetimgr you will need to install our packages of ganeti-instance-image and ganeti on your clusters::
+If you want to use all the features of ganetimgr you will need to install our packages of ganeti-instance-image and ganeti on your clusters.
+
+Add our repository::
+
+    vim /etc/apt/sources.list.d/grnet.list
+
+and add::
+
+    deb http://repo.noc.grnet.gr/    squeeze main backports
+
+add our gpg key::
+
+    wget -O - http://repo.noc.grnet.gr/grnet.gpg.key|apt-key add -
+
+and install packages::
 
     apt-get install ganeti-instance-image
     apt-get install ganeti=2.8.1-1~bpo70+httpboot
@@ -33,7 +47,7 @@ And finally create an operating system image for ganeti-instance-image. You can 
 
     wget http://repo.noc.grnet.gr/debian-wheezy-x86_64.tgz -P /srv/ganeti-instance-image/
 
-Repeat those two steps for each node.
+Repeat those steps for each node.
 
 Our ganeti-instance-image injects ssh keys into an instance.
 You will need our ganeti package in order to use the boot from url feature of ganetimgr.
