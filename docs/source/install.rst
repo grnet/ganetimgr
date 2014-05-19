@@ -30,7 +30,7 @@ Add our repository::
 
 and add::
 
-    deb http://repo.noc.grnet.gr/    squeeze main backports
+    deb http://repo.noc.grnet.gr/    wheezy main backports
 
 add our gpg key::
 
@@ -39,7 +39,7 @@ add our gpg key::
 and install packages::
 
     apt-get install ganeti-instance-image
-    apt-get install ganeti=2.8.1-1~bpo70+httpboot
+    apt-get install ganeti=2.9.3-1~bpo70+grnet
 
     ln -s /usr/share/ganeti/os/image /srv/ganeti-instance-image/
 
