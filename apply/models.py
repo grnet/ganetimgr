@@ -137,6 +137,19 @@ class InstanceApplication(models.Model):
             raise ApplicationError("Invalid application status %d" %
                                    self.status)
 
+        def map_ssh_user(user, group=None, path=None):
+            if group is None:
+                if user == "root":
+                    group = ""   # snf-image will expand to root or wheel
+                else:
+                    group = user
+            if path is None:
+                if user == "root":
+                    path = "/root/.ssh/authorized_keys"
+                else:
+                    path = "/home/%s/.ssh/authorized_keys" % user
+            return user, group, path
+
         tags = []
         tags.append("%s:user:%s" %
                     (GANETI_TAG_PREFIX, self.applicant.username))
@@ -171,6 +184,29 @@ class InstanceApplication(models.Model):
             key_url = self.get_ssh_keys_url(fqdn)
             if os["ssh_key_param"]:
                 osparams[os["ssh_key_param"]] = key_url
+        # For snf-image: copy keys to ssh_key_users using img_personality
+        if "ssh_key_users" in os and os["ssh_key_users"]:
+            ssh_keys = self.applicant.sshpublickey_set.all()
+            if ssh_keys:
+                ssh_lines = [key.key_line() for key in ssh_keys]
+                ssh_base64 = base64.b64encode("".join(ssh_lines))
+                if "img_personality" not in osparams:
+                    osparams["img_personality"] = []
+                for user in os["ssh_key_users"].split():
+                    # user[:group[:/path/to/authorized_keys]]
+                    owner, group, path = map_ssh_user(*user.split(":"))
+                    osparams["img_personality"].append({
+                        "path":     path,
+                        "contents": ssh_base64,
+                        "owner":    owner,
+                        "group":    group,
+                        "mode":     0600,
+                    })
+        for (key, val) in osparams.iteritems():
+            # Encode nested JSON. See
+            # <https://code.google.com/p/ganeti/issues/detail?id=835>
+            if not isinstance(val, str):
+                osparams[key] = json.dumps(val)
         job = self.cluster.create_instance(name=self.hostname,
                                            os=provider,
                                            vcpus=self.vcpus,
