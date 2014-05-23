@@ -42,8 +42,6 @@ and install packages::
     apt-get install ganeti-os-noop
     apt-get install ganeti=2.9.3-1~bpo70+grnet
 
-    ln -s /usr/share/ganeti/os/image /srv/ganeti-instance-image/
-
 And finally create an operating system image for ganeti-instance-image. You can download an image of debian wheezy from us::
 
     wget http://repo.noc.grnet.gr/debian-wheezy-x86_64.tgz -P /srv/ganeti-instance-image/
