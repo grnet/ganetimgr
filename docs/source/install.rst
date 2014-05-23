@@ -39,6 +39,7 @@ add our gpg key::
 and install packages::
 
     apt-get install ganeti-instance-image
+    apt-get install ganeti-os-noop
     apt-get install ganeti=2.9.3-1~bpo70+grnet
 
     ln -s /usr/share/ganeti/os/image /srv/ganeti-instance-image/
