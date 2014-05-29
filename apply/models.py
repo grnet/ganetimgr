@@ -182,6 +182,7 @@ class InstanceApplication(models.Model):
                                            osparams=osparams)
         self.status = STATUS_SUBMITTED
         self.job_id = job
+        self.backend_message = None
         self.save()
         application_submitted.send(sender=self)
 
