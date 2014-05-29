@@ -305,6 +305,20 @@ textarea{
 				<div class="alert alert-success">
 				<i class="icon-sitemap"></i> {% trans "The instance has been placed on" %} {{ application.network }} ({{ application.cluster.description }})
 				</div>
+				{%if application.job_id %}
+				<div class="control-group">
+					<label class="control-label required" for="id_applier">{% trans "Job ID" %}</label>
+					<div class="controls padcontrol">{{ application.job_id }}
+					</div>
+				</div>
+				{%endif%}
+				{%if application.backend_message %}
+				<div class="control-group">
+					<label class="control-label required" for="id_applier">{% trans "Error" %}</label>
+					<div class="controls padcontrol">{{ application.backend_message }}
+					</div>
+				</div>
+				{%endif%}
 		</fieldset>
 		</div></div>
 
