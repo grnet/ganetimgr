@@ -60,6 +60,11 @@ textarea{
                 <legend>
                     {% trans "Instance information" %}
                 </legend>
+		<div class="control-group">
+			<label class="control-label required" for="id_applier">{% trans "Status" %}</label>
+			<div class="controls padcontrol">{{ application.get_status_display }}
+			</div>
+		</div>
                   <div class="control-group {% if appform.hostname.errors %}error{% endif %}">
 	                <label class="control-label {% if appform.hostname.field.required %}required{% endif %}" for="id_applier">
 	                	{{ appform.hostname.label }}
