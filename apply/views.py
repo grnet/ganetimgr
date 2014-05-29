@@ -104,8 +104,8 @@ def apply(request):
 @any_permission_required("apply.change_instanceapplication", "apply.view_applications")
 def application_list(request):
     applications = InstanceApplication.objects.all()
-    pending = applications.filter(status=STATUS_PENDING)
-    completed = applications.exclude(status=STATUS_PENDING)
+    pending = applications.filter(status__in=PENDING_CODES)
+    completed = applications.exclude(status__in=PENDING_CODES)
 
     return render_to_response("application_list.html",
                               {'applications': applications,
@@ -116,7 +116,7 @@ def application_list(request):
 
 @permission_required("apply.change_instanceapplication")
 def review_application(request, application_id):
-    applications = InstanceApplication.objects.filter(status=STATUS_PENDING)
+    applications = InstanceApplication.objects.filter(status__in=PENDING_CODES)
     app = get_object_or_404(InstanceApplication, pk=application_id)
     fast_clusters = Cluster.objects.filter(fast_create=True).exclude(disable_instance_creation=True)
 

@@ -17,7 +17,7 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-from ganetimgr.apply.models import InstanceApplication, STATUS_PENDING
+from ganetimgr.apply.models import InstanceApplication, PENDING_CODES
 from django.core.cache import cache
 
 def notify(request):
@@ -31,7 +31,7 @@ def notify(request):
             return res
         cres = cache.get('pendingapplications')
         if cres is None:
-            pend = InstanceApplication.objects.filter(status=STATUS_PENDING)
+            pend = InstanceApplication.objects.filter(status__in=PENDING_CODES)
             res.update(pending_count=pend.count())
             cache.set('pendingapplications', res, 45)
         else:
