@@ -18,3 +18,25 @@ https://{{ site.domain }}{% url login %}
 Με εκτίμηση,
 
 Η ομάδα διαχείρισης της υπηρεσίας ViMa 
+
+-----------------------------------------------------------------------------
+
+Dear user,
+
+To ensure the validity of user accounts in the
+ViMa service we monitor usage of the web management interface.
+
+We would like to inform you that the last time you logged in
+was {{days}} ago (or more).
+
+Therefore we kindly ask you to confirm the validity of your account.
+The confirmation is performed by accessing the login page of the service:
+
+https://{{ site.domain }}{% url login %}
+
+Please can you do this as soon as possible.
+
+
+Sincerely,
+
+The ViMa Management.

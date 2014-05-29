@@ -27,3 +27,35 @@ vCPUS: {{application.vcpus}}
 {{ application.comments }} {% endif %}
 
 Για να διαχειριστείτε το αίτημα, επισκεφθείτε το {{url}}
+
+-----------------------------------------------------------------------------
+
+The user {{user.username}} ({{user.first_name}} {{user.last_name}}) made the
+following request:
+{% load disksizes %}
+VM parameters
+-------------
+Name:   {{application.hostname}}
+Memory: {{application.memory|memsize}}
+vCPUs:  {{application.vcpus}}
+Disk:   {{application.disk_size}} GB
+Operating system:    {{application.operating_system}}
+Hosting mail server: {{application.hosts_mail_server|yesno:"Yes,No"}}
+
+{% if application.network %}The user requested the VM to connect to the network «{{application.network}}»{% endif %}
+
+Contact:
+{% if application.organization %}
+Responsible entity: {{application.organization}} {% else %}
+Administrative Contact
+----------------------
+{{ application.admin_contact_name }}
+{{ application.admin_contact_email }}
+{{ application.admin_contact_phone }}{% endif %}
+
+{% if application.comments %}
+Comments
+--------
+{{ application.comments }}{% endif %}
+
+To manage the request, visit {{url}}

@@ -5,3 +5,12 @@
 
 Για περισσότερες πληροφορίες μπορείτε να επικοινωνήσετε με το Helpdesk του
 ΕΔΕΤ.
+
+-----------------------------------------------------------------------------
+
+Your request #{{ application.pk }} to create virtual machine name
+{{ application.hostname }} has been rejected for the following reasons:
+
+{{ application.admin_comments }}
+
+For more information please contact the GRNET Helpdesk.
