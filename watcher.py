@@ -66,6 +66,14 @@ def next_poll_interval():
         yield POLL_INTERVALS[-1]
 
 
+def try_log(fn, *args, **kwargs):
+    global logger
+    try:
+        fn(*args, **kwargs)
+    except StandardError as e:
+        logger.error("%s: %s" % (fn.__name__, str(e)))
+
+
 def monitor_jobs():
     # We have to open one socket per Greenlet, as currently socket sharing is
     # not allowed
@@ -184,7 +192,7 @@ def handle_creation(job):
     except ObjectDoesNotExist:
         logger.warn("Unable to find application #%d, burying" %
                      data["application_id"])
-        mail_admins("Burying job #%d" % job.jid,
+        try_log(mail_admins, "Burying job #%d" % job.jid,
                     "Please inspect job #%d (application %d) manually" %
                     (job.jid, data["application_id"]))
         job.bury()
@@ -203,14 +211,16 @@ def handle_creation(job):
             if status["status"] == "error":
                 application.status = STATUS_FAILED
                 application.backend_message = smart_str(status["opresult"])
+                application.save()
                 logger.warn("%s (job: %d) failed. Notifying admins",
                              application.hostname, application.job_id)
-                mail_admins("Instance creation failure for %s on %s" %
+                try_log(mail_admins, "Instance creation failure for %s on %s" %
                              (application.hostname, application.cluster),
                              json.dumps(status, indent=2))
             else:
                 application.status = STATUS_SUCCESS
                 application.backend_message = None
+                application.save()
                 logger.info("Mailing %s about %s",
                              application.applicant.email, application.hostname)
 
@@ -222,15 +232,14 @@ def handle_creation(job):
                 mail_body = render_to_string("instance_created_mail.txt",
                                              {"application": application,
                                               "instance_url": instance_url})
-                send_mail(settings.EMAIL_SUBJECT_PREFIX +
+                try_log(send_mail, settings.EMAIL_SUBJECT_PREFIX +
                           "Instance %s is ready" % application.hostname,
                           mail_body, settings.SERVER_EMAIL,
                           [application.applicant.email])
                 logger.info("Mailing managers about %s" %
                              application.hostname)
-                mail_managers("Instance %s is ready" % application.hostname,
+                try_log(mail_managers, "Instance %s is ready" % application.hostname,
                               mail_body)
-            application.save()
             job.delete()
             break
         job.touch()

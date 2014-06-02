@@ -60,6 +60,11 @@ textarea{
                 <legend>
                     {% trans "Instance information" %}
                 </legend>
+		<div class="control-group">
+			<label class="control-label required" for="id_applier">{% trans "Status" %}</label>
+			<div class="controls padcontrol">{{ application.get_status_display }}
+			</div>
+		</div>
                   <div class="control-group {% if appform.hostname.errors %}error{% endif %}">
 	                <label class="control-label {% if appform.hostname.field.required %}required{% endif %}" for="id_applier">
 	                	{{ appform.hostname.label }}
@@ -182,6 +187,20 @@ textarea{
 	                    </div>
                 	</div>
 					<p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }} ({{ cl.slug }})</a> {% if not forloop.last %}| {% endif %}{% endfor %}</p>
+				{%if application.job_id %}
+				<div class="control-group">
+					<label class="control-label required" for="id_applier">{% trans "Job ID" %}</label>
+					<div class="controls padcontrol">{{ application.job_id }}
+					</div>
+				</div>
+				{%endif%}
+				{%if application.backend_message %}
+				<div class="control-group">
+					<label class="control-label required" for="id_applier">{% trans "Error" %}</label>
+					<div class="controls padcontrol">{{ application.backend_message }}
+					</div>
+				</div>
+				{%endif%}
 				</fieldset></div></div>
 <div class="row-fluid">
 <fieldset>
@@ -201,7 +220,7 @@ textarea{
 
 <div class="control-group">
 			<div class="controls">
-			<input type="submit" value="Accept" class="btn btn-success" name="accept"/> <input type="submit" value="Reject" class="btn btn-danger" name="reject"/>
+			<input type="submit" value={% if application.status == 100 %}"Accept"{% else %}"Re-submit"{% endif %} class="btn btn-success" name="accept"/> <input type="submit" value="Reject" class="btn btn-danger" name="reject"/>
 			</div>
 			</div>
 </div>
@@ -305,6 +324,20 @@ textarea{
 				<div class="alert alert-success">
 				<i class="icon-sitemap"></i> {% trans "The instance has been placed on" %} {{ application.network }} ({{ application.cluster.description }})
 				</div>
+				{%if application.job_id %}
+				<div class="control-group">
+					<label class="control-label required" for="id_applier">{% trans "Job ID" %}</label>
+					<div class="controls padcontrol">{{ application.job_id }}
+					</div>
+				</div>
+				{%endif%}
+				{%if application.backend_message %}
+				<div class="control-group">
+					<label class="control-label required" for="id_applier">{% trans "Error" %}</label>
+					<div class="controls padcontrol">{{ application.backend_message }}
+					</div>
+				</div>
+				{%endif%}
 		</fieldset>
 		</div></div>
 
