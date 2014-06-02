@@ -54,6 +54,7 @@ APPLICATION_CODES = (
     (STATUS_REFUSED, "refused"),
 )
 
+PENDING_CODES = [STATUS_PENDING, STATUS_APPROVED, STATUS_FAILED]
 
 def generate_cookie():
     """Generate a randomized cookie"""
@@ -125,7 +126,7 @@ class InstanceApplication(models.Model):
         self.network = c.get_default_network()
 
     def is_pending(self):
-        return self.status == STATUS_PENDING
+        return self.status in PENDING_CODES
 
     def approve(self):
         assert self.status < STATUS_APPROVED
@@ -133,7 +134,7 @@ class InstanceApplication(models.Model):
         self.save()
 
     def submit(self):
-        if self.status != STATUS_APPROVED:
+        if self.status not in [STATUS_APPROVED, STATUS_FAILED]:
             raise ApplicationError("Invalid application status %d" %
                                    self.status)
 
@@ -181,6 +182,7 @@ class InstanceApplication(models.Model):
                                            osparams=osparams)
         self.status = STATUS_SUBMITTED
         self.job_id = job
+        self.backend_message = None
         self.save()
         application_submitted.send(sender=self)
 
