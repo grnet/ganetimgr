@@ -212,7 +212,7 @@ class InstanceApplication(models.Model):
                                            os=provider,
                                            vcpus=self.vcpus,
                                            memory=self.memory,
-                                           disks=[{"size": self.disk_size * 1000}],
+                                           disks=[{"size": self.disk_size * 1024}],
                                            nics=[nic_dict],
                                            tags=tags,
                                            osparams=osparams)
