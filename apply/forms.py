@@ -36,10 +36,10 @@ from django.utils.html import escape, conditional_escape
 # Taken from ganeti and patched to avoid non-bind9 friendly VM names
 _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
 
-VALID_MEMORY_VALUES = ['512', '768', '1024', '1500', '2048', '3072', '4096']
+VALID_MEMORY_VALUES = [512, 768, 1024, 1500, 2048, 3072, 4096]
 
-MEMORY_CHOICES = [(m, filesizeformat(int(m) * 1024**2))
-                  for m in VALID_MEMORY_VALUES]
+MEMORY_CHOICES = [(str(m), filesizeformat(m * 1024**2))
+                   for m in VALID_MEMORY_VALUES]
 
 
 
@@ -183,7 +183,7 @@ class InstanceApplicationForm(InstanceForm):
 
 
 class InstanceApplicationReviewForm(InstanceForm):
-    memory = forms.IntegerField(min_value=512, initial=1024)
+    memory = forms.IntegerField(min_value=min(VALID_MEMORY_VALUES), initial=1024)
     vcpus = forms.IntegerField(min_value=1, initial=1, label="Virtual CPUs")
     disk_size = forms.IntegerField(min_value=2, initial=5,
                                    label=ugettext_lazy("Disk size (GB)"))
