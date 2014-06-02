@@ -105,8 +105,13 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     		for (var i = 0;i < xm.length; i++){
     			
     			var x = xm[i].substring(0,xm[i].length - 3);
-        		var x_unit = (xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ?
-            		1000 : (xm[i].substring(xm[i].length - 2, xm[i].length) == "GB" ? 1000000 : 1));
+        		var x_unit = (
+        			xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ? 1000 : (
+        				xm[i].substring(xm[i].length - 2, xm[i].length) == "GB" ? 1000000 : (
+        					xm[i].substring(xm[i].length - 2, xm[i].length) == "TB" ? 1000000000 : 1
+        					)
+        				)
+        			);
             	total += parseInt( x * x_unit, 10 );
             	
             	
