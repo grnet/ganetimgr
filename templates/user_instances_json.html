@@ -122,9 +122,13 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     	else{
         var x = a.substring(0,a.length - 3);
         
-        var x_unit = (a.substring(a.length - 2, a.length) == "MB" ?
-            1000 : (a.substring(a.length - 2, a.length) == "GB" ? 1000000 : 1));
-        console.log(x, x_unit, a)  
+        var x_unit = (
+        			a.substring(a.length - 2, a.length) == "MB" ? 1000 : (
+        				a.substring(a.length - 2, a.length) == "GB" ? 1000000 : (
+        					a.substring(a.length - 2, a.length) == "TB" ? 1000000000 : 1
+        					)
+        				)
+        			);
         return parseInt( x * x_unit, 10 );
        }
     },
