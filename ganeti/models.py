@@ -30,7 +30,7 @@ from gevent.pool import Pool
 from gevent.timeout import Timeout
 
 from util import vapclient
-from util.ganeti_client import GanetiRapiClient, GanetiApiError
+from util.client import GanetiRapiClient, GanetiApiError
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
 import re
 import random
@@ -414,7 +414,8 @@ class Cluster(models.Model):
         retinstances = []
         instances = cache.get("cluster:%s:instances" % self.slug)
         if instances is None:
-            instances = self._client.GetInstances(bulk=True)
+            #instances = self._client.GetInstances(bulk=True)
+            instances = parseQuery(self._client.Query('instance', ['name','tags', 'pnode', 'disk.sizes', 'nic.modes','nic.ips','nic.links','status', 'admin_state', 'beparams', 'oper_state', 'hvparams', 'nic.macs', 'ctime', 'mtime']))
             cache.set("cluster:%s:instances" % self.slug, instances, 45)
         users, orgs, groups, instanceapps, networks = preload_instance_data()
         retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks) for info in instances]
@@ -471,19 +472,50 @@ class Cluster(models.Model):
         return info
 
     def get_cluster_nodes(self):
+        nodes = cache.get("cluster:%s:nodes" % self.slug)
+        if nodes is None:
+            cachenodes = []
+            nodes = parseQuery(self._client.Query('node', ['name','role','mfree', 'mtotal', 'dtotal', 'dfree', 'ctotal', 'group', 'pinst_cnt','offline']))
+            for info in nodes:
+                info['cluster'] = self.slug
+                if info['mfree'] is None:
+                    info['mfree'] = 0
+                if info['mtotal'] is None:
+                    info['mtotal'] = 0
+                if info['dtotal'] is None:
+                    info['dtotal'] = 0
+                if info['dfree'] is None:
+                    info['dfree'] = 0
+                try:
+                    info['mem_used'] = 100*(info['mtotal']-info['mfree'])/info['mtotal']
+                except ZeroDivisionError:
+                    '''this is the case where the node is offline and reports none, thus it is 0'''
+                    info['mem_used'] = 0
+                try:
+                    info['disk_used'] = 100*(info['dtotal']-info['dfree'])/info['dtotal']
+                except ZeroDivisionError:
+                    '''this is the case where the node is offline and reports none, thus it is 0'''
+                    info['disk_used'] = 0
+                info['shared_storage'] = False
+                if self.default_disk_template in ['drbd', 'plain']:
+                    info['shared_storage'] = False
+                if self.default_disk_template == 'sharedfile':
+                    info['shared_storage'] = True
+                cachenodes.append(info)
+            nodes = cachenodes
+            cache.set("cluster:%s:nodes" % self.slug, nodes, 180)
+        return nodes
+    
+    
+    
+    def get_cluster_nodes_old(self):
         info = cache.get("cluster:%s:nodes" % self.slug)
         if info is None:
             info = self._client.GetNodes()
             cache.set("cluster:%s:nodes" % self.slug, info, 180)
         return info
 
-    def get_cluster_instances(self):
-        return self._client.GetInstances()
-
-    def get_cluster_instances_detail(self):
-        return self._client.GetInstances(bulk=True)
-
-    def get_node_info(self, node):
+    def get_node_info_old(self, node):
         info = cache.get("cluster:%s:node:%s" % (self.slug, node))
         if info is None:
             info = self._client.GetNode(node)
@@ -513,6 +545,38 @@ class Cluster(models.Model):
                 info['shared_storage'] = True
             cache.set("cluster:%s:node:%s" % (self.slug, node), info, 180)
         return info
+    
+    
+    
+    def get_node_groups(self):
+        info = cache.get('cluster:%s:nodegroups' %self.slug)
+        if info is None:
+            info = self._client.GetGroups()
+            cache.set('cluster:%s:nodegroups' %self.slug, info, 180)
+        return info
+
+    def get_cluster_instances(self):
+        return self._client.GetInstances()
+
+    def get_cluster_instances_detail(self):
+        return self._client.GetInstances(bulk=True)
+
+    def get_node_group_info(self, nodegroup):
+        info = cache.get("cluster:%s:nodegroup:%s" % (self.slug, nodegroup))
+        if info is None:
+            info = self._client.GetGroup(nodegroup)
+            info['cluster'] = self.slug
+            cache.set("cluster:%s:nodegroup:%s" % (self.slug, nodegroup), info, 180)
+        return info
+
+    def get_node_info(self, node):
+        info = cache.get("cluster:%s:node:%s" % (self.slug, node))
+        if info is None:
+            for info in self.get_cluster_nodes():
+                if info['name'] == node:
+                    cache.set("cluster:%s:node:%s" % (self.slug, node), info, 180)
+                    return info
+        return info
 
     def get_instance_info(self, instance):
         cache_key = self._instance_cache_key(instance)
@@ -520,11 +584,10 @@ class Cluster(models.Model):
 
         if info is None:
             try:
-                info = self._client.GetInstance(instance)
+                info = parseQuery(self._client.Query('instance', ['name','tags', 'pnode', 'disk.sizes', 'nic.modes','nic.ips','nic.links','status', 'admin_state', 'beparams', 'oper_state', 'hvparams', 'nic.macs', 'ctime', 'mtime', 'osparams', 'os'],  ["|", ["=", "name", "%s" %instance]]))[0]
                 cache.set(cache_key, info, 3)
-            except GanetiApiError:
+            except GanetiApiError, Exception:
                 info = None
-
         return info
         
     def setup_vnc_forwarding(self, instance):
@@ -805,7 +868,31 @@ class InstanceAction(models.Model):
         
         message = render_to_string('instance_actions/action_mail.txt',
                                    ctx_dict)
-        
         self.user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
         
        
+def parseQuery(response):
+    field_dict = {}
+    data = response['data']
+    fields = response['fields']
+    for i,field in enumerate(fields):
+         field_dict[i]=field['name']
+    reslist = []
+    for datai in data:
+        res_dict = {}
+        for fieldnum, result in enumerate(datai):
+            res_dict[field_dict[fieldnum]]=result[1]
+        reslist.append(res_dict)
+    return reslist
+
+def parseQuerysimple(response):
+    data = response['data']
+    reslist = []
+    for datai in data:
+        res_list = []
+        for result in datai:
+            res_list.append(result[1])
+        reslist.append(res_list)
+    return reslist
+
+    

@@ -210,8 +210,10 @@ def user_index_json(request):
             else:
                 instance.joblock = False
             instancedetails.extend(generate_json(instance, user))
-        except (Exception, Timeout):
+        except Timeout:
             bad_instances.append(instance)
+        except Exception as e:
+            bad_instances.append(e)
         finally:
             t.cancel()
 
@@ -220,8 +222,7 @@ def user_index_json(request):
         j.join()
         
         if bad_instances:
-            bad_inst_text = "Could not get details for " + str(len(bad_instances)) + " instances.<br>" \
-                "Please try again later."
+            bad_inst_text = "Could not get details for " + str(len(bad_instances)) + " instances.<br> %s. Please try again later." %bad_instances
             if messages:
                 messages = messages + "<br>" + bad_inst_text
             else:
@@ -336,7 +337,7 @@ def generate_json(instance, user):
     else:
         inst_dict['cluster'] = i.cluster.description
         inst_dict['clusterslug'] = i.cluster.slug
-    inst_dict['memory'] = memsize(i.beparams['memory'])
+    inst_dict['memory'] = memsize(i.beparams['maxmem'])
     inst_dict['disk'] = ", ".join(disksizes(i.disk_sizes))
     inst_dict['vcpus'] = i.beparams['vcpus']
     inst_dict['ipaddress'] = [ip for ip in i.nic_ips if ip]
@@ -417,7 +418,7 @@ def generate_json_light(instance, user):
 
     inst_dict['name'] =  i.name
     inst_dict['clusterslug'] = i.cluster.slug
-    inst_dict['memory'] = i.beparams['memory']
+    inst_dict['memory'] = i.beparams['maxmem']
     inst_dict['vcpus'] = i.beparams['vcpus']
     inst_dict['disk'] = sum(i.disk_sizes)
     if user.is_superuser or user.has_perm('ganeti.view_instances'):
@@ -835,6 +836,14 @@ def instance(request, cluster_slug, instance):
     instance.cpu_url = reverse(graph, args=(cluster.slug, instance.name,'cpu-ts'))
     instance.net_url = reverse(graph, args=(cluster.slug, instance.name,'net-ts'))
     instance.netw = []
+    try:
+        instance.osname = settings.OPERATING_SYSTEM_DICT[instance.osparams['img_id']]
+    except Exception:
+        try:
+            instance.osname = instance.osparams['img_id']
+        except Exception:
+            instance.osname = instance.os
+
     for (nic_i, link) in enumerate(instance.nic_links):
         if instance.nic_ips[nic_i] == None:
             instance.netw.append("%s"%(instance.nic_links[nic_i]))
@@ -997,7 +1006,85 @@ def get_clusternodes(request):
     else:
         return HttpResponseRedirect(reverse('user-instances'))
 
+@login_required
+def clusternodes_json(request):
+        if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+            nodedetails = []
+            jresp={}
+            nodes = cache.get('allclusternodes')
+            bad_clusters = cache.get('badclusters')
+            bad_nodes = cache.get('badnodes')
+            if nodes is None:
+                nodes, bad_clusters, bad_nodes = prepare_clusternodes()
+                cache.set('allclusternodes', nodes, 90)
+            if bad_clusters:
+                messages.add_message(request, messages.WARNING,
+                                 "Some nodes may be missing because the" +
+                                 " following clusters are unreachable: " +
+                                 ", ".join([c.description for c in bad_clusters]))
+                cache.set('badclusters', bad_clusters, 90)
+            if bad_nodes:
+                messages.add_message(request, messages.ERROR,
+                                 "Some nodes appear to be offline: "+
+                                 ", ".join(bad_nodes))
+                cache.set('badnodes', bad_nodes, 90)
+            for node in nodes:
+                node_dict = {}
+                node_dict['name'] = node['name']
+                #node_dict['node_group'] = node['node_group']
+                node_dict['mem_used'] = node['mem_used']
+                node_dict['mfree'] = node['mfree']
+                node_dict['mtotal'] = node['mtotal']
+                node_dict['shared_storage'] = node['shared_storage']
+                node_dict['disk_used'] = node['disk_used']
+                node_dict['dfree'] = node['dfree']
+                node_dict['dtotal'] = node['dtotal']
+                node_dict['ctotal'] = node['ctotal']
+                node_dict['pinst_cnt'] = node['pinst_cnt']
+                node_dict['role'] = node['role']
+                node_dict['cluster'] = node['cluster']
+                nodedetails.append(node_dict)
+            jresp['aaData'] = nodedetails
+            #if messages:
+                #jresp['messages'] = messages
+            #cache.set(cache_key, jresp, 90)
+            res = jresp
+            return HttpResponse(json.dumps(res), mimetype='application/json')
+        else:
+            return HttpResponse(json.dumps({'error':"Unauthorized access"}), mimetype='application/json')
 def prepare_clusternodes():
+    import time
+    start_time = time.time()
+    clusters = Cluster.objects.all()
+    p = Pool(15)
+    nodes = []
+    bad_clusters = []
+    bad_nodes = []
+    servermon_url = None
+    def _get_nodes(cluster):
+        # Let's give it some more time. It seems to be struggling with clusters with many nodes
+        t = Timeout(RAPI_TIMEOUT+30)
+        t.start()
+        try:
+            for node in cluster.get_cluster_nodes():
+                nodes.append(node)
+                if node['offline'] == True:
+                    bad_nodes.append(node['name'])
+        except (GanetiApiError, Timeout):
+            # Maybe we should look if this is the proper way of doing this
+            cluster._client = None
+            bad_clusters.append(cluster)
+        finally:
+            t.cancel()
+    
+    p.imap(_get_nodes, clusters)
+    p.join()
+    print time.time() - start_time, "seconds"
+    return nodes, bad_clusters, bad_nodes
+            
+def prepare_clusternodes_old():
+    import time
+    start_time = time.time()
     clusters = Cluster.objects.all()
     p = Pool(20)
     nodes = []
@@ -1008,8 +1095,8 @@ def prepare_clusternodes():
         t = Timeout(RAPI_TIMEOUT)
         t.start()
         try:
-            nodes.extend(cluster.get_node_info(node) for node in cluster.get_cluster_nodes())
-            bad_nodes.extend(cluster.get_node_info(node)['name'] for node in cluster.get_cluster_nodes() if cluster.get_node_info(node)['offline'] == True)
+            nodes.extend(cluster.get_node_info_old(node) for node in cluster.get_cluster_nodes_old())
+            bad_nodes.extend(cluster.get_node_info_old(node)['name'] for node in cluster.get_cluster_nodes_old() if cluster.get_node_info_old(node)['offline'] == True)
         except (GanetiApiError, Timeout):
             # Maybe we should look if this is the proper way of doing this
             cluster._client = None
@@ -1017,11 +1104,10 @@ def prepare_clusternodes():
         finally:
             t.cancel()
     
-    p.imap(_get_nodes, clusters)
+    p.map(_get_nodes, clusters)
     p.join()
-    return nodes, bad_clusters, bad_nodes
-            
-        
+    print time.time() - start_time, "seconds"   
+    return nodes, bad_clusters, bad_nodes        
 
 def prepare_tags(taglist):
     tags = []

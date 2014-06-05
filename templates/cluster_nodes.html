@@ -34,7 +34,7 @@ $(document).ready( function(){
             },
             "sPaginationType": "bootstrap",
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-			"aoColumns": [ {"bSearchable": true,"bSortable": true },
+			"aoColumns": [ {"bSearchable": true,"bSortable": true }, {"bSearchable": true,"bSortable": true },
 						{"bSearchable": true,"bSortable": true, "sType":"dataattr-string"},
 						{"bSearchable": true,"bSortable": true, "sType":"dataattr-string"},
 						{"bSearchable": true,"bSortable": true},
@@ -67,9 +67,8 @@ $(document).ready( function(){
 	if (reg_exp == '') {
             reg_exp = '|'
         }
-	console.log(reg_exp.slice(0, -1))
 	
-    oTable.fnFilter(reg_exp.slice(0, -1), 5, true, false, false);
+    oTable.fnFilter(reg_exp.slice(0, -1), 6, true, false, false);
     
     
     $('button[name="status_filter"]').click(function(){
@@ -87,8 +86,7 @@ $(document).ready( function(){
         if (reg_exp == '') {
             reg_exp = '|'
         }
-        oTable.fnFilter(reg_exp.slice(0, -1), 5, true, false, false);
-        console.log(reg_exp.slice(0, -1))
+        oTable.fnFilter(reg_exp.slice(0, -1), 6, true, false, false);
         return false;
     });
     
@@ -138,6 +136,7 @@ $(document).ready( function(){
 <thead>
 <tr>
 	<th>{% trans "Name" %} <span class="sort-icon"><span></th>
+	<th>{% trans "Nodegroup" %} <span class="sort-icon"><span></th>
 	<th>{% trans "Memory" %} <span class="sort-icon"><span></th>
 	<th>{% trans "Disk" %} <span class="sort-icon"><span></th>
 	<th style="text-align: center;">CPUs <span class="sort-icon"><span></th>
@@ -153,6 +152,7 @@ $(document).ready( function(){
 {% load noderole %}
 {% for node in nodes %}
 <tr {% if node.role == 'O' %}class="alert alert-error"{% endif %}{% if node.role == 'D' %}class="alert alert-warning"{% endif %}><td>{% if servermon %}<a href="{{servermon}}/{{node.name}}" target="_blank">{{node.name}}</a>{% else %}{{node.name}}{% endif %}</td>
+<td>{{node.group}}</td>
 <td>
 <div class="progress progress-{{node.mem_used|perctobootstrap}}">
 <div class="bar" style="width: {{node.mem_used}}%" data-size="{{node.mem_used}}">{{node.mem_used}}%</div>

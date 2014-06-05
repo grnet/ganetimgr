@@ -131,7 +131,8 @@
 					{% if user.is_superuser or perms.ganeti.view_instances %}
 					<tr><td class="">{% trans "Node" %}</td><td>{{instance.pnode}}</td></tr>
 					{% endif %}
-					<tr><td class="">{% trans "Memory" %}</td><td>{{ instance.beparams.memory|memsize }}</td></tr>
+					<tr><td class="">{% trans "OS" %}</td><td>{{ instance.osname }}</td></tr>
+					<tr><td class="">{% trans "Memory" %}</td><td>{{ instance.beparams.maxmem|memsize }}</td></tr>
 					<tr><td class="">{% trans "CPUs" %}</td><td>{{ instance.beparams.vcpus }}</td></tr>
 					<tr><td class="">Hard disk{{ instance.disk_sizes|pluralize }}</td><td>{{ instance.disk_sizes|disksizes|join:", " }}</td></tr>
 					<tr><td class="">{% trans "Network cards" %}</td><td>{{ instance.nic_macs|length }}</td></tr>
