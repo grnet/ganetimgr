@@ -470,7 +470,7 @@ class Cluster(models.Model):
             cache.set("cluster:%s:info" % self.slug, info, 180)
 
         return info
-
+    
     def get_cluster_nodes(self):
         nodes = cache.get("cluster:%s:nodes" % self.slug)
         if nodes is None:
@@ -551,10 +551,57 @@ class Cluster(models.Model):
     def get_node_groups(self):
         info = cache.get('cluster:%s:nodegroups' %self.slug)
         if info is None:
-            info = self._client.GetGroups()
+            #info = parseQuery(self._client.Query('group',['name', 'tags']))
+            info = self._client.GetGroups(bulk=True)
             cache.set('cluster:%s:nodegroups' %self.slug, info, 180)
         return info
 
+    def get_networks(self):
+        info = cache.get('cluster:%s:networks' %self.slug)
+        if info is None:
+            info = parseQuery(self._client.Query('network', ['name', 'group_list']))
+            cache.set('cluster:%s:networks' %self.slug, info, 180)
+        return info
+    
+    def get_node_group_networks(self, nodegroup):
+        # This gets networks per nodegroup as received via a GetNetworks RAPI call
+        # We then perform a check for the existing networks in database
+        # and add the bridged networks
+        nodegroupsnets = []
+        networks = self.get_networks()
+        brnets = self.network_set.filter(mode="bridged")
+        for net in networks:
+            for group in net['group_list']:
+                group_dict = {}
+                if group[0] == nodegroup:
+                    group_dict['network'] = net['name']
+                    group_dict['link'] = group[2]
+                    group_dict['type'] = group[1]
+                    nodegroupsnets.append(group_dict)
+        for brnet in brnets:
+            brnet_dict = {}
+            brnet_dict['network'] = brnet.description
+            brnet_dict['link'] = brnet.link
+            brnet_dict['type'] = brnet.mode
+            nodegroupsnets.append(brnet_dict)
+        return nodegroupsnets
+    
+    def get_node_group_stack(self):
+        groups = self.get_node_groups()
+        group_stack = []
+        for group in groups:
+            group_dict = {}
+            group_dict['name'] = group['name']
+            group_dict['networks'] = self.get_node_group_networks(group['name'])
+            group_dict['nodes'] = group['node_list']
+            group_dict['vgs'] = []
+            group_tags = group['tags']
+            for tag in group_tags:
+                if tag.startswith("vg:"):
+                    group_dict['vgs'].append(tag.replace('vg:', ''))
+            group_stack.append(group_dict)
+        return group_stack
+    
     def get_cluster_instances(self):
         return self._client.GetInstances()
 

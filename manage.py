@@ -15,8 +15,8 @@
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
 # OF THIS SOFTWARE.
 
-from gevent import monkey
-monkey.patch_all()
+#from gevent import monkey
+#monkey.patch_all()
 from django.core.management import execute_manager
 try:
     import settings # Assumed to be in the same directory.

@@ -190,6 +190,7 @@ class InstanceApplicationReviewForm(InstanceForm):
     network = GroupedModelChoiceField("cluster", disabled_field="disable_instance_creation",
                                       queryset=Network.objects.all().order_by('cluster__slug'),
                                       widget=SelectWithDisabled())
+    node_group = forms.ChoiceField()
     
     class Meta:
         model = InstanceApplication

@@ -35,6 +35,7 @@ from util import beanstalkc
 from paramiko import RSAKey, DSSKey
 from paramiko.util import hexlify
 
+from ganeti.fields.jsonfield import JSONField
 
 (STATUS_PENDING,
  STATUS_APPROVED,
@@ -99,6 +100,7 @@ class InstanceApplication(models.Model):
     organization = models.ForeignKey(Organization, null=True, blank=True)
     network = models.ForeignKey('ganeti.Network', related_name=_("network"),
                                 null=True, blank=True)
+    instance_params = JSONField(blank=True, null=True)
     applicant = models.ForeignKey(User)
     job_id = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(choices=APPLICATION_CODES)

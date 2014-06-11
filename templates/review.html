@@ -187,6 +187,19 @@ textarea{
 	                    </div>
                 	</div>
 					<p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }} ({{ cl.slug }})</a> {% if not forloop.last %}| {% endif %}{% endfor %}</p>
+					
+					
+					<div class="control-group {% if appform.network.errors %}error{% endif %}">
+		                <label class="control-label {% if appform.network.field.required %}required{% endif %}" for="id_applier">{{ appform.network.label }}</label>
+	                    <div class="controls">{{ appform.node_group }}
+	                    {% if appform.network.errors %}
+	                    <span class="help-inline" style="clear:both;">
+	                        {{ appform.network.errors|join:", " }}
+	                    </span>
+	                    {% endif %}
+	                    </div>
+                	</div>
+					
 				{%if application.job_id %}
 				<div class="control-group">
 					<label class="control-label required" for="id_applier">{% trans "Job ID" %}</label>
@@ -364,3 +377,30 @@ textarea{
 </div>
 {% endif %}
 {% endblock %}
+
+{% block bottomblock %}
+<script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
+<script type="text/javascript">
+$(document).ready( function(){
+	$("#id_network").change(function () {
+		var optionSelected = $(this).find("option:selected");
+		network_id = this.value;
+		var ngturl = "{% url ng_from_net %}"+"?network_id="+network_id;
+		var sel = $("#id_node_group");
+		$.ajax({
+			type: 'GET',
+			url: ngturl,
+			dataType: 'json',
+			success: function(data) {
+				sel.empty();
+				for (var i=0; i<data.length; i++) {
+					console.log(data[i]);
+					sel.append('<option value="'+data[i].name+'">'+data[i].name+'</option>');
+				}
+		}
+		});
+	});
+});
+</script>
+{% endblock %}
+

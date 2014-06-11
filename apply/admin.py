@@ -52,7 +52,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         ('Instance Information', {'fields': ('hostname', 'memory', 'disk_size',
                                              'vcpus', 'operating_system',
                                              'hosts_mail_server') }),
-        ('Placement', {'fields': ('network',)}),
+        ('Placement', {'fields': ('network','instance_params')}),
         ('Owner Information', {'fields': ('applicant', 'organization',
                                           'admin_contact_name',
                                           'admin_contact_phone',
