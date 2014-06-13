@@ -98,8 +98,6 @@ class InstanceApplication(models.Model):
     admin_contact_phone = models.CharField(max_length=64, null=True, blank=True)
     admin_contact_email = models.EmailField(null=True, blank=True)
     organization = models.ForeignKey(Organization, null=True, blank=True)
-    network = models.ForeignKey('ganeti.Network', related_name=_("network"),
-                                null=True, blank=True)
     instance_params = JSONField(blank=True, null=True)
     applicant = models.ForeignKey(User)
     job_id = models.IntegerField(null=True, blank=True)

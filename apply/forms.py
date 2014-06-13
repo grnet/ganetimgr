@@ -190,7 +190,19 @@ class InstanceApplicationReviewForm(InstanceForm):
     network = GroupedModelChoiceField("cluster", disabled_field="disable_instance_creation",
                                       queryset=Network.objects.all().order_by('cluster__slug'),
                                       widget=SelectWithDisabled())
-    node_group = forms.ChoiceField()
+    cluster = forms.ChoiceField(
+                                choices = [(c.pk, "%s (%s)"%(c.description, c.slug)) for c in Cluster.objects.exclude(disable_instance_creation=True).order_by('description')],
+                                label = "Cluster",
+                                required = True)
+    node_group = forms.ChoiceField(label = "Node Group",
+                                required = True)
+    netw = forms.ChoiceField(label = "Network",
+                                required = True)
+    vgs = forms.ChoiceField(label = "Volume Groups",
+                                required = False)
+    disk_template = forms.ChoiceField(label = "Disk Template",
+                                required = True)
+    
     
     class Meta:
         model = InstanceApplication

@@ -173,7 +173,7 @@ textarea{
 					</div>
 					{% endif %}
 					
-					<p>{% trans "Choose either a network, or a cluster from the quick list to use the cluster's default network." %}</p>
+					{% comment %}<p>{% trans "Choose either a network, or a cluster from the quick list to use the cluster's default network." %}</p>
 					
 					
 					<div class="control-group {% if appform.network.errors %}error{% endif %}">
@@ -187,19 +187,70 @@ textarea{
 	                    </div>
                 	</div>
 					<p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }} ({{ cl.slug }})</a> {% if not forloop.last %}| {% endif %}{% endfor %}</p>
+					{% endcomment %}
 					
-					
-					<div class="control-group {% if appform.network.errors %}error{% endif %}">
-		                <label class="control-label {% if appform.network.field.required %}required{% endif %}" for="id_applier">{{ appform.network.label }}</label>
-	                    <div class="controls">{{ appform.node_group }}
-	                    {% if appform.network.errors %}
+					<div class="control-group {% if appform.cluster.errors %}error{% endif %}">
+		                <label class="control-label {% if appform.cluster.field.required %}required{% endif %}" for="id_applier">{{ appform.cluster.label }}</label>
+	                    <div class="controls">{{ appform.cluster }}
+	                    {% if appform.cluster.errors %}
 	                    <span class="help-inline" style="clear:both;">
-	                        {{ appform.network.errors|join:", " }}
+	                        {{ appform.cluster.errors|join:", " }}
 	                    </span>
 	                    {% endif %}
 	                    </div>
                 	</div>
+                	
+                	<div class="control-group {% if appform.disk_template.errors %}error{% endif %}">
+		                <label class="control-label {% if appform.disk_template.field.required %}required{% endif %}" for="id_applier">{{ appform.disk_template.label }}</label>
+	                    <div class="controls">{{ appform.disk_template }}
+	                    {% if appform.disk_template.errors %}
+	                    <span class="help-inline" style="clear:both;">
+	                        {{ appform.disk_template.errors|join:", " }}
+	                    </span>
+	                    {% endif %}
+	                    </div>
+                	</div>
+
+					<div class="control-group {% if appform.node_group.errors %}error{% endif %}">
+		                <label class="control-label {% if appform.node_group.field.required %}required{% endif %}" for="id_applier">{{ appform.node_group.label }}</label>
+	                    <div class="controls">{{ appform.node_group }}
+	                    {% if appform.node_group.errors %}
+	                    <span class="help-inline" style="clear:both;">
+	                        {{ appform.node_group.errors|join:", " }}
+	                    </span>
+	                    {% endif %}
+	                    </div>
+                	</div>                	
 					
+					
+					<div class="control-group {% if appform.netw.errors %}error{% endif %}">
+		                <label class="control-label {% if appform.netw.field.required %}required{% endif %}" for="id_applier">{{ appform.netw.label }}</label>
+	                    <div class="controls">{{ appform.netw }}
+	                    {% if appform.netw.errors %}
+	                    <span class="help-inline" style="clear:both;">
+	                        {{ appform.netw.errors|join:", " }}
+	                    </span>
+	                    {% endif %}
+	                    </div>
+                	</div>
+
+
+					
+
+					<div class="control-group {% if appform.vgs.errors %}error{% endif %}">
+		                <label class="control-label {% if appform.vgs.field.required %}required{% endif %}" for="id_applier">{{ appform.vgs.label }}</label>
+	                    <div class="controls">{{ appform.vgs }}
+	                    {% if appform.vgs.errors %}
+	                    <span class="help-inline" style="clear:both;">
+	                        {{ appform.vgs.errors|join:", " }}
+	                    </span>
+	                    {% endif %}
+	                    </div>
+                	</div>
+                	
+
+                	
+                						
 				{%if application.job_id %}
 				<div class="control-group">
 					<label class="control-label required" for="id_applier">{% trans "Job ID" %}</label>
@@ -381,26 +432,72 @@ textarea{
 {% block bottomblock %}
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <script type="text/javascript">
-$(document).ready( function(){
-	$("#id_network").change(function () {
+var selected_cluster;
+var selected_ng;
+var single_ng;
+$(document).ready( function(){	
+	
+	$("#id_cluster").change(function () {
+		var selng = $("#id_node_group");
+		var dtng = $("#id_disk_template");
+		
 		var optionSelected = $(this).find("option:selected");
-		network_id = this.value;
-		var ngturl = "{% url ng_from_net %}"+"?network_id="+network_id;
-		var sel = $("#id_node_group");
+		cluster_id = this.value;
+		var clusturl = "{% url cluster_ng_stack %}"+"?cluster_id="+cluster_id;
 		$.ajax({
 			type: 'GET',
-			url: ngturl,
+			url: clusturl,
 			dataType: 'json',
 			success: function(data) {
-				sel.empty();
-				for (var i=0; i<data.length; i++) {
-					console.log(data[i]);
-					sel.append('<option value="'+data[i].name+'">'+data[i].name+'</option>');
+				selected_cluster = data;
+				cleanfields();
+				for (var i=0; i<data.node_groups.length; i++) {
+					selng.append('<option value="'+data.node_groups[i].name+'">'+data.node_groups[i].name+'</option>');
 				}
+				$("#id_node_group").trigger('change');
+				for (var i=0; i<data.disk_templates.length; i++) {
+					suff = '';
+					if (i === 0){
+						suff = ' (default)';
+					}
+					dtng.append('<option value="'+data.disk_templates[i]+'">'+data.disk_templates[i]+suff+'</option>');
+				}				
+				
 		}
 		});
 	});
+	$("#id_node_group").change(function () {
+		var optionSelected = $(this).find("option:selected");
+		var vgng = $("#id_vgs");
+		ng_name = this.value;
+		vgng.empty();
+		var selnet = $("#id_netw");
+		for (var i=0; i<selected_cluster.node_groups.length; i++) {
+			if (selected_cluster.node_groups[i].name === ng_name){
+				selected_ng = selected_cluster.node_groups[i];
+				console.log(selected_ng);
+			}
+		}
+		selnet.empty();
+		for (var i=0; i<selected_ng.networks.length; i++) {
+			selnet.append('<option value="'+selected_ng.networks[i].link+'">'+selected_ng.networks[i].network+'</option>');
+		}
+		vgng.append('<option value="default">default</option>');
+		for (var i=0; i<selected_ng.vgs.length; i++) {
+					vgng.append('<option value="'+selected_ng.vgs[i]+'">'+selected_ng.vgs[i]+'</option>');
+		}
+		
+	});
+	$("#id_cluster").trigger("change");
 });
+
+function cleanfields(){
+	$("#id_node_group").empty();
+	$("#id_disk_template").empty();
+	$("#id_vgs").empty();
+	$("#id_netw").empty();
+}
+
 </script>
 {% endblock %}
 

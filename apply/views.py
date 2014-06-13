@@ -118,7 +118,7 @@ def application_list(request):
 def review_application(request, application_id):
     applications = InstanceApplication.objects.filter(status__in=PENDING_CODES)
     app = get_object_or_404(InstanceApplication, pk=application_id)
-    fast_clusters = Cluster.objects.filter(fast_create=True).exclude(disable_instance_creation=True)
+    fast_clusters = Cluster.objects.filter(fast_create=True).exclude(disable_instance_creation=True).order_by('description')
 
     if request.method == "GET":
         form = InstanceApplicationReviewForm(instance=app)
@@ -204,6 +204,7 @@ def get_cluster_node_group_stack(request):
     cluster_info = cluster.get_cluster_info()
     res = {}
     res['slug'] = cluster.slug
+    res['description'] = cluster.description
     res['disk_templates'] = cluster_info['enabled_disk_templates']
     res['node_groups'] = cluster.get_node_group_stack()
     return HttpResponse(json.dumps(res), mimetype='application/json')

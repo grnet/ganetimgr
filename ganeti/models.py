@@ -574,7 +574,12 @@ class Cluster(models.Model):
             for group in net['group_list']:
                 group_dict = {}
                 if group[0] == nodegroup:
-                    group_dict['network'] = net['name']
+                    #Let's try to link with database saved networks. Get the description
+                    try:
+                        nd = Network.objects.get(cluster=self, link=group[2]).description
+                    except Network.DoesNotExist:
+                        nd = net['name']
+                    group_dict['network'] = nd
                     group_dict['link'] = group[2]
                     group_dict['type'] = group[1]
                     nodegroupsnets.append(group_dict)
@@ -584,6 +589,7 @@ class Cluster(models.Model):
             brnet_dict['link'] = brnet.link
             brnet_dict['type'] = brnet.mode
             nodegroupsnets.append(brnet_dict)
+        nodegroupsnets = sorted(nodegroupsnets, key=lambda k: k['network']) 
         return nodegroupsnets
     
     def get_node_group_stack(self):
