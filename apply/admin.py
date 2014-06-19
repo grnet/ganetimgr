@@ -42,9 +42,9 @@ def make_fast_create_actions():
 
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ["hostname", "applicant", "organization", "cluster",
-                    "network", "status", "filed"]
-    list_filter = ["status", "network", "organization"]
-    list_editable = ["organization", "network"]
+                    "status", "filed"]
+    list_filter = ["status", "organization"]
+    list_editable = ["organization"]
     readonly_fields = ["job_id", "backend_message"]
     ordering = ["-filed", "hostname"]
     actions = make_fast_create_actions()
@@ -52,7 +52,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         ('Instance Information', {'fields': ('hostname', 'memory', 'disk_size',
                                              'vcpus', 'operating_system',
                                              'hosts_mail_server') }),
-        ('Placement', {'fields': ('network','instance_params')}),
+        ('Placement', {'fields': ('instance_params',)}),
         ('Owner Information', {'fields': ('applicant', 'organization',
                                           'admin_contact_name',
                                           'admin_contact_phone',
