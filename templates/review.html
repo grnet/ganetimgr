@@ -405,7 +405,6 @@ textarea{
 		</fieldset>
 		</div></div>
 
-		
 	</form>
 {% endif %}
 
@@ -452,15 +451,28 @@ $(document).ready( function(){
 				selected_cluster = data;
 				cleanfields();
 				for (var i=0; i<data.node_groups.length; i++) {
-					selng.append('<option value="'+data.node_groups[i].name+'">'+data.node_groups[i].name+'</option>');
+					unallocable = '';
+					if (data.node_groups[i].alloc_policy == 'unallocable'){
+						unallocable = 'disabled';
+					}
+					selecttext = '';
+					if ("{{application.instance_params.node_group}}" == data.node_groups[i].name && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+						selecttext = "selected='selected'";
+					}
+					selng.append('<option value="'+data.node_groups[i].name+'" '+unallocable+' '+selecttext+'>'+data.node_groups[i].name+'</option>');
 				}
+				
 				$("#id_node_group").trigger('change');
 				for (var i=0; i<data.disk_templates.length; i++) {
 					suff = '';
 					if (i === 0){
 						suff = ' (default)';
 					}
-					dtng.append('<option value="'+data.disk_templates[i]+'">'+data.disk_templates[i]+suff+'</option>');
+					selecttext = '';
+					if ("{{application.instance_params.disk_template}}" == data.disk_templates[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+						selecttext = "selected='selected'";
+					}
+					dtng.append('<option value="'+data.disk_templates[i]+'" '+selecttext+'>'+data.disk_templates[i]+suff+'</option>');
 				}				
 				
 		}
@@ -475,20 +487,28 @@ $(document).ready( function(){
 		for (var i=0; i<selected_cluster.node_groups.length; i++) {
 			if (selected_cluster.node_groups[i].name === ng_name){
 				selected_ng = selected_cluster.node_groups[i];
-				console.log(selected_ng);
 			}
 		}
 		selnet.empty();
 		for (var i=0; i<selected_ng.networks.length; i++) {
-			selnet.append('<option value="'+selected_ng.networks[i].link+'">'+selected_ng.networks[i].network+'</option>');
+			selecttext = '';
+					if ("{{application.instance_params.network}}" == selected_ng.networks[i].link && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+						selecttext = "selected='selected'";
+					}
+			selnet.append('<option value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>');
 		}
 		vgng.append('<option value="default">default</option>');
 		for (var i=0; i<selected_ng.vgs.length; i++) {
-					vgng.append('<option value="'+selected_ng.vgs[i]+'">'+selected_ng.vgs[i]+'</option>');
+			selecttext = '';
+					if ("{{application.instance_params.vgs}}" == selected_ng.vgs[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+						selecttext = "selected='selected'";
+					}
+					vgng.append('<option value="'+selected_ng.vgs[i]+'" '+selecttext+'>'+selected_ng.vgs[i]+'</option>');
 		}
 		
 	});
 	$("#id_cluster").trigger("change");
+	
 });
 
 function cleanfields(){
