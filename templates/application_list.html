@@ -95,7 +95,7 @@ $(document).ready( function(){
 <tr>
     <td>{% if perms.apply.change_instanceapplication %}<a href="{% url application-review app.pk %}">{{ app.hostname }}</a>{% else %}{{ app.hostname }}{% endif %}</td>
     <td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td>
-    <td>{{ app.network|default_if_none:"&mdash;" }}</td>
+    <td>{{ app.instance_params.network|default_if_none:"&mdash;" }}</td>
     <td>{{ app.get_status_display }}</td>
     <td><span style="display:none">{{ app.filed|date:"U" }}</span>{{ app.filed }}</td>
 </tr>
@@ -127,7 +127,7 @@ $(document).ready( function(){
 	<td>{{ app.applicant }}</td>
 	<td>{{ app.memory }}</td>
 	<td>{{ app.vcpus }}</td>
-	<td>{{ app.network|default_if_none:"&mdash;" }}</td>
+	<td>{{ app.instance_params.network|default_if_none:"&mdash;" }}</td>
 	<td>{{ app.get_status_display }}</td>
 	<td><span style="display:none">{{ app.filed|date:"U" }}</span>{{ app.filed }}</td>
 </tr>
