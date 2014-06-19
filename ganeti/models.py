@@ -475,7 +475,7 @@ class Cluster(models.Model):
         nodes = cache.get("cluster:%s:nodes" % self.slug)
         if nodes is None:
             cachenodes = []
-            nodes = parseQuery(self._client.Query('node', ['name','role','mfree', 'mtotal', 'dtotal', 'dfree', 'ctotal', 'group', 'pinst_cnt','offline']))
+            nodes = parseQuery(self._client.Query('node', ['name','role','mfree', 'mtotal', 'dtotal', 'dfree', 'ctotal', 'group', 'pinst_cnt','offline', 'vm_capable']))
             for info in nodes:
                 info['cluster'] = self.slug
                 if info['mfree'] is None:
@@ -506,47 +506,19 @@ class Cluster(models.Model):
             cache.set("cluster:%s:nodes" % self.slug, nodes, 180)
         return nodes
     
-    
-    
-    def get_cluster_nodes_old(self):
-        info = cache.get("cluster:%s:nodes" % self.slug)
-        if info is None:
-            info = self._client.GetNodes()
-            cache.set("cluster:%s:nodes" % self.slug, info, 180)
-        return info
-
-    def get_node_info_old(self, node):
-        info = cache.get("cluster:%s:node:%s" % (self.slug, node))
-        if info is None:
-            info = self._client.GetNode(node)
-            info['cluster'] = self.slug
-            if info['mfree'] is None:
-                info['mfree'] = 0
-            if info['mtotal'] is None:
-                info['mtotal'] = 0
-            if info['dtotal'] is None:
-                info['dtotal'] = 0
-            if info['dfree'] is None:
-                info['dfree'] = 0
-            try:
-                info['mem_used'] = 100*(info['mtotal']-info['mfree'])/info['mtotal']
-            except ZeroDivisionError:
-                '''this is the case where the node is offline and reports none, thus it is 0'''
-                info['mem_used'] = 0
-            try:
-                info['disk_used'] = 100*(info['dtotal']-info['dfree'])/info['dtotal']
-            except ZeroDivisionError:
-                '''this is the case where the node is offline and reports none, thus it is 0'''
-                info['disk_used'] = 0
-            info['shared_storage'] = False
-            if self.default_disk_template in ['drbd', 'plain']:
-                info['shared_storage'] = False
-            if self.default_disk_template == 'sharedfile':
-                info['shared_storage'] = True
-            cache.set("cluster:%s:node:%s" % (self.slug, node), info, 180)
-        return info
-    
-    
+    def get_available_nodes(self, node_group, number_of_nodes):
+        ret_nodes = []
+        nodes = self.get_cluster_nodes()
+        for n in nodes:
+            if n['role'] in ['D', 'O']:
+                continue
+            if n['group'] != node_group:
+                continue
+            if n['vm_capable'] == False:
+                continue
+            ret_nodes.append(n['name'])
+        return ret_nodes[0:number_of_nodes]
+       
     
     def get_node_groups(self):
         info = cache.get('cluster:%s:nodegroups' %self.slug)
@@ -598,6 +570,7 @@ class Cluster(models.Model):
         for group in groups:
             group_dict = {}
             group_dict['name'] = group['name']
+            group_dict['alloc_policy'] = group['alloc_policy']
             group_dict['networks'] = self.get_node_group_networks(group['name'])
             group_dict['nodes'] = group['node_list']
             group_dict['vgs'] = []
@@ -610,6 +583,20 @@ class Cluster(models.Model):
     
     def get_cluster_instances(self):
         return self._client.GetInstances()
+    
+    def get_job_list(self):
+        info = cache.get("cluster:%s:joblist" % (self.slug))
+        if info is None:
+            info = self._client.GetJobs(bulk=True)
+            for i in info:
+                i['cluster'] = self.slug
+                i['start_time'] = "%s" %(datetime.fromtimestamp(int(i['start_ts'][0])).strftime('%Y-%m-%d %H:%M:%S'))
+                i['ops'][0]['OP_ID'] = i['ops'][0]['OP_ID'].replace("OP_",'').replace("_",' ').lower().capitalize()
+            cache.set("cluster:%s:joblist" % (self.slug), info, 30)
+        return info
+    
+    def get_job(self, job_id):
+        return self._client.GetJobStatus(job_id)
 
     def get_cluster_instances_detail(self):
         return self._client.GetInstances(bulk=True)
@@ -730,7 +717,7 @@ class Cluster(models.Model):
 
     def create_instance(self, name=None, disk_template=None, disks=None,
                         nics=None, os=None, memory=None, vcpus=None, tags=None,
-                        osparams=None):
+                        osparams=None, nodes=None):
         beparams = {}
         if memory is not None:
             beparams["memory"] = memory
@@ -748,7 +735,16 @@ class Cluster(models.Model):
 
         if disk_template is None:
             disk_template = self.default_disk_template
-
+            
+        nodesdict = {}
+        if nodes is not None:
+            nodesdict['pnode'] = nodes[0]
+            if len(nodes) == 2:
+                nodesdict['snode'] = nodes[1]
+                
+        
+        
+        
         job_id = self._client.CreateInstance(mode="create", name=name, os=os,
                                              disk_template=disk_template,
                                              disks=disks, nics=nics,
@@ -756,7 +752,7 @@ class Cluster(models.Model):
                                              name_check=False,
                                              beparams=beparams,
                                              tags=tags, osparams=osparams,
-                                             wait_for_sync=False)
+                                             wait_for_sync=False, **nodesdict)
 
         self._lock_instance(name, reason=_("creating"), job_id=job_id)
         return job_id
