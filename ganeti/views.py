@@ -45,7 +45,7 @@ from django.core.mail import send_mail, mail_managers
 from time import sleep, mktime
 import datetime
 from ipaddr import *
-
+import pprint
 try:
     import json
 except ImportError:
@@ -166,7 +166,64 @@ def clear_cache(request):
     else:
         result = {'error': "Violation"}
     return HttpResponse(json.dumps(result), mimetype='application/json')
+
+@login_required
+def jobs_index_json(request):
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+        messages = None
+        p = Pool(20)
+        jobs = []
+        bad_clusters = []
+        def _get_jobs(cluster):
+            t = Timeout(RAPI_TIMEOUT)
+            t.start()
+            try:
+                jobs.extend(cluster.get_job_list())
+            except (GanetiApiError, Timeout):
+                bad_clusters.append(cluster)
+            finally:
+                t.cancel()
     
+        if not request.user.is_anonymous():
+            p.imap(_get_jobs, Cluster.objects.all())
+            p.join()
+        if bad_clusters:
+            messages = "Some jobs may be missing because the" \
+                                 " following clusters are unreachable: %s" \
+                                 %(", ".join([c.description for c in bad_clusters]))
+        jresp = {}
+        jresp['aaData'] = jobs
+        if messages:
+            jresp['messages'] = messages
+        res = jresp
+        return HttpResponse(json.dumps(res), mimetype='application/json')
+    else:
+        return HttpResponse(json.dumps({'error':"Unauthorized access"}), mimetype='application/json')
+
+@login_required
+def jobs(request):
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+        return render_to_response('jobs.html',
+                              context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
+
+@login_required
+def job_details(request):
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+        if request.method == 'GET':
+            if 'cluster' in request.GET:
+                cluster_slug = request.GET.get('cluster')
+            if 'jobid' in request.GET:
+                jobid = request.GET.get('jobid')
+            cluster = get_object_or_404(Cluster, slug=cluster_slug)
+            job = cluster.get_job(jobid)
+        return render_to_response('job_details.html',
+                                  {"job": pprint.pformat(job)},
+                              context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
+
 @login_required
 def user_index_json(request):
     messages = None
