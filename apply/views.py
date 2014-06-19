@@ -77,6 +77,10 @@ def apply(request):
             application = form.save(commit=False)
             application.applicant = request.user
             application.status = STATUS_PENDING
+            net = request.POST.get('network','')
+            if net:
+                network = Network.objects.get(pk=net)
+                application.instance_params = {"cluster":network.cluster.slug, "network":network.link, "mode":network.mode}
             application.save()
             fqdn = Site.objects.get_current().domain
             admin_url = "https://%s%s" % \
@@ -122,6 +126,8 @@ def review_application(request, application_id):
 
     if request.method == "GET":
         form = InstanceApplicationReviewForm(instance=app)
+        if app.instance_params and 'cluster' in app.instance_params.keys():
+            form = InstanceApplicationReviewForm(instance=app, initial={"cluster":Cluster.objects.get(slug=app.instance_params['cluster']).pk})
         return render_to_response('review.html',
                                   {'application': app,
                                    'applications': applications,
@@ -130,7 +136,30 @@ def review_application(request, application_id):
                                   context_instance=RequestContext(request))
 
     else:
+        nodegroup = request.POST.get('node_group', '')
+        form_ngs = (('',''),)
+        if nodegroup:
+            form_ngs = ((nodegroup, nodegroup),)
+
+        netw = request.POST.get('netw', '')
+        form_netw = (('',''),)
+        if netw:
+            form_netw = ((netw, netw),)
+
+        vgs = request.POST.get('vgs', '')
+        form_vgs = (('',''),)
+        if vgs:
+            form_vgs = ((vgs, vgs),)
+
+        dt = request.POST.get('disk_template', '')
+        form_dt = (('',''),)
+        if dt:
+            form_dt = ((dt, dt),)
         form = InstanceApplicationReviewForm(request.POST, instance=app)
+        form.fields['node_group'] = forms.ChoiceField(choices = form_ngs)
+        form.fields['netw'] = forms.ChoiceField(choices = form_netw)
+        form.fields['vgs'] = forms.ChoiceField(choices = form_vgs)
+        form.fields['disk_template'] = forms.ChoiceField(choices = form_dt)
         if form.is_valid():
             application = form.save(commit=False)
             if "reject" in request.POST:
@@ -147,6 +176,14 @@ def review_application(request, application_id):
                                      " been notified" % (app.pk, request.user))
             else:
                 application.status = STATUS_APPROVED
+                application.instance_params = {
+                                               'cluster': Cluster.objects.get(pk=form.cleaned_data['cluster']).slug,
+                                               'network': form.cleaned_data['netw'].split("::")[0],
+                                               'mode': form.cleaned_data['netw'].split("::")[1],
+                                               'node_group': form.cleaned_data['node_group'],
+                                               'vgs': form.cleaned_data['vgs'],
+                                               'disk_template': form.cleaned_data['disk_template'], 
+                                               }
                 application.save()
                 application.submit()
                 messages.add_message(request, messages.INFO,
@@ -194,7 +231,7 @@ def get_groupnets_fromcluster(request):
         nodegroups_list.append(nodeg_dict)
     return HttpResponse(json.dumps(nodegroups_list), mimetype='application/json')
 
-#@permission_required("apply.change_instanceapplication")
+@permission_required("apply.change_instanceapplication")
 def get_cluster_node_group_stack(request):
     cluster_id = request.GET.get('cluster_id', '')
     try:
@@ -204,6 +241,7 @@ def get_cluster_node_group_stack(request):
     cluster_info = cluster.get_cluster_info()
     res = {}
     res['slug'] = cluster.slug
+    res['cluster_id'] = cluster.pk
     res['description'] = cluster.description
     res['disk_templates'] = cluster_info['enabled_disk_templates']
     res['node_groups'] = cluster.get_node_group_stack()
