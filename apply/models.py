@@ -37,6 +37,7 @@ from paramiko.util import hexlify
 
 from ganeti.fields.jsonfield import JSONField
 
+
 (STATUS_PENDING,
  STATUS_APPROVED,
  STATUS_SUBMITTED,
@@ -119,11 +120,19 @@ class InstanceApplication(models.Model):
 
     @property
     def cluster(self):
-        return self.network.cluster
+        from ganeti.models import Cluster
+        try:
+            return Cluster.objects.get(slug=self.instance_params['cluster'])
+        except:
+            return None
 
     @cluster.setter
     def cluster(self, c):
-        self.network = c.get_default_network()
+        self.instance_params = {
+                                'network': c.get_default_network().link, 
+                                'mode': c.get_default_network().mode, 
+                                'cluster' : c.slug
+                                }
 
     def is_pending(self):
         return self.status in PENDING_CODES
@@ -134,6 +143,7 @@ class InstanceApplication(models.Model):
         self.save()
 
     def submit(self):
+        from ganeti.models import Cluster
         if self.status not in [STATUS_APPROVED, STATUS_FAILED]:
             raise ApplicationError("Invalid application status %d" %
                                    self.status)
@@ -163,15 +173,20 @@ class InstanceApplication(models.Model):
         if self.organization:
             tags.append("%s:org:%s" % (GANETI_TAG_PREFIX,
                                        self.organization.tag))
-        uses_gnt_network = self.network.cluster.use_gnt_network
+        if 'vgs' in self.instance_params.keys():
+            if self.instance_params['vgs'] != 'default':
+                tags.append("%s:vg:%s" % (GANETI_TAG_PREFIX,
+                                       self.instance_params['vgs']))
+                
+        uses_gnt_network = self.cluster.use_gnt_network
         
-        nic_dict = dict(link=self.network.link,
-                        mode=self.network.mode)
+        nic_dict = dict(link=self.instance_params['network'],
+                        mode=self.instance_params['mode'])
         
-        if ((self.network.mode == 'routed') and (uses_gnt_network)):
-            nic_dict = dict(network=self.network.link)
+        if ((self.instance_params['mode'] == 'routed') and (uses_gnt_network)):
+            nic_dict = dict(network=self.instance_params['network'])
 
-        if self.network.mode == "routed":
+        if self.instance_params['mode'] == "routed":
             nic_dict.update(ip="pool")
         
         os = OPERATING_SYSTEMS[self.operating_system]
@@ -181,7 +196,7 @@ class InstanceApplication(models.Model):
         if "osparams" in os:
             osparams.update(os["osparams"])
         if "ssh_key_param" in os:
-            fqdn = "http://" + Site.objects.get_current().domain
+            fqdn = "https://" + Site.objects.get_current().domain
             key_url = self.get_ssh_keys_url(fqdn)
             if os["ssh_key_param"]:
                 osparams[os["ssh_key_param"]] = key_url
@@ -206,16 +221,32 @@ class InstanceApplication(models.Model):
         for (key, val) in osparams.iteritems():
             # Encode nested JSON. See
             # <https://code.google.com/p/ganeti/issues/detail?id=835>
-            if not isinstance(val, str):
+            if not isinstance(val, basestring):
                 osparams[key] = json.dumps(val)
+        disk_template = self.instance_params['disk_template']
+        nodes = None
+        vg = None
+        disks=[{"size": self.disk_size * 1024}]
+        if self.instance_params['node_group'] != 'default':
+            if self.instance_params['disk_template'] == 'drbd':
+                nodes = self.cluster.get_available_nodes(self.instance_params['node_group'], 2)
+            else:
+                nodes = self.cluster.get_available_nodes(self.instance_params['node_group'], 1)
+            # We should select the two first non offline nodes
+        if self.instance_params['disk_template'] in ['drbd', 'plain']:
+            if self.instance_params['vgs'] != 'default':
+                disks[0]['vg'] = self.instance_params['vgs']
         job = self.cluster.create_instance(name=self.hostname,
                                            os=provider,
                                            vcpus=self.vcpus,
                                            memory=self.memory,
-                                           disks=[{"size": self.disk_size * 1024}],
+                                           disks=disks,
                                            nics=[nic_dict],
                                            tags=tags,
-                                           osparams=osparams)
+                                           osparams=osparams,
+                                           nodes = nodes,
+                                           disk_template = disk_template,
+                                           )
         self.status = STATUS_SUBMITTED
         self.job_id = job
         self.backend_message = None
