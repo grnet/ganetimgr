@@ -98,7 +98,7 @@ var last_element = false;
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "file-size-pre": function ( a ) {
     	//Let's see if instance has many disks
-    	xm = a.split(", ")
+    	xm = a.split(", ");
     	if (xm.length > 1){
     		// Found many disks, let's sum
     		var total = 0;
@@ -181,7 +181,7 @@ $(document).ready( function(){
             	last_element = my.parent();
             	var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
-				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="stopbutton btn btn-small btn-danger"><i class="icon-off"></i> Shutdown</a>'
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="stopbutton btn btn-small btn-danger"><i class="icon-off"></i> Shutdown</a>';
 				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="icon-chevron-sign-left"></i></a>';
             	my.parent().html(back+" "+btn);
             	return false;
@@ -195,7 +195,7 @@ $(document).ready( function(){
             	last_element = my.parent();
             	var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
-				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="startbutton btn btn-small btn-success"><i class="icon-play"></i> Start</a>'
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="startbutton btn btn-small btn-success"><i class="icon-play"></i> Start</a>';
 				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="icon-chevron-sign-left"></i></a>';
             	my.parent().html(back+" "+btn);
             	return false;
@@ -209,7 +209,7 @@ $(document).ready( function(){
             	last_element = my.parent();
             	var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
-				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="rebootbutton btn btn-small btn-warning"><i class="icon-refresh"></i> Reboot</a>'
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="rebootbutton btn btn-small btn-warning"><i class="icon-refresh"></i> Reboot</a>';
 				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="icon-chevron-sign-left"></i></a>';
             	my.parent().html(back+" "+btn);
             	return false;
@@ -319,12 +319,12 @@ $(document).ready( function(){
                        		status = '<span class="label label-warning">-</span> ';
                        	 }
                        	 ipv6s = full.ipv6address;
-                       	 status6 = ""
+                       	 status6 = "";
                        	 for(var i = 0; i < ipv6s.length; i++) {
                        		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;	 
                        	 }
                        	 if (ipv6s.length >= 0){
-                       		status = status+"<br>"+status6
+                       		status = status+"<br>"+status6;
                        	 }
                        	 
                          return status;
@@ -416,7 +416,7 @@ $(document).ready( function(){
                      {% else %}
                       {"mData": "status", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
                     	 "mRender":  function (data, type, full) {
-                    			var lock = "-"
+                    			var lock = "-";
                     			if (full.hasOwnProperty('adminlock')){
                     				return '<div class="shortcuts"><span class="label label-important">Actions Disabled</span></div>';
                     			}
@@ -448,7 +448,7 @@ $(document).ready( function(){
 var update_size = function() {
     $(oTable).css({ width: $(oTable).parent().width() });
     oTable.fnAdjustColumnSizing(); 
-  }
+ };
 
 });
 
