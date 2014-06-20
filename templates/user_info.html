@@ -40,23 +40,51 @@
 	
 	var status;
 	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-	    "file-size-pre": function ( a ) {
-	        var x = a.substring(0,a.length - 2);
-	             
-	        var x_unit = (a.substring(a.length - 2, a.length) == "MB" ?
-	            1000 : (a.substring(a.length - 2, a.length) == "GB" ? 1000000 : 1));
-	          
-	        return parseInt( x * x_unit, 10 );
-	    },
-	 
-	    "file-size-asc": function ( a, b ) {
-	        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-	    },
-	 
-	    "file-size-desc": function ( a, b ) {
-	        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-	    }
-	} );
+    "file-size-pre": function ( a ) {
+    	//Let's see if instance has many disks
+    	xm = a.split(", ");
+    	if (xm.length > 1){
+    		// Found many disks, let's sum
+    		var total = 0;
+    		for (var i = 0;i < xm.length; i++){
+    			
+    			var x = xm[i].substring(0,xm[i].length - 3);
+        		var x_unit = (
+        			xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ? 1000 : (
+        				xm[i].substring(xm[i].length - 2, xm[i].length) == "GB" ? 1000000 : (
+        					xm[i].substring(xm[i].length - 2, xm[i].length) == "TB" ? 1000000000 : 1
+        					)
+        				)
+        			);
+            	total += parseInt( x * x_unit, 10 );
+            	
+            	
+    		}
+    		return total;
+    		
+    	}
+    	else{
+        var x = a.substring(0,a.length - 3);
+        
+        var x_unit = (
+        			a.substring(a.length - 2, a.length) == "MB" ? 1000 : (
+        				a.substring(a.length - 2, a.length) == "GB" ? 1000000 : (
+        					a.substring(a.length - 2, a.length) == "TB" ? 1000000000 : 1
+        					)
+        				)
+        			);
+        return parseInt( x * x_unit, 10 );
+       }
+    },
+ 
+    "file-size-asc": function ( a, b ) {
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    },
+ 
+    "file-size-desc": function ( a, b ) {
+        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    }
+} );
 	$(document).ready( function(){
 		var oTable = $('#vm_instance_table').dataTable( {
 			"bPaginate": false,
@@ -87,6 +115,7 @@
 	                     },
 	                     {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
 	                     {"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,"sType": "file-size"},
+	                     {"mData":"disk", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,"sType": "file-size"},
 	                     {"mData":"vcpus", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
 	                     {"mData":"status",
 	                         "mRender": function (data, type, full) {
@@ -342,6 +371,7 @@
 	<th style="text-align: center;">{% trans "Name" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Disk" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
 	{% if not user.is_superuser and not perms.ganeti.view_instances %}
