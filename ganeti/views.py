@@ -1,6 +1,6 @@
 #
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
-# Copyright © 2010-2012 Greek Research and Technology Network (GRNET S.A.)
+# Copyright © 2010-2014 Greek Research and Technology Network (GRNET S.A.)
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -30,6 +30,8 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.conf import settings
 from ganetimgr.ganeti.models import *
+
+from ganetimgr.auditlog.models import *
 from ganetimgr.ganeti.forms import *
 from operator import itemgetter
 from django.template.defaultfilters import filesizeformat
@@ -526,7 +528,9 @@ def novnc_proxy(request, cluster_slug, instance):
 @check_admin_lock
 def shutdown(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
-    cluster.shutdown_instance(instance)
+    auditlog = auditlog_entry(request, "Shutdown", instance, cluster_slug)
+    jobid = cluster.shutdown_instance(instance)
+    auditlog.update(job_id = jobid)
     action = {'action': _("Please wait... shutting-down")}
     clear_cluster_user_cache(request.user.username, cluster_slug)
     return HttpResponse(json.dumps(action))
@@ -635,15 +639,22 @@ def reinstalldestreview(request, application_hash, action_id):
                                                              'instance': instance,
                                                              'hash': application_hash},
                               context_instance=RequestContext(request))
+            auditlog = auditlog_entry(request, "", instance, cluster.slug, save=False)
             if action_id == 1:
-                cluster.reinstall_instance(instance)
+                auditlog.update(action = "Reinstall")
+                jobid = cluster.reinstall_instance(instance)
+                auditlog.update(job_id = jobid)
             if action_id == 2:
-                cluster.destroy_instance(instance)
+                auditlog.update(action = "Destroy")
+                jobid = cluster.destroy_instance(instance)
+                auditlog.update(job_id = jobid)
             if action_id == 3:
                 # As rename causes cluster lock we perform some cache engineering on the cluster instances, 
                 # nodes and the users cache
                 refresh_cluster_cache(cluster, instance)
-                cluster.rename_instance(instance, action_value)
+                auditlog.update(action = "Rename to %s" %action_value)
+                jobid = cluster.rename_instance(instance, action_value)
+                auditlog.update(job_id = jobid)
             if action_id == 4:
                 user = User.objects.get(username=request.user)
                 user.email = action_value
@@ -679,7 +690,9 @@ def reinstalldestreview(request, application_hash, action_id):
 @check_admin_lock
 def startup(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
-    cluster.startup_instance(instance)
+    auditlog = auditlog_entry(request, "Start", instance, cluster_slug)
+    jobid = cluster.startup_instance(instance)
+    auditlog.update(job_id = jobid)    
     action = {'action': _("Please wait... starting-up")}
     clear_cluster_user_cache(request.user.username, cluster_slug)
     return HttpResponse(json.dumps(action))
@@ -690,7 +703,9 @@ def startup(request, cluster_slug, instance):
 @check_admin_lock
 def reboot(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
-    cluster.reboot_instance(instance)
+    auditlog = auditlog_entry(request, "Reboot", instance, cluster_slug)
+    jobid = cluster.reboot_instance(instance)
+    auditlog.update(job_id = jobid)
     action = {'action': _("Please wait... rebooting")}
     clear_cluster_user_cache(request.user.username, cluster_slug)
     return HttpResponse(json.dumps(action))
@@ -707,9 +722,13 @@ def lock(request, instance):
             if form.is_valid():
                 adminlock = form.cleaned_data['lock']
                 if adminlock == True:
-                    instance.cluster.tag_instance(instance.name, ["%s:adminlock" %GANETI_TAG_PREFIX])
+                    auditlog = auditlog_entry(request, "Lock Instance", instance, instance.cluster.slug)
+                    jobid = instance.cluster.tag_instance(instance.name, ["%s:adminlock" %GANETI_TAG_PREFIX])
+                    auditlog.update(job_id=jobid)
                 if adminlock == False:
-                    instance.cluster.untag_instance(instance.name, ["%s:adminlock" %GANETI_TAG_PREFIX])
+                    auditlog = auditlog_entry(request, "Unlock Instance", instance, instance.cluster.slug)
+                    jobid = instance.cluster.untag_instance(instance.name, ["%s:adminlock" %GANETI_TAG_PREFIX])
+                    auditlog.update(job_id=jobid)
                 res = {'result':'success'}
                 return HttpResponse(json.dumps(res), mimetype='application/json')
             else:
@@ -740,10 +759,14 @@ def isolate(request, instance):
             if form.is_valid():
                 isolate = form.cleaned_data['isolate']
                 if isolate == True:
-                    instance.cluster.tag_instance(instance.name, ["%s:isolate" %GANETI_TAG_PREFIX])
+                    auditlog = auditlog_entry(request, "Isolate", instance, instance.cluster.slug)
+                    jobid = instance.cluster.tag_instance(instance.name, ["%s:isolate" %GANETI_TAG_PREFIX])
+                    auditlog.update(job_id=jobid)
                     instance.cluster.migrate_instance(instance.name)
                 if isolate == False:
-                    instance.cluster.untag_instance(instance.name, ["%s:isolate" %GANETI_TAG_PREFIX])
+                    auditlog = auditlog_entry(request, "De-Isolate", instance, instance.cluster.slug)
+                    jobid = instance.cluster.untag_instance(instance.name, ["%s:isolate" %GANETI_TAG_PREFIX])
+                    auditlog.update(job_id=jobid)
                     instance.cluster.migrate_instance(instance.name)
                 res = {'result':'success'}
                 return HttpResponse(json.dumps(res), mimetype='application/json')
@@ -866,14 +889,22 @@ def instance(request, cluster_slug, instance):
                         whitelistip = None
                     continue
                 data[key] = val
-            instance.set_params(hvparams=data)
+            auditlog = auditlog_entry(request, "Setting %s" %(", ".join(["%s:%s" %(key,value) for key,value in data.iteritems()])), instance, cluster_slug)
+            jobid = instance.set_params(hvparams=data)
+            auditlog.update(job_id=jobid)
             if instance.whitelistip and whitelistip is None:
-                instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
+                auditlog = auditlog_entry(request, "Remove whitelist %s" %instance.whitelistip, instance, cluster_slug)
+                jobid = instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
+                auditlog.update(job_id=jobid)
                 instance.cluster.migrate_instance(instance.name)
             if whitelistip:
                 if instance.whitelistip:
-                    instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
-                instance.cluster.tag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, whitelistip)])
+                    auditlog = auditlog_entry(request, "Remove whitelist %s" %instance.whitelistip, instance, cluster_slug)
+                    jobid = instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
+                    auditlog.update(job_id=jobid)
+                auditlog = auditlog_entry(request, "Add whitelist %s" %whitelistip, instance, cluster_slug)
+                jobid = instance.cluster.tag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, whitelistip)])
+                auditlog.update(job_id=jobid)
                 instance.cluster.migrate_instance(instance.name)
             # Prevent form re-submission via browser refresh             
             return HttpResponseRedirect(reverse('instance-detail',kwargs={'cluster_slug':cluster_slug, 'instance': instance}))
@@ -1397,4 +1428,18 @@ def refresh_cluster_cache(cluster, instance):
     cache.set('allclusternodes', nodes, 90)
     cache.set('badclusters', bc, 90)
     cache.set('badnodes', bn, 90)
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+def auditlog_entry(request, action, instance, cluster, save=True):
+    entry = AuditEntry(requester=request.user, ipaddress=get_client_ip(request), action=action, instance=instance, cluster=cluster)
+    if save:
+        entry.save()       
+    return entry
 

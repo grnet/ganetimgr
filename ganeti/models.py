@@ -268,6 +268,7 @@ class Instance(object):
     def set_params(self, **kwargs):
         job_id = self.cluster._client.ModifyInstance(self.name, **kwargs)
         self.lock(reason=_("modifying"), job_id=job_id)
+        return job_id
 
     def __repr__(self):
         return "<Instance: '%s'>" % self.name

@@ -43,6 +43,18 @@ textarea{
 	}
 </script>
 
+<div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabelservdets">{% trans "Job Details" %}</h3>
+</div>
+<div class="modal-body" id="instDetsbody">
+
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+</div>
+</div>
 
 <div class="span8 main-content">
 
@@ -254,7 +266,7 @@ textarea{
 				{%if application.job_id %}
 				<div class="control-group">
 					<label class="control-label required" for="id_applier">{% trans "Job ID" %}</label>
-					<div class="controls padcontrol">{{ application.job_id }}
+					<div class="controls padcontrol"><a class="btn" href="#" onclick="javascript:showDetails('{{ application.cluster.slug }}','{{ application.job_id }}'); return false;">{{ application.job_id }}</a>
 					</div>
 				</div>
 				{%endif%}
@@ -391,7 +403,7 @@ textarea{
 				{%if application.job_id %}
 				<div class="control-group">
 					<label class="control-label required" for="id_applier">{% trans "Job ID" %}</label>
-					<div class="controls padcontrol">{{ application.job_id }}
+					<div class="controls padcontrol"><a class="btn" href="#" onclick="javascript:showDetails('{{ application.cluster.slug }}','{{ application.job_id }}'); return false;">{{ application.job_id }}</a>
 					</div>
 				</div>
 				{%endif%}
@@ -518,6 +530,15 @@ function cleanfields(){
 	$("#id_netw").empty();
 }
 
+
+	function showDetails(cluster, jobid){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Job Details: '+jobid);
+		$( "#instDetsbody" ).load("{% url jobdets-popup %}/?cluster="+cluster+"&jobid="+jobid+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+	
 </script>
 {% endblock %}
 

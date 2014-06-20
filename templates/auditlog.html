@@ -25,14 +25,14 @@
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.css">
 
 {% endblock %}
-{% block title %}{% trans "Jobs" %}{% endblock %}
-{% block clusterjobs %}class="active"{% endblock %}
+{% block title %}{% trans "Audit Log" %}{% endblock %}
+{% block auditlog %}class="active"{% endblock %}
 {% block content %}
 <div class="span12 main-content">
 
     <div class="row-fluid">
         <div class="row-fluid">
-            <h2>{% trans "Clusters Jobs" %}
+            <h2>{% trans "Audit Log" %}
             </h2>
 
 <table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
@@ -40,9 +40,10 @@
 <tr>
 	<th style="text-align: center;">{% trans "Job Id" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Opcode Id" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Start" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Instance" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Action" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "User" %} <span class="sort-icon"></span></th>
+	<th style="text-align: center;">{% trans "Time" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Options" %} <span class="sort-icon"></span></th>
 	
 </tr>
@@ -88,28 +89,23 @@ $(document).ready( function(){
 	    "bAutoWidth": true,
 	    "bStateSave": true,
 	    "oLanguage": {
-	    	"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "jobs" %}'
+	    	"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "logs" %}'
 	    },
 	    "sPaginationType": "bootstrap",
 	    "sDom": "<'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
 	    "iDisplayLength": 20,
 		"bProcessing": true,
-        "sAjaxSource": "{% url jobs_json %}",
+        "sAjaxSource": "{% url auditlog_json %}",
         "bDeferRender": true,
-        "fnInitComplete": function(oSettings, json) {
-            if(json.hasOwnProperty('messages')){
-            	$('#jsonmessages').show();
-            	$('#jsonmessage').html(json.messages);
-            }
-          },
-        "aaSorting": [[ 4, "desc" ]],
+        "aaSorting": [[ 5, "desc" ]],
         "aoColumns":[
-                     {"mData":"id", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+                     {"mData":"job_id", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
                      {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-                     {"mData":"status", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-                     {"mData":"ops.0.OP_ID", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-                     {"mData":"start_time", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-                     {"mData": "id", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
+                     {"mData":"instance", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+                     {"mData":"action", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
+                     {"mData":"user", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
+                     {"mData":"last_upd", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
+                     {"mData": "job_id", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
                     	 "mRender":  function (data, type, full) {
                              var ret = ''+
                                '<a class="btn" href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a>';
