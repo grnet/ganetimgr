@@ -1089,7 +1089,8 @@ def get_clusternodes(request):
                 status_dict['candidate'] += 1
             if n['role'] == 'M':
                 status_dict['master'] += 1
-        return render_to_response('cluster_nodes.html', {'nodes': nodes, 'statuses':status_dict, 'servermon':servermon_url},
+        clusters = list(set([n['cluster'] for n in nodes]))
+        return render_to_response('cluster_nodes.html', {'nodes': nodes, 'clusters': clusters, 'statuses':status_dict, 'servermon':servermon_url},
                                   context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect(reverse('user-instances'))
@@ -1129,6 +1130,7 @@ def clusternodes_json(request):
                 node_dict['dtotal'] = node['dtotal']
                 node_dict['ctotal'] = node['ctotal']
                 node_dict['pinst_cnt'] = node['pinst_cnt']
+                node_dict['pinst_list'] = node['pinst_list']
                 node_dict['role'] = node['role']
                 node_dict['cluster'] = node['cluster']
                 nodedetails.append(node_dict)
@@ -1140,9 +1142,8 @@ def clusternodes_json(request):
             return HttpResponse(json.dumps(res), mimetype='application/json')
         else:
             return HttpResponse(json.dumps({'error':"Unauthorized access"}), mimetype='application/json')
+
 def prepare_clusternodes():
-    import time
-    start_time = time.time()
     clusters = Cluster.objects.all()
     p = Pool(15)
     nodes = []
@@ -1167,35 +1168,7 @@ def prepare_clusternodes():
     
     p.imap(_get_nodes, clusters)
     p.join()
-    print time.time() - start_time, "seconds"
     return nodes, bad_clusters, bad_nodes
-            
-def prepare_clusternodes_old():
-    import time
-    start_time = time.time()
-    clusters = Cluster.objects.all()
-    p = Pool(20)
-    nodes = []
-    bad_clusters = []
-    bad_nodes = []
-    servermon_url = None
-    def _get_nodes(cluster):
-        t = Timeout(RAPI_TIMEOUT)
-        t.start()
-        try:
-            nodes.extend(cluster.get_node_info_old(node) for node in cluster.get_cluster_nodes_old())
-            bad_nodes.extend(cluster.get_node_info_old(node)['name'] for node in cluster.get_cluster_nodes_old() if cluster.get_node_info_old(node)['offline'] == True)
-        except (GanetiApiError, Timeout):
-            # Maybe we should look if this is the proper way of doing this
-            cluster._client = None
-            bad_clusters.append(cluster)
-        finally:
-            t.cancel()
-    
-    p.map(_get_nodes, clusters)
-    p.join()
-    print time.time() - start_time, "seconds"   
-    return nodes, bad_clusters, bad_nodes        
 
 def prepare_tags(taglist):
     tags = []

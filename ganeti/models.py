@@ -483,7 +483,7 @@ class Cluster(models.Model):
         nodes = cache.get("cluster:%s:nodes" % self.slug)
         if nodes is None:
             cachenodes = []
-            nodes = parseQuery(self._client.Query('node', ['name','role','mfree', 'mtotal', 'dtotal', 'dfree', 'ctotal', 'group', 'pinst_cnt','offline', 'vm_capable']))
+            nodes = parseQuery(self._client.Query('node', ['name','role','mfree', 'mtotal', 'dtotal', 'dfree', 'ctotal', 'group', 'pinst_cnt','offline', 'vm_capable', 'pinst_list']))
             for info in nodes:
                 info['cluster'] = self.slug
                 if info['mfree'] is None:
@@ -507,7 +507,7 @@ class Cluster(models.Model):
                 info['shared_storage'] = False
                 if self.default_disk_template in ['drbd', 'plain']:
                     info['shared_storage'] = False
-                if self.default_disk_template == 'sharedfile':
+                if self.default_disk_template in ['sharedfile', 'sharedblock']:
                     info['shared_storage'] = True
                 cachenodes.append(info)
             nodes = cachenodes
