@@ -1,5 +1,8 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
+{% block extrahead %}
+<link rel="stylesheet" href="/static/select2/select2.css">
+{% endblock %}
 {% block applicationstop %}class="active"{% endblock %}
 {% block applications %}class="active"{% endblock %}
 {% block title %}{% trans "Review application" %} #{{ application.pk }}{% endblock %}
@@ -156,9 +159,7 @@ textarea{
                     </div>
                 </div>                
                 </fieldset>
-			</div>
-			<div class="span6">
-				{% if application.admin_contact_name %}
+                {% if application.admin_contact_name %}
 				<fieldset>
 				<legend>{% trans "Administrative contact" %}</legend>
 				<address>
@@ -169,13 +170,17 @@ textarea{
 				
 				</fieldset>
 				{% endif %}
-
-				<fieldset>
+                				
+			</div>
+			<div class="span6">
+				
+<fieldset>
 				<legend>{% trans "Comments" %}</legend>
 				<div class="alert alert-info">
 				<i class="icon-pencil"></i> {{ application.comments }}
 				</div>
 				</fieldset>
+
 
 				<fieldset>
 					<legend>{% trans "Placement" %}</legend>
@@ -277,7 +282,16 @@ textarea{
 					</div>
 				</div>
 				{%endif%}
-				</fieldset></div></div>
+				</fieldset>
+				<fieldset>
+				<legend>{% trans "Placement Info" %}</legend>
+				<div class="well">
+					<div id="clusterinfo"></div>
+					<div id="networkinfo"></div>
+				</div>			
+				
+				</fieldset>
+				</div></div>
 <div class="row-fluid">
 <fieldset>
 <legend>{% trans "Decision" %}</legend>
@@ -442,6 +456,7 @@ textarea{
 
 {% block bottomblock %}
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
+<script src="/static/select2/select2.js"></script>
 <script type="text/javascript">
 var selected_cluster;
 var selected_ng;
@@ -462,6 +477,7 @@ $(document).ready( function(){
 			success: function(data) {
 				selected_cluster = data;
 				cleanfields();
+				$("#clusterinfo").html('Total Instances: '+data.num_inst);
 				for (var i=0; i<data.node_groups.length; i++) {
 					unallocable = '';
 					if (data.node_groups[i].alloc_policy == 'unallocable'){
@@ -472,8 +488,9 @@ $(document).ready( function(){
 						selecttext = "selected='selected'";
 					}
 					selng.append('<option value="'+data.node_groups[i].name+'" '+unallocable+' '+selecttext+'>'+data.node_groups[i].name+'</option>');
+					
 				}
-				
+
 				$("#id_node_group").trigger('change');
 				for (var i=0; i<data.disk_templates.length; i++) {
 					suff = '';
@@ -485,11 +502,26 @@ $(document).ready( function(){
 						selecttext = "selected='selected'";
 					}
 					dtng.append('<option value="'+data.disk_templates[i]+'" '+selecttext+'>'+data.disk_templates[i]+suff+'</option>');
-				}				
+
+				}
+				dtng.select2('destroy');
+				dtng.select2();		
 				
 		}
 		});
 	});
+	$("#id_netw").change(function () {
+		var netSelected = $(this).find("option:selected");
+		free = netSelected.data('free');
+		type = netSelected.data('type');
+		if (type == "routed"){
+			$("#networkinfo").html('Free Addresses: '+free);
+		}
+		else{
+			$("#networkinfo").html("Bridged Network");
+		}
+	});
+	
 	$("#id_node_group").change(function () {
 		var optionSelected = $(this).find("option:selected");
 		var vgng = $("#id_vgs");
@@ -507,8 +539,12 @@ $(document).ready( function(){
 					if ("{{application.instance_params.network}}" == selected_ng.networks[i].link && "{{application.instance_params.cluster}}" == selected_cluster.slug){
 						selecttext = "selected='selected'";
 					}
-			selnet.append('<option value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>');
+			selnet.append('<option data-free="'+selected_ng.networks[i].free_count+'" data-type="'+selected_ng.networks[i].type+'" value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>');
+			
 		}
+		$("#id_netw").trigger("change");
+		selnet.select2('destroy');
+		selnet.select2({dropdownAutoWidth : true});
 		vgng.append('<option value="default">default</option>');
 		for (var i=0; i<selected_ng.vgs.length; i++) {
 			selecttext = '';
@@ -517,19 +553,38 @@ $(document).ready( function(){
 					}
 					vgng.append('<option value="'+selected_ng.vgs[i]+'" '+selecttext+'>'+selected_ng.vgs[i]+'</option>');
 		}
+		vgng.select2('destroy');
+		vgng.select2();
 		
 	});
+	
+	
+	
+	$("#id_organization").select2({dropdownAutoWidth : true});
+	$("#id_operating_system").select2({dropdownAutoWidth : true});
+	$("#id_cluster").select2();
+	$("#id_node_group").select2();
+	$("#id_disk_template").select2();
+	$("#id_vgs").select2();
+	$("#id_netw").select2({dropdownAutoWidth : true});
 	$("#id_cluster").trigger("change");
+	
 	
 });
 
 function cleanfields(){
+	$("#networkinfo").empty();
+	$("#clusterinfo").empty();
 	$("#id_node_group").empty();
 	$("#id_disk_template").empty();
 	$("#id_vgs").empty();
 	$("#id_netw").empty();
 }
 
+function format(icon) {
+    var originalOption = icon.element;
+    return '<i class="fa ' + $(originalOption).data('icon') + '"></i> ' + icon.text;
+}
 
 	function showDetails(cluster, jobid){
 		$( "#instDetsbody" ).html( "" );
