@@ -39,6 +39,7 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 	$( "#start" )
 	.click(function() {
 		clearTimeout(polltimer);
+		$(this).html("<img src='/static/ajax-loader.gif'>");
 		$.ajax({
         type: 'POST',
         url: "{% url instance-startup cluster.slug instance.name %}",
@@ -55,6 +56,7 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 	$( "#shutdown" )
 	.click(function() {
 		clearTimeout(polltimer);
+		$(this).html("<img src='/static/ajax-loader.gif'>");
 		$.ajax({
         type: 'POST',
         url: "{% url instance-shutdown cluster.slug instance.name %}",
@@ -135,6 +137,7 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 	$( "#reboot" )
 	.click(function() {
 		clearTimeout(polltimer);
+		$(this).html("<img src='/static/ajax-loader.gif'>");
 		$.ajax({
         type: 'POST',
         url: "{% url instance-reboot cluster.slug instance.name %}",
