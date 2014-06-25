@@ -472,6 +472,13 @@ class Cluster(models.Model):
 
         return info
     
+    def list_cluster_nodes(self):
+        nodes = cache.get("cluster:%s:listnodes" % self.slug)
+        if nodes is None:
+            nodes = self._client.GetNodes()
+            cache.set("cluster:%s:listnodes" % self.slug, nodes, 180)
+        return nodes
+    
     def get_cluster_nodes(self):
         nodes = cache.get("cluster:%s:nodes" % self.slug)
         if nodes is None:
@@ -532,7 +539,7 @@ class Cluster(models.Model):
     def get_networks(self):
         info = cache.get('cluster:%s:networks' %self.slug)
         if info is None:
-            info = parseQuery(self._client.Query('network', ['name', 'group_list']))
+            info = self._client.GetNetworks(bulk=True)
             cache.set('cluster:%s:networks' %self.slug, info, 180)
         return info
     
@@ -555,12 +562,14 @@ class Cluster(models.Model):
                     group_dict['network'] = nd
                     group_dict['link'] = group[2]
                     group_dict['type'] = group[1]
+                    group_dict['free_count'] = net['free_count']
                     nodegroupsnets.append(group_dict)
         for brnet in brnets:
             brnet_dict = {}
             brnet_dict['network'] = brnet.description
             brnet_dict['link'] = brnet.link
             brnet_dict['type'] = brnet.mode
+            brnet_dict['free_count'] = None
             nodegroupsnets.append(brnet_dict)
         nodegroupsnets = sorted(nodegroupsnets, key=lambda k: k['network']) 
         return nodegroupsnets
