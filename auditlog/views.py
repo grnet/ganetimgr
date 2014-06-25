@@ -18,6 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import request
+from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
 from ganetimgr.auditlog.models import *
 import json
@@ -40,11 +41,17 @@ def auditlog_json(request):
             entrydict = {}
             entrydict['user'] = entry.requester.username
             entrydict['user_id'] = entry.requester.id
+            entrydict['user_href'] = "%s"%(reverse("user-info",
+                        kwargs={'type': 'user', 'usergroup':request.user.username}
+                        ))
             entrydict['job_id'] = entry.job_id
             entrydict['instance'] = entry.instance
             entrydict['cluster'] = entry.cluster
             entrydict['action'] = entry.action
             entrydict['last_upd'] = "%s" %entry.last_updated
+            entrydict['name_href'] = "%s"%(reverse("instance-detail",
+                        kwargs={'cluster_slug': entry.cluster, 'instance':entry.instance}
+                        ))
             entries.append(entrydict)
         jresp = {}
         jresp['aaData'] = entries
