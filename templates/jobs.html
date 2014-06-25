@@ -35,7 +35,7 @@
             <h2>{% trans "Clusters Jobs" %}
             </h2>
 
-<table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
+<table class="table table-first-column-number data-table display full visoverflow" id="jobs_table">
 <thead>
 <tr>
 	<th style="text-align: center;">{% trans "Job Id" %} <span class="sort-icon"></span></th>
@@ -43,7 +43,6 @@
 	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Opcode Id" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Start" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Options" %} <span class="sort-icon"></span></th>
 	
 </tr>
 
@@ -82,7 +81,7 @@
 $(document).ready( function(){
     
 
-	var oTable = $('#vm_instance_table').dataTable( {
+	var oTable = $('#jobs_table').dataTable( {
 		"bPaginate": true,
 	    "bFilter": true,
 	    "bAutoWidth": true,
@@ -104,21 +103,31 @@ $(document).ready( function(){
           },
         "aaSorting": [[ 4, "desc" ]],
         "aoColumns":[
-                     {"mData":"id", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-                     {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-                     {"mData":"status", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-                     {"mData":"ops.0.OP_ID", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-                     {"mData":"start_time", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-                     {"mData": "id", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
-                    	 "mRender":  function (data, type, full) {
+                     {"mData":"id", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
+                     "mRender":  function (data, type, full) {
                              var ret = ''+
-                               '<a class="btn" href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a>';
+                               '<a class="btn btn-info btn-small" href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">'+data+'</a>';
                      return ret;
-                     }
-                     },
-                        
-                    
-                     
+                     }},
+                     {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+                     {"mData":"status", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
+                     "mRender": function (data, type, full) {
+	                     if (data == "success"){
+                       	 	status = '<span class="label label-success">Success</span>';
+                         }
+                         if (data == "error"){
+                       	  status = '<span class="label label-important">Error</span>';
+                         }
+                         if (data == "waiting"){
+                       	  status = '<span class="label label-info">Waiting</span>';
+                         }
+                         if (data == "running"){
+                       	  status = '<span class="label label-info">Running</span>';
+                         }
+                         return status;
+                         }},
+                     {"mData":"ops.0.OP_ID", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
+                     {"mData":"start_time", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},                     
          ]
 } );
   $(window).resize(function() {
