@@ -35,7 +35,7 @@
             <h2>{% trans "Audit Log" %}
             </h2>
 
-<table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
+<table class="table table-first-column-number data-table display full visoverflow" id="auditlog_table">
 <thead>
 <tr>
 	<th style="text-align: center;">{% trans "Job Id" %} <span class="sort-icon"></span></th>
@@ -44,7 +44,6 @@
 	<th style="text-align: center;">{% trans "Action" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "User" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Time" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Options" %} <span class="sort-icon"></span></th>
 	
 </tr>
 
@@ -83,7 +82,7 @@
 $(document).ready( function(){
     
 
-	var oTable = $('#vm_instance_table').dataTable( {
+	var oTable = $('#auditlog_table').dataTable( {
 		"bPaginate": true,
 	    "bFilter": true,
 	    "bAutoWidth": true,
@@ -99,22 +98,25 @@ $(document).ready( function(){
         "bDeferRender": true,
         "aaSorting": [[ 5, "desc" ]],
         "aoColumns":[
-                     {"mData":"job_id", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-                     {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-                     {"mData":"instance", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-                     {"mData":"action", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-                     {"mData":"user", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-                     {"mData":"last_upd", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-                     {"mData": "job_id", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
-                    	 "mRender":  function (data, type, full) {
+                     {"mData":"job_id", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
+                     "mRender":  function (data, type, full) {
                              var ret = ''+
-                               '<a class="btn" href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a>';
+                               '<a class="btn btn-info btn-small" href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">'+data+'</a>';
                      return ret;
-                     }
+                     }},
+                     {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+                     {"mData":"instance", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
+                     "mRender": function (data, type, full) {
+                    			 name = '<a href="'+full.name_href+'">'+data+'</a>';
+                             return name;
+                    	 }
                      },
-                        
-                    
-                     
+                     {"mData":"action", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
+                     {"mData":"user", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true,
+                     "mRender": function (data, type, full) {
+                     	return '<a class="btn btn-small" href="'+full.user_href+'"><i class="icon-user"></i> '+data+'</a>';
+                   	 }},
+                     {"mData":"last_upd", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},                     
          ]
 } );
   $(window).resize(function() {
