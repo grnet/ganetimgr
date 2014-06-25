@@ -25,37 +25,34 @@ import json
 
 @login_required
 def auditlog(request):
-    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
-        return render_to_response('auditlog.html',
+    return render_to_response('auditlog.html',
                               context_instance=RequestContext(request))
-    else:
-        return HttpResponseRedirect(reverse('user-instances'))
 
 
 @login_required
 def auditlog_json(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         al = AuditEntry.objects.all()
-        entries = []
-        for entry in al:
-            entrydict = {}
-            entrydict['user'] = entry.requester.username
-            entrydict['user_id'] = entry.requester.id
-            entrydict['user_href'] = "%s"%(reverse("user-info",
-                        kwargs={'type': 'user', 'usergroup':request.user.username}
-                        ))
-            entrydict['job_id'] = entry.job_id
-            entrydict['instance'] = entry.instance
-            entrydict['cluster'] = entry.cluster
-            entrydict['action'] = entry.action
-            entrydict['last_upd'] = "%s" %entry.last_updated
-            entrydict['name_href'] = "%s"%(reverse("instance-detail",
-                        kwargs={'cluster_slug': entry.cluster, 'instance':entry.instance}
-                        ))
-            entries.append(entrydict)
-        jresp = {}
-        jresp['aaData'] = entries
-        res = jresp
-        return HttpResponse(json.dumps(res), mimetype='application/json')
     else:
-        return HttpResponse(json.dumps({'error':"Unauthorized access"}), mimetype='application/json')
+        al = AuditEntry.objects.filter(requester=request.user)
+    entries = []
+    for entry in al:
+        entrydict = {}
+        entrydict['user'] = entry.requester.username
+        entrydict['user_id'] = entry.requester.id
+        entrydict['user_href'] = "%s"%(reverse("user-info",
+                    kwargs={'type': 'user', 'usergroup':request.user.username}
+                    ))
+        entrydict['job_id'] = entry.job_id
+        entrydict['instance'] = entry.instance
+        entrydict['cluster'] = entry.cluster
+        entrydict['action'] = entry.action
+        entrydict['last_upd'] = "%s" %entry.last_updated
+        entrydict['name_href'] = "%s"%(reverse("instance-detail",
+                    kwargs={'cluster_slug': entry.cluster, 'instance':entry.instance}
+                    ))
+        entries.append(entrydict)
+    jresp = {}
+    jresp['aaData'] = entries
+    res = jresp
+    return HttpResponse(json.dumps(res), mimetype='application/json')

@@ -6,7 +6,8 @@
 	    		{% endblock %}
 {% block createtop%}class="active"{% endblock %}
 {% block extraticketinfo %} about instance creation{% endblock %}
-{% block content %}
+{% block extrahead %}
+<link rel="stylesheet" href="/static/select2/select2.css">
 <style type="text/css">
 th {
 	text-align: right;
@@ -20,6 +21,8 @@ th {
 
 label.required { font-weight: bold; }
 </style>
+{% endblock %}
+{% block content %}
 
 <div class="span6 main-content">
 
@@ -252,6 +255,7 @@ label.required { font-weight: bold; }
 </div>
 {% endblock %}
 {% block bottomblock %}
+<script src="/static/select2/select2.js"></script>
 	<script>
 	$(document).ready( function(){
 		$("#id_disk_size").tooltip({
@@ -260,6 +264,7 @@ label.required { font-weight: bold; }
     html: true,
     title: "<div style='text-align: left;'><p class='label label-success'> &le; 20Gb:  Faster  I/O Speed</p><p class='label label-warning'>&le; 50Gb:  Average I/O Speed</p><p class='label label-important'>&gt; 50Gb:  Slower  I/O Speed</p></div>"
 });
+$("#id_organization").select2({dropdownAutoWidth : true});
 	});
 		</script>
 {% endblock %}

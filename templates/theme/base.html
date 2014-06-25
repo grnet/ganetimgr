@@ -235,8 +235,8 @@ label.required { font-weight: bold; }
             <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="icon-envelope"></i> <span>{% trans "Send Mail" %}</span></a></li>
             <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
             <li {% block clusterjobs %}{% endblock %}><a href="{% url jobs %}"><i class="icon-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>
-            <li {% block auditlog %}{% endblock %}><a href="{% url auditlog %}"><i class="icon-book"></i> <span>{% trans "Audit Log" %}</span></a></li>
             {% endif %}
+            <li {% block auditlog %}{% endblock %}><a href="{% url auditlog %}"><i class="icon-book"></i> <span>{% if user.is_superuser or perms.ganeti.view_instances %}{% trans "Audit Log" %}{% else %}{% trans "History" %}{% endif %}</span></a></li>
             <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
             {% if user.is_superuser or perms.ganeti.view_instances %}
             {% if can_handle_applications or can_view_applications %}
