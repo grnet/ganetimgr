@@ -559,10 +559,19 @@ class Cluster(models.Model):
                         nd = Network.objects.get(cluster=self, link=group[2]).description
                     except Network.DoesNotExist:
                         nd = net['name']
+                    group_dict['defaultnet'] = False
+                    # TODO: For the time get the default network from the database.
+                    # Later on we can get it from the cluster.
+                    if self.network_set.filter(cluster_default=True, link=group[2]):
+                        group_dict['defaultnet'] = True
                     group_dict['network'] = nd
                     group_dict['link'] = group[2]
                     group_dict['type'] = group[1]
-                    group_dict['free_count'] = net['free_count']
+                    group_dict['free_count'] = None
+                    group_dict['reserved_count'] = None
+                    if group_dict['type'] == 'routed':  
+                        group_dict['free_count'] = net['free_count']
+                        group_dict['reserved_count'] = net['reserved_count']
                     nodegroupsnets.append(group_dict)
         for brnet in brnets:
             brnet_dict = {}
@@ -570,6 +579,12 @@ class Cluster(models.Model):
             brnet_dict['link'] = brnet.link
             brnet_dict['type'] = brnet.mode
             brnet_dict['free_count'] = None
+            brnet_dict['reserved_count'] = None
+            brnet_dict['defaultnet'] = False
+            # TODO: For the time get the default network from the database.
+            # Later on we can get it from the cluster.
+            if self.network_set.filter(cluster_default=True, link=brnet.link):
+                brnet_dict['defaultnet'] = True
             nodegroupsnets.append(brnet_dict)
         nodegroupsnets = sorted(nodegroupsnets, key=lambda k: k['network']) 
         return nodegroupsnets
@@ -595,14 +610,11 @@ class Cluster(models.Model):
         return self._client.GetInstances()
     
     def get_job_list(self):
-        info = cache.get("cluster:%s:joblist" % (self.slug))
-        if info is None:
-            info = self._client.GetJobs(bulk=True)
-            for i in info:
-                i['cluster'] = self.slug
-                i['start_time'] = "%s" %(datetime.fromtimestamp(int(i['start_ts'][0])).strftime('%Y-%m-%d %H:%M:%S'))
-                i['ops'][0]['OP_ID'] = i['ops'][0]['OP_ID'].replace("OP_",'').replace("_",' ').lower().capitalize()
-            cache.set("cluster:%s:joblist" % (self.slug), info, 30)
+        info = self._client.GetJobs(bulk=True)
+        for i in info:
+            i['cluster'] = self.slug
+            i['start_time'] = "%s" %(datetime.fromtimestamp(int(i['start_ts'][0])).strftime('%Y-%m-%d %H:%M:%S'))
+            i['ops'][0]['OP_ID'] = i['ops'][0]['OP_ID'].replace("OP_",'').replace("_",' ').lower().capitalize()
         return info
     
     def get_job(self, job_id):
