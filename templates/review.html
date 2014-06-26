@@ -286,7 +286,6 @@ textarea{
 				<fieldset>
 				<legend>{% trans "Placement Info" %}</legend>
 				<div class="well">
-					<div id="clusterinfo"></div>
 					<div id="networkinfo"></div>
 				</div>			
 				
@@ -456,11 +455,16 @@ textarea{
 
 {% block bottomblock %}
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
+<script type="text/javascript" src="/static/js/jquery.sparkline.min.js"></script>
 <script src="/static/select2/select2.js"></script>
 <script type="text/javascript">
 var selected_cluster;
 var selected_ng;
 var single_ng;
+var clust_tot_inst;
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
 $(document).ready( function(){	
 	
 	$("#id_cluster").change(function () {
@@ -477,7 +481,6 @@ $(document).ready( function(){
 			success: function(data) {
 				selected_cluster = data;
 				cleanfields();
-				$("#clusterinfo").html('Total Instances: '+data.num_inst);
 				for (var i=0; i<data.node_groups.length; i++) {
 					unallocable = '';
 					if (data.node_groups[i].alloc_policy == 'unallocable'){
@@ -534,17 +537,38 @@ $(document).ready( function(){
 			}
 		}
 		selnet.empty();
+		var parsed_groups = [];
 		for (var i=0; i<selected_ng.networks.length; i++) {
+			if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1){
+				selgroup = $('#gr_'+selected_ng.networks[i].type+'');
+			}
+			else{
+				parsed_groups.push(selected_ng.networks[i].type);
+				selnet.append($('<optgroup id="gr_'+selected_ng.networks[i].type+'" label="'+selected_ng.networks[i].type.capitalize()+'"></optgroup>'));
+				selgroup = $('#gr_'+selected_ng.networks[i].type+'');
+			}
 			selecttext = '';
 					if ("{{application.instance_params.network}}" == selected_ng.networks[i].link && "{{application.instance_params.cluster}}" == selected_cluster.slug){
 						selecttext = "selected='selected'";
 					}
-			selnet.append('<option data-free="'+selected_ng.networks[i].free_count+'" data-type="'+selected_ng.networks[i].type+'" value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>');
+			selgroup.append('<option \
+							data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
+							data-free="'+selected_ng.networks[i].free_count+'" \
+							data-reserved="'+selected_ng.networks[i].reserved_count+'" \
+							data-type="'+selected_ng.networks[i].type+'" \
+							value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>');
 			
+		}
+		if (('routed', parsed_groups) != -1){
+			topgroup = $('#gr_routed');
+			topgroup.parent().prepend(topgroup);
 		}
 		$("#id_netw").trigger("change");
 		selnet.select2('destroy');
-		selnet.select2({dropdownAutoWidth : true});
+		selnet.select2({dropdownAutoWidth : true, formatResult: formatnet});
+		selnet.on('select2-open', function(){
+			$.sparkline_display_visible();
+		});
 		vgng.append('<option value="default">default</option>');
 		for (var i=0; i<selected_ng.vgs.length; i++) {
 			selecttext = '';
@@ -566,7 +590,7 @@ $(document).ready( function(){
 	$("#id_node_group").select2();
 	$("#id_disk_template").select2();
 	$("#id_vgs").select2();
-	$("#id_netw").select2({dropdownAutoWidth : true});
+	$("#id_netw").select2({dropdownAutoWidth : true, formatResult: formatnet});
 	$("#id_cluster").trigger("change");
 	
 	
@@ -574,16 +598,39 @@ $(document).ready( function(){
 
 function cleanfields(){
 	$("#networkinfo").empty();
-	$("#clusterinfo").empty();
 	$("#id_node_group").empty();
 	$("#id_disk_template").empty();
 	$("#id_vgs").empty();
 	$("#id_netw").empty();
 }
+function formatcluster(selection) {
+	element = selection.element;
+	return selection.text;
+}
+function formatnet(selection) {
+	element = selection.element;
+	free = $(element).data('free');
+	reserved = $(element).data('reserved');
+	if (free && reserved){
+		var piechart = $("<span style='float:right'>&nbsp;</span>");
+		piechart.sparkline([reserved, free], {type: 'pie',sliceColors : ["#ff7f00", "#00bf00"], disableHiddenCheck: true });
+	}
+ 
+   
+   if ($(element).data('defaultnet')){
+   var res=$("<font style='color:green; font-weight: bold;'>"+selection.text+"</font>");
+	   	if (free && reserved){
+	   		res.append(piechart);
+	   	}
+   }
+   else {
+	   	var res = $("<font>"+selection.text+"</font>");
+	   	if (free && reserved){
+	   		res.append(piechart);
+	   	}
+   }
 
-function format(icon) {
-    var originalOption = icon.element;
-    return '<i class="fa ' + $(originalOption).data('icon') + '"></i> ' + icon.text;
+	return res;
 }
 
 	function showDetails(cluster, jobid){
