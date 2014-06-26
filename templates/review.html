@@ -283,13 +283,6 @@ textarea{
 				</div>
 				{%endif%}
 				</fieldset>
-				<fieldset>
-				<legend>{% trans "Placement Info" %}</legend>
-				<div class="well">
-					<div id="networkinfo"></div>
-				</div>			
-				
-				</fieldset>
 				</div></div>
 <div class="row-fluid">
 <fieldset>
@@ -496,35 +489,24 @@ $(document).ready( function(){
 
 				$("#id_node_group").trigger('change');
 				for (var i=0; i<data.disk_templates.length; i++) {
-					suff = '';
+					def = false;
 					if (i === 0){
-						suff = ' (default)';
+						def = true;
 					}
 					selecttext = '';
 					if ("{{application.instance_params.disk_template}}" == data.disk_templates[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
 						selecttext = "selected='selected'";
 					}
-					dtng.append('<option value="'+data.disk_templates[i]+'" '+selecttext+'>'+data.disk_templates[i]+suff+'</option>');
+					dtng.append('<option data-defdt="'+def+'" value="'+data.disk_templates[i]+'" '+selecttext+'>'+data.disk_templates[i]+'</option>');
 
 				}
 				dtng.select2('destroy');
-				dtng.select2();		
+				dtng.select2({dropdownAutoWidth : true, formatResult: formatdt});		
 				
 		}
 		});
 	});
-	$("#id_netw").change(function () {
-		var netSelected = $(this).find("option:selected");
-		free = netSelected.data('free');
-		type = netSelected.data('type');
-		if (type == "routed"){
-			$("#networkinfo").html('Free Addresses: '+free);
-		}
-		else{
-			$("#networkinfo").html("Bridged Network");
-		}
-	});
-	
+
 	$("#id_node_group").change(function () {
 		var optionSelected = $(this).find("option:selected");
 		var vgng = $("#id_vgs");
@@ -587,8 +569,8 @@ $(document).ready( function(){
 	$("#id_organization").select2({dropdownAutoWidth : true});
 	$("#id_operating_system").select2({dropdownAutoWidth : true});
 	$("#id_cluster").select2();
-	$("#id_node_group").select2();
-	$("#id_disk_template").select2();
+	$("#id_node_group").select2({dropdownAutoWidth : true, formatResult: formatng});
+	$("#id_disk_template").select2({dropdownAutoWidth : true, formatResult: formatdt});
 	$("#id_vgs").select2();
 	$("#id_netw").select2({dropdownAutoWidth : true, formatResult: formatnet});
 	$("#id_cluster").trigger("change");
@@ -603,10 +585,22 @@ function cleanfields(){
 	$("#id_vgs").empty();
 	$("#id_netw").empty();
 }
-function formatcluster(selection) {
-	element = selection.element;
+
+function formatng(selection) {
+	if (selection.disabled){
+		return "<font style='color:red;'>"+selection.text+"</font>"
+	}
 	return selection.text;
 }
+
+function formatdt(selection) {
+	def = $(selection.element).data('defdt');
+	if (def){
+		return "<font style='color:#38D64A; font-weight: bold;'>"+selection.text+"</font>";
+	}
+	return selection.text;
+}
+
 function formatnet(selection) {
 	element = selection.element;
 	free = $(element).data('free');
@@ -618,7 +612,7 @@ function formatnet(selection) {
  
    
    if ($(element).data('defaultnet')){
-   var res=$("<font style='color:green; font-weight: bold;'>"+selection.text+"</font>");
+   var res=$("<font style='color:#38D64A; font-weight: bold;'>"+selection.text+"</font>");
 	   	if (free && reserved){
 	   		res.append(piechart);
 	   	}
