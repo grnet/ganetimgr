@@ -238,6 +238,11 @@ def get_cluster_node_group_stack(request):
         cluster = Cluster.objects.get(pk=cluster_id)
     except Cluster.DoesNotExist:
         return HttpResponse(json.dumps({'response':'Error. Cluster does not exist!'}), mimetype='application/json')
+    res = prepare_cluster_node_group_stack(cluster)
+    return HttpResponse(json.dumps(res), mimetype='application/json')
+
+
+def prepare_cluster_node_group_stack(cluster):
     cluster_info = cluster.get_cluster_info()
     len_instances = len(cluster.get_cluster_instances())
     res = {}
@@ -247,7 +252,7 @@ def get_cluster_node_group_stack(request):
     res['description'] = cluster.description
     res['disk_templates'] = cluster_info['enabled_disk_templates']
     res['node_groups'] = cluster.get_node_group_stack()
-    return HttpResponse(json.dumps(res), mimetype='application/json')
+    return res
 
 @login_required
 def user_keys(request):
