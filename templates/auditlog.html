@@ -27,6 +27,10 @@
 {% endblock %}
 {% block title %}{% if user.is_superuser or perms.ganeti.view_instances %}{% trans "Audit Log" %}{% else %}{% trans "History" %}{% endif %}{% endblock %}
 {% block auditlog %}class="active"{% endblock %}
+{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% if user.is_superuser or perms.ganeti.view_instances %}{% trans "Audit Log" %}{% else %}{% trans "History" %}{% endif %}</li>
+	    		{% endblock %}
 {% block content %}
 <div class="span12 main-content">
 
