@@ -68,13 +68,6 @@ def cluster_overview(request):
     clusters = Cluster.objects.all()
     return render_to_response('index.html', {'object_list': clusters}, context_instance=RequestContext(request))
 
-def cluster_detail(request, slug):
-    if slug:
-        object = Cluster.objects.get(slug=slug)
-    else:
-        object = Cluster.objects.all()
-    return render_to_response('cluster.html', {'object': object}, context_instance=RequestContext(request))
-
 def news(request):
     return render_to_response('news.html', context_instance=RequestContext(request))
 
