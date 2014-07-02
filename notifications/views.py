@@ -119,7 +119,7 @@ def get_user_group_list(request):
             q_params = request.GET['q']
         except:
             pass
-        users = User.objects.all()
+        users = User.objects.filter(is_active=True)
         groups = Group.objects.all()
         instances = []
         clusters = Cluster.objects.all()
