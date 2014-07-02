@@ -233,6 +233,7 @@ label.required { font-weight: bold; }
             <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>{% trans "Home" %}</span></a></li>
             {% if user.is_superuser or perms.ganeti.view_instances %}
             <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="icon-envelope"></i> <span>{% trans "Send Mail" %}</span></a></li>
+            <li {% block clusterinfo %}{% endblock %}><a href="{% url clusterdetails %}"><i class="icon-puzzle-piece"></i> <span>{% trans "Cluster Info" %}</span></a></li>
             <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
             <li {% block clusterjobs %}{% endblock %}><a href="{% url jobs %}"><i class="icon-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>
             {% endif %}
