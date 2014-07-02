@@ -26,7 +26,7 @@ from django.utils.encoding import smart_unicode
 from recaptcha.client import captcha
 from registration.models import RegistrationProfile
 from registration.forms import RegistrationFormUniqueEmail as _RegistrationForm
-
+from django.contrib.auth.forms import PasswordResetForm 
 
 # Add the new google service URLs, as the old ones to recaptcha.net are
 # redirects and break HTTPs due to the certificate belonging to www.google.com
@@ -72,3 +72,10 @@ class RegistrationForm(_RegistrationForm):
     surname = forms.CharField()
     recaptcha = ReCaptchaField(label=_("Verify"), required=False)
 
+class PasswordResetFormPatched(PasswordResetForm):
+    error_messages = {
+        'unknown': _("That e-mail address doesn't have an associated "
+                     "user account or the account has not been activated yet. Are you sure you've registered?"),
+        'unusable': _("The user account associated with this e-mail "
+                      "address cannot reset the password."),
+    }
