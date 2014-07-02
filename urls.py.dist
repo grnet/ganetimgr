@@ -3,8 +3,9 @@ from ganetimgr.ganeti.models import *
 from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from django.contrib.auth import views as auth_v
 
-from accounts.forms import RegistrationForm
+from accounts.forms import RegistrationForm, PasswordResetFormPatched
 
 admin.autodiscover()
 
@@ -13,6 +14,9 @@ urlpatterns = patterns('',
     url(r'^/?$', 'ganetimgr.ganeti.views.user_index', name="user-instances"),
     url(r'^instances_json/?$', 'ganetimgr.ganeti.views.user_index_json', name="user-instances-json"),
     url(r'^instances_stats_json/?$', 'ganetimgr.ganeti.views.user_sum_stats', name="user-stats-json"),
+    url(r'^jobs_json/?$', 'ganetimgr.ganeti.views.jobs_index_json', name="jobs_json"),
+    url(r'^jobs/?$', 'ganetimgr.ganeti.views.jobs', name="jobs"),
+    url(r'^cluster/jobdetails/?$', 'ganetimgr.ganeti.views.job_details', name="jobdets-popup"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/poll/?$', 'ganetimgr.ganeti.views.poll', name="instance-poll"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/vnc/?$', 'ganetimgr.ganeti.views.vnc', name="instance-vnc"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/novnc/?$', 'ganetimgr.ganeti.views.novnc', name="instance-novnc"),
@@ -25,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/?', 'ganetimgr.ganeti.views.instance', name="instance-detail"),
     url(r'^cluster/popup/?', 'ganetimgr.ganeti.views.instance_popup', name="instance-popup"),
     url(r'^cluster/nodes/?', 'ganetimgr.ganeti.views.get_clusternodes', name="cluster-nodes"),
+    url(r'^cluster/jnodes/?', 'ganetimgr.ganeti.views.clusternodes_json', name="cluster-nodes-json"),
     url(r'^apply/?$', 'ganetimgr.apply.views.apply', name="apply"),
     url(r'^application/?$', 'ganetimgr.apply.views.application_list', name="application-list"),
     url(r'^application/(?P<application_id>\d+)/review', 'ganetimgr.apply.views.review_application', name="application-review"),
@@ -48,6 +53,8 @@ urlpatterns = patterns('',
     url(r'^accounts/activate/(?P<activation_key>\w+)/$', 'accounts.views.activate', name='activate_account'),
     url(r'^accounts/register/$','registration.views.register', {'backend':'regbackends.ganetimgr.GanetimgrBackend', 'form_class': RegistrationForm},
 							        name='registration.views.register'),
+    url(r'^accounts/password/reset/$',auth_v.password_reset, {'password_reset_form': PasswordResetFormPatched},
+                                    name='password_reset'),
     (r'^accounts/', include('registration.backends.default.urls')),
     
     url(r'^notify/(?P<instance>[^/]+)?$', 'ganetimgr.notifications.views.notify', name="notify"),
@@ -62,10 +69,16 @@ urlpatterns = patterns('',
     url(r'^stats_ajax/applications/?', 'ganetimgr.ganeti.views.stats_ajax_applications', name="stats_ajax_apps"),
     url(r'^stats_ajax/instances/?', 'ganetimgr.ganeti.views.stats_ajax_instances', name="stats_ajax_instances"),
     url(r'^stats_ajax/vms_cluster/(?P<cluster_slug>\w+)/?', 'ganetimgr.ganeti.views.stats_ajax_vms_per_cluster', name="stats_ajax_vms_pc"),
+    url(r'^clustersdetail/?$', 'ganetimgr.ganeti.views.clusterdetails', name="clusterdetails"),
+    url(r'^clustersdetail/json/?$', 'ganetimgr.ganeti.views.clusterdetails_json', name="clusterdetails_json"),
     url(r'^stats/instance_owners/?$', 'ganetimgr.stats.views.instance_owners', name="instance_owners"),
     url(r'^stats/?', 'ganetimgr.ganeti.views.stats', name="stats"),
     url(r'^graph/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/(?P<graph_type>[^/]+)(/(?P<start>[\\:\w\d\s\.+-]+),(?P<end>[\\:\w\d\s\.+-]+))?$', 'ganetimgr.ganeti.views.graph', name='graph'),
     url(r'^instance/destreinst/(?P<application_hash>\w+)/(?P<action_id>\d+)/$', 'ganetimgr.ganeti.views.reinstalldestreview', name='reinstall-destroy-review'),
+    url(r'^nodegroup/fromnet/$', 'ganetimgr.apply.views.get_nodegroups_fromnet', name='ng_from_net'),
+    url(r'^nodegroups/cluster/$', 'ganetimgr.apply.views.get_cluster_node_group_stack', name='cluster_ng_stack'),
+    url(r'^history/$', 'ganetimgr.auditlog.views.auditlog', name='auditlog'),
+    url(r'^history_json/$', 'ganetimgr.auditlog.views.auditlog_json', name='auditlog_json'),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
