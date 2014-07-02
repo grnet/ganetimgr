@@ -23,10 +23,15 @@
 }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.css">
+<link rel="stylesheet" href="/static/select2/select2.css">
 
 {% endblock %}
 {% block title %}{% trans "Jobs" %}{% endblock %}
 {% block clusterjobs %}class="active"{% endblock %}
+{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% trans "Jobs" %}</li>
+	    		{% endblock %}
 {% block content %}
 <div class="span12 main-content">
 
@@ -75,6 +80,7 @@
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
+<script src="/static/select2/select2.js"></script>
 <script type="text/javascript">
 var oTable;
 var ajaxSource;
@@ -159,7 +165,7 @@ $(document).ready( function(){
 	    	"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "jobs" %}'
 	    },
 	    "sPaginationType": "bootstrap",
-	    "sDom": "<'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
+	    "sDom": "<'row-fluid'<'span6'<'#itoggleph'>><'span6'<'#clusterph'>>><'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
 	    "iDisplayLength": 20,
 		"bProcessing": true,
         "sAjaxSource": ajaxSource,
@@ -168,7 +174,29 @@ $(document).ready( function(){
             if(json.hasOwnProperty('messages')){
             	$('#jsonmessages').show();
             	$('#jsonmessage').html(json.messages);
+            	
             }
+            if(json.hasOwnProperty('clusters')){
+            	var clustertoggle = $('<select id="clusterfilter" multiple></select>');
+            	for (var i=0; i<json.clusters.length; i++) {
+					clustertoggle.append('<option value="'+json.clusters[i]+'">'+json.clusters[i]+'</option>');
+				}
+				$("#clusterph").append(clustertoggle);
+				clustertoggle.select2({placeholder: "Select Clusters"});
+            }
+            var statusObj = {};
+            statusObj.running = 0;
+            statusObj.error = 0;
+            statusObj.waiting = 0;
+            statusObj.success = 0;
+            for (var i=0; i<json.aaData.length; i++) {
+            	jobitem = json.aaData[i];
+            	statusObj[jobitem.status] = statusObj[jobitem.status] + 1; 
+            }
+            $("#success_num").html(statusObj.success);
+            $("#error_num").html(statusObj.error);
+            $("#waiting_num").html(statusObj.waiting);
+            $("#running_num").html(statusObj.running);
           },
         "aaSorting": [[ 4, "desc" ]],
         "aoColumns":[
@@ -188,7 +216,7 @@ $(document).ready( function(){
                        	  status = '<span class="label label-important">Error</span>';
                          }
                          if (data == "waiting"){
-                       	  status = '<span class="label label-info">Waiting</span>';
+                       	  status = '<span class="label label-warning">Waiting</span>';
                          }
                          if (data == "running"){
                        	  status = '<span class="label label-info">Running</span>';
@@ -200,9 +228,93 @@ $(document).ready( function(){
          ]
 } );
 
+
+var itoggle = '<div id="itoggle" class="span12" style="text-align:center;"> \
+   <div class="btn-group" data-toggle="buttons-checkbox"> \
+    <button type="button" class="btn" name="status_filter" value="Success" id="show_master"><span class="badge badge-success">Success <span id="success_num"></span></span></button> \
+    <button type="button" class="btn" name="status_filter" value="Running" id="show_regular"><span class="badge badge-info">Running <span id="running_num"></span></span></button> \
+    <button type="button" class="btn" name="status_filter" value="Waiting" id="show_drained"><span class="badge badge-warning">Waiting <span id="waiting_num"></span></span></button> \
+    <button type="button" class="btn" name="status_filter" value="Error" id="show_offline"><span class="badge badge-important">Error <span id="error_num"></span></span></button> \
+    </div></div> ';
+    
+    $("#itoggleph").html(itoggle);
+
+ var reg_exp = '';
+    var checkboxs = document.getElementsByName('status_filter');
+    for (var i = 0, inp; inp = checkboxs[i]; i++) {
+        checkCookie = readCookie("cookie_" + inp.value);
+        if (checkCookie) {
+            if (checkCookie == 'true') {
+                $(inp).addClass('active');
+            }
+            else {
+                $(inp).removeClass('active');
+            }
+        }
+        
+        if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
+            reg_exp = reg_exp + inp.value + '|';
+        }
+        
+    }
+	if (reg_exp == '') {
+            reg_exp = '|';
+        }
+	
+    oTable.fnFilter(reg_exp.slice(0, -1), 2, true, false, false);
+    
+    $('body').on('click', 'button[name="status_filter"]', function(){
+    	var reg_exp = '';
+        var checkboxs = document.getElementsByName('status_filter');
+        $(this).button('toggle');
+        for (var i = 0, inp; inp = checkboxs[i]; i++) {
+            if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
+                reg_exp = reg_exp + inp.value + '|';
+            }
+            createCookie("cookie_" + inp.value, $(inp).hasClass('active'), 30);
+        }
+        //passing an empty string will result in no filter
+        //thus, it must be set to something that will not exist in the column
+        if (reg_exp == '') {
+            reg_exp = '|';
+        }
+        oTable.fnFilter(reg_exp.slice(0, -1), 2, true, false, false);
+        return false;
+    });
+    
+
+$('body').on('change', '#clusterfilter', function(){
+    	var cl_reg_exp_arr = $('#clusterfilter').val();
+    	cl_reg_exp = '';
+    	if (cl_reg_exp_arr){
+	    	for (var i = 0, inp; inp = cl_reg_exp_arr[i]; i++) {
+	    		cl_reg_exp = cl_reg_exp + inp + '|';
+	    	}
+	    }
+        if (cl_reg_exp == '') {
+            cl_reg_exp = '|';
+        }
+        oTable.fnFilter(cl_reg_exp.slice(0, -1), 1, true, false, false);
+        return false;
+    });
+    
 var tid = setInterval(refreshJobs, 5000);
 function refreshJobs() {
-  oTable.fnReloadAjax(ajaxSource);
+  oTable.fnReloadAjax(ajaxSource, function(data){
+  	var statusObj = {};
+            statusObj.running = 0;
+            statusObj.error = 0;
+            statusObj.waiting = 0;
+            statusObj.success = 0;
+            for (var i=0; i<data.jqXHR.responseJSON.aaData.length; i++) {
+            	jobitem = data.jqXHR.responseJSON.aaData[i];
+            	statusObj[jobitem.status] = statusObj[jobitem.status] + 1; 
+            }
+            $("#success_num").html(statusObj.success);
+            $("#error_num").html(statusObj.error);
+            $("#waiting_num").html(statusObj.waiting);
+            $("#running_num").html(statusObj.running);
+  });
 }
 
   $(window).resize(function() {
