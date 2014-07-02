@@ -148,7 +148,7 @@ var itoggle = '<div id="itoggle" class="span12" style="text-align:center;"> \
     <button type="button" class="btn" name="status_filter" value="Regular" id="show_regular"><span class="badge badge">Regular {{statuses.regular}}</span></button> \
     <button type="button" class="btn" name="status_filter" value="Candidate" id="show_candidate"><span class="badge badge-info">Candidate {{statuses.candidate}}</span></button> \
     <button type="button" class="btn" name="status_filter" value="Drained" id="show_drained"><span class="badge badge-warning">Drained {{statuses.drained}}</span></button> \
-    <button typ="button" class="btn" name="status_filter" value="Offline" id="show_offline"><span class="badge badge-important">Offline {{statuses.offline}}</span></button> \
+    <button type="button" class="btn" name="status_filter" value="Offline" id="show_offline"><span class="badge badge-important">Offline {{statuses.offline}}</span></button> \
     </div></div> ';
     
     $("#itoggleph").html(itoggle);
@@ -195,7 +195,7 @@ var clustertoggle = '<select id="clusterfilter" multiple>{% for cluster in clust
         //passing an empty string will result in no filter
         //thus, it must be set to something that will not exist in the column
         if (reg_exp == '') {
-            reg_exp = '|'
+            reg_exp = '|';
         }
         oTable.fnFilter(reg_exp.slice(0, -1), 6, true, false, false);
         return false;
@@ -203,12 +203,10 @@ var clustertoggle = '<select id="clusterfilter" multiple>{% for cluster in clust
     
     $('body').on('change', '#clusterfilter', function(){
     	var cl_reg_exp_arr = $('#clusterfilter').val();
-    	console.log(cl_reg_exp_arr);
     	cl_reg_exp = '';
     	if (cl_reg_exp_arr){
 	    	for (var i = 0, inp; inp = cl_reg_exp_arr[i]; i++) {
 	    		cl_reg_exp = cl_reg_exp + inp + '|';
-	    		console.log(cl_reg_exp);
 	    	}
 	    }
         if (cl_reg_exp == '') {
@@ -218,13 +216,19 @@ var clustertoggle = '<select id="clusterfilter" multiple>{% for cluster in clust
         return false;
     });
     
-    oTable.$("a[rel=popover]").popover().click(function(e) {
-        e.preventDefault()
-      });
-    
-});
+    oTable.$("a[rel=popover]"
+		).
+		popover().click(function(e) {
+			e.preventDefault();
+		});
 
+		$('body').on('click', function(e) {
+			if ($(e.target).data('toggle') !== 'popover' && $(e.target).parents('.popover.in').length === 0) {
+				$('[data-toggle="popover"]').popover('hide');
+			}
+		});
 
+		});
 
 </script>
 {% endblock %}
