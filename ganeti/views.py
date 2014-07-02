@@ -1223,7 +1223,6 @@ def prepare_clusternodes():
             bad_clusters.append(cluster)
         finally:
             t.cancel()
-    
     p.imap(_get_nodes, clusters)
     p.join()
     return nodes, bad_clusters, bad_nodes
@@ -1386,7 +1385,7 @@ def get_user_groups(request):
         q_params = request.GET['q']
     except:
         pass
-    users = User.objects.all()
+    users = User.objects.filter(is_active=True)
     groups = Group.objects.all()
     if q_params:
         users = users.filter(username__icontains=q_params)
