@@ -65,7 +65,7 @@ $(function () {
             });
 			for (var j=0;j<item.instances.length;j++)
 			{
-				options.series[i].data.push({x:item.instances[j].time, y:j+1, vm:item.instances[j].name})
+				options.series[i].data.push({x:item.instances[j].time, y:j+1, vm:item.instances[j].name});
 			}
 			
 		});
@@ -115,7 +115,7 @@ $(function () {
 	$.getJSON('{% url stats_ajax_apps %}', function(dt) {
 		var items2 = [];
 		$.each(dt, function(i, item) {
-				options2.series[0].data.push({x:item.time, y:item.count, vm:item.instance, user:item.user})
+				options2.series[0].data.push({x:item.time, y:item.count, vm:item.instance, user:item.user});
 			
 			
 		});
