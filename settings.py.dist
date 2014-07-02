@@ -68,6 +68,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'ganetimgr.middleware.ForceLogout.ForceLogoutMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -118,6 +119,7 @@ INSTALLED_APPS = (
     'ganetimgr.apply',
     'ganetimgr.notifications',
     'ganetimgr.stats',
+    'ganetimgr.auditlog',
     #'django_extensions',
 )
 
@@ -223,6 +225,8 @@ OPERATING_SYSTEMS = {
 
 OPERATING_SYSTEM_CHOICES = \
     [(x, y["description"]) for (x, y) in OPERATING_SYSTEMS.items()]
+
+OPERATING_SYSTEM_DICT = {x: y["description"] for (x, y) in OPERATING_SYSTEMS.items()}
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
