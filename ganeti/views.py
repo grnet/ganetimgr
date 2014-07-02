@@ -165,6 +165,7 @@ def clear_cache(request):
 @login_required
 def jobs_index_json(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+        cluster_slug = request.GET.get('cluster', None)
         messages = None
         p = Pool(20)
         jobs = []
@@ -180,17 +181,23 @@ def jobs_index_json(request):
                 t.cancel()
     
         if not request.user.is_anonymous():
-            p.imap(_get_jobs, Cluster.objects.all())
+            clusters = Cluster.objects.all()
+            if cluster_slug:
+                clusters = clusters.filter(slug=cluster_slug)
+            p.imap(_get_jobs, clusters)
             p.join()
         if bad_clusters:
             messages = "Some jobs may be missing because the" \
                                  " following clusters are unreachable: %s" \
                                  %(", ".join([c.description for c in bad_clusters]))
         jresp = {}
+        clusters = list(set([j['cluster'] for j in jobs]))
         jresp['aaData'] = jobs
         if messages:
             jresp['messages'] = messages
+        jresp['clusters'] = clusters
         res = jresp
+        
         return HttpResponse(json.dumps(res), mimetype='application/json')
     else:
         return HttpResponse(json.dumps({'error':"Unauthorized access"}), mimetype='application/json')
@@ -222,6 +229,7 @@ def job_details(request):
 @login_required
 def user_index_json(request):
     messages = None
+    cluster_slug = request.GET.get('cluster', None)
     if request.user.is_anonymous():
         action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
         return HttpResponse(json.dumps(action), mimetype='application/json')
@@ -240,7 +248,10 @@ def user_index_json(request):
             t.cancel()
 
     if not request.user.is_anonymous():
-        p.imap(_get_instances, Cluster.objects.all())
+        clusters =  Cluster.objects.all()
+        if cluster_slug:
+            clusters = clusters.filter(slug=cluster_slug)
+        p.imap(_get_instances, clusters)
         p.join()
     if bad_clusters:
         messages = "Some instances may be missing because the" \
