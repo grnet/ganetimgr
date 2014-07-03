@@ -4,6 +4,21 @@
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript">
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "daysago-string-pre": function ( a ) {
+        var x = a.split(" ")[0];
+        return parseInt( x );
+    },
+ 
+    "daysago-string-asc": function ( a, b ) {
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    },
+ 
+    "daysago-string-desc": function ( a, b ) {
+        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    }
+} );
+
 	$(document).ready( function(){
 			$('#usergroup_instance_table').dataTable( {
 			"bPaginate": true,
@@ -19,6 +34,13 @@
 			"sPaginationType": "bootstrap",
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
 			"iDisplayLength": 25,
+			"aoColumns": [
+                {"bSearchable": true,"bSortable": true},
+                {"bSearchable": true,"bSortable": true},
+                {"bSearchable": true,"bSortable": true},
+                {"bSearchable": true,"bSortable": true},
+                {"bSearchable": true,"bSortable": true, "sType":"daysago-string"},
+            ]
 	} );
 		});
 </script>
@@ -44,11 +66,11 @@
 			<table width="100%" id="usergroup_instance_table" class="table table-first-column-number data-table display full">
 <thead>
 <tr>
-	<th style="text-align: center;">{% trans "Username" %}</th>
-	<th>{% trans "First Name" %}</th>
-	<th>{% trans "Last Name" %}</th>
-	<th>{% trans "E-mail" %}</th>
-	<th>{% trans "Last Login" %}</th>
+	<th style="text-align: center;">{% trans "Username" %}<span class="sort-icon"><span></th>
+	<th>{% trans "First Name" %}<span class="sort-icon"><span></th>
+	<th>{% trans "Last Name" %}<span class="sort-icon"><span></th>
+	<th>{% trans "E-mail" %}<span class="sort-icon"><span></th>
+	<th>{% trans "Last Login" %}<span class="sort-icon"><span></th>
 </tr>
 
 </thead>
