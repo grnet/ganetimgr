@@ -210,26 +210,34 @@ $(document).ready( function(){
 					name = nodegroups[j].name;
 					alloc_policy = nodegroups[j].alloc_policy;
 					nodes = $("<div></div>");
-					for (var k=0; k<nodegroups[j].nodes.length; k++) {
-							curriternode = nodegroups[j].nodes[k];
+					ng_nodes = nodegroups[j].nodes;
+					ng_nodes = ng_nodes.sort();
+					for (var k=0; k<ng_nodes.length; k++) {
+							curriternode = ng_nodes[k];
 							node_info = get_node_info(curriternode);
 							node_class = "";
+							title = "";
 							if (node_info.role == "C"){
 								node_class = 'label label-info';
+								title = "Candidate";
 							}
 							if (node_info.role == "R"){
 								node_class = 'label';
+								title = "Regular";
 							}
 							if (node_info.role == "O"){
 								node_class = 'label label-important';
+								title = "Offline";
 							}
 							if (node_info.role == "M"){
 								node_class = 'label label-success';
+								title = "Master";
 							}
 							if (node_info.role == "D"){
 								node_class = 'label label-warning';
+								title = "Drained";
 							}
-							node_span = $("<span class='"+node_class+"'>"+nodegroups[j].nodes[k]+"</span> <span class='badge'>"+node_info.pinst_cnt+"</span>");
+							node_span = $("<span class='"+node_class+"' title='"+title+"'>"+ng_nodes[k]+"</span> <span class='badge'>"+node_info.pinst_cnt+"</span>");
 							bullcolor = "#3a87ad";
 							if (node_info.mem_used > 0){
 								if (node_info.mem_used < 50){
@@ -352,9 +360,12 @@ $(document).ready( function(){
 							}
 								var piechartclinst = $("<span style='float:right'>&nbsp;</span>");
 								piechartclinst.sparkline([instObj.down, instObj.up], {type: 'pie',sliceColors : ["#f89406", "#468847"], disableHiddenCheck: true });
-								all_insts = $("<span class='label label-info'>"+insts.length+"</span> <span class='label label-success'>"+instObj.up+"</span> <span class='label label-warning'>"+instObj.down+"</span>");
+								all_insts = $("<span title='All Instances' class='label label-info' >all: "+insts.length+"</span> \
+								<span class='label label-success' title='Running'>running: "+instObj.up+"</span>\
+								 <span class='label label-warning' title='Stopped/Other'>stopped/other: "+instObj.down+"</span>");
 								$("#cluster_instances_ph").append(all_insts).append(piechartclinst);
 								$.sparkline_display_visible();
+								$(".tooltip").tooltip();
 						}
 				});
 			}
