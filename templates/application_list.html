@@ -1,5 +1,6 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
+{% load applicationstatus %}
 {% block title %}{% trans "Application list" %}{% endblock %}
 
 {% block extrahead %}
@@ -61,6 +62,7 @@ $(document).ready( function(){
 {% endblock %}
 {% block applicationstop %}class="active"{% endblock %}
 {% block applications %}class="active"{% endblock %}
+
 {% block crumbs %}
 	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	    			<li class="active">{% trans "Instance Applications" %}</li>
@@ -96,7 +98,7 @@ $(document).ready( function(){
     <td>{% if perms.apply.change_instanceapplication %}<a href="{% url application-review app.pk %}">{{ app.hostname }}</a>{% else %}{{ app.hostname }}{% endif %}</td>
     <td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td>
     <td>{{ app.instance_params.network|default_if_none:"&mdash;" }}</td>
-    <td>{{ app.get_status_display }}</td>
+    <td><span class="label label-{{ app.get_status_display|appstatus }}">{{ app.get_status_display }}</span></td>
     <td><span style="display:none">{{ app.filed|date:"U" }}</span>{{ app.filed }}</td>
 </tr>
 {% endfor %}
