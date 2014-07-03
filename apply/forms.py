@@ -181,35 +181,11 @@ class InstanceApplicationForm(InstanceForm):
                                           " fill in the contact information"))
         return self.cleaned_data
 
-class InstanceApplicationReviewForm(InstanceForm):   
-    memory = forms.IntegerField(min_value=min(VALID_MEMORY_VALUES), initial=1024)
-    vcpus = forms.IntegerField(min_value=1, initial=1, label="Virtual CPUs")
-    disk_size = forms.IntegerField(min_value=2, initial=5,
-                                   label=ugettext_lazy("Disk size (GB)"))
-#     network = GroupedModelChoiceField("cluster", disabled_field="disable_instance_creation",
-#                                       queryset=Network.objects.all().order_by('cluster__slug'),
-#                                       widget=SelectWithDisabled())
-    cluster = forms.ChoiceField(
-                                choices = [(c.pk, "%s (%s)"%(c.description, c.slug)) for c in Cluster.objects.exclude(disable_instance_creation=True).order_by('description')],
-                                label = "Cluster",
-                                required = True)
-    node_group = forms.ChoiceField(label = "Node Group",
-                                required = True)
-    netw = forms.ChoiceField(label = "Network",
-                                required = True)
-    vgs = forms.ChoiceField(label = "Volume Groups",
-                                required = False)
-    disk_template = forms.ChoiceField(label = "Disk Template",
-                                required = True)
-    
 class InstanceApplicationReviewForm(InstanceForm):
     memory = forms.IntegerField(min_value=min(VALID_MEMORY_VALUES), initial=1024)
     vcpus = forms.IntegerField(min_value=1, initial=1, label="Virtual CPUs")
     disk_size = forms.IntegerField(min_value=2, initial=5,
                                    label=ugettext_lazy("Disk size (GB)"))
-#     network = GroupedModelChoiceField("cluster", disabled_field="disable_instance_creation",
-#                                       queryset=Network.objects.all().order_by('cluster__slug'),
-#                                       widget=SelectWithDisabled())
     cluster = forms.ChoiceField(
                                 choices = [(c.pk, "%s (%s)"%(c.description, c.slug)) for c in Cluster.objects.exclude(disable_instance_creation=True).order_by('description')],
                                 label = "Cluster",
@@ -227,15 +203,6 @@ class InstanceApplicationReviewForm(InstanceForm):
     class Meta:
         model = InstanceApplication
         fields = InstanceForm.Meta.fields + ('admin_comments',)
-
-   
-#     def clean_netw(self):
-#         if self.cleaned_data["netw"] is None:
-#             if self.data and "reject" not in self.data:
-#                 raise forms.ValidationError(_("Please specify a network"))
-#         return self.cleaned_data["netw"]
-    
-    
 
     def clean_admin_comments(self):
         if self.data and "reject" in self.data and not \
