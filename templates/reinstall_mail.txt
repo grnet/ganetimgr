@@ -10,3 +10,18 @@
 {% endif %}
 {% endif %}
 Για να συνεχίσετε, επισκεφθείτε το {{url}}
+
+-----------------------------------------------------------------------------
+
+The user {{user.username}} ({{user.first_name}} {{user.last_name}}) has made
+the following request:
+------------------------
+
+{% if action == 'reinstall' %}Reinstall:{% endif %}{% if action == 'destroy' %}Delete:{% endif %}{% if action == 'rename' %}Rename:{% endif %}{% if action == 'mailchange' %}Change email{% endif %}
+{% if action == 'mailchange' %}New email: {{action_value}}{% endif %}{% if action != 'mailchange' %}
+{{instance}}  {% if action == 'rename' %}to {{action_value}}{% endif %}{% if action != 'rename' %}
+WARNING! The above action will {% if action == 'reinstall' %}delete your data{% endif %}{% if action == 'destroy' %}delete your virtual machine{% endif %}. Make sure you take backups of any data you need.
+WARNING! Once you start the process, it cannot be undone.
+{% endif %}
+{% endif %}
+To continue, please visit {{url}}

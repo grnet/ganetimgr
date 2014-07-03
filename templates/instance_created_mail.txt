@@ -11,3 +11,17 @@
 Για περισσότερες πληροφορίες για την εικονική μηχανή σας ή για οποιοιδήποτε
 άλλο αίτημα αφορά την υπηρεσία, μπορείτε να επικοινωνήσετε με το Helpdesk του
 ΕΔΕΤ.
+
+-----------------------------------------------------------------------------
+
+The virtual machine name {{ application.hostname }} has been created.
+
+You can manipulate and view the data at the following address:
+   {{instance_url}}
+
+{% if application.admin_comments %}Comments from the administrator:
+{{ application.admin_comments }}
+{% endif %}
+
+For more information on the virtual machine or any
+other request regarding the service, you can contact the GRNET Helpdesk.

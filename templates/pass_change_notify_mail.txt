@@ -5,3 +5,13 @@
 
 Σε περίπτωση που η αλλαγή του κωδικού δεν πραγματοποιήθηκε από εσάς παρακαλούμε όπως ενημερώσετε άμεσα
 το Helpdesk της ΕΔΕΤ
+
+-----------------------------------------------------------------------------
+
+Dear user,
+
+We hereby inform you that the password for your account {{user.username}}
+in the ViMa service has been changed successfully.
+
+If the password change was not made by you, please inform
+the GRNET Helpdesk.
