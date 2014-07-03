@@ -29,6 +29,9 @@ class UserProfile(models.Model):
     def force_logout(self):
         self.force_logout_date = datetime.now()
         self.save()
+    
+    def __unicode__(self):
+        return "%s profile" %self.user
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created and not kwargs.get('raw', False):
