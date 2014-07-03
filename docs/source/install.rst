@@ -22,6 +22,19 @@ Update and install the required packages (you will be asked for a mysql username
     apt-get install redis-server
     apt-get install gunicorn python-gevent
 
+
+Beanstalkd
+----------
+
+Edit ``/etc/default/beanstalkd`` and uncomment the following line::
+    
+    START=yes
+
+and then start the daemon with::
+
+    service beanstalkd start
+
+
 Database Setup
 --------------
 Login to the mysql interface::
