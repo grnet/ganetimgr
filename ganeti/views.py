@@ -313,6 +313,8 @@ def user_index_json(request):
                              %(", ".join([c.description for c in bad_clusters]))
     jresp = {}
     cache_key = "user:%s:index:instances" %request.user.username
+    if cluster_slug:
+        cache_key = "user:%s:%s:instances" %(request.user.username, cluster_slug)
     res = cache.get(cache_key)
     instancedetails = []
     j = Pool(80)
