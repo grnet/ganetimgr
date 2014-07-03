@@ -23,6 +23,8 @@
 }
 </style>
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.css">
+<link rel="stylesheet" href="/static/select2/select2.css">
+
 
 {% endblock %}
 {% block title %}{% if user.is_superuser or perms.ganeti.view_instances %}{% trans "Audit Log" %}{% else %}{% trans "History" %}{% endif %}{% endblock %}
@@ -83,6 +85,7 @@
 
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
+<script src="/static/select2/select2.js"></script>
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <script type="text/javascript">
 
@@ -99,8 +102,30 @@ $(document).ready( function(){
 	    	"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "logs" %}'
 	    },
 	    "sPaginationType": "bootstrap",
-	    "sDom": "<'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
 	    "iDisplayLength": 20,
+	    {% if user.is_superuser or perms.ganeti.view_instances %}
+	    "sDom": "<'row-fluid'<'span4'l><'span4'<'#clusterph'>><'span4'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
+	    "fnInitComplete": function(oSettings, json) {
+            if(json.hasOwnProperty('messages')){
+            	$('#jsonmessages').show();
+            	$('#jsonmessage').html(json.messages);
+            	
+            }
+            var seen_clusters = [];
+
+        	var clustertoggle = $('<select id="clusterfilter" multiple></select>');
+        	for (var i=0; i<json.aaData.length; i++) {
+        		if (seen_clusters.indexOf(json.aaData[i].cluster) == -1){
+        			clustertoggle.append('<option value="'+json.aaData[i].cluster+'">'+json.aaData[i].cluster+'</option>');
+        			seen_clusters.push(json.aaData[i].cluster);
+        		}
+			$("#clusterph").append(clustertoggle);
+			clustertoggle.select2({placeholder: "Select Clusters"});
+            }
+          },
+          {% else %}
+          "sDom": "<'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
+          {% endif %}
 		"bProcessing": true,
         "sAjaxSource": "{% url auditlog_json %}",
         "bDeferRender": true,
@@ -139,8 +164,24 @@ $(document).ready( function(){
 var update_size = function() {
     $(oTable).css({ width: $(oTable).parent().width() });
     oTable.fnAdjustColumnSizing(); 
-  }
+ };
+{% if user.is_superuser or perms.ganeti.view_instances %}
 
+	$('body').on('change', '#clusterfilter', function(){
+    	var cl_reg_exp_arr = $('#clusterfilter').val();
+    	cl_reg_exp = '';
+    	if (cl_reg_exp_arr){
+	    	for (var i = 0, inp; inp = cl_reg_exp_arr[i]; i++) {
+	    		cl_reg_exp = cl_reg_exp + inp + '|';
+	    	}
+	    }
+        if (cl_reg_exp == '') {
+            cl_reg_exp = '|';
+        }
+        oTable.fnFilter(cl_reg_exp.slice(0, -1), 1, true, false, false);
+        return false;
+    });
+{% endif %}
 });
 {% if user.is_superuser or perms.ganeti.view_instances %}
 	function showDetails(cluster, jobid){
@@ -151,5 +192,7 @@ var update_size = function() {
 		return false;
 	}
 	{% endif %}
+	
+
 </script>
 {% endblock %}
