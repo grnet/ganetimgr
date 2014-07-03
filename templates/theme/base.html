@@ -106,6 +106,14 @@ label.required { font-weight: bold; }
 		$("#langform").submit();
 	}
   	$(function(){
+  		{% if session_remaining %}
+  			remaining = parseInt("{{session_remaining}}") * 1000;
+  			setTimeout(
+        		function(){
+            		window.location = "{% url logout %}" 
+        		},
+    		remaining);
+    	{% endif %}
   	    $('#phone-navigation #phone-menu').change(function(){
   	        var url = $(this).val();
   	        if(url) {
