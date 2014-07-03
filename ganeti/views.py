@@ -653,12 +653,12 @@ def notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_va
                                           "action_value": reinstalldestroy_req.action_value,
                                           "url": url})
     if action_id == 1:
-        action_mail_text = "re-installation"
+        action_mail_text = _("re-installation")
     if action_id == 2:
-        action_mail_text = "destruction"
+        action_mail_text = _("destruction")
     if action_id == 3:
-        action_mail_text = "rename"
-    send_mail("%sInstance %s requested: %s" % (settings.EMAIL_SUBJECT_PREFIX, action_mail_text, instance.name),
+        action_mail_text = _("rename")
+    send_mail(_("%(pref)sInstance %(action)s requested: %(instance)s") % {"pref": settings.EMAIL_SUBJECT_PREFIX, "action":action_mail_text, "instance":instance.name},
                   email, settings.SERVER_EMAIL, [user.email])
     action = {'action':_("Mail sent")}
     return action

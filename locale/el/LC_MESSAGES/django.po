@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-03 12:39+0300\n"
+"POT-Creation-Date: 2014-07-03 12:54+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -239,6 +239,23 @@ msgstr "Παρακαλώ περιμένετε... απενεργοποίηση"
 #: ganeti/views.py:636
 msgid "Not allowed action"
 msgstr "Η ενέργεια δεν επιτρέπεται"
+
+#: ganeti/views.py:656
+msgid "re-installation"
+msgstr "επανεγκατάσταση"
+
+#: ganeti/views.py:658
+msgid "destruction"
+msgstr "καταστροφή"
+
+#: ganeti/views.py:660
+msgid "rename"
+msgstr "μετονομασία"
+
+#: ganeti/views.py:661
+#, python-format
+msgid "%(pref)sInstance %(action)s requested: %(instance)s"
+msgstr "%(pref)sΑίτηση για %(action)s στην εικονική μηχανή: %(instance)s"
 
 #: ganeti/views.py:663
 msgid "Mail sent"
@@ -1569,9 +1586,6 @@ msgstr "Αυτή η υπηρεσία παρέχεται από το"
 
 #~ msgid "shutting down"
 #~ msgstr "η μηχανή απενεργοποιείται"
-
-#~ msgid "reinstalling"
-#~ msgstr "επανεγκατάσταση"
 
 #~ msgid "deleting"
 #~ msgstr "διαγραφή"
