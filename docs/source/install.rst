@@ -233,6 +233,21 @@ Eg::
     <noscript><p><img src="http://piwik.example.com/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
     <!-- End Piwik Code -->
 
+
+Java VNC Setup
+**************
+
+The package ``vncauthproxy`` (available from our repo) is required to run on the host ganetimgr is running for the
+Java VNC applet to work.
+
+An example config that needs to be placed on ``/etc/default/vncauthproxy`` ::
+
+    DAEMON_OPTS="-p11000 -P15000 -s /var/run/vncauthproxy/vncproxy.sock"
+    CHUID="nobody:www-data"
+
+11000-15000 is the (hardcoded, it seems) port range that ganeti uses for vnc binding, so you will need to open 
+your firewall on the nodes for these ports.
+
 WebSockets
 **********
 
