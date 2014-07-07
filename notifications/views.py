@@ -35,8 +35,6 @@ from gevent.timeout import Timeout
 
 from util.ganeti_client import GanetiApiError
 
-RAPI_TIMEOUT = settings.RAPI_TIMEOUT
-
 @csrf_exempt
 @login_required
 def notify(request, instance=None):
@@ -125,16 +123,11 @@ def get_user_group_list(request):
         clusters = Cluster.objects.all()
         p = Pool(20)
         bad_clusters = []
-
         def _get_instances(cluster):
-            t = Timeout(RAPI_TIMEOUT)
-            t.start()
             try:
                 instances.extend(cluster.get_user_instances(request.user))
-            except (GanetiApiError, Timeout):
+            except (GanetiApiError, Exception):
                 bad_clusters.append(cluster)
-            finally:
-                t.cancel()
         if not request.user.is_anonymous():
             p.imap(_get_instances, Cluster.objects.all())
             p.join()
