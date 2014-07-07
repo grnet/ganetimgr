@@ -144,12 +144,12 @@ $(document).ready( function(){
 				
 				var disk_templates = "";
 				var sep = ",";
-				for (var j=0; j<selected_cluster.clusterinfo.enabled_disk_templates.length; j++) {
+				for (var j=0; j<selected_cluster.clusterinfo.ipolicy['disk-templates'].length; j++) {
 					if (j == 0){
-						disk_templates = "<span class='label label-success'>"+selected_cluster.clusterinfo.enabled_disk_templates[j]+"</span>";
+						disk_templates = "<span class='label label-success'>"+selected_cluster.clusterinfo.ipolicy['disk-templates'][j]+"</span>";
 					}
 					else{
-						disk_templates = disk_templates + "  <span class='label label-info'>"+selected_cluster.clusterinfo.enabled_disk_templates[j]+"</span>"; 
+						disk_templates = disk_templates + "  <span class='label label-info'>"+selected_cluster.clusterinfo.ipolicy['disk-templates'][j]+"</span>"; 
 					}
 					
 				}
