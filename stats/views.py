@@ -25,8 +25,6 @@ from gevent.timeout import Timeout
 from django.conf import settings
 from util.ganeti_client import GanetiApiError
 
-RAPI_TIMEOUT = settings.RAPI_TIMEOUT
-
 def instance_owners(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         p = Pool(20)
@@ -34,15 +32,10 @@ def instance_owners(request):
         bad_clusters = []
 
         def _get_instances(cluster):
-            t = Timeout(RAPI_TIMEOUT)
-            t.start()
             try:
                 instancesall.extend(cluster.get_user_instances(request.user))
-            except (GanetiApiError, Timeout):
+            except (GanetiApiError, Exception):
                 bad_clusters.append(cluster)
-            finally:
-                t.cancel()
-
         if not request.user.is_anonymous():
             p.imap(_get_instances, Cluster.objects.all())
             p.join()
