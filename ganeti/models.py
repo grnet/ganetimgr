@@ -30,14 +30,15 @@ from gevent.pool import Pool
 from gevent.timeout import Timeout
 
 from util import vapclient
-from util.client import GanetiRapiClient, GanetiApiError
+from util.client import GanetiRapiClient, GanetiApiError, GenericCurlConfig
 from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
 import re
 import random
 import sha
 import ipaddr
 
-RAPI_TIMEOUT = settings.RAPI_TIMEOUT
+RAPI_CONNECT_TIMEOUT = settings.RAPI_CONNECT_TIMEOUT
+RAPI_RESPONSE_TIMEOUT = settings.RAPI_RESPONSE_TIMEOUT
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
@@ -62,14 +63,10 @@ class InstanceManager(object):
         bad_clusters = []
 
         def _get_instances(cluster):
-            t = Timeout(RAPI_TIMEOUT)
-            t.start()
             try:
                 instances.extend(cluster.get_instances())
-            except (GanetiApiError, Timeout):
+            except (GanetiApiError, Exception):
                 pass
-            finally:
-                t.cancel()
         clusters = Cluster.objects.all()
         p.imap(_get_instances, clusters)
         p.join()
@@ -344,9 +341,11 @@ class Cluster(models.Model):
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
+        curl_conf = GenericCurlConfig(connect_timeout=RAPI_CONNECT_TIMEOUT, timeout=RAPI_RESPONSE_TIMEOUT)
         self._client = GanetiRapiClient(host=self.hostname,
                                         username=self.username,
-                                        password=self.password)
+                                        password=self.password,
+                                        curl_config_fn = curl_conf)
 
     def __unicode__(self):
         return self.hostname
