@@ -90,7 +90,17 @@
                 	   end_date = utc_end;
                    }
                 $('#cpu_graph').attr('src', "{{instance.cpu_url}}" + "/" + start_date + "," + end_date);
-   				$('#net_graph').attr('src', "{{instance.net_url}}" + "/" + start_date + "," + end_date);
+                net_src = $(".net_graph").attr('src');
+                $(".net_graph").each(function(){
+                	imgsrc = $(this).data('originalurl');
+                	imgsrcArr = imgsrc.split('/');
+                	if (imgsrcArr[imgsrcArr.length-1].match(/eth\d+/g)){
+                		eth = imgsrcArr.pop();
+                		imgsrc = imgsrcArr.join("/") + "/" + start_date + "," + end_date + "/" + eth;
+                		$(this).attr('src', imgsrc);
+                	}
+                	
+                });
                 }
              );
              //Set the initial state of the picker label
@@ -210,7 +220,9 @@
             <h3>CPU</h3>
             <img src="{{instance.cpu_url}}" alt="{% trans 'No data available yet...' %}" title="Daily CPU" id="cpu_graph"/>
             <h3>Network</h3>
-            <img src="{{instance.net_url}}" alt="{% trans 'No data available yet...' %}" title="Daily Network" id="net_graph"/>
+            {% for url in instance.net_url %}
+            <img data-originalurl="{{url}}" src="{{url}}" alt="{% trans 'No data available yet...' %}" title="Daily Network" class="net_graph"/>
+            {% endfor %}
         </div>
         
     </div>
