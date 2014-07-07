@@ -250,7 +250,7 @@ def prepare_cluster_node_group_stack(cluster):
     res['cluster_id'] = cluster.pk
     res['num_inst'] = len_instances
     res['description'] = cluster.description
-    res['disk_templates'] = cluster_info['enabled_disk_templates']
+    res['disk_templates'] = cluster_info['ipolicy']['disk-templates']
     res['node_groups'] = cluster.get_node_group_stack()
     return res
 
