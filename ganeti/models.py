@@ -414,7 +414,6 @@ class Cluster(models.Model):
         retinstances = []
         instances = cache.get("cluster:%s:instances" % self.slug)
         if instances is None:
-            #instances = self._client.GetInstances(bulk=True)
             instances = parseQuery(self._client.Query('instance', ['name','tags', 'pnode', 'disk.sizes', 'nic.modes','nic.ips','nic.links','status', 'admin_state', 'beparams', 'oper_state', 'hvparams', 'nic.macs', 'ctime', 'mtime']))
             cache.set("cluster:%s:instances" % self.slug, instances, 45)
         users, orgs, groups, instanceapps, networks = preload_instance_data()
@@ -506,7 +505,7 @@ class Cluster(models.Model):
                 info['shared_storage'] = False
                 if self.default_disk_template in ['drbd', 'plain']:
                     info['shared_storage'] = False
-                if self.default_disk_template in ['sharedfile', 'sharedblock']:
+                if self.default_disk_template in ['sharedfile', 'blockdev']:
                     info['shared_storage'] = True
                 cachenodes.append(info)
             nodes = cachenodes
