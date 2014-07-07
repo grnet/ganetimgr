@@ -39,7 +39,7 @@ from django.template.defaultfilters import filesizeformat
 from gevent.pool import Pool
 from gevent.timeout import Timeout
 
-from util.ganeti_client import GanetiApiError
+from util.client import GanetiApiError
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.core.mail import send_mail, mail_managers
@@ -61,8 +61,6 @@ MESSAGE_TAGS = {
     msgs.ERROR: '',
     50: 'danger',
 }
-
-RAPI_TIMEOUT = settings.RAPI_TIMEOUT
 
 def cluster_overview(request):
     clusters = Cluster.objects.all()
@@ -171,14 +169,10 @@ def jobs_index_json(request):
         jobs = []
         bad_clusters = []
         def _get_jobs(cluster):
-            t = Timeout(RAPI_TIMEOUT)
-            t.start()
             try:
                 jobs.extend(cluster.get_job_list())
-            except (GanetiApiError, Timeout):
+            except (GanetiApiError, Exception):
                 bad_clusters.append(cluster)
-            finally:
-                t.cancel()
     
         if not request.user.is_anonymous():
             clusters = Cluster.objects.all()
@@ -256,14 +250,10 @@ def clusterdetails_json(request):
             errors = []
             p = Pool(10)
             def _get_cluster_details(cluster):
-               t = Timeout(RAPI_TIMEOUT)
-               t.start()
                try:
                    clusterlist.append(clusterdetails_generator(cluster.slug))
-               except (GanetiApiError, Timeout, Exception):
+               except (GanetiApiError, Exception):
                    errors.append(Exception)
-               finally:
-                   t.cancel()
             p.imap(_get_cluster_details, Cluster.objects.all())
             p.join()
             cache.set("clusters:allclusterdetails", clusterlist, 180)
@@ -292,25 +282,10 @@ def user_index_json(request):
     bad_clusters = []
     bad_instances = []
     def _get_instances(cluster):
-        t = Timeout(RAPI_TIMEOUT)
-        t.start()
         try:
             instances.extend(cluster.get_user_instances(request.user))
-        except (GanetiApiError, Timeout):
+        except (GanetiApiError, Exception):
             bad_clusters.append(cluster)
-        finally:
-            t.cancel()
-
-    if not request.user.is_anonymous():
-        clusters =  Cluster.objects.all()
-        if cluster_slug:
-            clusters = clusters.filter(slug=cluster_slug)
-        p.imap(_get_instances, clusters)
-        p.join()
-    if bad_clusters:
-        messages = "Some instances may be missing because the" \
-                             " following clusters are unreachable: %s" \
-                             %(", ".join([c.description for c in bad_clusters]))
     jresp = {}
     cache_key = "user:%s:index:instances" %request.user.username
     if cluster_slug:
@@ -321,22 +296,27 @@ def user_index_json(request):
     user = request.user
     locked_instances = cache.get('locked_instances')
     def _get_instance_details(instance):
-        t = Timeout(RAPI_TIMEOUT)
-        t.start()
         try:
             if locked_instances is not None and locked_instances.has_key('%s'%instance.name):
                 instance.joblock = locked_instances['%s'%instance.name]
             else:
                 instance.joblock = False
             instancedetails.extend(generate_json(instance, user))
-        except Timeout:
+        except (GanetiApiError, Exception):
             bad_instances.append(instance)
-        except Exception as e:
-            bad_instances.append(e)
-        finally:
-            t.cancel()
-
     if res is None:
+        if not request.user.is_anonymous():
+            clusters =  Cluster.objects.all()
+            if cluster_slug:
+                clusters = clusters.filter(slug=cluster_slug)
+            p.imap(_get_instances, clusters)
+            p.join()
+        cache_timeout = 90
+        if bad_clusters:
+            messages = "Some instances may be missing because the" \
+                                 " following clusters are unreachable: %s" \
+                                 %(", ".join([c.description for c in bad_clusters]))
+            cache_timeout = 30
         j.imap(_get_instance_details, instances)
         j.join()
         
@@ -346,11 +326,12 @@ def user_index_json(request):
                 messages = messages + "<br>" + bad_inst_text
             else:
                 messages = bad_inst_text
+            cache_timeout = 30
         
         jresp['aaData'] = instancedetails
         if messages:
             jresp['messages'] = messages
-        cache.set(cache_key, jresp, 90)
+        cache.set(cache_key, jresp, cache_timeout)
         res = jresp
 
     return HttpResponse(json.dumps(res), mimetype='application/json')
@@ -365,15 +346,10 @@ def user_sum_stats(request):
     bad_clusters = []
 
     def _get_instances(cluster):
-        t = Timeout(RAPI_TIMEOUT)
-        t.start()
         try:
             instances.extend(cluster.get_user_instances(request.user))
-        except (GanetiApiError, Timeout):
+        except (GanetiApiError, Exception):
             bad_clusters.append(cluster)
-        finally:
-            t.cancel()
-
     if not request.user.is_anonymous():
         p.imap(_get_instances, Cluster.objects.all())
         p.join()
@@ -390,15 +366,11 @@ def user_sum_stats(request):
     j = Pool(80)
     user = request.user
     def _get_instance_details(instance):
-        t = Timeout(RAPI_TIMEOUT)
-        t.start()
         try:
             instancedetails.extend(generate_json_light(instance, user))
-        except (Exception, Timeout):
+        except (GanetiApiError, Exception):
             pass
-        finally:
-            t.cancel()
-    
+   
     if res is None:
         j.imap(_get_instance_details, instances)
         j.join()
@@ -982,7 +954,10 @@ def instance(request, cluster_slug, instance):
             instance.hvparams['whitelist_ip'] = ''
         configform = InstanceConfigForm(instance.hvparams)
     instance.cpu_url = reverse(graph, args=(cluster.slug, instance.name,'cpu-ts'))
-    instance.net_url = reverse(graph, args=(cluster.slug, instance.name,'net-ts'))
+    instance.net_url = []
+    for (nic_i, link) in enumerate(instance.nic_links):
+        instance.net_url.append(reverse(graph, args=(cluster.slug, instance.name,'net-ts', '/eth%s'%nic_i)))
+    
     instance.netw = []
     try:
         instance.osname = settings.OPERATING_SYSTEM_DICT[instance.osparams['img_id']]
@@ -1211,20 +1186,14 @@ def prepare_clusternodes():
     bad_nodes = []
     servermon_url = None
     def _get_nodes(cluster):
-        # Let's give it some more time. It seems to be struggling with clusters with many nodes
-        t = Timeout(RAPI_TIMEOUT+30)
-        t.start()
         try:
             for node in cluster.get_cluster_nodes():
                 nodes.append(node)
                 if node['offline'] == True:
                     bad_nodes.append(node['name'])
-        except (GanetiApiError, Timeout):
-            # Maybe we should look if this is the proper way of doing this
+        except (GanetiApiError, Exception):
             cluster._client = None
             bad_clusters.append(cluster)
-        finally:
-            t.cancel()
     p.imap(_get_nodes, clusters)
     p.join()
     return nodes, bad_clusters, bad_nodes
@@ -1252,14 +1221,10 @@ def stats(request):
             bad_clusters = []
 
             def _get_instances(cluster):
-                t = Timeout(RAPI_TIMEOUT)
-                t.start()
                 try:
                     instances.extend(cluster.get_user_instances(request.user))
-                except (GanetiApiError, Timeout):
+                except (GanetiApiError, Exception):
                     exclude_pks.append(cluster.pk)
-                finally:
-                    t.cancel()
             if not request.user.is_anonymous():
                 p.imap(_get_instances, clusters)
                 p.join()
@@ -1418,7 +1383,7 @@ def memsize(value):
 
 @login_required
 @check_instance_auth
-def graph(request, cluster_slug, instance, graph_type, start=None, end=None):
+def graph(request, cluster_slug, instance, graph_type, start=None, end=None, nic=None):
     if not start:
         start = "-1d"
     start = str(start)
@@ -1427,6 +1392,8 @@ def graph(request, cluster_slug, instance, graph_type, start=None, end=None):
     end = str(end)
     try:
         url = "%s/%s/%s.png/%s,%s" %(settings.COLLECTD_URL, instance, graph_type, start, end)
+        if nic and graph_type == "net-ts":
+            url = "%s/%s" %(url, nic)
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
     except urllib2.HTTPError:
