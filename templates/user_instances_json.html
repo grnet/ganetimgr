@@ -141,7 +141,7 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
 } );
-
+var needsrebootset = false;
 
 $(document).ready( function(){
     
@@ -305,6 +305,17 @@ $(document).ready( function(){
                             }
                          if (full.hasOwnProperty("locked_reason")){
                           	  status = status + ' <span class="label label-inverse">'+full.locked_reason+'</span>';
+                            }
+                         if (full.hasOwnProperty("needsreboot")){
+                          	  status = status + ' <span class="label label-important">Needs Reboot</span>';
+                          	  if (needsrebootset === false){
+                          	  	
+                          	  	msg = "One or more instances' core configuration components (any of network adapter, hard disk type, boot device, cdrom) have changed.<br/> " +
+                                 " In order for these changes to take effect, you need to <strong>Reboot</strong> the instance(s). Tip: Search for 'Needs Reboot'";
+            					$('#jsonmessage').html(msg);
+            					$('#jsonmessages').show();
+            					needsrebootset = true;
+            				}
                             }
                          return status;
                          },
