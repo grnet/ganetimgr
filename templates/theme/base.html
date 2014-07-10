@@ -287,9 +287,9 @@ label.required { font-weight: bold; }
 			</div>
 			        {% if messages %}
             {% for message in messages %}
-            <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+            <div {% if message.tags %} class="alert alert-{{ message.tags|cut:'safe ' }}"{% endif %}>
                 <button class="close" data-dismiss="alert" type="button"> × </button>
-                {{ message }}
+                {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}
             </div>
             {% endfor %}
         {% endif %}
