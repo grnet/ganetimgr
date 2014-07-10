@@ -123,8 +123,8 @@ INSTALLED_APPS = (
     #'django_extensions',
 )
 
-RAPI_CONNECT_TIMEOUT = 3
-RAPI_RESPONSE_TIMEOUT = 5
+RAPI_CONNECT_TIMEOUT = 4
+RAPI_RESPONSE_TIMEOUT = 12
 
 DATE_FORMAT = "d/m/Y H:i"
 DATETIME_FORMAT = "d/m/Y H:i"
@@ -234,6 +234,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     "ganetimgr.context.pending_notifications.notify",
+    "ganetimgr.context.session_remaining.seconds",
     "ganetimgr.context.global_vars.settings_vars",
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages"
@@ -303,9 +304,6 @@ USE_X_FORWARDED_HOST = True
 
 import _version
 SW_VERSION = _version.VERSION
-
-# Rapi request timeout in gevent calls in seconds
-RAPI_TIMEOUT = 15
 
 NODATA_IMAGE = STATIC_ROOT + "nodata.jpg"
 
