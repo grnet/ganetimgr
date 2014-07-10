@@ -459,6 +459,9 @@ def generate_json(instance, user):
     if i.isolate:
         inst_dict['isolate'] = True
     
+    if i.needsreboot:
+        inst_dict['needsreboot'] = True
+    
     # When renaming disable clicking on instance for everyone
     if hasattr(i,'admin_lock'):
         if i.admin_lock:
@@ -901,6 +904,18 @@ def instance(request, cluster_slug, instance):
     if request.method == 'POST':
         configform = InstanceConfigForm(request.POST)
         if configform.is_valid():
+            needs_reboot = False
+            # The instance needs reboot if any of the hvparams have changed.
+            if configform.cleaned_data['cdrom_type'] == 'none':
+                configform.cleaned_data['cdrom_image_path'] = ""
+            for key, val in configform.cleaned_data.items():
+                if key == "cdrom_type":
+                    continue
+                if key == "whitelist_ip":
+                    continue
+                if configform.cleaned_data[key] != instance.hvparams[key]:
+                    if instance.admin_state:
+                        needs_reboot = True
             if configform.cleaned_data['cdrom_type'] == 'none':
                 configform.cleaned_data['cdrom_image_path'] = ""
             elif (configform.cleaned_data['cdrom_image_path'] !=
@@ -924,6 +939,8 @@ def instance(request, cluster_slug, instance):
             auditlog = auditlog_entry(request, "Setting %s" %(", ".join(["%s:%s" %(key,value) for key,value in data.iteritems()])), instance, cluster_slug)
             jobid = instance.set_params(hvparams=data)
             auditlog.update(job_id=jobid)
+            if needs_reboot:
+                instance.cluster.tag_instance(instance.name, ["%s:needsreboot" % (GANETI_TAG_PREFIX)])
             if instance.whitelistip and whitelistip is None:
                 auditlog = auditlog_entry(request, "Remove whitelist %s" %instance.whitelistip, instance, cluster_slug)
                 jobid = instance.cluster.untag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, instance.whitelistip)])
@@ -978,6 +995,11 @@ def instance(request, cluster_slug, instance):
                                  " you have not set an \"Allowed From\" address." +
                                  " To access your instance from a specific network range," +
                                  " you can set it via the instance configuration form")
+    if instance.needsreboot :
+        messages.add_message(request, messages.ERROR,
+                                 "You have modified one or more of your instance's core configuration components " +
+                                 "(any of network adapter, hard disk type, boot device, cdrom)."
+                                 " In order for these changes to take effect, you need to <strong>Reboot</strong> your instance.", extra_tags = 'safe')
     return render_to_response("instance.html",
                               {'cluster': cluster,
                                'instance': instance,
