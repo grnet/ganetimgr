@@ -14,11 +14,21 @@ For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.
 
 ## Actions needed on version upgrades
 
+### Migrating to v.1.5.0
+
+- Perform south migration: python manage.py migrate
+- Update settings.py to settings.py.dist. A new context proccessor is deployed
+- Update urls.py to urls.py.dist. The graph url has been updated
+
+======================================================================
+
 ### Migrating to v.1.4.1
 Bugfix/Feature Enhancements release
 
 settings.py:
 - Copy the FLATPAGES dict from settings.py.dist to allow handling of flatpages
+
+======================================================================
 
 ### Migrating to v.1.4.0
 Debian wheezy/Django 1.4 compatibility
