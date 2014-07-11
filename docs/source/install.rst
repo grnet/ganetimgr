@@ -22,6 +22,37 @@ Update and install the required packages (you will be asked for a mysql username
     apt-get install redis-server
     apt-get install gunicorn python-gevent
 
+Ganeti-instance-image on your clusters (optional)
+-------------------------------------------------
+
+If you want to use all the features of ganetimgr you will need to install our packages of ganeti-instance-image and ganeti *on your clusters* (not on ganetimgr).
+
+Add our repository::
+
+    vim /etc/apt/sources.list.d/grnet.list
+
+and add::
+
+    deb http://repo.noc.grnet.gr/    wheezy main backports
+
+add our gpg key::
+
+    wget -O - http://repo.noc.grnet.gr/grnet.gpg.key|apt-key add -
+
+and install packages::
+
+    apt-get install ganeti-instance-image
+    apt-get install ganeti-os-noop
+    apt-get install ganeti=2.9.3-1~bpo70+grnet
+
+And finally create an operating system image for ganeti-instance-image. You can download an image of debian wheezy from us::
+
+    wget http://repo.noc.grnet.gr/debian-wheezy-x86_64.tgz -P /srv/ganeti-instance-image/
+
+Repeat those steps for each node.
+
+Our ganeti-instance-image injects ssh keys into an instance.
+You will need our ganeti package in order to use the boot from url feature of ganetimgr.
 
 Beanstalkd
 ----------
@@ -33,7 +64,6 @@ Edit ``/etc/default/beanstalkd`` and uncomment the following line::
 and then start the daemon with::
 
     service beanstalkd start
-
 
 Database Setup
 --------------
@@ -131,6 +161,20 @@ dictionary. You can create your own logo starting with the static/branding/logo.
 
 Software Setup
 --------------
+
+If you are gonna use our ganeti-instance-image and the debian wheezy image we provide you will need to define it into the settings.py::
+
+    OPERATING_SYSTEMS = {
+    "debian-wheezy": {
+        "description": "Debian Wheezy 64 bit",
+        "provider": "image+default",
+        "osparams": {
+            "img_id": "debian-wheezy",
+            "img_format": "tarball",
+        	},
+        "ssh_key_param": "img_ssh_key_url",
+    	},
+    }
 
 .. attention::
     When running the syncdb command that follows DO NOT create a superuser yet!
