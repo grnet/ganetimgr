@@ -441,18 +441,18 @@ class Cluster(models.Model):
 
     def get_user_instances(self, user):
         instances = self.get_instances()
-        if user.is_superuser:
+        if user.is_superuser or user.has_perm('ganeti.view_instances'):
             return instances
-        elif user.has_perm('ganeti.view_instances'):
-            user = User.objects.filter(pk=user.pk).select_related('groups').get()
-            ugroups = []
-            for ug in user.groups.all():
-                ugroups.append(ug.pk)
-            user_inst = [i for i in instances if (user in i.users or
-                    len(list(set(ugroups).intersection(set([g.id for g in i.groups]))))> 0)]
-            other_inst = [i for i in instances if (i not in user_inst)]
-            map(lambda i: i.set_admin_view_only_True(), other_inst)
-            return user_inst + other_inst
+#         elif user.has_perm('ganeti.view_instances'):
+#             user = User.objects.filter(pk=user.pk).select_related('groups').get()
+#             ugroups = []
+#             for ug in user.groups.all():
+#                 ugroups.append(ug.pk)
+#             user_inst = [i for i in instances if (user in i.users or
+#                     len(list(set(ugroups).intersection(set([g.id for g in i.groups]))))> 0)]
+#             other_inst = [i for i in instances if (i not in user_inst)]
+#             map(lambda i: i.set_admin_view_only_True(), other_inst)
+#             return user_inst + other_inst
         else:
             user = User.objects.filter(pk=user.pk).select_related('groups').get()
             ugroups = []

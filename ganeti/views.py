@@ -128,6 +128,37 @@ def check_instance_auth(view_fn):
             return view_fn(request, *args, **kwargs)
     return check_auth
 
+def check_instance_readonly(view_fn):
+    def check_auth(request, *args, **kwargs):
+        try:
+            cluster_slug = kwargs["cluster_slug"]
+            instance_name = kwargs["instance"]
+        except KeyError:
+            cluster_slug = args[0]
+            instance_name = args[1]
+
+        cache_key = "cluster:%s:instance:%s:user:%s" % (cluster_slug, instance_name,
+                                                        request.user.username)
+        res = cache.get(cache_key)
+        if res is None:
+            cluster = get_object_or_404(Cluster, slug=cluster_slug)
+            instance = cluster.get_instance_or_404(instance_name)
+            res = False
+
+            if (request.user.is_superuser or
+                request.user in instance.users or
+                request.user.has_perm('ganeti.view_instances') or
+                set.intersection(set(request.user.groups.all()), set(instance.groups))):
+                res = True
+
+            cache.set(cache_key, res, 60)
+
+        if not res:
+            t = get_template("403.html")
+            return HttpResponseForbidden(content=t.render(RequestContext(request)))
+        else:
+            return view_fn(request, *args, **kwargs)
+    return check_auth
 
 def user_index(request):
     if request.user.is_anonymous():
@@ -897,7 +928,7 @@ class InstanceConfigForm(forms.Form):
 
     
 @login_required
-@check_instance_auth
+@check_instance_readonly
 def instance(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     instance = cluster.get_instance_or_404(instance)
@@ -1000,10 +1031,16 @@ def instance(request, cluster_slug, instance):
                                  "You have modified one or more of your instance's core configuration components " +
                                  "(any of network adapter, hard disk type, boot device, cdrom)."
                                  " In order for these changes to take effect, you need to <strong>Reboot</strong> your instance.", extra_tags = 'safe')
+    ret_dict = {'cluster': cluster,
+                'instance': instance
+                }
+    if not request.user.has_perm('ganeti.view_instances') or (
+      request.user.is_superuser or
+      request.user in instance.users or
+      set.intersection(set(request.user.groups.all()), set(instance.groups))):
+        ret_dict['configform'] = configform
     return render_to_response("instance.html",
-                              {'cluster': cluster,
-                               'instance': instance,
-                               'configform': configform},
+                              ret_dict,
                               context_instance=RequestContext(request))
 
 @login_required

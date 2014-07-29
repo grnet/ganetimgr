@@ -227,7 +227,7 @@
         
     </div>
 </div>
-
+{% if configform %}
 <div class="span6 sidebar">
         <div class="row-fluid">
     <div class="row-fluid">
@@ -373,7 +373,7 @@
  
        
         </div>
-
+{% endif %}
 
 <div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-header">
@@ -390,6 +390,7 @@
 {% endblock %}
 {% block bottomblock %}
 <script type="text/javascript">
+{% if configform %}
 var polltimer;
 var timer = 2500;
 var state = "show";
@@ -417,6 +418,7 @@ var load_data = function () {
 $(function() {
     load_data();
 });
+{% endif %}
 	function showTags(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Instance Owners: '+instance);
