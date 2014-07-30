@@ -15,7 +15,7 @@
 # OF THIS SOFTWARE.
 
 from cStringIO import StringIO
-
+import json
 from django import forms
 from django.contrib import messages
 from django.core import urlresolvers
@@ -31,8 +31,9 @@ from django.core.cache import cache
 
 from ganetimgr.apply.models import *
 from ganetimgr.apply.forms import *
+from ganetimgr.apply.utils import discover_available_operating_systems, get_operating_systems_dict
 from ganetimgr.ganeti.models import Cluster, Network, InstanceAction
-from ganetimgr.settings import SERVER_EMAIL, EMAIL_SUBJECT_PREFIX
+from ganetimgr.settings import SERVER_EMAIL, EMAIL_SUBJECT_PREFIX, OPERATING_SYSTEMS_URL
 
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
@@ -396,5 +397,21 @@ def pass_notify(request):
         return HttpResponse("mail sent", mimetype="text/plain")
     else:
         return HttpResponse("mail not sent", mimetype="text/plain")
+
+
+def get_operating_systems(request):
+    # check if results exist in cache
+    response = cache.get('operating_systems')
+    # if no items in cache
+    if not response:
+        discovery = discover_available_operating_systems()
+        dictionary = get_operating_systems_dict()
+        operating_systems = dict(discovery.items() + dictionary.items())
+        if discovery:
+            status = 'success'
+        response = json.dumps({'status': status, 'operating_systems': operating_systems})
+        # add results to cache for one day
+        cache.set('operating_systems', response, timeout=86400)
+    return HttpResponse(response)
 
 

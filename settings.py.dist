@@ -228,6 +228,14 @@ OPERATING_SYSTEM_CHOICES = \
 
 OPERATING_SYSTEM_DICT = {x: y["description"] for (x, y) in OPERATING_SYSTEMS.items()}
 
+# the urls of the available os images
+OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/']
+
+# the provider and ssh key param
+# We assume that they are the same
+OPERATING_SYSTEMS_PROVIDER = 'image+default'
+OPERATING_SYSTEMS_SSH_KEY_PARAM = 'img_ssh_key_url'
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",

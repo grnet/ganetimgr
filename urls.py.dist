@@ -79,7 +79,9 @@ urlpatterns = patterns('',
     url(r'^nodegroups/cluster/$', 'ganetimgr.apply.views.get_cluster_node_group_stack', name='cluster_ng_stack'),
     url(r'^history/$', 'ganetimgr.auditlog.views.auditlog', name='auditlog'),
     url(r'^history_json/$', 'ganetimgr.auditlog.views.auditlog_json', name='auditlog_json'),
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
+    # get a list of the available operating systems
+    url(r'^apply/operating_systems_json/$', 'ganetimgr.apply.views.get_operating_systems', name='operating_systems_json'),
+    # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
