@@ -19,12 +19,13 @@ try:
     from ganetimgr.settings import OPERATING_SYSTEMS_URLS
 except ImportError:
     OPERATING_SYSTEMS_URLS = False
+else:
+    from ganetimgr.settings import OPERATING_SYSTEMS_PROVIDER, OPERATING_SYSTEMS_SSH_KEY_PARAM
+
 try:
     from ganetimgr.settings import OPERATING_SYSTEMS
 except ImportError:
     OPERATING_SYSTEMS = False
-
-from ganetimgr.settings import OPERATING_SYSTEMS_PROVIDER, OPERATING_SYSTEMS_SSH_KEY_PARAM
 
 
 def discover_available_operating_systems():
