@@ -263,8 +263,16 @@ label.required { font-weight: bold; }
     trigger: "focus",
     html: true,
     title: "<div style='text-align: left;'><p class='label label-success'> &le; 20Gb:  Faster  I/O Speed</p><p class='label label-warning'>&le; 50Gb:  Average I/O Speed</p><p class='label label-important'>&gt; 50Gb:  Slower  I/O Speed</p></div>"
-});
-$("#id_organization").select2({dropdownAutoWidth : true});
 	});
-		</script>
+
+	$("#id_organization").select2({dropdownAutoWidth : true});
+	$("#id_operating_system").select2({dropdownAutoWidth : true});
+	$("#id_vcpus").select2({dropdownAutoWidth : true});
+	$("#id_memory").select2({dropdownAutoWidth : true});
+
+
+
+});
+
+</script>
 {% endblock %}
