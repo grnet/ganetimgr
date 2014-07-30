@@ -21,7 +21,7 @@ from django.contrib import messages
 from django.core import urlresolvers
 from django.utils.safestring import mark_safe
 from django.core.mail import send_mail, mail_managers
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.template.loader import render_to_string, get_template
@@ -33,7 +33,7 @@ from ganetimgr.apply.models import *
 from ganetimgr.apply.forms import *
 from ganetimgr.apply.utils import discover_available_operating_systems, get_operating_systems_dict
 from ganetimgr.ganeti.models import Cluster, Network, InstanceAction
-from ganetimgr.settings import SERVER_EMAIL, EMAIL_SUBJECT_PREFIX, OPERATING_SYSTEMS_URL
+from ganetimgr.settings import SERVER_EMAIL, EMAIL_SUBJECT_PREFIX
 
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
@@ -48,6 +48,26 @@ def any_permission_required(*args):
                 return True
         return False
     return user_passes_test(test_func)
+
+
+def ajax_required(f):
+    """
+    AJAX request required decorator
+    use it in your views:
+
+    @ajax_required
+    def my_view(request):
+        ....
+
+    """
+    def wrap(request, *args, **kwargs):
+            if not request.is_ajax():
+                return HttpResponseBadRequest()
+            return f(request, *args, **kwargs)
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
+    return wrap
+
 
 @login_required
 def apply(request):
@@ -76,6 +96,7 @@ def apply(request):
         form = InstanceApplicationForm(request.POST)
         if form.is_valid():
             application = form.save(commit=False)
+            application.operating_system = form.cleaned_data['operating_system']
             application.applicant = request.user
             application.status = STATUS_PENDING
             net = request.POST.get('network','')
@@ -99,7 +120,7 @@ def apply(request):
                                  _("Your request has been filed with id #%d and"
                                  " will be processed shortly.") %
                                  application.id)
-            
+
             return HttpResponseRedirect(urlresolvers.reverse("user-instances"))
         else:
             return render_to_response('apply.html', {'form': form},
@@ -126,9 +147,9 @@ def review_application(request, application_id):
     fast_clusters = Cluster.objects.filter(fast_create=True).exclude(disable_instance_creation=True).order_by('description')
 
     if request.method == "GET":
-        form = InstanceApplicationReviewForm(instance=app)
+        form = InstanceApplicationReviewForm(instance=app, initial={'operating_system': app.operating_system})
         if app.instance_params and 'cluster' in app.instance_params.keys():
-            form = InstanceApplicationReviewForm(instance=app, initial={"cluster":Cluster.objects.get(slug=app.instance_params['cluster']).pk})
+            form = InstanceApplicationReviewForm(instance=app, initial={"cluster":Cluster.objects.get(slug=app.instance_params['cluster']).pk, 'operating_system': app.operating_system})
         return render_to_response('review.html',
                                   {'application': app,
                                    'applications': applications,
@@ -163,6 +184,7 @@ def review_application(request, application_id):
         form.fields['disk_template'] = forms.ChoiceField(choices = form_dt)
         if form.is_valid():
             application = form.save(commit=False)
+            application.operating_system = form.cleaned_data['operating_system']
             if "reject" in request.POST:
                 application.status = STATUS_REFUSED
                 application.save()
@@ -183,8 +205,8 @@ def review_application(request, application_id):
                                                'mode': form.cleaned_data['netw'].split("::")[1],
                                                'node_group': form.cleaned_data['node_group'],
                                                'vgs': form.cleaned_data['vgs'],
-                                               'disk_template': form.cleaned_data['disk_template'], 
-                                               }
+                                               'disk_template': form.cleaned_data['disk_template'],
+                                              }
                 application.save()
                 application.submit()
                 messages.add_message(request, messages.INFO,
@@ -384,6 +406,7 @@ def instance_ssh_keys(request, application_id, cookie):
                        app.applicant.sshpublickey_set.all()])
     return HttpResponse(output.getvalue(), mimetype="text/plain")
 
+
 @login_required
 def pass_notify(request):
     user = User.objects.get(username=request.user)
@@ -399,6 +422,7 @@ def pass_notify(request):
         return HttpResponse("mail not sent", mimetype="text/plain")
 
 
+@ajax_required
 def get_operating_systems(request):
     # check if results exist in cache
     response = cache.get('operating_systems')

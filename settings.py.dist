@@ -132,7 +132,7 @@ DATETIME_FORMAT = "d/m/Y H:i"
 
 # TODO: Switch this to Django 1.4 syntax
 # Caching is a vital part of ganetimgr.
-# If you deploy more than one ganetimgr instances on the same server, 
+# If you deploy more than one ganetimgr instances on the same server,
 # and want to use Redis for both, make sure you select a different db for each instance
 # Warning!!! Redis db should ALWAYS be an integer, denoting db index.
 # eg. CACHE_BACKEND = "redis_cache.cache://127.0.0.1:6379/?timeout=1500&db=8"
@@ -151,7 +151,7 @@ LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
 
 # List of operating system images you provide...
-OPERATING_SYSTEMS = { 
+OPERATING_SYSTEMS = {
     # These use the modified ganeti-instance-image and ganeti-os-noop
     # from http://repo.noc.grnet.gr/
     "debian-wheezy": {
@@ -222,11 +222,6 @@ OPERATING_SYSTEMS = {
     #    "ssh_key_users": "root",
     #},
 }
-
-OPERATING_SYSTEM_CHOICES = \
-    [(x, y["description"]) for (x, y) in OPERATING_SYSTEMS.items()]
-
-OPERATING_SYSTEM_DICT = {x: y["description"] for (x, y) in OPERATING_SYSTEMS.items()}
 
 # the urls of the available os images
 OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/']
@@ -324,25 +319,25 @@ WHITELIST_IP_MAX_SUBNET_V6 = 64
 FEED_URL=None
 
 
-# Choose whether to support websockets console or not. 
+# Choose whether to support websockets console or not.
 WEBSOCK_VNC_ENABLED = False
 # This is meant to be used with twistednovncauthproxy
 # twistd --pidfile=/tmp/proxy.pid -n vncap -c tcp:8888:interface=0.0.0.0
 NOVNC_PROXY = "example.com:8888"
 NOVNC_USE_TLS = True
 
-# This section affects the way banners, logos and footers are displayed. If no social networks is to be displayed, 
-# set SOCIAL_NETWORKS to an empty list - []. Inside the static/branging folder you can find the logo.png and logo.xcf 
-# blank logos. 
+# This section affects the way banners, logos and footers are displayed. If no social networks is to be displayed,
+# set SOCIAL_NETWORKS to an empty list - []. Inside the static/branging folder you can find the logo.png and logo.xcf
+# blank logos.
 BRANDING = {
             "SERVICE_PROVIDED_BY": {
-                                    "NAME":"ACME ORG", 
+                                    "NAME":"ACME ORG",
                                     "URL":"http://acme.org",
                                     "SOCIAL_NETWORKS":[
-                                                       {"URL":"//facebook.com/acme.org", 
+                                                       {"URL":"//facebook.com/acme.org",
                                                         "FONT_AWSOME_NAME":"icon-facebook-sign",
                                                          "FONT_COLOR": "#3b5998"},
-                                                       {"URL":"//twitter.com/acme", 
+                                                       {"URL":"//twitter.com/acme",
                                                         "FONT_AWSOME_NAME":"icon-twitter-sign",
                                                          "FONT_COLOR": "#00acee"},
                                                         ]

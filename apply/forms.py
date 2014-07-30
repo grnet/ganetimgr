@@ -122,12 +122,12 @@ class InstanceForm(forms.ModelForm):
                                                      " e-mail"), label=ugettext_lazy("Hosts mail server"))
     organization = forms.ModelChoiceField(queryset=Organization.objects.all(), required=False,
                    label=ugettext_lazy("Organization"))
+    operating_system = forms.CharField(label=ugettext_lazy("Operating System"), widget=forms.Select)
 
     class Meta:
         model = InstanceApplication
         fields = ('hostname', 'memory', 'vcpus', 'disk_size',
-                  'organization', 'hosts_mail_server',
-                  'operating_system')
+                  'organization', 'hosts_mail_server',)
 
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"].rstrip(".")

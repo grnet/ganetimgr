@@ -24,8 +24,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
-from ganetimgr.settings import GANETI_TAG_PREFIX, OPERATING_SYSTEMS, \
-                               OPERATING_SYSTEM_CHOICES
+from ganetimgr.settings import GANETI_TAG_PREFIX
+from django.core.cache import cache
+
 try:
     from ganetimgr.settings import BEANSTALK_TUBE
 except ImportError:
@@ -89,9 +90,7 @@ class InstanceApplication(models.Model):
     memory = models.IntegerField()
     disk_size = models.IntegerField()
     vcpus = models.IntegerField()
-    operating_system = models.CharField(_("operating system"),
-                                        max_length=255,
-                                        choices=OPERATING_SYSTEM_CHOICES)
+    operating_system = models.CharField(_("operating system"), max_length=255)
     hosts_mail_server = models.BooleanField(default=False)
     comments = models.TextField(null=True, blank=True)
     admin_comments = models.TextField(null=True, blank=True)
@@ -108,7 +107,8 @@ class InstanceApplication(models.Model):
                               default=generate_cookie)
     filed = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
-    
+
+
     class Meta:
         permissions = (
             ("view_applications", "Can view all applications"),
@@ -129,8 +129,8 @@ class InstanceApplication(models.Model):
     @cluster.setter
     def cluster(self, c):
         self.instance_params = {
-                                'network': c.get_default_network().link, 
-                                'mode': c.get_default_network().mode, 
+                                'network': c.get_default_network().link,
+                                'mode': c.get_default_network().mode,
                                 'cluster' : c.slug
                                 }
 
@@ -177,19 +177,23 @@ class InstanceApplication(models.Model):
             if self.instance_params['vgs'] != 'default':
                 tags.append("%s:vg:%s" % (GANETI_TAG_PREFIX,
                                        self.instance_params['vgs']))
-                
+
         uses_gnt_network = self.cluster.use_gnt_network
-        
+
         nic_dict = dict(link=self.instance_params['network'],
                         mode=self.instance_params['mode'])
-        
+
         if ((self.instance_params['mode'] == 'routed') and (uses_gnt_network)):
             nic_dict = dict(network=self.instance_params['network'])
 
         if self.instance_params['mode'] == "routed":
             nic_dict.update(ip="pool")
-        
-        os = OPERATING_SYSTEMS[self.operating_system]
+
+        # the images should be in cache because this
+        # method is called from a view which sets them.
+        operating_systems = json.loads(cache.get('operating_systems')).get('operating_systems')
+
+        os = operating_systems.get(self.operating_system)
         provider = os["provider"]
         osparams = {}
 

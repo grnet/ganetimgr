@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 try:
     from ganetimgr.settings import OPERATING_SYSTEMS_URLS
 except ImportError:
-    OPERATING_SYSTEMS_URL = False
+    OPERATING_SYSTEMS_URLS = False
 try:
     from ganetimgr.settings import OPERATING_SYSTEMS
 except ImportError:
@@ -48,7 +48,7 @@ def discover_available_operating_systems():
                     else:
                         # if the file is tarball, qemu or dump then it is valid
                         if extension in extensions.keys() or '-root.dump' in link.text:
-                            re = requests.get(OPERATING_SYSTEMS_URL + link.text + '.dsc')
+                            re = requests.get(url + link.text + '.dsc')
                             if re.ok:
                                 name = re.text
                             else:
