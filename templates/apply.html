@@ -279,8 +279,8 @@ label.required { font-weight: bold; }
 				response = $.parseJSON(data);
 				options = '';
 				if (response.status === 'success') {
-					for (var os in  response.operating_systems) {
-						options += '<option value="' +  response.operating_systems[os].osparams.img_id + '">' + response.operating_systems[os].description + '</option>';
+					for (var i=0; i < response.operating_systems.length; i++) {
+						options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '" selected="selected">' + response.operating_systems[i][1].description + '</option>';
 					}
 				}
 				operatingSystemsInput.html(options)

@@ -430,7 +430,12 @@ def get_operating_systems(request):
     if not response:
         discovery = discover_available_operating_systems()
         dictionary = get_operating_systems_dict()
-        operating_systems = dict(discovery.items() + dictionary.items())
+        operating_systems = sorted(dict(discovery.items() + dictionary.items()).items())
+        # move 'none' on the top of the list for ui purposes.
+        for os in operating_systems:
+            if os[0] == 'none':
+                operating_systems.remove(os)
+                operating_systems.insert(0, os)
         if discovery:
             status = 'success'
         response = json.dumps({'status': status, 'operating_systems': operating_systems})

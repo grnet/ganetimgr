@@ -574,13 +574,12 @@ $(document).ready( function(){
                 var found = false;
                 options = '';
                 if (response.status === 'success') {
-                    for (var os in  response.operating_systems) {
-                        console.log(os);
-                        if (os === selected) {
-                            options += '<option value="' +  response.operating_systems[os].osparams.img_id + '" selected="selected">' + response.operating_systems[os].description + '</option>';
+                    for (var i=0; i < response.operating_systems.length; i++) {
+                        if (response.operating_systems[i][0] === selected) {
+                            options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '" selected="selected">' + response.operating_systems[i][1].description + '</option>';
                             found = true;
                         } else {
-                            options += '<option value="' +  response.operating_systems[os].osparams.img_id + '">' + response.operating_systems[os].description + '</option>';
+                            options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '">' + response.operating_systems[i][1].description + '</option>';
                         }
                     }
                     if (!found) {
