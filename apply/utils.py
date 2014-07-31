@@ -15,6 +15,9 @@
 
 import requests
 from bs4 import BeautifulSoup
+import json
+from django.core.cache import cache
+
 try:
     from ganetimgr.settings import OPERATING_SYSTEMS_URLS
 except ImportError:
@@ -78,3 +81,26 @@ def get_operating_systems_dict():
         return OPERATING_SYSTEMS
     else:
         return {}
+
+
+def operating_systems():
+     # check if results exist in cache
+    response = cache.get('operating_systems')
+    # if no items in cache
+    if not response:
+        discovery = discover_available_operating_systems()
+        dictionary = get_operating_systems_dict()
+        operating_systems = sorted(dict(discovery.items() + dictionary.items()).items())
+        # move 'none' on the top of the list for ui purposes.
+        for os in operating_systems:
+            if os[0] == 'none':
+                operating_systems.remove(os)
+                operating_systems.insert(0, os)
+        if discovery:
+            status = 'success'
+        response = json.dumps({'status': status, 'operating_systems': operating_systems})
+        # add results to cache for one day
+        cache.set('operating_systems', response, timeout=86400)
+    return response
+
+
