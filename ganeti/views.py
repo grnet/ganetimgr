@@ -173,15 +173,15 @@ def user_index(request):
 def clear_cache(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         username = request.user.username
-        keys_pattern = ["user:%s:index:*" %username , 
+        keys_pattern = ["user:%s:index:*" %username ,
                         "cluster:*",
-                        "pendingapplications", 
-                        "allclusternodes", 
-                        "bad*", 
+                        "pendingapplications",
+                        "allclusternodes",
+                        "bad*",
                         "len*",
                         "%s:ajax*" %username,
                         "locked_instances",
-                        "*list",               
+                        "*list",
                         ]
         for key in keys_pattern:
             cache_keys = cache.keys(pattern=key)
@@ -207,7 +207,7 @@ def jobs_index_json(request):
                 jobs.extend(cluster.get_job_list())
             except (GanetiApiError, Exception):
                 bad_clusters.append(cluster)
-    
+
         if not request.user.is_anonymous():
             clusters = Cluster.objects.all()
             if cluster_slug:
@@ -225,7 +225,7 @@ def jobs_index_json(request):
             jresp['messages'] = messages
         jresp['clusters'] = clusters
         res = jresp
-        
+
         return HttpResponse(json.dumps(res), mimetype='application/json')
     else:
         return HttpResponse(json.dumps({'error':"Unauthorized access"}), mimetype='application/json')
@@ -353,7 +353,7 @@ def user_index_json(request):
             cache_timeout = 30
         j.imap(_get_instance_details, instances)
         j.join()
-        
+
         if bad_instances:
             bad_inst_text = "Could not get details for " + str(len(bad_instances)) + " instances.<br> %s. Please try again later." %bad_instances
             if messages:
@@ -361,7 +361,7 @@ def user_index_json(request):
             else:
                 messages = bad_inst_text
             cache_timeout = 30
-        
+
         jresp['aaData'] = instancedetails
         if messages:
             jresp['messages'] = messages
@@ -404,14 +404,14 @@ def user_sum_stats(request):
             instancedetails.extend(generate_json_light(instance, user))
         except (GanetiApiError, Exception):
             pass
-   
+
     if res is None:
         j.imap(_get_instance_details, instances)
         j.join()
         jresp['aaData'] = instancedetails
         cache.set(cache_key, jresp, 125)
         res = jresp
-    
+
     instances_stats = []
     user_dict = {}
     cache_key_stats = "user:%s:index:users:instance:stats" %request.user.username
@@ -443,8 +443,8 @@ def user_sum_stats(request):
         return_dict = {'aaData': instances_stats_list}
         cache.set(cache_key_stats, return_dict, 120)
         instances_stats = return_dict
-    
-    return HttpResponse(json.dumps(instances_stats), mimetype='application/json')    
+
+    return HttpResponse(json.dumps(instances_stats), mimetype='application/json')
 
 def generate_json(instance, user):
     jresp_list = []
@@ -486,16 +486,16 @@ def generate_json(instance, user):
         else:
             inst_dict['status'] = "%s, should be stopped" %inst_dict['status']
         inst_dict['status_style'] = "warning"
-    
+
     if i.adminlock:
         inst_dict['adminlock'] = True
-    
+
     if i.isolate:
         inst_dict['isolate'] = True
-    
+
     if i.needsreboot:
         inst_dict['needsreboot'] = True
-    
+
     # When renaming disable clicking on instance for everyone
     if hasattr(i,'admin_lock'):
         if i.admin_lock:
@@ -503,7 +503,7 @@ def generate_json(instance, user):
                 del inst_dict['name_href']
             except KeyError:
                 pass
-    
+
     if i.joblock:
         inst_dict['locked'] = True
         inst_dict['locked_reason'] = "%s" %((i.joblock).capitalize())
@@ -521,9 +521,9 @@ def generate_json(instance, user):
         inst_dict['network'] = []
         for (nic_i, link) in enumerate(i.nic_links):
             if i.nic_ips[nic_i] == None:
-                inst_dict['network'].append("%s"%(i.nic_links[nic_i]))  
+                inst_dict['network'].append("%s"%(i.nic_links[nic_i]))
             else:
-                inst_dict['network'].append("%s@%s"%(i.nic_ips[nic_i],i.nic_links[nic_i]))        
+                inst_dict['network'].append("%s@%s"%(i.nic_ips[nic_i],i.nic_links[nic_i]))
         inst_dict['users'] = [{'user':user.username, 'email':user.email, 'user_href':"%s"%(reverse("user-info",
                             kwargs={'type': 'user', 'usergroup':user.username}
                             ))} for user in i.users]
@@ -535,7 +535,7 @@ def generate_json(instance, user):
 
 
 def generate_json_light(instance, user):
-    
+
     jresp_list = []
     i = instance
     inst_dict = {}
@@ -621,13 +621,13 @@ def rename_instance(request, cluster_slug, instance, action_id, action_value=Non
             return render_to_response('rename_instance.html',
                 {
                     'form': form, 'instance': instance, 'cluster_slug': cluster_slug
-                }, 
+                },
                 context_instance=RequestContext(request)
                 )
     elif request.method == 'GET':
         form = InstanceRenameForm()
         return render_to_response('rename_instance.html', {
-                'form': form, 'instance': instance, 'cluster_slug': cluster_slug}, 
+                'form': form, 'instance': instance, 'cluster_slug': cluster_slug},
                 context_instance=RequestContext(request)
             )
 
@@ -691,9 +691,10 @@ def notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_va
 def reinstalldestreview(request, application_hash, action_id):
     action_id = int(action_id)
     instance = None
-    if action_id not in [1,2,3,4]:
+    if action_id not in [1, 2, 3, 4]:
         return HttpResponseRedirect(reverse('user-instances'))
-    activation_key = application_hash.lower() # Normalize before trying anything with it.
+    # Normalize before trying anything with it.
+    activation_key = application_hash.lower()
     try:
         action = InstanceAction.objects.get(activation_key=activation_key, action=action_id)
     except InstanceAction.DoesNotExist:
@@ -715,7 +716,7 @@ def reinstalldestreview(request, application_hash, action_id):
             instance_action = InstanceAction.objects.activate_request(application_hash)
             if not instance_action:
                  return render_to_response('verify_action.html', {
-                                                             'action': action_id, 
+                                                             'action': action_id,
                                                              'activated': activated,
                                                              'instance': instance,
                                                              'hash': application_hash},
@@ -749,18 +750,18 @@ def reinstalldestreview(request, application_hash, action_id):
             return HttpResponseRedirect(reverse('user-instances'))
         else:
             return render_to_response('verify_action.html', {
-                                                             'action': action_id, 
+                                                             'action': action_id,
                                                              'activated': activated,
                                                              'instance': instance,
                                                              'hash': application_hash},
                               context_instance=RequestContext(request))
-        
+
     elif request.method == 'GET':
         return render_to_response('verify_action.html', {'instance': instance,
                                                          'action': action_id,
-                                                         'action_value': action_value,  
-                                                         'cluster':cluster, 
-                                                         'activated': activated, 
+                                                         'action_value': action_value,
+                                                         'cluster':cluster,
+                                                         'activated': activated,
                                                          'hash': application_hash},
                                   context_instance=RequestContext(request))
     else:
@@ -777,7 +778,7 @@ def startup(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     auditlog = auditlog_entry(request, "Start", instance, cluster_slug)
     jobid = cluster.startup_instance(instance)
-    auditlog.update(job_id = jobid)    
+    auditlog.update(job_id = jobid)
     action = {'action': _("Please wait... starting-up")}
     clear_cluster_user_cache(request.user.username, cluster_slug)
     return HttpResponse(json.dumps(action))
@@ -820,13 +821,13 @@ def lock(request, instance):
                 return render_to_response('tagging/lock.html',
                         {
                         'form': form, 'instance': instance
-                    }, 
+                    },
                     context_instance=RequestContext(request)
                     )
         elif request.method == 'GET':
             form = lockForm(initial={'lock': instance_adminlock})
             return render_to_response('tagging/lock.html', {
-                    'form': form, 'instance': instance}, 
+                    'form': form, 'instance': instance},
                     context_instance=RequestContext(request)
                 )
     else:
@@ -859,18 +860,18 @@ def isolate(request, instance):
                 return render_to_response('tagging/isolate.html',
                         {
                         'form': form, 'instance': instance
-                    }, 
+                    },
                     context_instance=RequestContext(request)
                     )
         elif request.method == 'GET':
             form = isolateForm(initial={'isolate': instance_isolate})
             return render_to_response('tagging/isolate.html', {
-                    'form': form, 'instance': instance}, 
+                    'form': form, 'instance': instance},
                     context_instance=RequestContext(request)
                 )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
-    
+
 
 class InstanceConfigForm(forms.Form):
     nic_type = forms.ChoiceField(label=ugettext_lazy("Network adapter model"),
@@ -924,7 +925,7 @@ class InstanceConfigForm(forms.Form):
                     socket.setdefaulttimeout(oldtimeout)
                     raise forms.ValidationError(_('Invalid URL'))
         return data
-    
+
     def clean_whitelist_ip(self):
         data = self.cleaned_data['whitelist_ip']
         if data:
@@ -945,7 +946,7 @@ class InstanceConfigForm(forms.Form):
             data = address.compressed
         return data
 
-    
+
 @login_required
 @check_instance_readonly
 def instance(request, cluster_slug, instance):
@@ -1005,7 +1006,7 @@ def instance(request, cluster_slug, instance):
                 jobid = instance.cluster.tag_instance(instance.name, ["%s:whitelist_ip:%s" % (GANETI_TAG_PREFIX, whitelistip)])
                 auditlog.update(job_id=jobid)
                 instance.cluster.migrate_instance(instance.name)
-            # Prevent form re-submission via browser refresh             
+            # Prevent form re-submission via browser refresh
             return HttpResponseRedirect(reverse('instance-detail',kwargs={'cluster_slug':cluster_slug, 'instance': instance}))
     else:
         if 'cdrom_image_path' in instance.hvparams.keys():
@@ -1115,7 +1116,7 @@ def tagInstance(request, instance):
     if not res:
         t = get_template("403.html")
         return HttpResponseForbidden(content=t.render(RequestContext(request)))
-    
+
     if request.method == 'POST':
         users = []
         for user in instance.users:
@@ -1143,7 +1144,7 @@ def tagInstance(request, instance):
             return render_to_response('tagging/itags.html',
                 {
                     'form': form, 'users': users, 'instance': instance
-                }, 
+                },
                 context_instance=RequestContext(request)
                 )
     elif request.method == 'GET':
@@ -1162,7 +1163,7 @@ def tagInstance(request, instance):
             groupd['type']="group"
             users.append(groupd)
         return render_to_response('tagging/itags.html', {
-                'form': form, 'users': users, 'instance': instance}, 
+                'form': form, 'users': users, 'instance': instance},
                 context_instance=RequestContext(request)
             )
 
@@ -1331,7 +1332,7 @@ def stats(request):
         if exclude_pks:
             clusters = clusters.exclude(pk__in=exclude_pks)
         return render_to_response('statistics.html', {
-                                                      'clusters':clusters, 
+                                                      'clusters':clusters,
                                                       'instances':instances,
                                                       'users':users,
                                                       'groups': groups,
@@ -1340,7 +1341,7 @@ def stats(request):
                                   context_instance=RequestContext(request))
     else:
         return render_to_response('statistics.html',
-                                  {'clusters':clusters},  
+                                  {'clusters':clusters},
                                   context_instance=RequestContext(request))
 
 @login_required
@@ -1521,6 +1522,6 @@ def get_client_ip(request):
 def auditlog_entry(request, action, instance, cluster, save=True):
     entry = AuditEntry(requester=request.user, ipaddress=get_client_ip(request), action=action, instance=instance, cluster=cluster)
     if save:
-        entry.save()       
+        entry.save()
     return entry
 
