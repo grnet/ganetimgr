@@ -104,3 +104,10 @@ def operating_systems():
     return response
 
 
+# find os info given its img_id
+def get_os_details(img_id):
+    oss = json.loads(operating_systems()).get('operating_systems')
+    for os in oss:
+        if os[0] == img_id:
+            return os[1]
+    return False
