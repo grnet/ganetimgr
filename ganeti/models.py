@@ -31,11 +31,14 @@ from gevent.timeout import Timeout
 
 from util import vapclient
 from util.client import GanetiRapiClient, GanetiApiError, GenericCurlConfig
-from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX
+from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX, OPERATING_SYSTEMS_PROVIDER
 import re
 import random
 import sha
 import ipaddr
+
+from ganetimgr.apply.utils import get_os_details
+
 
 RAPI_CONNECT_TIMEOUT = settings.RAPI_CONNECT_TIMEOUT
 RAPI_RESPONSE_TIMEOUT = settings.RAPI_RESPONSE_TIMEOUT
@@ -681,21 +684,29 @@ class Cluster(models.Model):
         job_id = self._client.ShutdownInstance(instance)
         self._lock_instance(instance, reason="shutting down", job_id=job_id)
         return job_id
-    
-    def reinstall_instance(self, instance):
-        cache_key = self._instance_cache_key(instance)
-        cache.delete(cache_key)
-        job_id = self._client.ReinstallInstance(instance)
-        self._lock_instance(instance, reason="reinstalling", job_id=job_id)
-        return job_id
-    
+
+    def reinstall_instance(self, instance, action):
+        details = get_os_details(action.operating_system)
+        if details:
+            cache_key = self._instance_cache_key(instance)
+            cache.delete(cache_key)
+            job_id = self._client.ReinstallInstance(
+                instance,
+                os=OPERATING_SYSTEMS_PROVIDER,
+                osparams=details.get('osparams')
+            )
+            self._lock_instance(instance, reason="reinstalling", job_id=job_id)
+            return job_id
+        else:
+            return False
+
     def destroy_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         job_id = self._client.DeleteInstance(instance)
         self._lock_instance(instance, reason="deleting", job_id=job_id)
         return job_id
-    
+
     def rename_instance(self, instance, newname):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
@@ -879,38 +890,38 @@ REQUEST_ACTIONS = (
 
 
 class InstanceActionManager(models.Manager):
-    
+
     def activate_request(self, activation_key):
-        
+
         if SHA1_RE.search(activation_key):
             try:
                 instreq = self.get(activation_key=activation_key)
             except self.model.DoesNotExist:
                 return False
             if not instreq.activation_key_expired():
-                instance = instreq.instance
                 instreq.activation_key = self.model.ACTIVATED
                 instreq.save()
                 return instreq
         return False
-   
-    def create_action(self, user, instance, cluster, action, action_value = None):
-        
+
+    def create_action(self, user, instance, cluster, action, action_value=None, operating_system=None):
         salt = sha.new(str(random.random())).hexdigest()[:5]
-        activation_key = sha.new(salt+user.username).hexdigest()
+        activation_key = sha.new(salt + user.username).hexdigest()
         return self.create(applicant=user, instance=instance, cluster=cluster, action=action, action_value = action_value,
-                           activation_key=activation_key)
+                           activation_key=activation_key, operating_system=operating_system)
+
 
 class InstanceAction(models.Model):
     applicant = models.ForeignKey(User)
-    instance =  models.CharField(max_length=255, blank=True)
+    instance = models.CharField(max_length=255, blank=True)
     cluster = models.ForeignKey(Cluster, null=True, blank=True)
     action = models.IntegerField(choices=REQUEST_ACTIONS)
     action_value = models.CharField(max_length=255, null=True)
     activation_key = models.CharField(max_length=40)
     filed = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
-    
+    operating_system = models.CharField(max_length=255, null=True)
+
     ACTIVATED = u"ALREADY_ACTIVATED"
     objects = InstanceActionManager()
 

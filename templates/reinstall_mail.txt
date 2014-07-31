@@ -5,7 +5,7 @@
 {% if action == 'reinstall' %}Επανεγκατάσταση:{% endif %}{% if action == 'destroy' %}Διαγραφή:{% endif %}{% if action == 'rename' %}Μετονομασία:{% endif %}{% if action == 'mailchange' %}Αλλαγή email{% endif %}
 {% if action == 'mailchange' %}Νέο email: {{action_value}}{% endif %}{% if action != 'mailchange' %}
 {{instance}}  {% if action == 'rename' %}σε {{action_value}}{% endif %}{% if action != 'rename' %}
-ΠΡΟΣΟΧΗ!: Η παραπάνω ενέργεια πρόκειται να {% if action == 'reinstall' %}διαγράψει τα δεδομένα σας{% endif %}{% if action == 'destroy' %}διαγράψει την εικονική σας μηχανή σας{% endif %}. Βεβαιωθείτε ότι έχετε λάβει αντίγραφα ασφαλείας όσων δεδομένων χρειάζεστε.
+ΠΡΟΣΟΧΗ!: Η παραπάνω ενέργεια πρόκειται να {% if action == 'reinstall' %}διαγράψει τα δεδομένα σας{% if operating_system %} και να εγκαταστήσει {{ operating_system }}{% endif %} {% endif %}{% if action == 'destroy' %}διαγράψει την εικονική σας μηχανή σας{% endif %}. Βεβαιωθείτε ότι έχετε λάβει αντίγραφα ασφαλείας όσων δεδομένων χρειάζεστε.
 ΠΡΟΣΟΧΗ!: Από τη στιγμή που θα εκκινήσει η διαδικασία, δεν μπορεί να πραγματοποιηθεί αναίρεση.
 {% endif %}
 {% endif %}
@@ -20,7 +20,7 @@ the following request:
 {% if action == 'reinstall' %}Reinstall:{% endif %}{% if action == 'destroy' %}Delete:{% endif %}{% if action == 'rename' %}Rename:{% endif %}{% if action == 'mailchange' %}Change email{% endif %}
 {% if action == 'mailchange' %}New email: {{action_value}}{% endif %}{% if action != 'mailchange' %}
 {{instance}}  {% if action == 'rename' %}to {{action_value}}{% endif %}{% if action != 'rename' %}
-WARNING! The above action will {% if action == 'reinstall' %}delete your data{% endif %}{% if action == 'destroy' %}delete your virtual machine{% endif %}. Make sure you take backups of any data you need.
+WARNING! The above action will {% if action == 'reinstall' %}delete your data{% if operating_system %} and install {{ operating_system }}{% endif %}{% endif %}{% if action == 'destroy' %}delete your virtual machine{% endif %}. Make sure you take backups of any data you need.
 WARNING! Once you start the process, it cannot be undone.
 {% endif %}
 {% endif %}

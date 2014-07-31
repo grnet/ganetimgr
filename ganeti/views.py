@@ -20,8 +20,9 @@ import socket
 from django import forms
 from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import request
 from django.template.context import RequestContext
@@ -29,6 +30,7 @@ from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.conf import settings
+
 from ganetimgr.ganeti.models import *
 
 from ganetimgr.auditlog.models import *
@@ -633,19 +635,22 @@ def rename_instance(request, cluster_slug, instance, action_id, action_value=Non
 @csrf_exempt
 @check_instance_auth
 @check_admin_lock
+@require_http_methods(['POST'])
 def reinstalldestroy(request, cluster_slug, instance, action_id, action_value=None):
+    new_operating_system = request.POST.get('operating_system', 'none') or None
     user = request.user
-    action = notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value)
+    action = notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value, new_operating_system)
     return HttpResponse(json.dumps(action))
 
-def notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value):
+
+def notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value, new_operating_system):
     action_id = int(action_id)
-    if action_id not in [1,2,3]:
-        action = {'action':_("Not allowed action")}
+    if action_id not in [1, 2, 3]:
+        action = {'action': _("Not allowed action")}
         return action
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     instance = cluster.get_instance_or_404(instance)
-    reinstalldestroy_req = InstanceAction.objects.create_action(user, instance, cluster, action_id, action_value)
+    reinstalldestroy_req = InstanceAction.objects.create_action(user, instance, cluster, action_id, action_value, new_operating_system)
     fqdn = Site.objects.get_current().domain
     url = "https://%s%s" % \
                (
@@ -673,6 +678,7 @@ def notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_va
                   email, settings.SERVER_EMAIL, [user.email])
     # if anything goes wrong do nothing.
     except:
+        # remove entry
         reinstalldestroy_req.delete()
         action = {'action': _("Could not send email")}
     else:
@@ -716,14 +722,18 @@ def reinstalldestreview(request, application_hash, action_id):
             auditlog = auditlog_entry(request, "", instance, cluster.slug, save=False)
             if action_id == 1:
                 auditlog.update(action = "Reinstall")
-                jobid = cluster.reinstall_instance(instance)
-                auditlog.update(job_id = jobid)
+                jobid = cluster.reinstall_instance(instance, instance_action)
+                # in case there is no selected os
+                if jobid:
+                    auditlog.update(job_id = jobid)
+                else:
+                    return HttpResponseServerError()
             if action_id == 2:
                 auditlog.update(action = "Destroy")
                 jobid = cluster.destroy_instance(instance)
                 auditlog.update(job_id = jobid)
             if action_id == 3:
-                # As rename causes cluster lock we perform some cache engineering on the cluster instances, 
+                # As rename causes cluster lock we perform some cache engineering on the cluster instances,
                 # nodes and the users cache
                 refresh_cluster_cache(cluster, instance)
                 auditlog.update(action = "Rename to %s" %action_value)
