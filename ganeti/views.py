@@ -42,6 +42,7 @@ from gevent.pool import Pool
 from gevent.timeout import Timeout
 
 from util.client import GanetiApiError
+from ganetimgr.apply.utils import  get_os_details
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.core.mail import send_mail, mail_managers
@@ -1023,10 +1024,10 @@ def instance(request, cluster_slug, instance):
     instance.net_url = []
     for (nic_i, link) in enumerate(instance.nic_links):
         instance.net_url.append(reverse(graph, args=(cluster.slug, instance.name,'net-ts', '/eth%s'%nic_i)))
-    
+
     instance.netw = []
     try:
-        instance.osname = settings.OPERATING_SYSTEM_DICT[instance.osparams['img_id']]
+        instance.osname = get_os_details(instance.osparams['img_id']).get('description', instance.osparams['img_id'])
     except Exception:
         try:
             instance.osname = instance.osparams['img_id']
@@ -1084,6 +1085,10 @@ def instance_popup(request):
 def poll(request, cluster_slug, instance):
         cluster = get_object_or_404(Cluster, slug=cluster_slug)
         instance = cluster.get_instance_or_404(instance)
+        try:
+            instance.osname = instance.osparams['img_id']
+        except Exception:
+            instance.osname = None
         return render_to_response("instance_actions.html",
                                   {'cluster':cluster,
                                    'instance': instance,

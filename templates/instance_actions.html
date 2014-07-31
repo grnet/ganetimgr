@@ -160,10 +160,25 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 			url: operatingSystemsInput.parent().data('url'),
 			success: function (data) {
 				response = $.parseJSON(data);
-				options = '<option value="" selected>Keep the same os</option>';
+				var found = false;
+				var os = operatingSystemsInput.parent().data('os');
+				options = '';
+				console.log(os);
+				if (os) {
+					// we have to check if this image exists
+					for (var i=0; i < response.operating_systems.length; i++) {
+						if (response.operating_systems[i][1].osparams.img_id === os) {
+							options += '<option value="" selected>Keep the same os (' + os + ')</option>';
+						}
+					}
+				}
 				if (response.status === 'success') {
 					for (var i=0; i < response.operating_systems.length; i++) {
-						options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '" >' + response.operating_systems[i][1].description + '</option>';
+						if (response.operating_systems[i][1].osparams.img_id) {
+							options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '" >' + response.operating_systems[i][1].description + '</option>';
+						} else {
+							options += '<option value="' +  response.operating_systems[i][1].provider + '" >' + response.operating_systems[i][1].description + '</option>';
+						}
 					}
 				}
 				operatingSystemsInput.html(options)
@@ -239,7 +254,7 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 <br>Your instance will not be reinstalled yet, though.<br>
 You will receive an email with an activation link. Only when you visit the activation link, your instance will be reinstalled.
 {% endblocktrans %}
-<div id="operating_system" data-url="{% url operating_systems_json %}">
+<div id="operating_system" data-os="{{ instance.osname }}" data-url="{% url operating_systems_json %}">
 	<select name="operating_systems"></select>
 </div>
 </div>
