@@ -49,23 +49,23 @@ urlpatterns = patterns('',
     url(r'^apply/?$', 'ganetimgr.apply.views.apply', name="apply"),
     url(r'^news/?$', 'ganetimgr.ganeti.views.news', name="news"),
     url(r'^clearcache/?$', 'ganetimgr.ganeti.views.clear_cache', name="clearcache"),
-    
+
     url(r'^accounts/activate/(?P<activation_key>\w+)/$', 'accounts.views.activate', name='activate_account'),
     url(r'^accounts/register/$','registration.views.register', {'backend':'regbackends.ganetimgr.GanetimgrBackend', 'form_class': RegistrationForm},
 							        name='registration.views.register'),
     url(r'^accounts/password/reset/$',auth_v.password_reset, {'password_reset_form': PasswordResetFormPatched},
                                     name='password_reset'),
     (r'^accounts/', include('registration.backends.default.urls')),
-    
+
     url(r'^notify/(?P<instance>[^/]+)?$', 'ganetimgr.notifications.views.notify', name="notify"),
     url(r'^lock/(?P<instance>[^/]+)?$', 'ganetimgr.ganeti.views.lock', name="lock"),
     url(r'^isolate/(?P<instance>[^/]+)?$', 'ganetimgr.ganeti.views.isolate', name="isolate"),
     url(r'^usergrps/?$', 'ganetimgr.notifications.views.get_user_group_list', name="usergroups"),
-    
+
     url(r'^tags/(?P<instance>[^/]+)?$', 'ganetimgr.ganeti.views.tagInstance', name="instance-tags"),
     url(r'^tagusergrps/?$', 'ganetimgr.ganeti.views.get_user_groups', name="tagusergroups"),
-    
-    
+
+
     url(r'^stats_ajax/applications/?', 'ganetimgr.ganeti.views.stats_ajax_applications', name="stats_ajax_apps"),
     url(r'^stats_ajax/instances/?', 'ganetimgr.ganeti.views.stats_ajax_instances', name="stats_ajax_instances"),
     url(r'^stats_ajax/vms_cluster/(?P<cluster_slug>\w+)/?', 'ganetimgr.ganeti.views.stats_ajax_vms_per_cluster', name="stats_ajax_vms_pc"),
