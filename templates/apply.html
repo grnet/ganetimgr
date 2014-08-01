@@ -20,14 +20,18 @@ th {
 }
 
 label.required { font-weight: bold; }
+
+legend + .control-group {
+	margin: 0;
+}
 </style>
 {% endblock %}
-{% block content %}
 
+{% block content %}
 <div class="span6 main-content">
 
 	<div class="row-fluid">
-		<div class="row-fluid">
+		<div class="row-fluid span12">
 			<h2>{% trans "Apply for a new instance" %}</h2>
 			<form method="POST" class="form-inline">
 				{% csrf_token %}
@@ -36,7 +40,7 @@ label.required { font-weight: bold; }
                 <legend>
                     {% trans "Instance information" %}
                 </legend>
-                  <div class="control-group {% if form.hostname.errors %}error{% endif %}">
+                  <div class="control-group span6{% if form.hostname.errors %}error{% endif %}">
 	                <label class="control-label {% if form.hostname.field.required %}required{% endif %}" for="id_applier">
 	                	{{ form.hostname.label }}
 	                </label>
@@ -50,7 +54,7 @@ label.required { font-weight: bold; }
                     <span class="help-block"> {{ form.hostname.help_text }}</span>
                 </div>
 
-                <div class="control-group {% if form.memory.errors %}error{% endif %}">
+                <div class="control-group span5{% if form.memory.errors %}error{% endif %}">
 	                <label class="control-label {% if form.memory.field.required %}required{% endif %}" for="id_applier">{{ form.memory.label }}</label>
                    <div class="controls">{{ form.memory }}
                     {% if form.memory.errors %}
@@ -62,7 +66,7 @@ label.required { font-weight: bold; }
                     <span class="help-block"> {{ form.memory.help_text }}</span>
                 </div>
 
-                <div class="control-group {% if form.vcpus.errors %}error{% endif %}">
+                <div class="control-group span6{% if form.vcpus.errors %}error{% endif %}">
 	                <label class="control-label {% if form.vcpus.field.required %}required{% endif %}" for="id_applier">{{ form.vcpus.label }}</label>
                    <div class="controls">{{ form.vcpus }}
                     {% if form.vcpus.errors %}
@@ -74,7 +78,7 @@ label.required { font-weight: bold; }
                     <span class="help-block"> {{ form.vcpus.help_text }}</span>
                 </div>
 
-                <div class="control-group {% if form.disk_size.errors %}error{% endif %}">
+                <div class="control-group span5{% if form.disk_size.errors %}error{% endif %}">
 	                <label class="control-label {% if form.disk_size.field.required %}required{% endif %}" for="id_applier">{{ form.disk_size.label }}</label>
                    <div class="controls">{{ form.disk_size }}
                     {% if form.disk_size.errors %}
@@ -86,7 +90,7 @@ label.required { font-weight: bold; }
                     <span class="help-block"> {{ form.disk_size.help_text }}</span>
                 </div>
 
-                <div class="control-group {% if form.hosts_mail_server.errors %}error{% endif %}">
+                <div class="control-group span6{% if form.hosts_mail_server.errors %}error{% endif %}">
 	                <label class="control-label {% if form.hosts_mail_server.field.required %}required{% endif %}" for="id_applier">{{ form.hosts_mail_server.label }}</label>
                    <div class="controls">{{ form.hosts_mail_server }}
                     {% if form.hosts_mail_server.errors %}
@@ -98,7 +102,7 @@ label.required { font-weight: bold; }
                     <span class="help-block"> {{ form.hosts_mail_server.help_text }}</span>
                 </div>
 
-                <div class="control-group {% if form.operating_system.errors %}error{% endif %}">
+                <div class="control-group span5{% if form.operating_system.errors %}error{% endif %}">
 	                <label class="control-label {% if form.operating_system.field.required %}required{% endif %}" for="id_applier">{{ form.operating_system.label }}</label>
                    <div class="controls" data-url="{% url operating_systems_json %}">
                    	{{ form.operating_system }}
@@ -113,7 +117,7 @@ label.required { font-weight: bold; }
 
                 {% if form.network %}
 
-                <div class="control-group {% if form.network.errors %}error{% endif %}">
+                <div class="control-group span6{% if form.network.errors %}error{% endif %}">
 	                <label class="control-label {% if form.network.field.required %}required{% endif %}" for="id_applier">{{ form.network.label }}</label>
                    <div class="controls">{{ form.network }}
                     {% if form.network.errors %}
@@ -129,7 +133,7 @@ label.required { font-weight: bold; }
 
                 </fieldset>
 
-				<fieldset>
+				<fieldset class="span6">
 					<legend>{% trans "Use/Comments" %}</legend>
 
 					<p>{% blocktrans %}Give a short description of the intended use of this virtual machine, that justifies the parameter selection above. Feel free to include any additional comments.{% endblocktrans %}</p>
@@ -152,7 +156,7 @@ label.required { font-weight: bold; }
 
 
 
-				<fieldset>
+				<fieldset class="span5">
 					<legend>{% trans "Administrative contact" %}</legend>
 
 					<p>{% blocktrans %}If you are applying on behalf of a NOC under GRNET's
@@ -217,7 +221,7 @@ label.required { font-weight: bold; }
 	                </div>
 					</fieldset>
 
-					<fieldset>
+					<fieldset class="span12">
 					<legend>{% trans "Miscellaneous" %}</legend>
 					<p>{% trans "We kindly remind you of the following:" %}</p>
 					<ul align="left">
