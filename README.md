@@ -19,6 +19,7 @@ For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.
 - Perform south migration: python manage.py migrate
 - Update settings.py to settings.py.dist. A new context proccessor is deployed
 - Update urls.py to urls.py.dist. The graph url has been updated
+- Install python-bs4.
 
 ======================================================================
 

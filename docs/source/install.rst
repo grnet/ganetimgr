@@ -59,7 +59,7 @@ Beanstalkd
 ----------
 
 Edit ``/etc/default/beanstalkd`` and uncomment the following line::
-    
+
     START=yes
 
 and then start the daemon with::
@@ -100,7 +100,7 @@ Create a settings file for the django application::
 
 Edit the settings.py file and change the django database config to match your setup. Pay attention to the following::
 
-    Change STATIC_URL to the url serving your static files, eg. STATIC_URL = 'https://example.com/static' 
+    Change STATIC_URL to the url serving your static files, eg. STATIC_URL = 'https://example.com/static'
     and STATIC_ROOT to STATIC_ROOT = '/srv/www/ganetimgr/static/'
     TEMPLATE_DIRS to TEMPLATE_DIRS = (
         '/srv/www/ganetimgr/templates',
@@ -159,11 +159,14 @@ You can change the logo, motto and some footer details via the::
 
 dictionary. You can create your own logo starting with the static/branding/logo.* files.
 
+The option SHOW_ADMINISTRATIVE_FORM toggles the admin info panel for the instance application form. 
+The SHOW_ORGANIZATION_FORM does the same for the Organization dropdown menu.
 
-Software Setup
---------------
+There are two ways to define ganeti-instance-images:
 
-If you are gonna use our ganeti-instance-image and the debian wheezy image we provide you will need to define it into the settings.py::
+From settings.py::
+
+This is an example dictionary entry for a debian-wheezy image::
 
     OPERATING_SYSTEMS = {
     "debian-wheezy": {
@@ -176,6 +179,22 @@ If you are gonna use our ganeti-instance-image and the debian wheezy image we pr
         "ssh_key_param": "img_ssh_key_url",
     	},
     }
+
+And from given urls through OPERATING_SYSTEMS_URLS in settings.py::
+    OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/', 'http://example.com/images/']
+
+This discovers all images found on these URLS and makes them available for usage. The desciption of the images can be automatically fetched from 
+the contents of a .dsc file with the same name as the image.
+
+For example, if an image named debian-wheezy-x86_64.tar.gz, ganetimgr will look for a debian-wheezy-x86_64.tar.gz.dsc file in the same directory
+and read it's contents (e.g. Debian Wheezy) and display it accordingly.
+
+You also need to set OPERATING_SYSTEMS_PROVIDER and OPERATING_SYSTEMS_SSH_KEY_PARAM::
+    OPERATING_SYSTEMS_PROVIDER = 'image+default'
+    OPERATING_SYSTEMS_SSH_KEY_PARAM = 'img_ssh_key_url'
+
+GannetiMgr will look for available images both from settings and from the given urls simultaneously. None of the above settings is required.
+
 
 .. attention::
     When running the syncdb command that follows DO NOT create a superuser yet!
@@ -191,7 +210,7 @@ and the superuser::
 
 .. attention::
    If installing for the first time and want to have analytics, alter the templates/analytics.html file.
-   Set your prefered (we suggest piwik) analytics inclussion script or leave the file as is (commented) if no analytics 
+   Set your prefered (we suggest piwik) analytics inclussion script or leave the file as is (commented) if no analytics
    is desired/available.
 
 To get the admin interface files, invoke collectstatic::
@@ -202,7 +221,7 @@ Ganetimgr provides 3 flatpages - Service Info, Terms of Service and FAQ. Flatpag
 
     FLATPAGES
 
-dictionary. 
+dictionary.
 
 We provide 6 flatpages placeholders (3 flatpages x 2 languages - English and Greek) for the flatpages mentioned. By invoking the command::
 
@@ -290,7 +309,7 @@ An example config that needs to be placed on ``/etc/default/vncauthproxy`` ::
     DAEMON_OPTS="-p11000 -P15000 -s /var/run/vncauthproxy/vncproxy.sock"
     CHUID="nobody:www-data"
 
-11000-15000 is the (hardcoded, it seems) port range that ganeti uses for vnc binding, so you will need to open 
+11000-15000 is the (hardcoded, it seems) port range that ganeti uses for vnc binding, so you will need to open
 your firewall on the nodes for these ports.
 
 WebSockets

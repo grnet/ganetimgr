@@ -111,7 +111,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.messages',
     'django.contrib.admin',
-	'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'ganetimgr.accounts',
     'south',
     'registration',
@@ -150,61 +150,28 @@ GANETI_TAG_PREFIX = "ganetimgr"
 LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
 
-# List of operating system images you provide...
+# List of operating system images you provide.
 OPERATING_SYSTEMS = {
     # These use the modified ganeti-instance-image and ganeti-os-noop
     # from http://repo.noc.grnet.gr/
-    "debian-wheezy": {
-        "description": "Debian Wheezy 64 bit",
-        "provider": "image+default",
-        "osparams": {
-            "img_id": "debian-wheezy",
-            "img_format": "tarball",
-        },
-        "ssh_key_param": "img_ssh_key_url",
-    },
-    "debian-squeeze": {
-        "description": "Debian Squeeze 64 bit",
-        "provider": "image+default",
-        "osparams": {
-            "img_id": "debian-squeeze",
-            "img_format": "tarball",
-        },
-        "ssh_key_param": "img_ssh_key_url",
-    },
-    "ubuntu-lucid": {
-        "description": "Ubuntu 10.04 LTS 64 bit",
-        "provider": "image+default",
-        "osparams": {
-            "img_id": "ubuntu-lucid",
-            "img_format": "tarball",
-        },
-        "ssh_key_param": "img_ssh_key_url",
-    },
-    "ubuntu-precise": {
-        "description": "Ubuntu 12.04 LTS 64 bit",
-        "provider": "image+default",
-        "osparams": {
-            "img_id": "ubuntu-precise",
-            "img_format": "tarball",
-        },
-        "ssh_key_param": "img_ssh_key_url",
-    },
-    "centos-5.8": {
-        "description": "CentOS 5.8 64 bit",
-        "provider": "image+default",
-        "osparams": {
-            "img_id": "centos-5.8",
-            "img_format": "tarball",
-        },
-        "ssh_key_param": "img_ssh_key_url",
-    },
-    "none": {
-        "description": "No operating system",
-        "provider": "noop",
-        "osparams": {},
-        "ssh_key_param": "",
-    },
+
+    ### Example for ganeti-os-noop
+    #"none": {
+    #    "description": "No operating system",
+    #    "provider": "noop",
+    #    "osparams": {},
+    #    "ssh_key_param": "",
+    #},
+    # Example for ganeti-instance-image (with the osparams patch)
+    #"debian-wheezy": {
+    #    "description": "Debian Wheezy 64 bit",
+    #    "provider": "image+default",
+    #    "osparams": {
+    #        "img_id": "debian-wheezy",
+    #        "img_format": "tarball",
+    #    },
+    #    "ssh_key_param": "img_ssh_key_url",
+    #},
     ### Example for snf-image
     #"debian-wheezy": {
     #    "description": "Debian Wheezy 64 bit",
@@ -223,12 +190,13 @@ OPERATING_SYSTEMS = {
     #},
 }
 
-# the urls of the available os images
-OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/']
-
-# the provider and ssh key param
-# We assume that they are the same
+# Ganetimgr can scan the provided URL for image discovery (these are appended 
+# to the above entries).
+OPERATING_SYSTEMS_URLS = ['http://foo.example.com/','http://bar.example.com/']
+# If OPERATING_SYSTEMS_URLS is set then these need to be set too
+# Set OS provider for the autodiscovered images
 OPERATING_SYSTEMS_PROVIDER = 'image+default'
+# This is needed for the ssh_key injection inside the image
 OPERATING_SYSTEMS_SSH_KEY_PARAM = 'img_ssh_key_url'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
