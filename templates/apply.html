@@ -40,7 +40,7 @@ legend + .control-group {
                 <legend>
                     {% trans "Instance information" %}
                 </legend>
-                  <div class="control-group span6{% if form.hostname.errors %}error{% endif %}">
+                  <div class="control-group span6 {% if form.hostname.errors %}error{% endif %}">
 	                <label class="control-label {% if form.hostname.field.required %}required{% endif %}" for="id_applier">
 	                	{{ form.hostname.label }}
 	                </label>
