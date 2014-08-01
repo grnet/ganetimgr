@@ -651,7 +651,7 @@ class Cluster(models.Model):
 
         if info is None:
             try:
-                info = parseQuery(self._client.Query('instance', ['name','tags', 'pnode', 'disk.sizes', 'nic.modes','nic.ips','nic.links','status', 'admin_state', 'beparams', 'oper_state', 'hvparams', 'nic.macs', 'ctime', 'mtime', 'osparams', 'os'],  ["|", ["=", "name", "%s" %instance]]))[0]
+                info = parseQuery(self._client.Query('instance', ['name','tags', 'pnode', 'disk.sizes', 'nic.modes','nic.ips','nic.links','status', 'admin_state', 'beparams', 'oper_state', 'hvparams', 'nic.macs', 'ctime', 'mtime', 'osparams', 'os', 'network_port'],  ["|", ["=", "name", "%s" %instance]]))[0]
                 cache.set(cache_key, info, 3)
             except GanetiApiError, Exception:
                 info = None
