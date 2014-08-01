@@ -201,10 +201,10 @@ GannetiMgr will look for available images both from settings and from the given 
 
 Run the following commands to create the database entries::
 
-    python manage.py syncdb
+    python manage.py syncdb --noinput
     python manage.py migrate
 
-and the superuser::
+and create the superuser manually::
 
     python manage.py createsuperuser
 
