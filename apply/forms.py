@@ -32,6 +32,7 @@ from itertools import groupby
 from django.forms.widgets import Select
 from django.utils.encoding import force_unicode
 from django.utils.html import escape, conditional_escape
+from ganetimgr.settings import BRANDING
 
 # Taken from ganeti and patched to avoid non-bind9 friendly VM names
 _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
@@ -172,13 +173,18 @@ class InstanceApplicationForm(InstanceForm):
         super(InstanceApplicationForm, self).clean()
 
         organization = self.cleaned_data.get("organization", None)
-
-        if not (organization or
-                (self.cleaned_data.get("admin_contact_name", None) and
-                 self.cleaned_data.get("admin_contact_email", None) and
-                 self.cleaned_data.get("admin_contact_phone", None))):
-            raise forms.ValidationError(_("Choose either an organization or"
-                                          " fill in the contact information"))
+        # raise exception if there is no organization
+        # and the administrative form is not shown
+        if not BRANDING.get('SHOW_ADMINISTRATIVE_FORM', False):
+            if not organization:
+                raise forms.ValidationError(_("Choose an organization"))
+        else:
+            if not (organization or
+                    (self.cleaned_data.get("admin_contact_name", None) and
+                     self.cleaned_data.get("admin_contact_email", None) and
+                     self.cleaned_data.get("admin_contact_phone", None))):
+                raise forms.ValidationError(_("Choose either an organization or"
+                                              " fill in the contact information"))
         return self.cleaned_data
 
 class InstanceApplicationReviewForm(InstanceForm):

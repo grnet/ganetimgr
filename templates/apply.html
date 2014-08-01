@@ -181,6 +181,7 @@ legend + .control-group {
 	                    </div>
 	                    <span class="help-block"> {{ form.organization.help_text }}</span>
 	                </div>
+	                {% if BRANDING.SHOW_ADMINISTRATIVE_FORM %}
 					<div class="text-center"> <b>-OR-</b> </div>
 					<div class="text-center"> <b><u>Administrative Contact</u></b> </div>
 					<div><br></div>
@@ -195,7 +196,6 @@ legend + .control-group {
 	                    </div>
 	                    <span class="help-block"> {{ form.admin_contact_name.help_text }}</span>
 	                </div>
-
 	                <div class="control-group {% if form.admin_contact_email.errors %}error{% endif %}">
 		                <label class="control-label {% if form.admin_contact_email.field.required %}required{% endif %}" for="id_applier">{{ form.admin_contact_email.label }}</label>
 	                   <div class="controls">{{ form.admin_contact_email }}
@@ -219,6 +219,7 @@ legend + .control-group {
 	                    </div>
 	                    <span class="help-block"> {{ form.admin_contact_phone.help_text }}</span>
 	                </div>
+					{% endif %}
 					</fieldset>
 
 					<fieldset class="span12">
@@ -250,7 +251,7 @@ legend + .control-group {
 
 				</fieldset>
 				<div class="control-group">
-			<div class="controls">
+			<div class="controls span12">
 			<input type="submit" value="{% trans "Apply" %}" class="btn btn-primary" />
 			</div>
 			</div>
