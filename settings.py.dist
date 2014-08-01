@@ -110,6 +110,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.messages',
+    'ganetimgr.grappelli',
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'ganetimgr.accounts',
@@ -325,5 +326,3 @@ FLATPAGES = {
              "TOS": False,
              "FAQ": False,
              }
-
-

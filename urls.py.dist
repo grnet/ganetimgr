@@ -84,7 +84,7 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
+    (r'^grappelli/', include('ganetimgr.grappelli.urls')), # grappelli URLS
     (r'^admin/', include(admin.site.urls)),
 )
 

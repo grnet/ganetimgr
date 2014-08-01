@@ -159,7 +159,7 @@ You can change the logo, motto and some footer details via the::
 
 dictionary. You can create your own logo starting with the static/branding/logo.* files.
 
-The option SHOW_ADMINISTRATIVE_FORM toggles the admin info panel for the instance application form. 
+The option SHOW_ADMINISTRATIVE_FORM toggles the admin info panel for the instance application form.
 The SHOW_ORGANIZATION_FORM does the same for the Organization dropdown menu.
 
 There are two ways to define ganeti-instance-images:
@@ -183,7 +183,7 @@ This is an example dictionary entry for a debian-wheezy image::
 And from given urls through OPERATING_SYSTEMS_URLS in settings.py::
     OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/', 'http://example.com/images/']
 
-This discovers all images found on these URLS and makes them available for usage. The desciption of the images can be automatically fetched from 
+This discovers all images found on these URLS and makes them available for usage. The desciption of the images can be automatically fetched from
 the contents of a .dsc file with the same name as the image.
 
 For example, if an image named debian-wheezy-x86_64.tar.gz, ganetimgr will look for a debian-wheezy-x86_64.tar.gz.dsc file in the same directory
