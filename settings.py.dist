@@ -113,6 +113,7 @@ INSTALLED_APPS = (
     'ganetimgr.grappelli',
     'django.contrib.admin',
     'django.contrib.staticfiles',
+    'ganetimgr.django_markdown',
     'ganetimgr.accounts',
     'south',
     'registration',
@@ -326,3 +327,4 @@ FLATPAGES = {
              "TOS": False,
              "FAQ": False,
              }
+MARKDOWN_EDITOR_SKIN = 'simple'
