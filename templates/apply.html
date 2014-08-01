@@ -156,12 +156,14 @@ legend + .control-group {
 
 
 
+				{% if BRANDING.SHOW_ORGANIZATION_FORM or BRANDING.SHOW_ADMINISTRATIVE_FORM %}
 				<fieldset class="span5">
 					<legend>{% trans "Administrative contact" %}</legend>
-
+					{% if BRANDING.SHOW_ORGANIZATION_FORM and BRANDING.SHOW_ADMINISTRATIVE_FORM %}
 					<p>{% blocktrans %}If you are applying on behalf of a NOC under GRNET's
 						constituency, please select the appropriate organization.
 						Otherwise, fill-in the admin contact information below.{% endblocktrans %}</p>
+					{% endif %}
 					 {% if form.non_field_errors %}
 					<div class="control-group error">
 					<div class="help-block">
@@ -170,6 +172,7 @@ legend + .control-group {
 					</div>
 					{% endif %}
 
+	                {% if BRANDING.SHOW_ORGANIZATION_FORM %}
 					<div class="control-group {% if form.organization.errors %}error{% endif %}">
 		                <label class="control-label {% if form.organization.field.required %}required{% endif %}" for="id_applier">{{ form.organization.label }}</label>
 	                   <div class="controls">{{ form.organization }}
@@ -181,8 +184,12 @@ legend + .control-group {
 	                    </div>
 	                    <span class="help-block"> {{ form.organization.help_text }}</span>
 	                </div>
+	                {% endif %}
 	                {% if BRANDING.SHOW_ADMINISTRATIVE_FORM %}
+
+					{% if BRANDING.SHOW_ORGANIZATION_FORM %}
 					<div class="text-center"> <b>-OR-</b> </div>
+					{% endif %}
 					<div class="text-center"> <b><u>Administrative Contact</u></b> </div>
 					<div><br></div>
 					<div class="control-group {% if form.admin_contact_name.errors %}error{% endif %}">
@@ -220,9 +227,10 @@ legend + .control-group {
 	                    <span class="help-block"> {{ form.admin_contact_phone.help_text }}</span>
 	                </div>
 					{% endif %}
-					</fieldset>
+				</fieldset>
+				{% endif %}
 
-					<fieldset class="span12">
+				<fieldset class="span12">
 					<legend>{% trans "Miscellaneous" %}</legend>
 					<p>{% trans "We kindly remind you of the following:" %}</p>
 					<ul align="left">

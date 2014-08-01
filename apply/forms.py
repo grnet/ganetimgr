@@ -172,20 +172,31 @@ class InstanceApplicationForm(InstanceForm):
     def clean(self):
         super(InstanceApplicationForm, self).clean()
 
-        organization = self.cleaned_data.get("organization", None)
-        # raise exception if there is no organization
-        # and the administrative form is not shown
-        if not BRANDING.get('SHOW_ADMINISTRATIVE_FORM', False):
-            if not organization:
-                raise forms.ValidationError(_("Choose an organization"))
-        else:
-            if not (organization or
-                    (self.cleaned_data.get("admin_contact_name", None) and
-                     self.cleaned_data.get("admin_contact_email", None) and
-                     self.cleaned_data.get("admin_contact_phone", None))):
+        if BRANDING.get('SHOW_ORGANIZATION_FORM', False) and BRANDING.get('SHOW_ADMINISTRATIVE_FORM', False):
+            # if both forms are shown
+            organization = self.cleaned_data.get('organization', False)
+            if not (organization or self.cleaned_data.get("admin_contact_name", None) and
+                    self.cleaned_data.get("admin_contact_email", None) and
+                    self.cleaned_data.get("admin_contact_phone", None)
+                    ):
                 raise forms.ValidationError(_("Choose either an organization or"
                                               " fill in the contact information"))
-        return self.cleaned_data
+        elif BRANDING.get('SHOW_ORGANIZATION_FORM', False) and not BRANDING.get('SHOW_ADMINISTRATIVE_FORM', False):
+            # raise exception if there is no organization
+            # and the administrative form is not shown
+            organization = self.cleaned_data.get('organization', False)
+            if not organization:
+                raise forms.ValidationError(_("Choose an organization"))
+        elif BRANDING.get('SHOW_ADMINISTRATIVE_FORM', False) and not BRANDING.get('SHOW_ORGANIZATION_FORM', False):
+            # if only administrative form is displayed
+            if not (self.cleaned_data.get("admin_contact_name", None) and
+                    self.cleaned_data.get("admin_contact_email", None) and
+                    self.cleaned_data.get("admin_contact_phone", None)
+                    ):
+                raise forms.ValidationError(_("Please fill in the contact information"))
+        else:
+            return self.cleaned_data
+
 
 class InstanceApplicationReviewForm(InstanceForm):
     memory = forms.IntegerField(min_value=min(VALID_MEMORY_VALUES), initial=1024)
