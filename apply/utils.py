@@ -43,6 +43,7 @@ def discover_available_operating_systems():
                     '.img': 'qemu',
                     '-root.dump': 'dump'
                 }
+                architectures = ['-x86_', '-amd' '-i386']
                 for link in soup.findAll('a'):
                     try:
                         extension = '.' + '.'.join(link.text.split('.')[-2:])
@@ -57,7 +58,11 @@ def discover_available_operating_systems():
                                 name = re.text
                             else:
                                 name = link.text
-                            img_id = link.text.replace(extension, '').split('-x')[0]
+                            for arch in architectures:
+                                if arch in link.text:
+                                    img_id = link.text.replace(extension, '').split(arch)[0]
+                                    architecture = arch
+                                    break
                             description = name
                             img_format = extensions[extension]
                             operating_systems.update({
@@ -65,6 +70,7 @@ def discover_available_operating_systems():
                                     'description': description,
                                     'provider': OPERATING_SYSTEMS_PROVIDER,
                                     'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
+                                    'arch': architecture,
                                     'osparams': {
                                         'img_id': img_id,
                                         'img_format': img_format,
