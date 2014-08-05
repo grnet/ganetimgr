@@ -1,6 +1,6 @@
 import django.dispatch
 from django.contrib.auth.models import User
-from ganetimgr.auditlog.models import *
+from auditlog.models import *
 audit_entry = django.dispatch.Signal()
 
 

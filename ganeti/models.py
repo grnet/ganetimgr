@@ -18,7 +18,7 @@ from django.db import models
 from django.http import Http404
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
-from ganetimgr.apply.models import Organization, InstanceApplication
+from apply.models import Organization, InstanceApplication
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.conf import settings
@@ -37,7 +37,7 @@ import random
 import sha
 import ipaddr
 
-from ganetimgr.apply.utils import get_os_details
+from apply.utils import get_os_details
 
 
 RAPI_CONNECT_TIMEOUT = settings.RAPI_CONNECT_TIMEOUT

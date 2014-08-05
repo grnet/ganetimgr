@@ -25,8 +25,8 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.template.defaultfilters import filesizeformat
 
-from ganetimgr.apply.models import *
-from ganetimgr.ganeti.models import Instance, Cluster, Network
+from apply.models import *
+from ganeti.models import Instance, Cluster, Network
 from django.forms.models import ModelChoiceIterator, ModelChoiceField
 from itertools import groupby
 from django.forms.widgets import Select

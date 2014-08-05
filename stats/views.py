@@ -19,7 +19,7 @@ from django.template.context import RequestContext
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 
-from ganetimgr.ganeti.models import Cluster
+from ganeti.models import Cluster
 from gevent.pool import Pool
 from gevent.timeout import Timeout
 from django.conf import settings

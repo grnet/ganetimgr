@@ -29,10 +29,10 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.sites.models import Site
 from django.core.cache import cache
 
-from ganetimgr.apply.models import *
-from ganetimgr.apply.forms import *
-from ganetimgr.apply.utils import operating_systems
-from ganetimgr.ganeti.models import Cluster, Network, InstanceAction
+from apply.models import *
+from apply.forms import *
+from apply.utils import operating_systems
+from ganeti.models import Cluster, Network, InstanceAction
 from ganetimgr.settings import SERVER_EMAIL, EMAIL_SUBJECT_PREFIX
 
 from django.utils.translation import ugettext as _

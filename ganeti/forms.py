@@ -23,7 +23,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_unicode
-from ganetimgr.ganeti.models import Instance
+from ganeti.models import Instance
 
 import re
 

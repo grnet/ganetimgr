@@ -20,7 +20,7 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist
 
-from ganetimgr.accounts.models import UserProfile
+from accounts.models import UserProfile
 
 class UserMessageMiddleware(object):
     """

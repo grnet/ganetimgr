@@ -15,8 +15,8 @@
 # OF THIS SOFTWARE.
 
 from django.contrib import admin
-from ganetimgr.apply.models import *
-from ganetimgr.ganeti.models import Cluster
+from apply.models import *
+from ganeti.models import Cluster
 
 def make_fast_create_actions():
     actions = []

@@ -22,8 +22,8 @@ from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.template.loader import render_to_string
-from ganetimgr.notifications.forms import *
-from ganetimgr.ganeti.models import *
+from notifications.forms import *
+from ganeti.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib import messages

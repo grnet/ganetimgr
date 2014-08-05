@@ -20,7 +20,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.core.context_processors import request
 from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
-from ganetimgr.auditlog.models import *
+from auditlog.models import *
 import json
 
 @login_required

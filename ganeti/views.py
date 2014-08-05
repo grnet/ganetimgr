@@ -31,10 +31,10 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.conf import settings
 
-from ganetimgr.ganeti.models import *
+from ganeti.models import *
 
-from ganetimgr.auditlog.models import *
-from ganetimgr.ganeti.forms import *
+from auditlog.models import *
+from ganeti.forms import *
 from operator import itemgetter
 from django.template.defaultfilters import filesizeformat
 
@@ -42,7 +42,7 @@ from gevent.pool import Pool
 from gevent.timeout import Timeout
 
 from util.client import GanetiApiError
-from ganetimgr.apply.utils import  get_os_details
+from apply.utils import  get_os_details
 from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.core.mail import send_mail, mail_managers

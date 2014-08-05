@@ -1,0 +1,330 @@
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
+# Django settings for ganetimgr project.
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
+ADMINS = (
+    # ('Your Name', 'your_email@domain.com'),
+)
+
+MANAGERS = ADMINS
+
+DATABASES = {
+    'default' : {
+        'ENGINE' : 'django.db.backends.',	# 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME' : '',				# Or path to database file if using sqlite3.
+        'USER' : '',				# Not used with sqlite3.
+        'PASSWORD' : '',			# Not used with sqlite3.
+        'HOST' : '',				# Set to empty string for localhost. Not used with sqlite3.
+        'PORT' : '',				# Set to empty string for default. Not used with sqlite3.
+    }
+}
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# If running in a Windows environment this must be set to the same as your
+# system time zone.
+TIME_ZONE = 'Europe/Athens'
+
+_ = lambda s: s
+
+LANGUAGES = (
+    ('el', u'Ελληνικά'),
+    ('en', _('English')),
+)
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'en-us'
+
+SITE_ID = 1
+
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = ''
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash if there is a path component (optional in other cases).
+# Examples: "http://media.lawrence.com", "http://example.com/media/"
+MEDIA_URL = ''
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '!c&bm88vo=gby*vxf2gydv8hc!+f+eo+yu&!g&!)#n5quwsr82'
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+#     'django.template.loaders.eggs.load_template_source',
+)
+
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'ganetimgr.middleware.ForceLogout.ForceLogoutMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'ganetimgr.middleware.UserMessages.UserMessageMiddleware',
+)
+
+STATIC_URL = 'https://example.com/static/'
+STATIC_ROOT = '/path/to/static/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
+ROOT_URLCONF = 'ganetimgr.urls'
+
+TEMPLATE_DIRS = (
+    '/path/to/templates',
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
+    'django.contrib.messages',
+    'ganetimgr.grappelli',
+    'django.contrib.admin',
+    'django.contrib.staticfiles',
+    'ganetimgr.django_markdown',
+    'ganetimgr.accounts',
+    'south',
+    'registration',
+    'ganetimgr.ganeti',
+    'ganetimgr.apply',
+    'ganetimgr.notifications',
+    'ganetimgr.stats',
+    'ganetimgr.auditlog',
+    #'django_extensions',
+)
+
+RAPI_CONNECT_TIMEOUT = 4
+RAPI_RESPONSE_TIMEOUT = 12
+
+DATE_FORMAT = "d/m/Y H:i"
+DATETIME_FORMAT = "d/m/Y H:i"
+
+
+# TODO: Switch this to Django 1.4 syntax
+# Caching is a vital part of ganetimgr.
+# If you deploy more than one ganetimgr instances on the same server,
+# and want to use Redis for both, make sure you select a different db for each instance
+# Warning!!! Redis db should ALWAYS be an integer, denoting db index.
+# eg. CACHE_BACKEND = "redis_cache.cache://127.0.0.1:6379/?timeout=1500&db=8"
+# If memcache is your preferred cache, then select:
+# CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=1500'
+
+# (Works only for Django >= 1.3: If you work with multiple instances on the same server, include this to be on the safe side:
+#KEY_PREFIX = 'ganetimgr<choose a suffix>'
+
+# Select your ganetimgr prefix. This is applied in the tags
+# of the instances. You could leave it as it is or set your own,
+# eg.  GANETI_TAG_PREFIX = "vmservice"
+GANETI_TAG_PREFIX = "ganetimgr"
+
+LOGIN_URL = '/user/login'
+LOGIN_REDIRECT_URL = '/'
+
+# List of operating system images you provide.
+OPERATING_SYSTEMS = {
+    # These use the modified ganeti-instance-image and ganeti-os-noop
+    # from http://repo.noc.grnet.gr/
+
+    ### Example for ganeti-os-noop
+    #"none": {
+    #    "description": "No operating system",
+    #    "provider": "noop",
+    #    "osparams": {},
+    #    "ssh_key_param": "",
+    #},
+    # Example for ganeti-instance-image (with the osparams patch)
+    #"debian-wheezy": {
+    #    "description": "Debian Wheezy 64 bit",
+    #    "provider": "image+default",
+    #    "osparams": {
+    #        "img_id": "debian-wheezy",
+    #        "img_format": "tarball",
+    #    },
+    #    "ssh_key_param": "img_ssh_key_url",
+    #},
+    ### Example for snf-image
+    #"debian-wheezy": {
+    #    "description": "Debian Wheezy 64 bit",
+    #    "provider": "snf-image+default",
+    #    "osparams": {
+    #        "img_id": "debian_base-7.0-x86_64",
+    #        "img_format": "diskdump",
+    #        "img_passwd": "!",  # currently mandatory
+    #        "img_properties": {
+    #            "OSFAMILY": "linux",
+    #            "ROOT_PARTITION": "1",
+    #            "EXCLUDE_TASK_ChangePassword": "yes",
+    #        },
+    #    },
+    #    "ssh_key_users": "root",
+    #},
+}
+
+# Ganetimgr can scan the provided URL for image discovery (these are appended
+# to the above entries).
+OPERATING_SYSTEMS_URLS = ['http://foo.example.com/','http://bar.example.com/']
+# If OPERATING_SYSTEMS_URLS is set then these need to be set too
+# Set OS provider for the autodiscovered images
+OPERATING_SYSTEMS_PROVIDER = 'image+default'
+# This is needed for the ssh_key injection inside the image
+OPERATING_SYSTEMS_SSH_KEY_PARAM = 'img_ssh_key_url'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "ganetimgr.context.pending_notifications.notify",
+    "ganetimgr.context.session_remaining.seconds",
+    "ganetimgr.context.global_vars.settings_vars",
+    "django.core.context_processors.request",
+    "django.contrib.messages.context_processors.messages"
+)
+
+
+RECAPTCHA_PUBLIC_KEY = '<key>'
+RECAPTCHA_PRIVATE_KEY = '<key>'
+RECAPTCHA_USE_SSL = True
+
+EMAIL_HOST = "127.0.0.1"
+EMAIL_PORT = 25
+#Set the email subject prefix:
+EMAIL_SUBJECT_PREFIX = "[GanetiMgr] "
+SERVER_EMAIL = "no-reply@example.com"
+DEFAULT_FROM_EMAIL = "no-reply@example.com"
+
+# Auth stuff
+# If you plan to deploy LDAP modify according to your needs
+AUTHENTICATION_BACKENDS = (
+    #'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+#import ldap
+#from django_auth_ldap.config import LDAPSearch
+
+#AUTH_LDAP_BIND_DN = ""
+#AUTH_LDAP_BIND_PASSWORD = ""
+#AUTH_LDAP_SERVER_URI = "ldap://ldap.example.com"
+#AUTH_LDAP_START_TLS = True
+#AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=People,dc=dept,dc=example,dc=com",
+#            ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+#AUTH_LDAP_USER_ATTR_MAP = {
+#        "first_name": "givenName",
+#        "last_name": "sn",
+#        "email": "mail"
+#        }
+
+ACCOUNT_ACTIVATION_DAYS = 10
+
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# Cookie age set to 3 hours
+SESSION_COOKIE_AGE = 10800
+
+
+IDLE_ACCOUNT_NOTIFICATION_DAYS = '180'
+
+
+SERVER_MONITORING_URL = 'https://monitoring.example.com'
+
+# Number of days that hash verification is active
+INSTANCE_ACTION_ACTIVE_DAYS = 7
+
+# If Jira is deployed it works soooo nicely... eg. https://jira.example.com/<jira_collector_plugin_location>
+HELPDESK_INTEGRATION_JAVASCRIPT_URL = "https://jira.example.com/<jira_collector_plugin_location>"
+HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = {
+                                          'key' : 'value' # eg. 'customfield_23123': '1stline'
+                                          }
+
+COLLECTD_URL = "http://stats.example.com"
+
+USE_X_FORWARDED_HOST = True
+
+import _version
+SW_VERSION = _version.VERSION
+
+NODATA_IMAGE = STATIC_ROOT + "nodata.jpg"
+
+WHITELIST_IP_MAX_SUBNET_V4 = 26
+WHITELIST_IP_MAX_SUBNET_V6 = 64
+
+# If you want to keep your users up-to-date with your news you can display an RSS feed with news/updates. Otherwise leave it to None
+# eg. "http://lists.noc.grnet.gr/sympa/rss/latest_arc/vima-users?count=20&for=30" (GRNET ViMa service Sympa RSS feed)
+# TODO: Investigate twitter support
+FEED_URL=None
+
+
+# Choose whether to support websockets console or not.
+WEBSOCK_VNC_ENABLED = False
+# This is meant to be used with twistednovncauthproxy
+# twistd --pidfile=/tmp/proxy.pid -n vncap -c tcp:8888:interface=0.0.0.0
+NOVNC_PROXY = "example.com:8888"
+NOVNC_USE_TLS = True
+
+# This section affects the way banners, logos and footers are displayed. If no social networks is to be displayed,
+# set SOCIAL_NETWORKS to an empty list - []. Inside the static/branging folder you can find the logo.png and logo.xcf
+# blank logos.
+BRANDING = {
+            "SERVICE_PROVIDED_BY": {
+                                    "NAME":"ACME ORG",
+                                    "URL":"http://acme.org",
+                                    "SOCIAL_NETWORKS":[
+                                                       {"URL":"//facebook.com/acme.org",
+                                                        "FONT_AWSOME_NAME":"icon-facebook-sign",
+                                                         "FONT_COLOR": "#3b5998"},
+                                                       {"URL":"//twitter.com/acme",
+                                                        "FONT_AWSOME_NAME":"icon-twitter-sign",
+                                                         "FONT_COLOR": "#00acee"},
+                                                        ]
+                                    },
+            "LOGO": "/static/logo.png",
+            "MOTTO": "virtual private servers",
+            "FOOTER_ICONS_IFRAME":  False,
+            # show the administrative contact
+            # option when creating a new vm
+            "SHOW_ADMINISTRATIVE_FORM": True,
+            "SHOW_ORGANIZATION_FORM": True,
+            }
+
+# Flatpages manipulation. Show or hide flatpages links in page.
+FLATPAGES = {
+             "INFO": False,
+             "TOS": False,
+             "FAQ": False,
+             }
+MARKDOWN_EDITOR_SKIN = 'simple'

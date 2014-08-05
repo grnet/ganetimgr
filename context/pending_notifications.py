@@ -17,7 +17,7 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-from ganetimgr.apply.models import InstanceApplication, PENDING_CODES
+from apply.models import InstanceApplication, PENDING_CODES
 from django.core.cache import cache
 
 def notify(request):
