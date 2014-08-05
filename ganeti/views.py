@@ -208,7 +208,8 @@ def jobs_index_json(request):
                 jobs.extend(cluster.get_job_list())
             except (GanetiApiError, Exception):
                 bad_clusters.append(cluster)
-
+            finally:
+                close_connection()
         if not request.user.is_anonymous():
             clusters = Cluster.objects.all()
             if cluster_slug:
@@ -285,10 +286,12 @@ def clusterdetails_json(request):
             errors = []
             p = Pool(10)
             def _get_cluster_details(cluster):
-               try:
-                   clusterlist.append(clusterdetails_generator(cluster.slug))
-               except (GanetiApiError, Exception):
-                   errors.append(Exception)
+                try:
+                    clusterlist.append(clusterdetails_generator(cluster.slug))
+                except (GanetiApiError, Exception):
+                    errors.append(Exception)
+                finally:
+                    close_connection()
             p.imap(_get_cluster_details, Cluster.objects.all())
             p.join()
             cache.set("clusters:allclusterdetails", clusterlist, 180)
