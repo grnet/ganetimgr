@@ -1,5 +1,5 @@
-settings.py
-urls.py
+ganetimgr/settings.py
+ganetimgr/urls.py
 ganeti.db
 *.pyc
 apache/django.wsgi
