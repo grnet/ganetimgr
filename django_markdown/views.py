@@ -1,7 +1,7 @@
 """ Supports preview. """
 from django.shortcuts import render
 
-from . import settings
+from . import md_settings
 
 
 def preview(request):
@@ -10,14 +10,14 @@ def preview(request):
     :returns: A rendered preview
 
     """
-    if settings.MARKDOWN_PROTECT_PREVIEW:
+    if md_settings.MARKDOWN_PROTECT_PREVIEW:
         user = getattr(request, 'user', None)
         if user and not user.is_staff:
             from django.contrib.auth.views import redirect_to_login
             return redirect_to_login(request.get_full_path())
 
     return render(
-        request, settings.MARKDOWN_PREVIEW_TEMPLATE, dict(
+        request, md_settings.MARKDOWN_PREVIEW_TEMPLATE, dict(
             content=request.REQUEST.get('data', 'No content posted'),
-            css=settings.STATIC_URL + settings.MARKDOWN_STYLE,
+            css=md_settings.STATIC_URL + md_settings.MARKDOWN_STYLE,
         ))

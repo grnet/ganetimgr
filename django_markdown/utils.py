@@ -13,15 +13,15 @@ except ImportError:
     except ImportError:
         from django.utils import simplejson
 
-from . import settings
+from . import md_settings
 
 
 INIT_TEMPLATE = loader.get_template(
-    settings.MARKDOWN_EDITOR_INIT_TEMPLATE)
+    md_settings.MARKDOWN_EDITOR_INIT_TEMPLATE)
 
 
-def markdown(value, extensions=settings.MARKDOWN_EXTENSIONS,
-             extension_configs=settings.MARKDOWN_EXTENSION_CONFIGS,
+def markdown(value, extensions=md_settings.MARKDOWN_EXTENSIONS,
+             extension_configs=md_settings.MARKDOWN_EXTENSION_CONFIGS,
              safe=False):
     """ Render markdown over a given value, optionally using varios extensions.
 
@@ -40,7 +40,7 @@ def editor_js_initialization(selector, **extra_settings):
 
     options = dict(
         previewParserPath=reverse('django_markdown_preview'),
-        **settings.MARKDOWN_EDITOR_SETTINGS)
+        **md_settings.MARKDOWN_EDITOR_SETTINGS)
     options.update(extra_settings)
     ctx = Context(dict(
         selector=selector, extra_settings=simplejson.dumps(options)),

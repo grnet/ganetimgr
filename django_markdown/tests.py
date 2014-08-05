@@ -24,8 +24,8 @@ class DjangoMarkdownTestCase(TestCase):
             data="# header \n *test*"))
         self.assertContains(response, '<h1>header</h1>')
 
-        from . import settings
-        settings.MARKDOWN_PROTECT_PREVIEW = True
+        from . import md_settings
+        md_settings.MARKDOWN_PROTECT_PREVIEW = True
         response = self.client.get('/markdown/preview/', data=dict(
             data="# header \n *test*"))
         self.assertEqual(response.status_code, 302)

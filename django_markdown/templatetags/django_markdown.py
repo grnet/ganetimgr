@@ -4,7 +4,7 @@ import posixpath
 from django import template
 from django.core.urlresolvers import reverse
 
-from ..utils import markdown as _markdown, settings, simplejson, mark_safe
+from ..utils import markdown as _markdown, md_settings, simplejson, mark_safe
 
 
 register = template.Library()
@@ -25,7 +25,7 @@ def markdown(value, arg=None):
     :returns: A rendered markdown
 
     """
-    extensions = (arg and arg.split(',')) or settings.MARKDOWN_EXTENSIONS
+    extensions = (arg and arg.split(',')) or md_settings.MARKDOWN_EXTENSIONS
     return _markdown(value, extensions=extensions, safe=False)
 
 
@@ -41,7 +41,7 @@ def markdown_safe(value, arg=None):
     :returns: A rendered markdown.
 
     """
-    extensions = (arg and arg.split(',')) or settings.MARKDOWN_EXTENSIONS
+    extensions = (arg and arg.split(',')) or md_settings.MARKDOWN_EXTENSIONS
     return _markdown(value, extensions=extensions, safe=True)
 
 
@@ -79,7 +79,7 @@ def markdown_media_js():
     """
     return dict(
         JS_SET=posixpath.join(
-            settings.MARKDOWN_SET_PATH, settings.MARKDOWN_SET_NAME, 'set.js'
+            md_settings.MARKDOWN_SET_PATH, md_settings.MARKDOWN_SET_NAME, 'set.js'
         )
     )
 
@@ -93,10 +93,10 @@ def markdown_media_css():
     """
     return dict(
         CSS_SET=posixpath.join(
-            settings.MARKDOWN_SET_PATH, settings.MARKDOWN_SET_NAME, 'style.css'
+            md_settings.MARKDOWN_SET_PATH, md_settings.MARKDOWN_SET_NAME, 'style.css'
         ),
         CSS_SKIN=posixpath.join(
-            'django_markdown', 'skins', settings.MARKDOWN_EDITOR_SKIN,
+            'django_markdown', 'skins', md_settings.MARKDOWN_EDITOR_SKIN,
             'style.css'
         )
     )
