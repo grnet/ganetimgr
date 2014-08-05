@@ -866,7 +866,7 @@ def preload_instance_data():
         cache.set('orgslist', orgs, 30)
     groups = cache.get('groupslist')
     if not groups:
-        groups = Group.objects.all().select_related('user_set').all()
+        groups = Group.objects.all()
         groupsdict = {}
         for group in groups:
             group.userset = group.user_set.all()
