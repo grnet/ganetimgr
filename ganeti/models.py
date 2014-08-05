@@ -57,6 +57,9 @@ try:
 except ImportError:
     import simplejson as json
 
+from django.db import close_connection
+
+
 class InstanceManager(object):
 
     def all(self):
@@ -70,6 +73,8 @@ class InstanceManager(object):
                 instances.extend(cluster.get_instances())
             except (GanetiApiError, Exception):
                 pass
+            finally:
+                close_connection()
         clusters = Cluster.objects.all()
         p.imap(_get_instances, clusters)
         p.join()

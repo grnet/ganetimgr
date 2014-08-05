@@ -59,6 +59,7 @@ except ImportError:
 from ganetimgr.settings import GANETI_TAG_PREFIX
 
 from django.contrib.messages import constants as msgs
+from django.db import close_connection
 
 MESSAGE_TAGS = {
     msgs.ERROR: '',
@@ -320,6 +321,8 @@ def user_index_json(request):
             instances.extend(cluster.get_user_instances(request.user))
         except (GanetiApiError, Exception):
             bad_clusters.append(cluster)
+        finally:
+            close_connection()
     jresp = {}
     cache_key = "user:%s:index:instances" %request.user.username
     if cluster_slug:
@@ -338,6 +341,8 @@ def user_index_json(request):
             instancedetails.extend(generate_json(instance, user))
         except (GanetiApiError, Exception):
             bad_instances.append(instance)
+        finally:
+            close_connection()
     if res is None:
         if not request.user.is_anonymous():
             clusters =  Cluster.objects.all()
@@ -384,6 +389,8 @@ def user_sum_stats(request):
             instances.extend(cluster.get_user_instances(request.user))
         except (GanetiApiError, Exception):
             bad_clusters.append(cluster)
+        finally:
+            close_connection()
     if not request.user.is_anonymous():
         p.imap(_get_instances, Cluster.objects.all())
         p.join()
@@ -404,7 +411,8 @@ def user_sum_stats(request):
             instancedetails.extend(generate_json_light(instance, user))
         except (GanetiApiError, Exception):
             pass
-
+        finally:
+            close_connection()
     if res is None:
         j.imap(_get_instance_details, instances)
         j.join()
@@ -1277,6 +1285,8 @@ def prepare_clusternodes():
         except (GanetiApiError, Exception):
             cluster._client = None
             bad_clusters.append(cluster)
+        finally:
+            close_connection()
     p.imap(_get_nodes, clusters)
     p.join()
     return nodes, bad_clusters, bad_nodes
@@ -1308,6 +1318,8 @@ def stats(request):
                     instances.extend(cluster.get_user_instances(request.user))
                 except (GanetiApiError, Exception):
                     exclude_pks.append(cluster.pk)
+                finally:
+                    close_connection()
             if not request.user.is_anonymous():
                 p.imap(_get_instances, clusters)
                 p.join()
