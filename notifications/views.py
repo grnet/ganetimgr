@@ -34,6 +34,7 @@ from gevent.pool import Pool
 from gevent.timeout import Timeout
 
 from util.ganeti_client import GanetiApiError
+from django.db import close_connection
 
 @csrf_exempt
 @login_required
@@ -128,6 +129,8 @@ def get_user_group_list(request):
                 instances.extend(cluster.get_user_instances(request.user))
             except (GanetiApiError, Exception):
                 bad_clusters.append(cluster)
+            finally:
+                close_connection()
         if not request.user.is_anonymous():
             p.imap(_get_instances, Cluster.objects.all())
             p.join()
