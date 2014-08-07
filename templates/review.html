@@ -586,12 +586,18 @@ $(document).ready( function(){
                             if (response.operating_systems[i][1].osparams.img_id) {
                                 options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '">' + response.operating_systems[i][1].description + '</option>';
                             } else {
-                                options += '<option value="' +  response.operating_systems[i][1].provider + '" >' + response.operating_systems[i][1].description + '</option>';
+                            	if (selected === 'noop' && response.operating_systems[i][1].provider == 'noop'){
+                            		options += '<option value="' +  response.operating_systems[i][1].provider + '" selected="selected">' + response.operating_systems[i][1].description + '</option>';
+                            		found = true;
+                            	}
+                            	else{
+                                	options += '<option value="' +  response.operating_systems[i][1].provider + '" >' + response.operating_systems[i][1].description + '</option>';
+                                }
                             }
                         }
                     }
                     if (!found) {
-                        operatingSystemsInput.parent().append('<div style="color: red">Δεν βρέθηκε το λειτουργικό που ζητηθηκε: ' + selected + '</div>')
+                        operatingSystemsInput.parent().append('<div style="color: #b94a48;">Δεν βρέθηκε το λειτουργικό που ζητηθηκε: ' + selected + '</div>')
                     }
                 }
                 operatingSystemsInput.html(options)
