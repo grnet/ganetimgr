@@ -75,6 +75,7 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 		.click(function() {
 			clearTimeout(polltimer);
 			$( "#instreinst" ).modal('show');
+			
 			return false; });
 
 
@@ -90,7 +91,7 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 		        },
 		        dataType: 'json',
 		        success: function(data) {
-		        	$( "#instreinstbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>")
+		        	$( "#instreinstbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>");
 		        }
 	    });
 			return false; });
@@ -106,14 +107,14 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 
 	$( "#destroyapplybutton" )
 	.click(function() {
-		$(this).html('Sending Email...')
+		$(this).html('Sending Email...');
 		clearTimeout(polltimer);
 		$.ajax({
         type: 'POST',
         url: "{% url instance-reinstall-destroy cluster.slug instance.name 2 %}",
         dataType: 'json',
         success: function(data) {
-        	$( "#instdestbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>")
+        	$( "#instdestbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>");
         }
     });	 
 		return false; });
@@ -163,25 +164,31 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 				var found = false;
 				var os = operatingSystemsInput.parent().data('os');
 				options = '';
-				console.log(os);
-				if (os) {
-					// we have to check if this image exists
+				
+				if (response.status === 'success') {
+					oldos = true;
+					
+					if (os === 'noop') {
+							options += '<option value="" selected>Keep it as it is - No operating system</option>';
+							oldos = false;
+						}
 					for (var i=0; i < response.operating_systems.length; i++) {
 						if (response.operating_systems[i][1].osparams.img_id === os) {
 							options += '<option value="" selected>Keep the same os (' + os + ')</option>';
+							oldos = false;
 						}
-					}
-				}
-				if (response.status === 'success') {
-					for (var i=0; i < response.operating_systems.length; i++) {
 						if (response.operating_systems[i][1].osparams.img_id) {
 							options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '" >' + response.operating_systems[i][1].description + '</option>';
 						} else {
 							options += '<option value="' +  response.operating_systems[i][1].provider + '" >' + response.operating_systems[i][1].description + '</option>';
 						}
 					}
+					
 				}
-				operatingSystemsInput.html(options)
+				operatingSystemsInput.html(options);
+				if (oldos === true){
+						$('#operating_system').before("<div class='alert alert-warning'>Your installed OS ("+os+") is not supported any more. Please choose a new OS from the list</div>")
+					}
 			}
 		});
 	}
