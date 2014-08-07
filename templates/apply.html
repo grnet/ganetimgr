@@ -280,7 +280,6 @@ legend + .control-group {
 	});
 
 	$("#id_organization").select2({dropdownAutoWidth : true});
-	$("#id_operating_system").select2({dropdownAutoWidth : true});
 	$("#id_vcpus").select2({dropdownAutoWidth : true});
 	$("#id_memory").select2({dropdownAutoWidth : true});
 
@@ -301,7 +300,8 @@ legend + .control-group {
                         }
 					}
 				}
-				operatingSystemsInput.html(options)
+				operatingSystemsInput.html(options);
+				operatingSystemsInput.select2({dropdownAutoWidth : true});
 			}
 		});
 	}
