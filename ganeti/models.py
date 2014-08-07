@@ -18,6 +18,7 @@ from django.db import models
 from django.http import Http404
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
+from django.contrib.sites.models import Site
 from apply.models import Organization, InstanceApplication
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
@@ -36,6 +37,7 @@ import re
 import random
 import sha
 import ipaddr
+import base64
 
 from apply.utils import get_os_details
 
@@ -691,14 +693,67 @@ class Cluster(models.Model):
         return job_id
 
     def reinstall_instance(self, instance, action):
-        details = get_os_details(action.operating_system)
+        
+        def map_ssh_user(user, group=None, path=None):
+            if group is None:
+                if user == "root":
+                    group = ""   # snf-image will expand to root or wheel
+                else:
+                    group = user
+            if path is None:
+                if user == "root":
+                    path = "/root/.ssh/authorized_keys"
+                else:
+                    path = "/home/%s/.ssh/authorized_keys" % user
+            return user, group, path
+        
+        action_os = action.operating_system
+        if action.operating_system == 'noop':
+            action_os = "none"
+        details = get_os_details(action_os)
         if details:
             cache_key = self._instance_cache_key(instance)
             cache.delete(cache_key)
+            osparams = {}
+            if "ssh_key_param" in details:
+                fqdn = "https://" + Site.objects.get_current().domain
+                try:
+                    key_url = self.get_instance_or_404(instance).application.get_ssh_keys_url(fqdn)
+                    if details["ssh_key_param"]:
+                        osparams[details["ssh_key_param"]] = key_url
+                except:
+                    pass
+            if "ssh_key_users" in details and details["ssh_key_users"]:
+                ssh_keys = None
+                try:
+                    ssh_keys = self.get_instance_or_404(instance).application.applicant.sshpublickey_set.all()
+                except:
+                    pass
+                if ssh_keys:
+                    ssh_lines = [key.key_line() for key in ssh_keys]
+                    ssh_base64 = base64.b64encode("".join(ssh_lines))
+                    if "img_personality" not in osparams:
+                        osparams["img_personality"] = []
+                    for user in os["ssh_key_users"].split():
+                        # user[:group[:/path/to/authorized_keys]]
+                        owner, group, path = map_ssh_user(*user.split(":"))
+                        osparams["img_personality"].append({
+                            "path":     path,
+                            "contents": ssh_base64,
+                            "owner":    owner,
+                            "group":    group,
+                            "mode":     0600,
+                        })
+            osparams.update(details.get('osparams'))
+            for (key, val) in osparams.iteritems():
+            # Encode nested JSON. See
+            # <https://code.google.com/p/ganeti/issues/detail?id=835>
+                if not isinstance(val, basestring):
+                    osparams[key] = json.dumps(val)
             job_id = self._client.ReinstallInstance(
                 instance,
-                os=OPERATING_SYSTEMS_PROVIDER,
-                osparams=details.get('osparams')
+                os=details.get('provider'),
+                osparams=osparams
             )
             self._lock_instance(instance, reason="reinstalling", job_id=job_id)
             return job_id
