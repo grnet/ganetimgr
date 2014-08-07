@@ -194,8 +194,7 @@ class InstanceApplicationForm(InstanceForm):
                     self.cleaned_data.get("admin_contact_phone", None)
                     ):
                 raise forms.ValidationError(_("Please fill in the contact information"))
-        else:
-            return self.cleaned_data
+        return self.cleaned_data
 
 
 class InstanceApplicationReviewForm(InstanceForm):
