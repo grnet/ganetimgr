@@ -131,7 +131,6 @@ RAPI_RESPONSE_TIMEOUT = 12
 DATE_FORMAT = "d/m/Y H:i"
 DATETIME_FORMAT = "d/m/Y H:i"
 
-
 # TODO: Switch this to Django 1.4 syntax
 # Caching is a vital part of ganetimgr.
 # If you deploy more than one ganetimgr instances on the same server,
@@ -327,4 +326,7 @@ FLATPAGES = {
              "TOS": False,
              "FAQ": False,
              }
+
 MARKDOWN_EDITOR_SKIN = 'simple'
+
+GRAPPELLI_ADMIN_TITLE = 'Ganetimgr'
