@@ -37,6 +37,7 @@ from paramiko import RSAKey, DSSKey
 from paramiko.util import hexlify
 
 from ganeti.fields.jsonfield import JSONField
+from apply.utils import *
 
 
 (STATUS_PENDING,
@@ -189,11 +190,13 @@ class InstanceApplication(models.Model):
         if self.instance_params['mode'] == "routed":
             nic_dict.update(ip="pool")
 
-        # the images should be in cache because this
-        # method is called from a view which sets them.
-        operating_systems = json.loads(cache.get('operating_systems')).get('operating_systems')
-
-        os = operating_systems.get(self.operating_system)
+        fetch_op_systems = operating_systems()
+        op_systems = json.loads(fetch_op_systems).get('operating_systems')
+        op_systems_dict = dict(op_systems)
+        sel_os = self.operating_system
+        if self.operating_system == 'noop':
+            sel_os = "none"
+        os = op_systems_dict.get(sel_os)
         provider = os["provider"]
         osparams = {}
 
