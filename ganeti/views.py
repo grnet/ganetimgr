@@ -721,7 +721,7 @@ def reinstalldestreview(request, application_hash, action_id):
     action_value = action.action_value
     activated = False
     if action.activation_key_expired():
-            activated = True
+        activated = True
     if request.method == 'POST':
         if not activated:
             instance_action = InstanceAction.objects.activate_request(application_hash)
@@ -1100,7 +1100,7 @@ def poll(request, cluster_slug, instance):
         try:
             instance.osname = instance.osparams['img_id']
         except Exception:
-            instance.osname = None
+            instance.osname = instance.os
         return render_to_response("instance_actions.html",
                                   {'cluster':cluster,
                                    'instance': instance,
