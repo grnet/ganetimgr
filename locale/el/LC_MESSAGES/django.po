@@ -35,12 +35,15 @@ msgid ""
 "That e-mail address doesn't have an associated user account or the account "
 "has not been activated yet. Are you sure you've registered?"
 msgstr ""
+"Αυτή η διεύθυνση e-mail δεν μπορεί να συσχετιστεί με κάποιο λογαριασμό ή ο λογαριασμός "
+"δεν έχει ενεργοποιηθεί ακόμη. Είστε σίγουροι πως έχετε εγγραφεί;"
 
 #: accounts/forms.py:79
 msgid ""
 "The user account associated with this e-mail address cannot reset the "
 "password."
 msgstr ""
+"Ο λογαριασμός που σχετίζεται με αυτή τη διεύθυνση e-mail δεν μπορεί να εισάγει νέο κωδικό."
 
 #: accounts/views.py:38
 #, python-format
@@ -295,7 +298,7 @@ msgstr "Hardware clock uses local time instead of UTC"
 
 #: ganeti/views.py:877
 msgid "Allow From"
-msgstr ""
+msgstr "Να Επιτρέπονταί"
 
 #: ganeti/views.py:884
 msgid "Only HTTP URLs are allowed"
@@ -313,7 +316,7 @@ msgstr "Λανθασμένο URL"
 #: ganeti/views.py:908 ganeti/views.py:912
 #, python-format
 msgid "Currently no prefix lengths < %s are allowed"
-msgstr ""
+msgstr "Δεν επιτρέπεται prefix με μήκος < %s"
 
 #: ganeti/views.py:917
 #, python-format
@@ -323,7 +326,7 @@ msgstr "%(address)s δεν είναι αποδεκτή μορφή διεύθυν
 #: ganeti/fields/jsonfield/fields.py:31 ganeti/fields/jsonfield/fields.py:43
 #: ganeti/fields/jsonfield/fields.py:80
 msgid "Enter valid JSON"
-msgstr ""
+msgstr "Εισάγετε valid JSON"
 
 #: middleware/UserMessages.py:48
 #, python-format
@@ -511,27 +514,26 @@ msgstr "Υποβολή"
 #: templates/auditlog.html:28 templates/auditlog.html.py:32
 #: templates/auditlog.html:39 templates/theme/base.html:248
 msgid "Audit Log"
-msgstr ""
+msgstr "Αρχείο καταγραφής ελέγχου"
 
 #: templates/auditlog.html:28 templates/auditlog.html.py:32
 #: templates/auditlog.html:39 templates/theme/base.html:248
 msgid "History"
-msgstr ""
+msgstr "Ιστορικό"
 
 #: templates/auditlog.html:46 templates/jobs.html:46
 msgid "Job Id"
-msgstr ""
+msgstr "Id εργασίας"
 
 #: templates/auditlog.html:47 templates/instance.html:130
 #: templates/jobs.html:47 templates/user_info.html:372
 #: templates/user_instances_json.html:43
 msgid "Cluster"
-msgstr ""
+msgstr "Σύμπλεγμα"
 
 #: templates/auditlog.html:49
-#, fuzzy
 msgid "Instance"
-msgstr "Οι εικονικές μηχανές μου"
+msgstr "Εικονική μηχανή"
 
 #: templates/auditlog.html:50
 msgid "Action"
@@ -539,7 +541,7 @@ msgstr "Ενέργεια"
 
 #: templates/auditlog.html:54
 msgid "Time"
-msgstr ""
+msgstr "Ωρα"
 
 #: templates/auditlog.html:71 templates/jobs.html:67 templates/review.html:52
 msgid "Job Details"
@@ -555,7 +557,7 @@ msgstr "Κλείσιμο"
 
 #: templates/auditlog.html:99
 msgid "logs"
-msgstr ""
+msgstr "Αρχείο καταγραφής"
 
 #: templates/base.html:51 templates/login.html:40
 msgid "Welcome"
@@ -630,11 +632,11 @@ msgstr "Δίσκος"
 #: templates/clusters.html:7 templates/clusters.html.py:43
 #: templates/theme/base.html:244
 msgid "Cluster Info"
-msgstr ""
+msgstr "Λεπτομέριες συμπλέγματος"
 
 #: templates/clusters.html:52
 msgid "Disk Templates"
-msgstr ""
+msgstr "Πρότυπα δίσκων"
 
 #: templates/clusters.html:53
 msgid "Hypervisor"
@@ -654,7 +656,6 @@ msgid "Ipolicy"
 msgstr ""
 
 #: templates/clusters.html:74
-#, fuzzy
 msgid "Nodegroups"
 msgstr "Κόμβοι"
 
@@ -668,7 +669,7 @@ msgstr ""
 
 #: templates/clusterview.html:114
 msgid "Cluster view"
-msgstr ""
+msgstr "Προβολή συμπλέγματος"
 
 #: templates/idle_accounts.html:50 templates/idle_accounts.html.py:56
 #: templates/theme/base.html:255
@@ -709,7 +710,7 @@ msgstr "σχετικά με την εικονική μηχανή"
 
 #: templates/instance.html:4
 msgid "on cluster"
-msgstr "στο cluster"
+msgstr "στο σύμπλεγμα"
 
 #: templates/instance.html:125 templates/instance.html.py:177
 #: templates/user_info.html:214 templates/user_instances_json.html:394
@@ -722,11 +723,11 @@ msgstr "Κόμβος"
 
 #: templates/instance.html:134
 msgid "OS"
-msgstr ""
+msgstr "Λειτουργικό σύστημα"
 
 #: templates/instance.html:136
 msgid "CPUs"
-msgstr ""
+msgstr "Επεξεργαστές"
 
 #: templates/instance.html:138
 msgid "Network cards"
@@ -767,20 +768,20 @@ msgstr "Ειδοποίηση"
 #: templates/instance.html:181 templates/user_info.html:205
 #: templates/user_instances_json.html:379
 msgid "Unlock"
-msgstr ""
+msgstr "Ξεκλείδωμα"
 
 #: templates/instance.html:183 templates/user_info.html:208
 #: templates/user_instances_json.html:382
 msgid "Lock"
-msgstr ""
+msgstr "Κλείδωμα"
 
 #: templates/instance.html:186 templates/user_instances_json.html:385
 msgid "De-Isolate"
-msgstr ""
+msgstr "Άρση απομόνωσης"
 
 #: templates/instance.html:188 templates/user_instances_json.html:388
 msgid "Isolate"
-msgstr ""
+msgstr "Απομόνωση"
 
 #: templates/instance.html:194
 msgid "Application"
@@ -811,9 +812,8 @@ msgid "Actions"
 msgstr "Ενέργειες"
 
 #: templates/instance.html:369
-#, fuzzy
 msgid "Instance Tags"
-msgstr "Οι εικονικές μηχανές μου"
+msgstr "Τags εικονικών μηχανών"
 
 #: templates/instance_actions.html:164
 msgid "Shutdown"
@@ -847,7 +847,7 @@ msgstr "Εκκίνηση"
 
 #: templates/instance_actions.html:202
 msgid "Instance actions are disabled by the administrator"
-msgstr ""
+msgstr "Οι ενέργειες της εικονικής μηχανήες έιναι απενεργοποιημένες απο τον διαχειριστή."
 
 #: templates/instance_actions.html:212
 msgid "Reinstall Instance"
@@ -927,11 +927,11 @@ msgstr "Κάτοχοι εικονικών μηχανών"
 #: templates/jobs.html:29 templates/jobs.html.py:33
 #: templates/theme/base.html:246
 msgid "Jobs"
-msgstr ""
+msgstr "Εργασίες"
 
 #: templates/jobs.html:40
 msgid "Clusters Jobs"
-msgstr ""
+msgstr "Εργασίες συμπλέγματος"
 
 #: templates/jobs.html:49
 msgid "Opcode Id"
@@ -939,7 +939,7 @@ msgstr ""
 
 #: templates/jobs.html:165
 msgid "jobs"
-msgstr ""
+msgstr "εργασίες"
 
 #: templates/login.html:42
 msgid ""
@@ -1223,7 +1223,7 @@ msgstr "Στατιστικά ViMa"
 
 #: templates/statistics.html:313
 msgid "VMs"
-msgstr ""
+msgstr "Εικονικές μηχανές"
 
 #: templates/statistics.html:336
 msgid "Platform Statistics"
@@ -1526,7 +1526,7 @@ msgstr "είσοδο"
 
 #: templates/registration/registration_complete.html:21
 msgid "page"
-msgstr ".."
+msgstr "σελίδα"
 
 #: templates/registration/registration_form.html:22
 msgid "Register new user"
@@ -1551,7 +1551,7 @@ msgstr "Το προφίλ μου"
 
 #: templates/theme/base.html:156 templates/theme/base.html.py:262
 msgid "FAQ"
-msgstr ""
+msgstr "Συχνές ερωτήσεις"
 
 #: templates/theme/base.html:161
 msgid "Language"
@@ -1559,7 +1559,7 @@ msgstr "Γλώσσα"
 
 #: templates/theme/base.html:231
 msgid "Clear Cache"
-msgstr ""
+msgstr "Εκκαθάριση μνήμης"
 
 #: templates/theme/base.html:254
 msgid "Instance Owners"
