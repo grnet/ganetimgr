@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-03 12:54+0300\n"
+"POT-Creation-Date: 2014-08-18 17:18+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -18,34 +18,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: settings.py:35
-msgid "English"
-msgstr "English"
-
-#: accounts/forms.py:51
+#: accounts/forms.py:53
 msgid "Invalid captcha"
 msgstr "Λανθασμένη αντιστοίχιση"
 
-#: accounts/forms.py:73
+#: accounts/forms.py:75
 msgid "Verify"
 msgstr "Επαλήθευση"
 
-#: accounts/forms.py:77
+#: accounts/forms.py:79
 msgid ""
 "That e-mail address doesn't have an associated user account or the account "
 "has not been activated yet. Are you sure you've registered?"
 msgstr ""
-"Αυτή η διεύθυνση e-mail δεν μπορεί να συσχετιστεί με κάποιο λογαριασμό ή ο λογαριασμός "
-"δεν έχει ενεργοποιηθεί ακόμη. Είστε σίγουροι πως έχετε εγγραφεί;"
+"Αυτή η διεύθυνση e-mail δεν μπορεί να συσχετιστεί με κάποιο λογαριασμό ή ο "
+"λογαριασμός δεν έχει ενεργοποιηθεί ακόμη. Είστε σίγουροι πως έχετε εγγραφεί;"
 
-#: accounts/forms.py:79
+#: accounts/forms.py:81
 msgid ""
 "The user account associated with this e-mail address cannot reset the "
 "password."
 msgstr ""
-"Ο λογαριασμός που σχετίζεται με αυτή τη διεύθυνση e-mail δεν μπορεί να εισάγει νέο κωδικό."
+"Ο λογαριασμός που σχετίζεται με αυτή τη διεύθυνση e-mail δεν μπορεί να "
+"εισάγει νέο κωδικό."
 
-#: accounts/views.py:38
+#: accounts/views.py:40
 #, python-format
 msgid "%sUser account activated"
 msgstr "%sΟ λογαριασμός σας ενεργοποιήθηκε"
@@ -55,51 +52,55 @@ msgstr "%sΟ λογαριασμός σας ενεργοποιήθηκε"
 msgid "%sIdle Account Notification"
 msgstr "%sΕιδοποίηση Αδρανών Λογαριασμών"
 
-#: apply/forms.py:110 ganeti/forms.py:42
+#: apply/forms.py:112 ganeti/forms.py:43
 msgid "A fully qualified domain name, e.g. host.domain.com"
 msgstr "Ένα κανονικό όνομα DNS, π.χ. host.domain.com"
 
-#: apply/forms.py:111 ganeti/forms.py:43 templates/application_list.html:84
+#: apply/forms.py:113 ganeti/forms.py:44 templates/application_list.html:84
 #: templates/application_list.html:114 templates/clusters.html:51
 msgid "Hostname"
 msgstr "Όνομα"
 
-#: apply/forms.py:112 templates/application_list.html:86
+#: apply/forms.py:114 templates/application_list.html:86
 #: templates/application_list.html:116 templates/cluster_nodes.html:33
-#: templates/instance.html:135 templates/statistics.html:314
+#: templates/instance.html:145 templates/statistics.html:314
 #: templates/statistics.html.py:315 templates/user_info.html:373
 #: templates/user_instances_json.html:47
 msgid "Memory"
 msgstr "Μνήμη"
 
-#: apply/forms.py:116 apply/forms.py:188
+#: apply/forms.py:118 apply/forms.py:205
 msgid "Disk size (GB)"
 msgstr "Μέγεθος δίσκου (GB)"
 
-#: apply/forms.py:117
+#: apply/forms.py:119
 msgid "Specify a size from 2 to 100 GB"
 msgstr "Καθορίστε μέγεθος μεταξύ 2 και 100 GB"
 
-#: apply/forms.py:119
+#: apply/forms.py:121
 msgid "Check this option if the virtual machine will be sending e-mail"
 msgstr ""
 "Ενεργοποιήστε αυτή την επιλογή εάν η εικονική μηχανή πρόκειται να στέλνει e-"
 "mails"
 
-#: apply/forms.py:122
+#: apply/forms.py:124
 msgid "Hosts mail server"
 msgstr "Φιλοξενία mail server"
 
-#: apply/forms.py:124
+#: apply/forms.py:126
 msgid "Organization"
 msgstr "Φορέας"
 
-#: apply/forms.py:140 apply/forms.py:224 ganeti/forms.py:53
+#: apply/forms.py:127
+msgid "Operating System"
+msgstr "Λειτουργικό Σύστημα"
+
+#: apply/forms.py:142 apply/forms.py:241 ganeti/forms.py:54
 #, python-format
 msgid "Invalid hostname %s"
 msgstr "Εσφαλμένο όνομα %s"
 
-#: apply/forms.py:144 apply/forms.py:228 ganeti/forms.py:57
+#: apply/forms.py:146 apply/forms.py:245 ganeti/forms.py:58
 msgid ""
 "Hostname should be fully qualified, e.g. <em>host.domain.com</em>, not "
 "<em>host</em>"
@@ -107,95 +108,108 @@ msgstr ""
 "Το όνομα πρέπει να περιλαμβάνει domain, π.χ. <em>host.domain.com</em>, όχι "
 "σκέτο <em>host</em>"
 
-#: apply/forms.py:154 apply/forms.py:235 ganeti/forms.py:64
+#: apply/forms.py:156 apply/forms.py:252 ganeti/forms.py:65
 msgid "Hostname already exists."
 msgstr "Το όνομα χρησιμοποιείται ήδη."
 
-#: apply/forms.py:160
+#: apply/forms.py:162
 msgid "Additional comments you would like the service administrators to see"
 msgstr ""
 "Πρόσθετα σχόλια ή παρατηρήσεις που θα θέλατε να λάβουν υπόψιν τους οι "
 "διαχειριστές της υπηρεσίας"
 
-#: apply/forms.py:161 templates/review.html:178 templates/review.html.py:398
+#: apply/forms.py:163 templates/review.html:178 templates/review.html.py:398
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: apply/forms.py:180
+#: apply/forms.py:183
 msgid "Choose either an organization or fill in the contact information"
 msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:210
+#: apply/forms.py:190
+#, fuzzy
+msgid "Choose an organization"
+msgstr "φορέας"
+
+#: apply/forms.py:197
+#, fuzzy
+msgid "Please fill in the contact information"
+msgstr ""
+"Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
+"επικοινωνίας του διαχειριστικού υπεύθυνου"
+
+#: apply/forms.py:227
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/forms.py:240
+#: apply/forms.py:257
 msgid "Application already handled"
 msgstr "Η αίτηση έχει ήδη εκκαθαριστεί"
 
-#: apply/forms.py:260
+#: apply/forms.py:277
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/forms.py:273
+#: apply/forms.py:290
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/forms.py:279
+#: apply/forms.py:296
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/forms.py:284
+#: apply/forms.py:301
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/forms.py:286
+#: apply/forms.py:303
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/forms.py:294
+#: apply/forms.py:311
 msgid "Email"
 msgstr "Email"
 
-#: apply/forms.py:295
+#: apply/forms.py:312
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/forms.py:303
+#: apply/forms.py:320
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
-#: apply/forms.py:307 templates/cluster_nodes.html:31
-#: templates/user_info.html:371 templates/user_instances_json.html:42
+#: apply/forms.py:324 grappelli/templates/admin/constance/change_list.html:61
+#: templates/cluster_nodes.html:31 templates/user_info.html:371
+#: templates/user_instances_json.html:42
 msgid "Name"
 msgstr "Όνομα"
 
-#: apply/forms.py:308
+#: apply/forms.py:325
 msgid "Surname"
 msgstr "Επώνυμο"
 
-#: apply/models.py:79
+#: apply/models.py:82
 msgid "organization"
 msgstr "φορέας"
 
-#: apply/models.py:80
+#: apply/models.py:83
 msgid "organizations"
 msgstr "φορείς"
 
-#: apply/models.py:92
+#: apply/models.py:95
 msgid "operating system"
 msgstr "λειτουργικό σύστημα"
 
-#: apply/views.py:59 templates/application_list.html:88
+#: apply/views.py:81 templates/application_list.html:88
 #: templates/application_list.html:118 templates/user_info.html:382
 #: templates/user_instances_json.html:56
 msgid "Network"
 msgstr "Δίκτυο"
 
-#: apply/views.py:60
+#: apply/views.py:82
 msgid ""
 "Optionally, select a network to connect the virtual machine to if you have a "
 "special requirement"
@@ -203,31 +217,31 @@ msgstr ""
 "Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής.\n"
 "Διαφορετικά, θα χρησιμοποιηθεί το κανονικό δίκτυο της υπηρεσίας."
 
-#: apply/views.py:98
+#: apply/views.py:121
 #, python-format
 msgid "Your request has been filed with id #%d and will be processed shortly."
 msgstr ""
 "Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
 "ξεκινήσει σύντομα."
 
-#: apply/views.py:279
+#: apply/views.py:303
 #, python-format
 msgid "The following keys were skipped because they already exist:<br />%s"
 msgstr "Τα ακόλουθα κλειδιά υπήρχαν ήδη και δεν αντικαταστάθηκαν:<br />%s"
 
-#: ganeti/forms.py:33
+#: ganeti/forms.py:34
 msgid "Type a username or group name"
 msgstr "Πληκτρολογήστε ένα όνομα χρήστη ή το όνομα ομάδας"
 
-#: ganeti/models.py:270
+#: ganeti/models.py:282
 msgid "modifying"
 msgstr "γίνεται τροποποίηση των παραμέτρων της μηχανής"
 
-#: ganeti/models.py:779
+#: ganeti/models.py:856
 msgid "creating"
 msgstr "η μηχανή δημιουργείται"
 
-#: ganeti/views.py:288 ganeti/views.py:359
+#: ganeti/views.py:317 ganeti/views.py:385
 msgid ""
 "Permissions' violation. This action has been logged and our admins will be "
 "notified about it"
@@ -235,90 +249,94 @@ msgstr ""
 "Παραβίαση δικαιωμάτων χρήστη. Η ενέργειά σας έχει καταγραφεί και οι "
 "διαχειριστές της υπηρεσίας έχουν ειδοποιηθεί "
 
-#: ganeti/views.py:592
+#: ganeti/views.py:615
 msgid "Please wait... shutting-down"
 msgstr "Παρακαλώ περιμένετε... απενεργοποίηση"
 
-#: ganeti/views.py:636
+#: ganeti/views.py:662
 msgid "Not allowed action"
 msgstr "Η ενέργεια δεν επιτρέπεται"
 
-#: ganeti/views.py:656
+#: ganeti/views.py:684
 msgid "re-installation"
 msgstr "επανεγκατάσταση"
 
-#: ganeti/views.py:658
+#: ganeti/views.py:686
 msgid "destruction"
 msgstr "καταστροφή"
 
-#: ganeti/views.py:660
+#: ganeti/views.py:688
 msgid "rename"
 msgstr "μετονομασία"
 
-#: ganeti/views.py:661
+#: ganeti/views.py:690
 #, python-format
 msgid "%(pref)sInstance %(action)s requested: %(instance)s"
 msgstr "%(pref)sΑίτηση για %(action)s στην εικονική μηχανή: %(instance)s"
 
-#: ganeti/views.py:663
+#: ganeti/views.py:696
+msgid "Could not send email"
+msgstr ""
+
+#: ganeti/views.py:698
 msgid "Mail sent"
 msgstr "Το email στάλθηκε"
 
-#: ganeti/views.py:754
+#: ganeti/views.py:794
 msgid "Please wait... starting-up"
 msgstr "Παρακαλώ περιμένετε... εκκίνηση"
 
-#: ganeti/views.py:767
+#: ganeti/views.py:807
 msgid "Please wait... rebooting"
 msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
 
-#: ganeti/views.py:849
+#: ganeti/views.py:889
 msgid "Network adapter model"
 msgstr "Τύπος κάρτας δικτύου"
 
-#: ganeti/views.py:855
+#: ganeti/views.py:895
 msgid "Hard disk type"
 msgstr "Τύπος σκληρού δίσκου"
 
-#: ganeti/views.py:860
+#: ganeti/views.py:900
 msgid "Boot device"
 msgstr "Συσκευή εκκίνησης"
 
-#: ganeti/views.py:864
+#: ganeti/views.py:904
 msgid "CD-ROM Drive"
 msgstr "Συσκευή CD-ROM"
 
-#: ganeti/views.py:871
+#: ganeti/views.py:911
 msgid "ISO Image URL (http)"
 msgstr "ISO Image URL (http)"
 
-#: ganeti/views.py:873
+#: ganeti/views.py:913
 msgid "Hardware clock uses local time instead of UTC"
 msgstr "Hardware clock uses local time instead of UTC"
 
-#: ganeti/views.py:877
+#: ganeti/views.py:917
 msgid "Allow From"
 msgstr "Να Επιτρέπονταί"
 
-#: ganeti/views.py:884
+#: ganeti/views.py:924
 msgid "Only HTTP URLs are allowed"
 msgstr "Μόνο URLs συμβατά με τη μορφή HTTP επιτρέπονται"
 
-#: ganeti/views.py:895
+#: ganeti/views.py:935
 #, python-format
 msgid "%(url)s is not a valid URL"
 msgstr "%(url)s δεν είναι αποδεκτή μορφή URL"
 
-#: ganeti/views.py:898
+#: ganeti/views.py:938
 msgid "Invalid URL"
 msgstr "Λανθασμένο URL"
 
-#: ganeti/views.py:908 ganeti/views.py:912
+#: ganeti/views.py:948 ganeti/views.py:952
 #, python-format
 msgid "Currently no prefix lengths < %s are allowed"
 msgstr "Δεν επιτρέπεται prefix με μήκος < %s"
 
-#: ganeti/views.py:917
+#: ganeti/views.py:957
 #, python-format
 msgid "%(address)s is not a valid address"
 msgstr "%(address)s δεν είναι αποδεκτή μορφή διεύθυνσης"
@@ -328,7 +346,848 @@ msgstr "%(address)s δεν είναι αποδεκτή μορφή διεύθυν
 msgid "Enter valid JSON"
 msgstr "Εισάγετε valid JSON"
 
-#: middleware/UserMessages.py:48
+#: ganetimgr/settings.py:51
+msgid "English"
+msgstr "English"
+
+#: grappelli/dashboard/dashboards.py:95
+msgid "Dashboard"
+msgstr ""
+
+#: grappelli/dashboard/dashboards.py:139
+msgid "Quick links"
+msgstr ""
+
+#: grappelli/dashboard/dashboards.py:142
+msgid "Return to site"
+msgstr ""
+
+#: grappelli/dashboard/dashboards.py:143
+#: grappelli/templates/admin/base.html:86
+#: grappelli/templates/admin/auth/user/change_password.html:12
+#: grappelli/templates/admin/auth/user/change_password.html:58
+#: grappelli/templates/admin/includes_grappelli/header.html:21
+#, fuzzy
+msgid "Change password"
+msgstr "Αλλαγή κωδικού"
+
+#: grappelli/dashboard/dashboards.py:145
+#: grappelli/templates/admin/base.html:89
+#: grappelli/templates/admin/includes_grappelli/header.html:30
+msgid "Log out"
+msgstr ""
+
+#: grappelli/dashboard/dashboards.py:151 grappelli/dashboard/modules.py:214
+#: templates/base.html:69 templates/statistics.html:349
+#: templates/theme/base.html:211 templates/theme/base.html.py:227
+#: templates/theme/base.html:252
+msgid "Applications"
+msgstr "Αιτήσεις"
+
+#: grappelli/dashboard/dashboards.py:157
+#, fuzzy
+msgid "Administration"
+msgstr "Διαχειριστικός υπεύθυνος"
+
+#: grappelli/dashboard/dashboards.py:162 grappelli/dashboard/modules.py:290
+#: grappelli/templates/admin/index.html:64
+#, fuzzy
+msgid "Recent Actions"
+msgstr "Ενέργειες"
+
+#: grappelli/dashboard/dashboards.py:166
+#, fuzzy
+msgid "Latest Django News"
+msgstr "Τελευταία Νέα"
+
+#: grappelli/dashboard/dashboards.py:173
+msgid "Support"
+msgstr ""
+
+#: grappelli/dashboard/dashboards.py:176
+msgid "Django documentation"
+msgstr ""
+
+#: grappelli/dashboard/dashboards.py:181
+msgid "Django \"django-users\" mailing list"
+msgstr ""
+
+#: grappelli/dashboard/dashboards.py:186
+msgid "Django irc channel"
+msgstr ""
+
+#: grappelli/dashboard/modules.py:188
+#, fuzzy
+msgid "Links"
+msgstr "Σύνδεσμος"
+
+#: grappelli/dashboard/modules.py:350
+msgid "RSS Feed"
+msgstr ""
+
+#: grappelli/dashboard/templates/admin/index.html:25
+#: grappelli/templates/admin/500.html:9
+#: grappelli/templates/admin/app_index.html:12
+#: grappelli/templates/admin/base.html:112
+#: grappelli/templates/admin/change_form.html:133
+#: grappelli/templates/admin/change_list.html:138
+#: grappelli/templates/admin/change_list_filter_sidebar.html:152
+#: grappelli/templates/admin/csv_export_selected_confirmation.html:9
+#: grappelli/templates/admin/delete_confirmation.html:14
+#: grappelli/templates/admin/delete_selected_confirmation.html:14
+#: grappelli/templates/admin/index.html:18
+#: grappelli/templates/admin/invalid_setup.html:10
+#: grappelli/templates/admin/object_history.html:10
+#: grappelli/templates/admin/auth/user/change_password.html:8
+#: grappelli/templates/admin/constance/change_list.html:44
+#: grappelli/templates/admin_doc/bookmarklets.html:8
+#: grappelli/templates/admin_doc/index.html:9
+#: grappelli/templates/admin_doc/missing_docutils.html:8
+#: grappelli/templates/admin_doc/model_detail.html:20
+#: grappelli/templates/admin_doc/model_index.html:23
+#: grappelli/templates/admin_doc/template_filter_index.html:25
+#: grappelli/templates/admin_doc/template_tag_index.html:27
+#: grappelli/templates/admin_doc/view_detail.html:7
+#: grappelli/templates/admin_doc/view_index.html:24
+#: grappelli/templates/grp_doc/basic_page_structure.html:132
+#: grappelli/templates/grp_doc/context_navigation.html:55
+#: grappelli/templates/registration/password_change_done.html:7
+#: grappelli/templates/registration/password_change_form.html:7
+#: grappelli/templates/reversion/recover_form.html:7
+#: grappelli/templates/reversion/recover_list.html:6
+#: grappelli/templates/reversion/revision_form.html:7
+#: grappelli/templates/smuggler/load_data_form.html:27
+#: templates/application_list.html:67 templates/apply.html:4
+#: templates/auditlog.html:33 templates/cluster_nodes.html:16
+#: templates/clusters.html:6 templates/idle_accounts.html:55
+#: templates/instance.html:117 templates/instance_owners.html:29
+#: templates/jobs.html:32 templates/news.html:28 templates/novnc.html:192
+#: templates/profile.html:29 templates/review.html:11
+#: templates/statistics.html:280 templates/user_info.html:291
+#: templates/vnc.html:8 templates/flatpages/faq.html:28
+#: templates/notifications/create.html:6 templates/theme/base.html:207
+#: templates/theme/base.html.py:224 templates/theme/base.html:241
+#: templates/theme/base.html.py:279
+msgid "Home"
+msgstr "Αρχική"
+
+#: grappelli/dashboard/templates/grappelli/dashboard/modules/app_list.html:19
+#: grappelli/dashboard/templates/grappelli/dashboard/modules/model_list.html:9
+#: grappelli/templates/admin/app_index.html:31
+#: grappelli/templates/admin/change_form.html:136
+#: grappelli/templates/admin/index.html:45
+#, fuzzy
+msgid "Add"
+msgstr "Προσθήκη κλειδιού"
+
+#: grappelli/dashboard/templates/grappelli/dashboard/modules/app_list.html:24
+#: grappelli/dashboard/templates/grappelli/dashboard/modules/model_list.html:10
+#: grappelli/templates/admin/app_index.html:32
+#: grappelli/templates/admin/index.html:50 templates/name_change.html:75
+#: templates/pass_change.html:76
+msgid "Change"
+msgstr "Αλλαγή"
+
+#: grappelli/dashboard/templates/grappelli/dashboard/modules/recent_actions.html:18
+msgid "None Available"
+msgstr ""
+
+#: grappelli/templates/admin/404.html:7 grappelli/templates/admin/404.html:11
+msgid "Page not found"
+msgstr ""
+
+#: grappelli/templates/admin/404.html:12
+msgid "We're sorry, but the requested page could not be found."
+msgstr ""
+
+#: grappelli/templates/admin/500.html:10
+#, fuzzy
+msgid "Server error"
+msgstr "Όροι Χρήσης"
+
+#: grappelli/templates/admin/500.html:15
+msgid "Server error (500)"
+msgstr ""
+
+#: grappelli/templates/admin/500.html:19
+msgid "Server Error <em>(500)</em>"
+msgstr ""
+
+#: grappelli/templates/admin/500.html:20
+msgid ""
+"There's been an error. It's been reported to the site administrators via e-"
+"mail and should be fixed shortly. Thanks for your patience."
+msgstr ""
+
+#: grappelli/templates/admin/actions.html:10
+msgid "Click here to select the objects across all pages"
+msgstr ""
+
+#: grappelli/templates/admin/actions.html:10
+#, python-format
+msgid "Select all %(total_count)s %(module_name)s"
+msgstr ""
+
+#: grappelli/templates/admin/actions.html:11
+msgid "Clear selection"
+msgstr ""
+
+#: grappelli/templates/admin/app_index.html:14
+#, python-format
+msgid "<li>%(name)s</li>"
+msgstr ""
+
+#: grappelli/templates/admin/app_index.html:39
+#: grappelli/templates/admin/index.html:59
+msgid "You don´t have permission to edit anything."
+msgstr ""
+
+#: grappelli/templates/admin/base.html:97
+#: grappelli/templates/admin/includes_grappelli/header.html:41
+#: grappelli/templates/admin_doc/bookmarklets.html:9
+msgid "Documentation"
+msgstr ""
+
+#: grappelli/templates/admin/base_site.html:4
+msgid "Django site admin"
+msgstr ""
+
+#: grappelli/templates/admin/change_form.html:123
+#: grappelli/templates/admin/edit_inline/stacked.html:9
+msgid "Open All Items"
+msgstr ""
+
+#: grappelli/templates/admin/change_form.html:124
+#: grappelli/templates/admin/edit_inline/stacked.html:10
+msgid "Close All Items"
+msgstr ""
+
+#: grappelli/templates/admin/change_form.html:147
+#: grappelli/templates/admin/object_history.html:14
+#: grappelli/templates/reversion/revision_form.html:11
+#: templates/auditlog.html:30 templates/auditlog.html.py:34
+#: templates/auditlog.html:41 templates/theme/base.html:248
+msgid "History"
+msgstr "Ιστορικό"
+
+#: grappelli/templates/admin/change_form.html:148
+msgid "View on site"
+msgstr ""
+
+#: grappelli/templates/admin/change_form.html:167
+#: grappelli/templates/admin/change_list.html:220
+#: grappelli/templates/admin/change_list_filter_sidebar.html:233
+#: grappelli/templates/admin/login.html:33
+#: grappelli/templates/admin/auth/user/change_password.html:28
+#: grappelli/templates/smuggler/load_data_form.html:45
+#, fuzzy
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] ""
+"#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
+msgstr[1] ""
+"#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
+"#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
+
+#: grappelli/templates/admin/change_list.html:155
+#: grappelli/templates/admin/change_list_filter_sidebar.html:169
+#: grappelli/templates/smuggler/change_list.html:15
+#, python-format
+msgid "Add %(name)s"
+msgstr ""
+
+#: grappelli/templates/admin/change_list.html:185
+#: grappelli/templates/admin/change_list_filter_sidebar.html:184
+msgid "Filter"
+msgstr ""
+
+#: grappelli/templates/admin/change_list.html:220
+#: grappelli/templates/admin/login.html:33
+#: grappelli/templates/admin/auth/user/change_password.html:28
+msgid "Please correct the errors below."
+msgstr ""
+
+#: grappelli/templates/admin/change_list.html:247
+#: grappelli/templates/admin/submit_line.html:9
+#: grappelli/templates/admin/constance/change_list.html:110
+msgid "Save"
+msgstr ""
+
+#: grappelli/templates/admin/change_list_results.html:18
+msgid "Toggle sorting"
+msgstr ""
+
+#: grappelli/templates/admin/change_list_results.html:19
+#, python-format
+msgid "Sorting priority: %(priority_number)s"
+msgstr ""
+
+#: grappelli/templates/admin/change_list_results.html:20
+msgid "Remove from sorting"
+msgstr ""
+
+#: grappelli/templates/admin/csv_export_selected_confirmation.html:12
+msgid "Export selection as CSV"
+msgstr ""
+
+#: grappelli/templates/admin/csv_export_selected_confirmation.html:31
+msgid "Export following fields:"
+msgstr ""
+
+#: grappelli/templates/admin/csv_export_selected_confirmation.html:34
+msgid "Select all"
+msgstr ""
+
+#: grappelli/templates/admin/csv_export_selected_confirmation.html:54
+#, fuzzy
+msgid "Back"
+msgstr "Πίσω στην"
+
+#: grappelli/templates/admin/csv_export_selected_confirmation.html:55
+msgid "Export"
+msgstr ""
+
+#: grappelli/templates/admin/delete_confirmation.html:18
+#: grappelli/templates/admin/submit_line.html:6 templates/user_keys.html:95
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: grappelli/templates/admin/delete_confirmation.html:28
+#, python-format
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would result in deleting "
+"related objects, but your account doesn't have permission to delete the "
+"following types of objects:"
+msgstr ""
+
+#: grappelli/templates/admin/delete_confirmation.html:36
+#, python-format
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would require deleting the "
+"following protected related objects:"
+msgstr ""
+
+#: grappelli/templates/admin/delete_confirmation.html:46
+#, python-format
+msgid ""
+"Are you sure you want to delete the %(object_name)s \"%(escaped_object)s\"? "
+"All of the following related items will be deleted:"
+msgstr ""
+
+#: grappelli/templates/admin/delete_confirmation.html:52
+#: grappelli/templates/admin/delete_selected_confirmation.html:58
+msgid "Cancel"
+msgstr ""
+
+#: grappelli/templates/admin/delete_confirmation.html:53
+#: grappelli/templates/admin/delete_selected_confirmation.html:59
+msgid "Yes, I'm sure"
+msgstr ""
+
+#: grappelli/templates/admin/delete_selected_confirmation.html:17
+msgid "Delete multiple objects"
+msgstr ""
+
+#: grappelli/templates/admin/delete_selected_confirmation.html:27
+#, python-format
+msgid ""
+"Deleting the selected %(objects_name)s would result in deleting related "
+"objects, but your account doesn't have permission to delete the following "
+"types of objects:"
+msgstr ""
+
+#: grappelli/templates/admin/delete_selected_confirmation.html:35
+#, python-format
+msgid ""
+"Deleting the selected %(objects_name)s would require deleting the following "
+"protected related objects:"
+msgstr ""
+
+#: grappelli/templates/admin/delete_selected_confirmation.html:45
+#, python-format
+msgid ""
+"Are you sure you want to delete the selected %(objects_name)s? All of the "
+"following objects and their related items will be deleted:"
+msgstr ""
+
+#: grappelli/templates/admin/filter.html:4
+#: grappelli/templates/admin/filter_listing.html:3
+#, python-format
+msgid "%(filter_title)s"
+msgstr ""
+
+#: grappelli/templates/admin/index.html:66
+#, fuzzy
+msgid "My Actions"
+msgstr "Ενέργειες"
+
+#: grappelli/templates/admin/index.html:69
+#, fuzzy
+msgid "None available"
+msgstr "Μη διαθέσιμα δεδομένα..."
+
+#: grappelli/templates/admin/invalid_setup.html:17
+msgid ""
+"Something's wrong with your database installation. Make sure the appropriate "
+"database tables have been created, and make sure the database is readable by "
+"the appropriate user."
+msgstr ""
+
+#: grappelli/templates/admin/login.html:27 templates/base.html:73
+#: templates/login.html:5 templates/login.html.py:63 templates/login.html:94
+msgid "Login"
+msgstr "Είσοδος"
+
+#: grappelli/templates/admin/login.html:55
+#, fuzzy
+msgid "Password:"
+msgstr "Κωδικός"
+
+#: grappelli/templates/admin/login.html:64
+#, fuzzy
+msgid "Forgotten your password or username?"
+msgstr "Ξεχάσατε τον κωδικό σας;"
+
+#: grappelli/templates/admin/login.html:71
+#: grappelli/templates/registration/password_reset_complete.html:17
+msgid "Log in"
+msgstr ""
+
+#: grappelli/templates/admin/object_history.html:25
+#: grappelli/templates/reversion/object_history.html:13
+#: grappelli/templates/reversion/recover_list.html:22
+msgid "Date/time"
+msgstr ""
+
+#: grappelli/templates/admin/object_history.html:26
+#: grappelli/templates/reversion/object_history.html:14
+#: templates/application_list.html:85 templates/application_list.html:115
+#: templates/auditlog.html:54 templates/instance_owners.html:42
+msgid "User"
+msgstr "Χρήστης"
+
+#: grappelli/templates/admin/object_history.html:27 templates/auditlog.html:52
+msgid "Action"
+msgstr "Ενέργεια"
+
+#: grappelli/templates/admin/object_history.html:33
+msgid "DATETIME_FORMAT"
+msgstr ""
+
+#: grappelli/templates/admin/object_history.html:37
+#, fuzzy
+msgid "Created object"
+msgstr "Δημιουργήθηκε"
+
+#: grappelli/templates/admin/object_history.html:47
+#: grappelli/templates/reversion/object_history.html:34
+msgid ""
+"This object doesn't have a change history. It probably wasn't added via this "
+"admin site."
+msgstr ""
+
+#: grappelli/templates/admin/pagination.html:8 grappelli/views/related.py:163
+#, python-format
+msgid "%(counter)s result"
+msgid_plural "%(counter)s results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: grappelli/templates/admin/pagination.html:13
+#: grappelli/templates/admin/pagination.html:15
+#, python-format
+msgid "%(full_result_count)s total"
+msgstr ""
+
+#: grappelli/templates/admin/pagination.html:27
+msgid "Show all"
+msgstr ""
+
+#: grappelli/templates/admin/submit_line.html:12
+msgid "Save as new"
+msgstr ""
+
+#: grappelli/templates/admin/submit_line.html:15
+msgid "Save and add another"
+msgstr ""
+
+#: grappelli/templates/admin/submit_line.html:18
+msgid "Save and continue editing"
+msgstr ""
+
+#: grappelli/templates/admin/auth/user/change_password.html:16
+#: grappelli/templates/registration/password_change_done.html:8
+#: grappelli/templates/registration/password_change_form.html:8
+#: grappelli/templates/registration/password_change_form.html:11
+#: grappelli/templates/registration/password_change_form.html:16
+#, fuzzy
+msgid "Password change"
+msgstr "Ο κωδικός άλλαξε"
+
+#: grappelli/templates/admin/auth/user/change_password.html:25
+#, python-format
+msgid "Enter a new password for the user <strong>%(username)s</strong>."
+msgstr ""
+
+#: grappelli/templates/admin/auth/user/change_password.html:35
+#: grappelli/templates/registration/password_change_form.html:32
+#: grappelli/templates/registration/password_reset_confirm.html:21
+#, fuzzy
+msgid "New password"
+msgstr "Κωδικός"
+
+#: grappelli/templates/admin/auth/user/change_password.html:47
+#: grappelli/templates/registration/password_change_form.html:39
+#: grappelli/templates/registration/password_reset_confirm.html:26
+msgid "Password (again)"
+msgstr "Κωδικός (ξανά)"
+
+#: grappelli/templates/admin/auth/user/change_password.html:51
+#: grappelli/templates/registration/password_reset_confirm.html:29
+msgid "Enter the same password as above, for verification."
+msgstr ""
+
+#: grappelli/templates/admin/constance/change_list.html:66
+msgid "Default"
+msgstr ""
+
+#: grappelli/templates/admin/constance/change_list.html:71
+msgid "Value"
+msgstr ""
+
+#: grappelli/templates/admin/constance/change_list.html:76
+#, fuzzy
+msgid "Is modified"
+msgstr "Τελευταία τροποποίηση"
+
+#: grappelli/templates/admin/edit_inline/stacked.html:11
+#: grappelli/templates/admin/edit_inline/stacked.html:55
+#: grappelli/templates/admin/edit_inline/tabular.html:91
+#, fuzzy
+msgid "Add Item"
+msgstr "Προσθήκη κλειδιού"
+
+#: grappelli/templates/admin/edit_inline/stacked.html:24
+#: grappelli/templates/admin/edit_inline/tabular.html:64
+msgid "View on Site"
+msgstr ""
+
+#: grappelli/templates/admin/edit_inline/stacked.html:26
+#: grappelli/templates/admin/edit_inline/tabular.html:66
+msgid "Move Item"
+msgstr ""
+
+#: grappelli/templates/admin/edit_inline/stacked.html:30
+#: grappelli/templates/admin/edit_inline/stacked.html:35
+#: grappelli/templates/admin/edit_inline/tabular.html:70
+#: grappelli/templates/admin/edit_inline/tabular.html:75
+#, fuzzy
+msgid "Delete Item"
+msgstr "Διαγραφή"
+
+#: grappelli/templates/admin/edit_inline/stacked.html:53
+#: grappelli/templates/admin/edit_inline/tabular.html:89
+#, python-format
+msgid "Add another %(verbose_name)s"
+msgstr ""
+
+#: grappelli/templates/admin/edit_inline/tabular.html:9
+msgid "Add Another"
+msgstr ""
+
+#: grappelli/templates/admin/includes_grappelli/header.html:36
+msgid "Tests"
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:10
+#: grappelli/templates/admin_doc/bookmarklets.html:16
+msgid "Bookmarklets"
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:13
+msgid "Documentation bookmarklets"
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:18
+msgid ""
+"\n"
+"            <p>To install bookmarklets, drag the link to your bookmarks\n"
+"    toolbar, or right-click the link and add it to your bookmarks. Now you "
+"can\n"
+"    select the bookmarklet from any page in the site.  Note that some of "
+"these\n"
+"    bookmarklets require you to be viewing the site from a computer "
+"designated\n"
+"    as \"internal\" (talk to your system administrator if you aren't sure "
+"if\n"
+"    your computer is \"internal\").</p>\n"
+"        "
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:27
+msgid "Documentation for this page"
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:28
+msgid ""
+"Jumps you from any page to the documentation for the view that generates "
+"that page."
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:31
+msgid "Show object ID"
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:32
+msgid ""
+"Shows the content-type and unique ID for pages that represent a single "
+"object."
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:35
+msgid "Edit this object (current window)"
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:36
+msgid "Jumps to the admin page for pages that represent a single object."
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:39
+msgid "Edit this object (new window)"
+msgstr ""
+
+#: grappelli/templates/admin_doc/bookmarklets.html:40
+msgid "As above, but opens the admin page in a new window."
+msgstr ""
+
+#: grappelli/templates/registration/logged_out.html:16
+msgid "Log in again"
+msgstr ""
+
+#: grappelli/templates/registration/password_change_done.html:12
+#: grappelli/templates/registration/password_change_done.html:14
+#, fuzzy
+msgid "Password change successful"
+msgstr "Ο κωδικός άλλαξε"
+
+#: grappelli/templates/registration/password_change_done.html:18
+#, fuzzy
+msgid "Your password was changed."
+msgstr "Ο κωδικός άλλαξε"
+
+#: grappelli/templates/registration/password_change_form.html:20
+#, fuzzy
+msgid ""
+"Please enter your old password, for security's sake, and then enter your new "
+"password twice so we can verify you typed it in correctly."
+msgstr ""
+"Παρακαλώ εισάγετε τον τρέχοντα κωδικό σας, για λόγους ασφαλείας, και στη "
+"συνέχεια εισάγετε το νέο σας κωδικό δύο φορές ώστε να βεβαιωθούμε ότι έχει "
+"αποτυπωθεί ορθά"
+
+#: grappelli/templates/registration/password_change_form.html:25
+#, fuzzy
+msgid "Old password"
+msgstr "Κωδικός"
+
+#: grappelli/templates/registration/password_change_form.html:48
+#, fuzzy
+msgid "Change my password"
+msgstr "Αλλαγή κωδικού"
+
+#: grappelli/templates/registration/password_reset_complete.html:5
+#: grappelli/templates/registration/password_reset_complete.html:12
+#, fuzzy
+msgid "Password reset complete"
+msgstr "Η αλλαγή του κωδικού ολοκληρώθηκε"
+
+#: grappelli/templates/registration/password_reset_complete.html:16
+#, fuzzy
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr "Ο κωδικός σας έχει αλλάξει επιτυχώς. Μπορείτε να εισέρθετε"
+
+#: grappelli/templates/registration/password_reset_confirm.html:5
+#: grappelli/templates/registration/password_reset_confirm.html:14
+#, fuzzy
+msgid "Enter new password"
+msgstr "Αλλαγή κωδικού"
+
+#: grappelli/templates/registration/password_reset_confirm.html:5
+#: grappelli/templates/registration/password_reset_confirm.html:43
+#, fuzzy
+msgid "Password reset unsuccessful"
+msgstr "Ο κωδικός άλλαξε"
+
+#: grappelli/templates/registration/password_reset_confirm.html:18
+#, fuzzy
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+"εισάγετε το e-mail σας δύο φορές ώστε να βεβαιωθούμε ότι έχει αποτυπωθεί ορθά"
+
+#: grappelli/templates/registration/password_reset_confirm.html:35
+#: grappelli/templates/registration/password_reset_form.html:28
+#, fuzzy
+msgid "Reset my password"
+msgstr "Αλλαγή κωδικού"
+
+#: grappelli/templates/registration/password_reset_confirm.html:47
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used. Please request a new password reset."
+msgstr ""
+
+#: grappelli/templates/registration/password_reset_done.html:5
+#: grappelli/templates/registration/password_reset_done.html:12
+#, fuzzy
+msgid "Password reset successful"
+msgstr "Ο κωδικός άλλαξε"
+
+#: grappelli/templates/registration/password_reset_done.html:16
+msgid ""
+"We've e-mailed you instructions for setting your password to the e-mail "
+"address you submitted. You should be receiving it shortly."
+msgstr ""
+
+#: grappelli/templates/registration/password_reset_email.html:3
+#, python-format
+msgid ""
+"You're receiving this e-mail because you requested a password reset for your "
+"user account at %(site_name)s."
+msgstr ""
+
+#: grappelli/templates/registration/password_reset_email.html:5
+msgid "Please go to the following page and choose a new password:"
+msgstr ""
+
+#: grappelli/templates/registration/password_reset_email.html:9
+msgid "Your username, in case you've forgotten:"
+msgstr ""
+
+#: grappelli/templates/registration/password_reset_email.html:11
+msgid "Thanks for using our site!"
+msgstr ""
+
+#: grappelli/templates/registration/password_reset_email.html:13
+#, python-format
+msgid "The %(site_name)s team"
+msgstr ""
+
+#: grappelli/templates/registration/password_reset_form.html:5
+#: grappelli/templates/registration/password_reset_form.html:13
+msgid "Password reset"
+msgstr "Ο κωδικός άλλαξε"
+
+#: grappelli/templates/registration/password_reset_form.html:17
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll e-mail "
+"instructions for setting a new one."
+msgstr ""
+
+#: grappelli/templates/registration/password_reset_form.html:20
+#, fuzzy
+msgid "E-mail address"
+msgstr "Διεύθυνση email"
+
+#: grappelli/templates/reversion/change_list.html:6
+#: grappelli/templates/reversion/recover_form.html:10
+#: grappelli/templates/reversion/recover_list.html:9
+#, python-format
+msgid "Recover deleted %(name)s"
+msgstr ""
+
+#: grappelli/templates/reversion/object_history.html:7
+msgid ""
+"Choose a date from the list below to revert to a previous version of this "
+"object."
+msgstr ""
+
+#: grappelli/templates/reversion/object_history.html:15
+msgid "Comment"
+msgstr "Σχόλιο"
+
+#: grappelli/templates/reversion/recover_form.html:18
+msgid "Press the save button below to recover this version of the object."
+msgstr ""
+
+#: grappelli/templates/reversion/recover_list.html:16
+msgid ""
+"Choose a date from the list below to recover a deleted version of an object."
+msgstr ""
+
+#: grappelli/templates/reversion/recover_list.html:36
+msgid "There are no deleted objects to recover."
+msgstr ""
+
+#: grappelli/templates/reversion/revision_form.html:12
+#, python-format
+msgid "Revert %(verbose_name)s"
+msgstr ""
+
+#: grappelli/templates/reversion/revision_form.html:27
+msgid "Press the save button below to revert to this version of the object."
+msgstr ""
+
+#: grappelli/templates/smuggler/change_list.html:7
+msgid "Dump data"
+msgstr ""
+
+#: grappelli/templates/smuggler/change_list.html:11
+#: grappelli/templates/smuggler/load_data_form.html:7
+#: grappelli/templates/smuggler/load_data_form.html:28
+#: grappelli/templates/smuggler/load_data_form.html:34
+msgid "Load data"
+msgstr ""
+
+#: grappelli/templates/smuggler/load_data_form.html:49
+msgid "Data from your computer"
+msgstr ""
+
+#: grappelli/templates/smuggler/load_data_form.html:68
+#: grappelli/templates/smuggler/load_data_form.html:114
+msgid "Load"
+msgstr ""
+
+#: grappelli/templates/smuggler/load_data_form.html:71
+msgid "Load fixture and save on disk"
+msgstr ""
+
+#: grappelli/templates/smuggler/load_data_form.html:93
+#, python-format
+msgid "Data from %(smuggler_fixture_dir)s directory"
+msgstr ""
+
+#: grappelli/templates/smuggler/load_data_form.html:97
+#, fuzzy
+msgid "File name"
+msgstr "μετονομασία"
+
+#: grappelli/templates/smuggler/load_data_form.html:98
+msgid "Size"
+msgstr ""
+
+#: grappelli/tests/test_switch.py:113 grappelli/tests/test_switch.py:172
+#: grappelli/views/switch.py:37 grappelli/views/switch.py:48
+msgid "Permission denied."
+msgstr ""
+
+#: grappelli/tests/test_switch.py:156 grappelli/views/switch.py:40
+#: grappelli/views/switch.py:51
+#, python-format
+msgid "%(name)s object with primary key %(key)r does not exist."
+msgstr ""
+
+#: grappelli/views/related.py:63 grappelli/views/related.py:92
+msgid "?"
+msgstr ""
+
+#: middleware/UserMessages.py:49
 #, python-format
 msgid ""
 "Welcome! Please take some time to update <a href=\"%s\">your profile</a> and "
@@ -354,7 +1213,7 @@ msgid "Application list"
 msgstr "Λίστα Αιτήσεων"
 
 #: templates/application_list.html:23 templates/application_list.html.py:42
-#: templates/auditlog.html:99 templates/cluster_nodes.html:125
+#: templates/auditlog.html:102 templates/cluster_nodes.html:125
 #: templates/idle_accounts.html:32 templates/instance_owners.html:17
 #: templates/jobs.html:165 templates/statistics.html:200
 #: templates/user_info.html:35 templates/user_instances_json.html:155
@@ -362,7 +1221,7 @@ msgid "Display"
 msgstr "Προβολή"
 
 #: templates/application_list.html:23 templates/application_list.html.py:42
-#: templates/auditlog.html:99 templates/cluster_nodes.html:125
+#: templates/auditlog.html:102 templates/cluster_nodes.html:125
 #: templates/idle_accounts.html:32 templates/instance_owners.html:17
 #: templates/jobs.html:165 templates/statistics.html:200
 #: templates/user_info.html:35 templates/user_instances_json.html:155
@@ -373,20 +1232,6 @@ msgstr "Όλων"
 msgid "applications"
 msgstr "αιτήσεις"
 
-#: templates/application_list.html:67 templates/apply.html:4
-#: templates/auditlog.html:31 templates/cluster_nodes.html:16
-#: templates/clusters.html:6 templates/idle_accounts.html:55
-#: templates/instance.html:107 templates/instance_owners.html:29
-#: templates/jobs.html:32 templates/news.html:28 templates/novnc.html:192
-#: templates/profile.html:29 templates/review.html:11
-#: templates/statistics.html:280 templates/user_info.html:291
-#: templates/vnc.html:8 templates/flatpages/faq.html:28
-#: templates/notifications/create.html:6 templates/theme/base.html:207
-#: templates/theme/base.html.py:224 templates/theme/base.html:241
-#: templates/theme/base.html.py:279
-msgid "Home"
-msgstr "Αρχική"
-
 #: templates/application_list.html:68 templates/review.html:12
 #: templates/statistics.html:104
 msgid "Instance Applications"
@@ -396,17 +1241,12 @@ msgstr "Αιτήσεις μηχανών"
 msgid "Pending applications"
 msgstr "Αιτήσεις που εκκρεμούν"
 
-#: templates/application_list.html:85 templates/application_list.html:115
-#: templates/auditlog.html:52 templates/instance_owners.html:42
-msgid "User"
-msgstr "Χρήστης"
-
 #: templates/application_list.html:87 templates/application_list.html:117
 msgid "vCPUs"
 msgstr ""
 
 #: templates/application_list.html:89 templates/application_list.html:119
-#: templates/cluster_nodes.html:37 templates/instance.html:129
+#: templates/cluster_nodes.html:37 templates/instance.html:139
 #: templates/jobs.html:48 templates/review.html:79
 #: templates/user_info.html:376 templates/user_instances_json.html:50
 msgid "Status"
@@ -429,20 +1269,20 @@ msgstr "Δημιουργία νέας εικονικής μηχανής"
 msgid "Create Instance"
 msgstr "Δημιουργία εικονικής μηχανής"
 
-#: templates/apply.html:31
+#: templates/apply.html:35
 msgid "Apply for a new instance"
 msgstr "Αίτηση για νέα εικονική μηχανή"
 
-#: templates/apply.html:37 templates/review.html:76
+#: templates/apply.html:41 templates/review.html:76
 #: templates/review.html.py:319
 msgid "Instance information"
 msgstr "Στοιχεία εικονικής μηχανής"
 
-#: templates/apply.html:132
+#: templates/apply.html:137
 msgid "Use/Comments"
 msgstr "Χρήση/Σχόλια"
 
-#: templates/apply.html:134
+#: templates/apply.html:139
 msgid ""
 "Give a short description of the intended use of this virtual machine, that "
 "justifies the parameter selection above. Feel free to include any additional "
@@ -452,12 +1292,12 @@ msgstr ""
 "δικαιολογεί την επιλογή παραμέτρων που κάνατε. Μπορείτε επίσης να περιλάβετε "
 "τυχόν σχόλια προς τους διαχειριστές της εφαρμογής."
 
-#: templates/apply.html:155 templates/review.html:164
+#: templates/apply.html:161 templates/review.html:164
 #: templates/review.html.py:387
 msgid "Administrative contact"
 msgstr "Διαχειριστικός υπεύθυνος"
 
-#: templates/apply.html:157
+#: templates/apply.html:163
 msgid ""
 "If you are applying on behalf of a NOC under GRNET's\n"
 "\t\t\t\t\t\tconstituency, please select the appropriate organization.\n"
@@ -468,15 +1308,15 @@ msgstr ""
 "περίπτωση, παρακαλούμε συμπληρώστε τα στοιχεία επικοινωνίας του "
 "διαχειριστικού υπεύθυνου."
 
-#: templates/apply.html:220
+#: templates/apply.html:234
 msgid "Miscellaneous"
 msgstr "Λοιπά"
 
-#: templates/apply.html:221
+#: templates/apply.html:235
 msgid "We kindly remind you of the following:"
 msgstr "Σας υπευθυμίζουμε τα εξής:"
 
-#: templates/apply.html:223
+#: templates/apply.html:237
 msgid ""
 "\n"
 "\t\t\t\t\t\t<li>You are solely responsible for the data on your VM. You\n"
@@ -495,67 +1335,58 @@ msgstr ""
 "υποδομή μας.</li>\n"
 "\t\t\t\t\t\t\t"
 
-#: templates/apply.html:237
+#: templates/apply.html:251
 msgid "You must accept the terms of service before continuing."
 msgstr "Πρέπει να αποδεχθείτε τους Όρους Χρήσης πρoτού συνεχίσετε."
 
-#: templates/apply.html:241
+#: templates/apply.html:255
 msgid "I have read the above and accept them, along with the"
 msgstr "Διάβασα τα παραπάνω και τα αποδέχομαι μαζί με τους"
 
-#: templates/apply.html:241
+#: templates/apply.html:255
 msgid "Terms of Service"
 msgstr "Όρους Χρήσης της Υπηρεσίας"
 
-#: templates/apply.html:249 templates/instance_actions.html:266
+#: templates/apply.html:263 templates/instance_actions.html:311
 msgid "Apply"
 msgstr "Υποβολή"
 
-#: templates/auditlog.html:28 templates/auditlog.html.py:32
-#: templates/auditlog.html:39 templates/theme/base.html:248
+#: templates/auditlog.html:30 templates/auditlog.html.py:34
+#: templates/auditlog.html:41 templates/theme/base.html:248
 msgid "Audit Log"
 msgstr "Αρχείο καταγραφής ελέγχου"
 
-#: templates/auditlog.html:28 templates/auditlog.html.py:32
-#: templates/auditlog.html:39 templates/theme/base.html:248
-msgid "History"
-msgstr "Ιστορικό"
-
-#: templates/auditlog.html:46 templates/jobs.html:46
+#: templates/auditlog.html:48 templates/jobs.html:46
 msgid "Job Id"
 msgstr "Id εργασίας"
 
-#: templates/auditlog.html:47 templates/instance.html:130
+#: templates/auditlog.html:49 templates/instance.html:140
 #: templates/jobs.html:47 templates/user_info.html:372
 #: templates/user_instances_json.html:43
 msgid "Cluster"
 msgstr "Σύμπλεγμα"
 
-#: templates/auditlog.html:49
+#: templates/auditlog.html:51
 msgid "Instance"
 msgstr "Εικονική μηχανή"
 
-#: templates/auditlog.html:50
-msgid "Action"
-msgstr "Ενέργεια"
-
-#: templates/auditlog.html:54
+#: templates/auditlog.html:56
 msgid "Time"
 msgstr "Ωρα"
 
-#: templates/auditlog.html:71 templates/jobs.html:67 templates/review.html:52
+#: templates/auditlog.html:73 templates/jobs.html:67 templates/review.html:52
 msgid "Job Details"
 msgstr "Λεπτομέρειες"
 
-#: templates/auditlog.html:77 templates/instance.html:375
-#: templates/instance_actions.html:229 templates/instance_actions.html:253
-#: templates/instance_actions.html:270 templates/instance_actions.html:288
+#: templates/auditlog.html:79 templates/instance.html:387
+#: templates/instance_actions.html:274 templates/instance_actions.html:298
+#: templates/instance_actions.html:315 templates/instance_actions.html:333
 #: templates/jobs.html:73 templates/review.html:58
 #: templates/user_info.html:404 templates/user_instances_json.html:85
 msgid "Close"
 msgstr "Κλείσιμο"
 
-#: templates/auditlog.html:99
+#: templates/auditlog.html:102
 msgid "logs"
 msgstr "Αρχείο καταγραφής"
 
@@ -573,21 +1404,10 @@ msgstr "Το προφίλ μου"
 msgid "Admin"
 msgstr "Διαχειριστής"
 
-#: templates/base.html:69 templates/statistics.html:349
-#: templates/theme/base.html:211 templates/theme/base.html.py:227
-#: templates/theme/base.html:252
-msgid "Applications"
-msgstr "Αιτήσεις"
-
 #: templates/base.html:71 templates/theme/base.html:185
 #: templates/theme/base.html.py:218
 msgid "Logout"
 msgstr "Έξοδος"
-
-#: templates/base.html:73 templates/login.html:5 templates/login.html.py:63
-#: templates/login.html:94
-msgid "Login"
-msgstr "Είσοδος"
 
 #: templates/base.html:81 templates/user_instances_json.html:28
 #: templates/user_instances_json.html:36
@@ -712,153 +1532,155 @@ msgstr "σχετικά με την εικονική μηχανή"
 msgid "on cluster"
 msgstr "στο σύμπλεγμα"
 
-#: templates/instance.html:125 templates/instance.html.py:177
-#: templates/user_info.html:214 templates/user_instances_json.html:394
+#: templates/instance.html:135 templates/instance.html.py:187
+#: templates/user_info.html:214 templates/user_instances_json.html:405
 msgid "Details"
 msgstr "Λεπτομέρειες"
 
-#: templates/instance.html:132 templates/user_instances_json.html:45
+#: templates/instance.html:142 templates/user_instances_json.html:45
 msgid "Node"
 msgstr "Κόμβος"
 
-#: templates/instance.html:134
+#: templates/instance.html:144
 msgid "OS"
 msgstr "Λειτουργικό σύστημα"
 
-#: templates/instance.html:136
+#: templates/instance.html:146
 msgid "CPUs"
 msgstr "Επεξεργαστές"
 
-#: templates/instance.html:138
+#: templates/instance.html:148
 msgid "Network cards"
 msgstr "Κάρτες δικτύου"
 
-#: templates/instance.html:150
+#: templates/instance.html:160
 msgid "Created on"
 msgstr "Δημιουργήθηκε"
 
-#: templates/instance.html:151
+#: templates/instance.html:161
 msgid "Last modified"
 msgstr "Τελευταία τροποποίηση"
 
-#: templates/instance.html:153 templates/instance.html.py:178
-#: templates/user_instances_json.html:395
+#: templates/instance.html:163 templates/instance.html.py:188
+#: templates/user_instances_json.html:406
 msgid "Owners"
 msgstr "Ιδιοκτήτες"
 
-#: templates/instance.html:168
+#: templates/instance.html:178
 msgid "Manage Owners"
 msgstr "Διαχείριση Ιδιοκτητών"
 
-#: templates/instance.html:172
+#: templates/instance.html:182
 msgid "Admin Options"
 msgstr "Επιλογές Διαχειριστή"
 
-#: templates/instance.html:174 templates/user_info.html:212
+#: templates/instance.html:184 templates/user_info.html:212
 #: templates/user_info.html.py:384 templates/user_instances_json.html:58
-#: templates/user_instances_json.html:392
+#: templates/user_instances_json.html:403
 msgid "Options"
 msgstr "Επιλογές"
 
-#: templates/instance.html:179 templates/user_info.html:216
-#: templates/user_instances_json.html:396
+#: templates/instance.html:189 templates/user_info.html:216
+#: templates/user_instances_json.html:407
 msgid "Notify"
 msgstr "Ειδοποίηση"
 
-#: templates/instance.html:181 templates/user_info.html:205
-#: templates/user_instances_json.html:379
+#: templates/instance.html:191 templates/user_info.html:205
+#: templates/user_instances_json.html:390
 msgid "Unlock"
 msgstr "Ξεκλείδωμα"
 
-#: templates/instance.html:183 templates/user_info.html:208
-#: templates/user_instances_json.html:382
+#: templates/instance.html:193 templates/user_info.html:208
+#: templates/user_instances_json.html:393
 msgid "Lock"
 msgstr "Κλείδωμα"
 
-#: templates/instance.html:186 templates/user_instances_json.html:385
+#: templates/instance.html:196 templates/user_instances_json.html:396
 msgid "De-Isolate"
 msgstr "Άρση απομόνωσης"
 
-#: templates/instance.html:188 templates/user_instances_json.html:388
+#: templates/instance.html:198 templates/user_instances_json.html:399
 msgid "Isolate"
 msgstr "Απομόνωση"
 
-#: templates/instance.html:194
+#: templates/instance.html:204
 msgid "Application"
 msgstr "Αίτηση"
 
-#: templates/instance.html:211 templates/instance.html.py:213
+#: templates/instance.html:221 templates/instance.html.py:224
 msgid "No data available yet..."
 msgstr "Μη διαθέσιμα δεδομένα..."
 
-#: templates/instance.html:222
+#: templates/instance.html:234
 msgid "Configuration Options"
 msgstr "Επιλογές Διαμόρφωσης"
 
-#: templates/instance.html:229
+#: templates/instance.html:241
 msgid "Configuration"
 msgstr "Διαμόρφωση"
 
-#: templates/instance.html:322
+#: templates/instance.html:334
 msgid "!"
 msgstr ""
 
-#: templates/instance.html:332
+#: templates/instance.html:344
 msgid "Update"
 msgstr "Ενημέρωση"
 
-#: templates/instance.html:351
+#: templates/instance.html:363
 msgid "Actions"
 msgstr "Ενέργειες"
 
-#: templates/instance.html:369
+#: templates/instance.html:381
 msgid "Instance Tags"
 msgstr "Τags εικονικών μηχανών"
 
-#: templates/instance_actions.html:164
+#: templates/instance_actions.html:206
 msgid "Shutdown"
 msgstr "Απενεργοποίηση"
 
-#: templates/instance_actions.html:165 templates/instance_actions.html:184
+#: templates/instance_actions.html:207 templates/instance_actions.html:226
 msgid "Reboot"
 msgstr "Επανεκκίνηση"
 
-#: templates/instance_actions.html:167 templates/instance_actions.html:169
+#: templates/instance_actions.html:209 templates/instance_actions.html:211
 #: templates/novnc.html:5 templates/novnc.html.py:198 templates/vnc.html:5
 #: templates/vnc.html.py:10
 msgid "Console"
 msgstr "Κονσόλα"
 
-#: templates/instance_actions.html:173 templates/instance_actions.html:187
+#: templates/instance_actions.html:215 templates/instance_actions.html:229
 msgid "Rename..."
 msgstr "Μετονομασία..."
 
-#: templates/instance_actions.html:174 templates/instance_actions.html:188
+#: templates/instance_actions.html:216 templates/instance_actions.html:230
 msgid "Reinstall..."
 msgstr "Επανεγκατάσταση..."
 
-#: templates/instance_actions.html:175 templates/instance_actions.html:189
+#: templates/instance_actions.html:217 templates/instance_actions.html:231
 msgid "Destroy..."
 msgstr "Διαγραφή..."
 
-#: templates/instance_actions.html:183 templates/jobs.html:50
+#: templates/instance_actions.html:225 templates/jobs.html:50
 msgid "Start"
 msgstr "Εκκίνηση"
 
-#: templates/instance_actions.html:202
+#: templates/instance_actions.html:244
 msgid "Instance actions are disabled by the administrator"
-msgstr "Οι ενέργειες της εικονικής μηχανήες έιναι απενεργοποιημένες απο τον διαχειριστή."
+msgstr ""
+"Οι ενέργειες της εικονικής μηχανήες έιναι απενεργοποιημένες απο τον "
+"διαχειριστή."
 
-#: templates/instance_actions.html:212
+#: templates/instance_actions.html:254
 msgid "Reinstall Instance"
 msgstr "Επανεγκατάσταση"
 
-#: templates/instance_actions.html:216 templates/instance_actions.html:240
-#: templates/instance_actions.html:281
+#: templates/instance_actions.html:258 templates/instance_actions.html:285
+#: templates/instance_actions.html:326
 msgid "Warning!"
 msgstr "Προσοχή!"
 
-#: templates/instance_actions.html:217
+#: templates/instance_actions.html:259
 #, python-format
 msgid ""
 "You are about to initiate the process of your instance <strong>%(instance)s</"
@@ -878,16 +1700,16 @@ msgstr ""
 "Θα λάβετε ένα email με ένα link ενεργοποίησης. Μόνο όταν επισκεφθείτε το "
 "link θα ξεκινήσει η διαδικασία επανεγκατάστασης.\n"
 
-#: templates/instance_actions.html:225 templates/instance_actions.html:249
+#: templates/instance_actions.html:270 templates/instance_actions.html:294
 #: templates/rename_instance.html:62
 msgid "Email link"
 msgstr "Αποστολή link"
 
-#: templates/instance_actions.html:236
+#: templates/instance_actions.html:281
 msgid "Destroy Instance"
 msgstr "Διαγραφή εικονικής μηχανής"
 
-#: templates/instance_actions.html:241
+#: templates/instance_actions.html:286
 #, python-format
 msgid ""
 "You are about to initiate the process of your instance <strong>%(instance)s</"
@@ -906,11 +1728,11 @@ msgstr ""
 "Θα λάβετε ένα email με ένα link ενεργοποίησης. Μόνο όταν επισκεφθείτε το "
 "link θα ξεκινήσει η διαδικασία διαγραφής.\n"
 
-#: templates/instance_actions.html:260 templates/instance_actions.html:277
+#: templates/instance_actions.html:305 templates/instance_actions.html:322
 msgid "Rename Instance"
 msgstr "Μετονομασία εικονικής μηχανής"
 
-#: templates/instance_actions.html:282
+#: templates/instance_actions.html:327
 #, python-format
 msgid ""
 "You cannot rename instance <strong>%(instance)s</strong>.\n"
@@ -1033,10 +1855,6 @@ msgstr "έχει αλλάξει με επιτυχία σε"
 #: templates/name_change.html:60
 msgid "we don't know your name yet"
 msgstr "δε γνωρίζουμε το όνομά σας ακομα"
-
-#: templates/name_change.html:75 templates/pass_change.html:76
-msgid "Change"
-msgstr "Αλλαγή"
 
 #: templates/novnc.html:208 templates/vnc.html:18
 msgid "VNC session on"
@@ -1344,10 +2162,6 @@ msgstr ""
 "instances που δημιουργούνται εφ' εξής. Τα κλειδιά πρέπει να είναι συμβατά με "
 "OpenSSH format, είτε RSA, ή DSA, με ή χωρίς σχόλιο στο τέλος"
 
-#: templates/user_keys.html:95
-msgid "Delete"
-msgstr "Διαγραφή"
-
 #: templates/user_keys.html:107
 msgid "Add new key"
 msgstr "Προσθήκη νέου κλειδιού"
@@ -1599,9 +2413,6 @@ msgstr "Αυτή η υπηρεσία παρέχεται από το"
 #~ msgid "rebooting"
 #~ msgstr "η μηχανή επανεκκινεί"
 
-#~ msgid "Link"
-#~ msgstr "Σύνδεσμος"
-
 #~ msgid "Application submitted"
 #~ msgstr "Η αίτηση υποβλήθηκε"
 
@@ -1621,12 +2432,6 @@ msgstr "Αυτή η υπηρεσία παρέχεται από το"
 #~ msgid "Fingerprint"
 #~ msgstr "Αποτύπωμα"
 
-#~ msgid "Comment"
-#~ msgstr "Σχόλιο"
-
-#~ msgid "Password reset"
-#~ msgstr "Ο κωδικός άλλαξε"
-
 #~ msgid "Instance is shutting down, no actions allowed"
 #~ msgstr ""
 #~ "Η εικονική μηχανή απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη "
@@ -1643,15 +2448,6 @@ msgstr "Αυτή η υπηρεσία παρέχεται από το"
 #~ msgid "This value must contain only letters, numbers and underscores."
 #~ msgstr ""
 #~ "Αυτό το πεδίο μπορεί να περιέχει μόνο γράμματα, αριθμούς και underscores "
-
-#~ msgid "Email address"
-#~ msgstr "Διεύθυνση email"
-
-#~ msgid "Password"
-#~ msgstr "Κωδικός"
-
-#~ msgid "Password (again)"
-#~ msgstr "Κωδικός (ξανά)"
 
 #~ msgid "The two password fields didn't match."
 #~ msgstr "Τα πεδία κωδικού δεν ταιριάζουν"
@@ -1705,9 +2501,6 @@ msgstr "Αυτή η υπηρεσία παρέχεται από το"
 
 #~ msgid "running on"
 #~ msgstr "και λειτουργεί σε"
-
-#~ msgid "Operating System"
-#~ msgstr "Λειτουργικό Σύστημα"
 
 #~ msgid "Contact"
 #~ msgstr "Επικοινωνία"
