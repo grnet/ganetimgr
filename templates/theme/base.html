@@ -10,6 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
     <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="/static/awesome/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="/static/theme/theme.css">
@@ -75,13 +76,13 @@ label.required { font-weight: bold; }
 		<script type="text/javascript">
 		$(function(){
 		window.ATL_JQ_PAGE_PROPS = $.extend(window.ATL_JQ_PAGE_PROPS, {
- 
+
     // ==== custom trigger function ====
     triggerFunction : function( showCollectorDialog ) {
         $('#atlwdg-trigger').on( 'click', function(e) {
             e.preventDefault();
             showCollectorDialog();
-        }); 
+        });
     },
     // ==== we add the code below to set the field values ====
     fieldValues: {
@@ -94,7 +95,7 @@ label.required { font-weight: bold; }
         	'{{key}}':'{{value}}',
         	{% endfor %}
         {% endif %}
-    }                  
+    }
 });
 		});
 		</script>
@@ -110,7 +111,7 @@ label.required { font-weight: bold; }
   			remaining = parseInt("{{session_remaining}}") * 1000;
   			setTimeout(
         		function(){
-            		window.location = "{% url logout %}" 
+            		window.location = "{% url logout %}"
         		},
     		remaining);
     	{% endif %}
@@ -134,7 +135,7 @@ label.required { font-weight: bold; }
   	  	});
   	  	{% endif %}
   	});
-   	 
+
 </script>
 {% block extrahead %}{% endblock %}
 {% block bottomblock %}{% endblock %}
@@ -144,8 +145,9 @@ label.required { font-weight: bold; }
   <!--[if IE 7 ]> <body class="ie ie7 "> <![endif]-->
   <!--[if IE 8 ]> <body class="ie ie8 "> <![endif]-->
   <!--[if IE 9 ]> <body class="ie ie9 "> <![endif]-->
-  <!--[if (gt IE 9)|!(IE)]><!--> 
-  <body class=""> 
+  <!--[if (gt IE 9)|!(IE)]><!-->
+  <body class="">
+    <div class="wrapper">
   <!--<![endif]-->
     <div class="navbar">
         <div class="navbar-inner">
@@ -156,7 +158,7 @@ label.required { font-weight: bold; }
              		<li class="hidden-phone"><a href="/about/faq/{{ LANGUAGE_CODE }}">{% trans "FAQ" %}</a></li>
              		{% endif %}
                     {% endif %}
-                    
+
                     <li class="dropdown pull-right hidden-phone">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<b class="caret"></b></a>
             <ul class="dropdown-menu ">
@@ -178,7 +180,7 @@ label.required { font-weight: bold; }
                             <i class="icon-user"></i> {{user}}
                             <i class="icon-caret-down"></i>
                         </a>
-						
+
                         <ul class="dropdown-menu">
                             <li><a tabindex="-1" href="{% url profile %}">{% trans "My Profile" %}</a></li>
                             <li class="divider visible-phone"></li>
@@ -190,7 +192,7 @@ label.required { font-weight: bold; }
                 <a  href="{% url user-instances %}">
                 	{% if BRANDING.LOGO %}
 					<img class="logoimg brand brandimg" src="{{BRANDING.LOGO}}">
-					{% endif %}				
+					{% endif %}
                 </a>
                 {% if BRANDING.MOTTO %}
                 <span class="brand brandtext">{{BRANDING.MOTTO}}</span>
@@ -200,26 +202,26 @@ label.required { font-weight: bold; }
     {% block navbars %}
 {% if user.is_authenticated %}
     <div id="main-menu">
-        
+
         <div id="phone-navigation">
             <select class="selectnav" id="phone-menu">
-                
+
                 <option value="{% url user-instances %}" selected="selected">{% trans "Home" %}</option>
-                               
+
                 <option value="{% url apply %}" >{% trans "Create Instance" %}</option>
             {% if can_handle_applications or can_view_applications %}
 						<option value="{% url application-list %}">{% trans "Applications" %}{% if pending_count %}({{ pending_count }}){% endif %}</option>
 			{% endif %}
             {% if user.is_superuser %}
                 <option value="{% url admin:index %}" >{% trans "Admin" %}</option>
-                
+
 			{% endif %}
 			<option value="{% url profile %}" >{% trans "My Profile" %}</option>
-            <option value="{% url logout %}" >{% trans "Logout" %}</option>        
-                    
+            <option value="{% url logout %}" >{% trans "Logout" %}</option>
+
             </select>
         </div>
-        
+
         <ul class="nav nav-tabs">
             <li {% block homepagetop %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>{% trans "Home" %}</span></a></li>
             <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="icon-plus-sign"></i> <span>{% trans "Create Instance" %}</span></a></li>
@@ -235,9 +237,9 @@ label.required { font-weight: bold; }
     </div>
 
     <div id="sidebar-nav">
-        
+
         <ul id="dashboard-menu" class="nav nav-list">
-            
+
             <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>{% trans "Home" %}</span></a></li>
             {% if user.is_superuser or perms.ganeti.view_instances %}
             <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="icon-envelope"></i> <span>{% trans "Send Mail" %}</span></a></li>
@@ -265,7 +267,7 @@ label.required { font-weight: bold; }
 						<li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
 {% endif %}
 {% endif %}
-            
+
         </ul>
     </div>
     {% endblock %}
@@ -273,7 +275,7 @@ label.required { font-weight: bold; }
     <div class="content">
         <div class="container-fluid">
         {% block brcrmb_container %}
-			
+
 				<ul class="breadcrumb">
 					{% block crumbs %}
 	    			<li class="active">{% trans "Home" %}</li>
@@ -293,19 +295,19 @@ label.required { font-weight: bold; }
             </div>
             {% endfor %}
         {% endif %}
-				
+
 				{% endblock %}
             <div class="row-fluid">
 
-			
+
             {% block content %}
                 {% endblock %}
-               
+
             </div>
         </div>
     </div>
     {% endblock %}
-
+</div>
 <footer class="footer">
       <div class="container" id="footcontainer">
     {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
@@ -313,15 +315,15 @@ label.required { font-weight: bold; }
 	{% endif %}
 	{% if BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
 		{% for sn in BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
-			<a target="_blank" href="{{sn.URL}}"><font style="color:{{sn.FONT_COLOR|safe}}; font-size: 30px"><i class="{{sn.FONT_AWSOME_NAME}}"></i></font></a>  
-		{% endfor %}  
+			<a target="_blank" href="{{sn.URL}}"><font style="color:{{sn.FONT_COLOR|safe}}; font-size: 30px"><i class="{{sn.FONT_AWSOME_NAME}}"></i></font></a>
+		{% endfor %}
 	{% endif %}
 	</div>
 	{% if FLATPAGES.INFO or FLATPAGES.TOS %}
 	<div style="padding-top: 10px;">{% if FLATPAGES.INFO %}<a href="/about/info/{{ LANGUAGE_CODE }}">{% trans "Info" %}</a>{% endif %} {% if FLATPAGES.INFO and FLATPAGES.TOS %}|{% endif %} {% if FLATPAGES.TOS %}<a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">{% trans "Service Terms" %}</a>{% endif %}</div>
 	{% endif %}
 		<div style="padding-top: 10px;">Powered by <a href="https://code.grnet.gr/projects/ganetimgr/">ganetimgr</a> v{{VERSION}}</div>
-	
+
       </div>
       {% if BRANDING.FOOTER_ICONS_IFRAME %}
 		{% include "banners.html" %}

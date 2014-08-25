@@ -23,14 +23,14 @@
     <div class="logincontent">
         <div class="container-fluid">
          <div class="row-fluid">
-	
-	
-	
+
+
+
 	<div class="span12">
 <div class="row-fluid">
 	{% if FEED_URL %}
 	<div class="span1"></div>
-	{% else %}	
+	{% else %}
 <div class="span2"></div>
 {% endif %}
 <div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
@@ -65,7 +65,7 @@
 				{% if form.errors %}
 				<p  class="error" style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>
 				{% endif %}
-				
+
 				<form method="POST" class="form" action="{% url login %}">
 				{% csrf_token %}
                   <div class="control-group {% if form.username.errors %}error{% endif %}">
@@ -102,10 +102,12 @@
 		</div></div></div>
 			{% if FEED_URL %}
 	<div class="span1"></div>
-	{% else %}	
+	{% else %}
 <div class="span2"></div>
 {% endif %}
 </div>
-
+</div>
+</div>
+</div>
 </div>
 {% endblock %}
