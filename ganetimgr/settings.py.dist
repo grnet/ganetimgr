@@ -172,12 +172,12 @@ OPERATING_SYSTEMS = {
     # from http://repo.noc.grnet.gr/
 
     ### Example for ganeti-os-noop
-    #"none": {
-    #    "description": "No operating system",
-    #    "provider": "noop",
-    #    "osparams": {},
-    #    "ssh_key_param": "",
-    #},
+    "none": {
+        "description": "No operating system",
+        "provider": "noop",
+        "osparams": {},
+        "ssh_key_param": "",
+    },
     # Example for ganeti-instance-image (with the osparams patch)
     #"debian-wheezy": {
     #    "description": "Debian Wheezy 64 bit",
