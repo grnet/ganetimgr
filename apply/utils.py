@@ -19,6 +19,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from django.core.cache import cache
+from requests.exceptions import ConnectionError
 
 try:
     from ganetimgr.settings import OPERATING_SYSTEMS_URLS
@@ -34,54 +35,59 @@ except ImportError:
 
 
 def discover_available_operating_systems():
+    operating_systems = {}
     if OPERATING_SYSTEMS_URLS:
-        operating_systems = {}
         for url in OPERATING_SYSTEMS_URLS:
-            raw_response = requests.get(url)
-            if raw_response.ok:
-                soup = BeautifulSoup(raw_response.text)
-                extensions = {
-                    '.tar.gz': 'tarball',
-                    '.img': 'qemu',
-                    '-root.dump': 'dump'
-                }
-                architectures = ['-x86_', '-amd' '-i386']
-                for link in soup.findAll('a'):
-                    try:
-                        extension = '.' + '.'.join(link.text.split('.')[-2:])
-                    # in case of false link
-                    except IndexError:
-                        pass
-                    else:
-                        # if the file is tarball, qemu or dump then it is valid
-                        if extension in extensions.keys() or '-root.dump' in link.text:
-                            re = requests.get(url + link.text + '.dsc')
-                            if re.ok:
-                                name = re.text
-                            else:
-                                name = link.text
-                            for arch in architectures:
-                                if arch in link.text:
-                                    img_id = link.text.replace(extension, '').split(arch)[0]
-                                    architecture = arch
-                                    break
-                            description = name
-                            img_format = extensions[extension]
-                            operating_systems.update({
-                                img_id: {
-                                    'description': description,
-                                    'provider': OPERATING_SYSTEMS_PROVIDER,
-                                    'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
-                                    'arch': architecture,
-                                    'osparams': {
-                                        'img_id': img_id,
-                                        'img_format': img_format,
+            try:
+                raw_response = requests.get(url)
+            except ConnectionError:
+                # fail silently if url is unreachable
+                break
+            else:
+                if raw_response.ok:
+                    soup = BeautifulSoup(raw_response.text)
+                    extensions = {
+                        '.tar.gz': 'tarball',
+                        '.img': 'qemu',
+                        '-root.dump': 'dump'
+                    }
+                    architectures = ['-x86_', '-amd' '-i386']
+                    for link in soup.findAll('a'):
+                        try:
+                            extension = '.' + '.'.join(link.text.split('.')[-2:])
+                        # in case of false link
+                        except IndexError:
+                            pass
+                        else:
+                            # if the file is tarball, qemu or dump then it is valid
+                            if extension in extensions.keys() or '-root.dump' in link.text:
+                                re = requests.get(url + link.text + '.dsc')
+                                if re.ok:
+                                    name = re.text
+                                else:
+                                    name = link.text
+                                for arch in architectures:
+                                    if arch in link.text:
+                                        img_id = link.text.replace(extension, '').split(arch)[0]
+                                        architecture = arch
+                                        break
+                                description = name
+                                img_format = extensions[extension]
+                                operating_systems.update({
+                                    img_id: {
+                                        'description': description,
+                                        'provider': OPERATING_SYSTEMS_PROVIDER,
+                                        'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
+                                        'arch': architecture,
+                                        'osparams': {
+                                            'img_id': img_id,
+                                            'img_format': img_format,
+                                        }
                                     }
-                                }
-                            })
-            return operating_systems
-        else:
-            return {}
+                                })
+        return operating_systems
+    else:
+        return {}
 
 
 def get_operating_systems_dict():
@@ -92,7 +98,7 @@ def get_operating_systems_dict():
 
 
 def operating_systems():
-     # check if results exist in cache
+    # check if results exist in cache
     response = cache.get('operating_systems')
     # if no items in cache
     if not response:
@@ -105,6 +111,8 @@ def operating_systems():
                 operating_systems.remove(os)
                 operating_systems.insert(0, os)
         if discovery:
+            status = 'success'
+        else:
             status = 'success'
         response = json.dumps({'status': status, 'operating_systems': operating_systems})
         # add results to cache for one day
