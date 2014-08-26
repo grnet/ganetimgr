@@ -10,6 +10,7 @@ Migrating to v.1.5.0
 - Perform south migration::
 
 python manage.py collectstatic
+
 python manage.py migrate
 
 - Update settings.py to settings.py.dist. A new context proccessor is deployed
