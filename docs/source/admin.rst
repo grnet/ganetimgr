@@ -19,12 +19,12 @@ Click at the “Admin” link. You should see the admin interface.
 Click at the “Clusters” link. You should see a list of the available clusters. Now it's time to add one or more clusters.
 Select the “Add” cluster option
 
-.. image:: _static/images/ss2_clusterview.png
+.. image:: _static/images/image02.png
 	:scale: 50 %
 
 edit the details
 
-.. image:: _static/images/image02.png
+.. image:: _static/images/image03.png
 	:scale: 50 %
 
 Go back to the admin dashboard, then add the network
