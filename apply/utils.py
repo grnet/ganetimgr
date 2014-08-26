@@ -35,11 +35,11 @@ except ImportError:
 
 def discover_available_operating_systems():
     if OPERATING_SYSTEMS_URLS:
+        operating_systems = {}
         for url in OPERATING_SYSTEMS_URLS:
             raw_response = requests.get(url)
             if raw_response.ok:
                 soup = BeautifulSoup(raw_response.text)
-                operating_systems = {}
                 extensions = {
                     '.tar.gz': 'tarball',
                     '.img': 'qemu',
