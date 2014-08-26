@@ -1,18 +1,24 @@
+=========
 Upgrading
 =========
 
 This article describes the actions that are needed when upgrading from a previous version of Gametimgr.
 
-### Migrating to v.1.5.0
+Migrating to v.1.5.0
+--------------------
 
 - Perform south migration: python manage.py migrate
 - Update settings.py to settings.py.dist. A new context proccessor is deployed
 - Update urls.py to urls.py.dist. The graph url has been updated
-- Install python-bs4.
+- Install ``python-bs4``.
+- We reccomend changing gunicorn logging to the system logging path (i.e. /var/www/) and not /tmp
+
 
 ======================================================================
 
-### Migrating to v.1.4.1
+Migrating to v.1.4.1
+--------------------
+
 Bugfix/Feature Enhancements release
 
 settings.py:
@@ -20,7 +26,9 @@ settings.py:
 
 ======================================================================
 
-### Migrating to v.1.4.0
+Migrating to v.1.4.0
+--------------------
+
 Debian wheezy/Django 1.4 compatibility
 
 settings.py:
@@ -36,7 +44,8 @@ settings.py:
 
 ======================================================================
 
-### Migrating to v.1.3.0
+Migrating to v.1.3.0
+--------------------
 
  - Set the WHITELIST_IP_MAX_SUBNET_V4/V6 to desired max
 	whitelist IP subnets in settings.py
@@ -44,8 +53,10 @@ settings.py:
 
 ======================================================================
 
-### Migrating to v.1.2.3
- - Make sure to include `HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS` in settings.py.
+Migrating to v.1.2.3
+--------------------
+
+- Make sure to include `HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS` in settings.py.
 If you deploy Jira and want to set custom javascript parameters, set
 ```
 HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = { 'key' : 'value' # eg. 'customfield_23123': '1stline' }
@@ -57,12 +68,16 @@ HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = False
 
 ======================================================================
 
-### Migrating to v1.2.2
+Migrating to v1.2.2
+--------------------
+
 - Make sure to restart watcher.py
 
 ======================================================================
 
-### Migrating to >= v1.2
+Migrating to >= v1.2
+--------------------
+
 - Make sure to:
     - Set the RAPI_TIMEOUT in settings.py (see .dist)
     - Set the NODATA_IMAGE path in settings.py.dist
@@ -71,9 +86,11 @@ HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = False
 
 =====================================================================
 
-### Migrating to v1.0:
- - install python-ipaddr lib
- - update settings.py and urls.py with latest changes from dist files
+Migrating to v1.0:
+--------------------
+
+- install python-ipaddr lib
+- update settings.py and urls.py with latest changes from dist files
 Run:
 manage.py migrate
 
