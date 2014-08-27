@@ -7,11 +7,17 @@ This article describes the actions that are needed when upgrading from a previou
 Migrating to v.1.5.0
 --------------------
 
-- Perform south migration: python manage.py migrate
+- Perform south migration::
+
+python manage.py collectstatic
+
+python manage.py migrate
+
 - Update settings.py to settings.py.dist. A new context proccessor is deployed
 - Update urls.py to urls.py.dist. The graph url has been updated
-- Install ``python-bs4``.
-- We reccomend changing gunicorn logging to the system logging path (i.e. /var/www/) and not /tmp
+- New dependencies: ``python-bs4``, ``python-requests`` and ``python-markdown``. All packaged in Debian.
+- We reccomend changing gunicorn logging to the system logging path (i.e. /var/www/) and not /tmp. 
+- Also creating a logrotate script for the logfile.
 
 
 ======================================================================
