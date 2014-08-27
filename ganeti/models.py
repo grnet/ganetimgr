@@ -124,7 +124,7 @@ class InstanceManager(object):
                 results = [result for result in results if valre.search(result.name) is not None]
             else:
                 results = [result for result in results
-                           if '%s:%s' % (arg, val) in result.tags] 
+                           if '%s:%s' % (arg, val) in result.tags]
         return results
 
     def get(self, **kwargs):
@@ -276,7 +276,7 @@ class Instance(object):
             return ip
         except:
             return False
-        
+
     def set_params(self, **kwargs):
         job_id = self.cluster._client.ModifyInstance(self.name, **kwargs)
         self.lock(reason=_("modifying"), job_id=job_id)
@@ -299,7 +299,7 @@ class Instance(object):
 
     def set_admin_view_only_True(self):
         self.admin_view_only = True
-        
+
     def _pending_action_request(self, action):
         '''This should return either 1 or 0 instance actions'''
         actions = []
@@ -316,17 +316,17 @@ class Instance(object):
             for action in actions:
                 action.expire_now()
             return False
-        
-    
+
+
     def pending_reinstall(self):
         return self._pending_action_request(1)
-    
+
     def pending_destroy(self):
         return self._pending_action_request(2)
-    
+
     def pending_rename(self):
         return self._pending_action_request(3)
-            
+
 
 class Cluster(models.Model):
     hostname = models.CharField(max_length=128)
@@ -342,7 +342,7 @@ class Cluster(models.Model):
                                                 " on this cluster using the"
                                                 " admin interface")
     default_disk_template = models.CharField(max_length=255, default="plain")
-    use_gnt_network = models.BooleanField(default=False,
+    use_gnt_network = models.BooleanField(default=True,
                                           verbose_name="Cluster uses gnt-network",
                                       help_text="Set to True only if you use gnt-network.")
     disable_instance_creation = models.BooleanField(default=False,
@@ -434,13 +434,13 @@ class Cluster(models.Model):
         users, orgs, groups, instanceapps, networks = preload_instance_data()
         retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks) for info in instances]
         return retinstances
-    
+
     def force_cluster_cache_refresh(self, instance):
         '''Used in cases of actions that could potentially lock the cluster
         thus preventing users from listing, even for some seconds, their instances
         and delay node listing for admins
         '''
-        retinstances = []        
+        retinstances = []
         instances = self._client.GetInstances(bulk=True)
         for i in instances:
             if i['name'] == instance:
@@ -484,14 +484,14 @@ class Cluster(models.Model):
             cache.set("cluster:%s:info" % self.slug, info, 180)
 
         return info
-    
+
     def list_cluster_nodes(self):
         nodes = cache.get("cluster:%s:listnodes" % self.slug)
         if nodes is None:
             nodes = self._client.GetNodes()
             cache.set("cluster:%s:listnodes" % self.slug, nodes, 180)
         return nodes
-    
+
     def get_cluster_nodes(self):
         nodes = cache.get("cluster:%s:nodes" % self.slug)
         if nodes is None:
@@ -526,7 +526,7 @@ class Cluster(models.Model):
             nodes = cachenodes
             cache.set("cluster:%s:nodes" % self.slug, nodes, 180)
         return nodes
-    
+
     def get_available_nodes(self, node_group, number_of_nodes):
         ret_nodes = []
         nodes = self.get_cluster_nodes()
@@ -539,8 +539,8 @@ class Cluster(models.Model):
                 continue
             ret_nodes.append(n['name'])
         return ret_nodes[0:number_of_nodes]
-       
-    
+
+
     def get_node_groups(self):
         info = cache.get('cluster:%s:nodegroups' %self.slug)
         if info is None:
@@ -555,7 +555,7 @@ class Cluster(models.Model):
             info = self._client.GetNetworks(bulk=True)
             cache.set('cluster:%s:networks' %self.slug, info, 180)
         return info
-    
+
     def get_node_group_networks(self, nodegroup):
         # This gets networks per nodegroup as received via a GetNetworks RAPI call
         # We then perform a check for the existing networks in database
@@ -582,7 +582,7 @@ class Cluster(models.Model):
                     group_dict['type'] = group[1]
                     group_dict['free_count'] = None
                     group_dict['reserved_count'] = None
-                    if group_dict['type'] == 'routed':  
+                    if group_dict['type'] == 'routed':
                         group_dict['free_count'] = net['free_count']
                         group_dict['reserved_count'] = net['reserved_count']
                     nodegroupsnets.append(group_dict)
@@ -599,9 +599,9 @@ class Cluster(models.Model):
             if self.network_set.filter(cluster_default=True, link=brnet.link):
                 brnet_dict['defaultnet'] = True
             nodegroupsnets.append(brnet_dict)
-        nodegroupsnets = sorted(nodegroupsnets, key=lambda k: k['network']) 
+        nodegroupsnets = sorted(nodegroupsnets, key=lambda k: k['network'])
         return nodegroupsnets
-    
+
     def get_node_group_stack(self):
         groups = self.get_node_groups()
         group_stack = []
@@ -618,10 +618,10 @@ class Cluster(models.Model):
                     group_dict['vgs'].append(tag.replace('vg:', ''))
             group_stack.append(group_dict)
         return group_stack
-    
+
     def get_cluster_instances(self):
         return self._client.GetInstances()
-    
+
     def get_job_list(self):
         info = self._client.GetJobs(bulk=True)
         for i in info:
@@ -629,7 +629,7 @@ class Cluster(models.Model):
             i['start_time'] = "%s" %(datetime.fromtimestamp(int(i['start_ts'][0])).strftime('%Y-%m-%d %H:%M:%S'))
             i['ops'][0]['OP_ID'] = i['ops'][0]['OP_ID'].replace("OP_",'').replace("_",' ').lower().capitalize()
         return info
-    
+
     def get_job(self, job_id):
         return self._client.GetJobStatus(job_id)
 
@@ -664,7 +664,7 @@ class Cluster(models.Model):
             except GanetiApiError, Exception:
                 info = None
         return info
-        
+
     def setup_vnc_forwarding(self, instance):
         password = User.objects.make_random_password(length=8)
         info = self.get_instance_info(instance)
@@ -694,7 +694,7 @@ class Cluster(models.Model):
         return job_id
 
     def reinstall_instance(self, instance, action):
-        
+
         def map_ssh_user(user, group=None, path=None):
             if group is None:
                 if user == "root":
@@ -707,7 +707,7 @@ class Cluster(models.Model):
                 else:
                     path = "/home/%s/.ssh/authorized_keys" % user
             return user, group, path
-        
+
         action_os = action.operating_system
         if action.operating_system == 'noop':
             action_os = "none"
@@ -791,28 +791,28 @@ class Cluster(models.Model):
         if instanceObj.needsreboot:
             self.untag_instance(instance, ["%s:needsreboot" %GANETI_TAG_PREFIX])
         return job_id
-    
+
     def tag_instance(self, instance, tags):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         job_id = self._client.AddInstanceTags(instance, tags)
         self._lock_instance(instance, reason="tagging", job_id=job_id)
         return job_id
-    
+
     def untag_instance(self, instance, tags):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         job_id = self._client.DeleteInstanceTags(instance, tags)
         self._lock_instance(instance, reason="untagging", job_id=job_id)
         return job_id
-    
+
     def migrate_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
         job_id = self._client.MigrateInstance(instance)
         self._lock_instance(instance, reason="migrating", job_id=job_id)
         return job_id
-        
+
 
     def create_instance(self, name=None, disk_template=None, disks=None,
                         nics=None, os=None, memory=None, vcpus=None, tags=None,
@@ -834,16 +834,16 @@ class Cluster(models.Model):
 
         if disk_template is None:
             disk_template = self.default_disk_template
-            
+
         nodesdict = {}
         if nodes is not None:
             nodesdict['pnode'] = nodes[0]
             if len(nodes) == 2:
                 nodesdict['snode'] = nodes[1]
-                
-        
-        
-        
+
+
+
+
         job_id = self._client.CreateInstance(mode="create", name=name, os=os,
                                              disk_template=disk_template,
                                              disks=disks, nics=nics,
@@ -993,32 +993,32 @@ class InstanceAction(models.Model):
                 self.save()
         return self.has_expired()
     activation_key_expired.boolean = True
-    
+
     def has_expired(self):
-        
+
         expiration_date = timedelta(days=settings.INSTANCE_ACTION_ACTIVE_DAYS)
         return self.activation_key == self.ACTIVATED or \
                (self.filed + expiration_date <= datetime.now())
     has_expired.boolean = True
-    
+
     def expire_now(self):
         self.activation_key = self.ACTIVATED
         self.save()
 
     def send_activation_email(self, site):
-       
+
         ctx_dict = {'activation_key': self.activation_key,
                     'expiration_days': settings.INSTANCE_ACTION_ACTIVE_DAYS,
                     'site': site}
         subject = "test"
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
-        
+
         message = render_to_string('instance_actions/action_mail.txt',
                                    ctx_dict)
         self.user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
-        
-       
+
+
 def parseQuery(response):
     field_dict = {}
     data = response['data']
@@ -1043,4 +1043,4 @@ def parseQuerysimple(response):
         reslist.append(res_list)
     return reslist
 
-    
+

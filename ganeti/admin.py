@@ -19,12 +19,16 @@ from django.contrib import admin
 from models import *
 from django.forms import PasswordInput
 
+
 class ClusterAdmin(admin.ModelAdmin):
     list_display = ('hostname', 'description')
+    exclude = ('fast_create', 'use_gnt_network')
+
 
 class NetworkAdmin(admin.ModelAdmin):
     list_display = ('description', 'cluster', 'cluster_default', 'mode', 'link')
     list_filter = ('cluster',)
+
 
 class InstanceActionAdmin(admin.ModelAdmin):
     list_display = ('instance', 'cluster', 'action', 'action_value', 'activation_key')
