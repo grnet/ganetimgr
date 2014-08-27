@@ -1058,7 +1058,7 @@ def instance(request, cluster_slug, instance):
                                  " you have not set an \"Allowed From\" address." +
                                  " To access your instance from a specific network range," +
                                  " you can set it via the instance configuration form")
-    if instance.needsreboot :
+    if instance.needsreboot:
         messages.add_message(request, messages.ERROR,
                                  "You have modified one or more of your instance's core configuration components " +
                                  "(any of network adapter, hard disk type, boot device, cdrom)."
