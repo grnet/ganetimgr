@@ -103,7 +103,7 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     		// Found many disks, let's sum
     		var total = 0;
     		for (var i = 0;i < xm.length; i++){
-    			
+
     			var x = xm[i].substring(0,xm[i].length - 3);
         		var x_unit = (
         			xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ? 1000 : (
@@ -113,15 +113,15 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         				)
         			);
             	total += parseInt( x * x_unit, 10 );
-            	
-            	
+
+
     		}
     		return total;
-    		
+
     	}
     	else{
         var x = a.substring(0,a.length - 3);
-        
+
         var x_unit = (
         			a.substring(a.length - 2, a.length) == "MB" ? 1000 : (
         				a.substring(a.length - 2, a.length) == "GB" ? 1000000 : (
@@ -132,11 +132,11 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         return parseInt( x * x_unit, 10 );
        }
     },
- 
+
     "file-size-asc": function ( a, b ) {
         return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
- 
+
     "file-size-desc": function ( a, b ) {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
@@ -144,7 +144,7 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 var needsrebootset = false;
 
 $(document).ready( function(){
-    
+
 
 	var oTable = $('#vm_instance_table').dataTable( {
 		"bPaginate": true,
@@ -309,7 +309,7 @@ $(document).ready( function(){
                          if (full.hasOwnProperty("needsreboot")){
                           	  status = status + ' <span class="label label-important">Needs Reboot</span>';
                           	  if (needsrebootset === false){
-                          	  	
+
                           	  	msg = "One or more instances' core configuration components (any of network adapter, hard disk type, boot device, cdrom) have changed.<br/> " +
                                  " In order for these changes to take effect, you need to <strong>Reboot</strong> the instance(s). Tip: Search for 'Needs Reboot'";
             					$('#jsonmessage').html(msg);
@@ -327,7 +327,7 @@ $(document).ready( function(){
                          "mRender": function (data, type, full) {
                        	 status = "";
                        	 for(var i = 0; i < data.length; i++) {
-                       		status = '<span class="label label-info">'+data[i]+'</span> ' + status;	 
+                       		status = '<span class="label label-info">'+data[i]+'</span> ' + status;
                        	 }
                        	 if (data.length == 0){
                        		status = '<span class="label label-warning">-</span> ';
@@ -335,12 +335,12 @@ $(document).ready( function(){
                        	 ipv6s = full.ipv6address;
                        	 status6 = "";
                        	 for(var i = 0; i < ipv6s.length; i++) {
-                       		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;	 
+                       		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;
                        	 }
                        	 if (ipv6s.length >= 0){
                        		status = status+"<br>"+status6;
                        	 }
-                       	 
+
                          return status;
                          }
                      },
@@ -351,7 +351,7 @@ $(document).ready( function(){
                     	 "mRender": function (data, type, full) {
                            	 status = "";
                            	 for(var i = 0; i < data.length; i++) {
-                           		status = '<span class="label label-info">'+data[i]+'</span> ' + status;	 
+                           		status = '<span class="label label-info">'+data[i]+'</span> ' + status;
                            	 }
                            	 if (data.length == 0){
                            		status = '<span class="label label-warning">-</span> ';
@@ -359,7 +359,7 @@ $(document).ready( function(){
                            	 /*ipv6s = full.ipv6address;
                            	 status6 = ""
                            	 for(var i = 0; i < ipv6s.length; i++) {
-                           		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;	 
+                           		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;
                            	 }
                            	 if (ipv6s.length >= 0){
                            		status = status+"<br>"+status6
@@ -411,7 +411,7 @@ $(document).ready( function(){
                      return ret;
                      }
                      },
-                     {"mData":"users","bVisible":false, 
+                     {"mData":"users","bVisible":false,
                     	 "mRender": function (data, type, full) {
                     		 var users = '';
                     		 for(var i = 0; i < data.length; i++) {
@@ -440,7 +440,8 @@ $(document).ready( function(){
                     			if (full.status == 'Running'){
                     			 lock = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="stopbuttonpre btn btn-small btn-danger"><i class="icon-off"></i></a> ';
                     			 lock += '<a href="#" data-toggle="tooltip" title="Reboot" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="rebootbuttonpre btn btn-small btn-warning"><i class="icon-refresh"></i></a> ';
-                    			 consoleurl = "{% url instance-vnc 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', full.clusterslug.toString()).replace('instance_placeholder', full.name.toString());
+
+                    			 consoleurl = "{% if WEBSOCK_VNC_ENABLED %}{% url instance-novnc 'cluster_placeholder' 'instance_placeholder' %}{% else %}{% url instance-vnc 'cluster_placeholder' 'instance_placeholder' %}{% endif %}".replace('cluster_placeholder', full.clusterslug.toString()).replace('instance_placeholder', full.name.toString());
                     			 lock += '<a href="'+consoleurl+'" data-toggle="tooltip" title="Console" class="consolebutton btn btn-small btn-inverse"><i class="icon-terminal"></i></a> ';
                     			}
                     			if (full.status == 'Stopped'){
@@ -451,17 +452,17 @@ $(document).ready( function(){
                      }
                      },
                      {% endif %}
-                     
+
          ]
 } );
   $(window).resize(function() {
     clearTimeout(window.refresh_size);
     window.refresh_size = setTimeout(function() { update_size(); }, 250);
   });
-  
+
 var update_size = function() {
     $(oTable).css({ width: $(oTable).parent().width() });
-    oTable.fnAdjustColumnSizing(); 
+    oTable.fnAdjustColumnSizing();
  };
 
 });
@@ -473,7 +474,7 @@ var update_size = function() {
 		$( "#instDets" ).modal('show');
 		return false;
 	}
-	
+
 	function showTags(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Instance Owners: '+instance);
@@ -481,7 +482,7 @@ var update_size = function() {
 		$( "#instDets" ).modal('show');
 		return false;
 	}
-	
+
 	function showNotify(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Notify: '+instance);
@@ -497,7 +498,7 @@ var update_size = function() {
 		$( "#instDets" ).modal('show');
 		return false;
 	}
-	
+
 		function showIsolate(cluster, instance, action){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text(action + ': '+instance);
@@ -505,6 +506,6 @@ var update_size = function() {
 		$( "#instDets" ).modal('show');
 		return false;
 	}
-	
+
 </script>
 {% endblock %}
