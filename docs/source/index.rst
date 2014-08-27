@@ -6,6 +6,14 @@
 Welcome to ganetimgr's documentation!
 =====================================
 
+.. toctree::
+   :maxdepth: 2
+
+   install
+   admin
+   ganeti
+   upgrade
+
 
 What is ganetimgr?
 ==================
@@ -25,16 +33,20 @@ ganetimgr is a web platform that eases the provisioning of virtual machines over
 	|           |API client  +-----------+               |
 	+-----------+------------+           +---------------+
 
-Compatibility
-=============
-ganetimgr has been tested with ganeti versions 2.4-2.9. Unless something really big has changed with the ganeti REST API client, ganetimgr should be able to interoperate with later versions.
-
 Installation
 ============
 You can go through the installation at the :doc:`Install ganetimgr <install>` section.
 
-.. toctree::
-   :maxdepth: 2
+Upgrading
+=========
+If running an older version, look through the :doc:`Upgrade Notes <upgrade>` before upgrading to a new one.
 
-   install
-   admin
+Compatibility
+=============
+ganetimgr has been tested with ganeti versions 2.4-2.9. Unless something really big has changed with the ganeti REST API client, ganetimgr should be able to interoperate with later versions.
+
+Some ganeti changes that are required for some of ganetimgr's features to work, see :doc:`Ganeti Patches <ganeti>`
+
+
+
+
