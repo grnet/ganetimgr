@@ -22,6 +22,7 @@ from django.forms import PasswordInput
 
 class ClusterAdmin(admin.ModelAdmin):
     list_display = ('hostname', 'description')
+    prepopulated_fields = {'slug': ('hostname',)}
     exclude = ('fast_create', 'use_gnt_network')
 
 
