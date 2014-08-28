@@ -627,7 +627,7 @@ def rename_instance(request, cluster_slug, instance, action_id, action_value=Non
         if form.is_valid():
             data = form.cleaned_data
             action_value = data['hostname']
-            action = notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value)
+            action = notifyuseradvancedactions(user, cluster_slug, instance, action_id, action_value, None)
             return HttpResponse(json.dumps(action))
         else:
             return render_to_response('rename_instance.html',
