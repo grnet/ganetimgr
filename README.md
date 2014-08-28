@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/ganetimgr/badge/?version=stable)](https://readthedocs.org/projects/ganetimgr/?badge=stable)
+
 # ganetimgr
 
 `ganetimgr` is a web platform that eases the provisioning of virtual machines over multiple `ganeti` clusters.
