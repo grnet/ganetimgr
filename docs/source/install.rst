@@ -28,7 +28,7 @@ and then start the daemon with::
 Database Setup
 --------------
 
-Create a mysql user for ganetimgr. 
+Create a mysql user for ganetimgr.
 
 .. note::
 This is only defined on the project's settings.py so use a strong random password.
@@ -57,7 +57,7 @@ Get the source and checkout to latest stable::
     git checkout stable
 
 Create the required ``settings.py`` and ``urls.py`` files for the example files::
-    
+
     cd ganetimgr
     cp settings.py.dist settings.py
     cp urls.py.dist urls.py
@@ -91,7 +91,7 @@ You can use Google re-CAPTCHA during registration to avoid spam accounts. Genera
 You can use LDAP as an authentication backend. The package ``python-ldap`` needs to be installed.
 You need to uncomment the LDAPBackend entry in the ``AUTHENTICATION_BACKENDS`` and uncomment and edit accordingly the AUTH_LDAP_* variables. LDap authentication works simultaneously with normal account auth.
 
-``SERVER_MONITORING_URL`` is used to link ganeti node information with ganetimgr. This URL with the hostname appended 
+``SERVER_MONITORING_URL`` is used to link ganeti node information with ganetimgr. This URL with the hostname appended
 is used to create a link for every node. We use `servermon <https://github.com/servermon/servermon>`_ for node information.
 
 If you deploy a Jira installation then you can append a tab on the left of ganetimgr web interface via an issue
@@ -104,8 +104,8 @@ If you want to embed collectd statistics in ganetimgr instance view fill the::
 
     COLLECTD_URL
 
-There is a vm isolation feature for vms that are suspect of having been compromised. The admin or the user can 
-define a subnet from which the vm will remain accessible for further investigation. The next settings limit the 
+There is a vm isolation feature for vms that are suspect of having been compromised. The admin or the user can
+define a subnet from which the vm will remain accessible for further investigation. The next settings limit the
 subnet width (v4 and v6 accordingly) that is allowed to be used.::
 
     WHITELIST_IP_MAX_SUBNET_V4
@@ -134,7 +134,7 @@ As of v.1.5.0 there is an autodiscovery mechanism for the images.
 
     OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/', 'http://example.com/images/']
 
-All the given HTTP URLs from OPERATING_SYSTEMS_URLS will be searched for images. This discovers all images found on these URLS and makes them available for usage. 
+All the given HTTP URLs from OPERATING_SYSTEMS_URLS will be searched for images. This discovers all images found on these URLS and makes them available for usage.
 
 The desciption of the images can be automatically fetched from
 the contents of a .dsc file with the same name as the image. For example, if an image named debian-wheezy-x86_64.tar.gz, ganetimgr will look for a debian-wheezy-x86_64.tar.gz.dsc file in the same directory
@@ -164,7 +164,7 @@ the flatpages placeholders are inserted in the database and become available for
 
 VNC
 ^^^
-We provide 2 VNC options for the users. 
+We provide 2 VNC options for the users.
 
 - For the Java VNC applet to work, ``vncauthproxy`` must be running on the server. Setup instructions can be found :doc:`here </ganeti>`.
 - For setup instructions for the Websocker VNC applet, check :doc:`here </ganeti>`.

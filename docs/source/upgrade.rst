@@ -16,7 +16,7 @@ python manage.py migrate
 - Update settings.py to settings.py.dist. A new context proccessor is deployed
 - Update urls.py to urls.py.dist. The graph url has been updated
 - New dependencies: ``python-bs4``, ``python-requests`` and ``python-markdown``. All packaged in Debian.
-- We reccomend changing gunicorn logging to the system logging path (i.e. /var/www/) and not /tmp. 
+- We reccomend changing gunicorn logging to the system logging path (i.e. /var/www/) and not /tmp.
 - Also creating a logrotate script for the logfile.
 
 

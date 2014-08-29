@@ -77,7 +77,7 @@ Make sure your setup fullfils all the required [firewall rules](https://code.osu
 
 
 Modern browsers block ws:// connections initiated from HTTPS websites, so if you want to open wss:// connections and encrypt your noVNC sessions you need to enable TLS noVNC.
-You will also need signed a certificate for the 'example.domain.com' host and place it under twisted-vncauthproxy/keys directory. 
+You will also need signed a certificate for the 'example.domain.com' host and place it under twisted-vncauthproxy/keys directory.
 The paths are currently hardcoded so one needs to install these 2 files (keep the filenames)::
 
     twisted_vncauthproxy/keys/vncap.crt
