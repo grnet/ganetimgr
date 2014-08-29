@@ -52,3 +52,4 @@ Table of Contents
    admin
    ganeti
    upgrade
+   interface
