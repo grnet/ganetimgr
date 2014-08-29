@@ -1,4 +1,4 @@
-1.5.0 RELEASE
+1.5.3 RELEASE (stable)
 Features/Bugfixing release
 
 Requirements:
@@ -8,11 +8,12 @@ Requirements:
 
 New Features:
     - Add support for snf-image in operating_systems (settings.py)
+    - Add support for remote discovery and retrieval of available operating systems images
     - Code refactoring in accordance with the new ganeti RAPI client Query capability
-    - Decouple netowrk selection from cluster selection in application approval form 
+    - Decouple netowrk selection from cluster selection in application approval form
     - Add extra fields with more options in instance application approval
     - Add a live clusters job overview page
-    - Deploy an audit log mechanism to trach user actions
+    - Deploy an audit log mechanism to track user actions
     - Add new fields that render instance params
     - Add free address count in network info
     - Implement a compact cluster view
@@ -21,7 +22,6 @@ New Features:
     - Implement auto logout on session expiration
     - Implement support for multiple graphs for vms with many nics
 
-    
 Fixes/Enhancements:
     - Allow failed and approved-but-not-submitted applications to be resubmitted
     - Reset backend_message when re-submitting job
@@ -58,7 +58,8 @@ Fixes/Enhancements:
     - Add instance needsreboot
     - Add the 'safe' messages extra arg handler in messages placeholder
     - Generate a warning in case one or more instances carry the needsreboot attr
-    
+    - Ensure an instance is turned off when pressing the Rename button
+
 ===========
 
 
