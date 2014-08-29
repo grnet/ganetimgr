@@ -11,6 +11,8 @@ What is ganetimgr?
 ganetimgr is a Django project that servers as an administration frontend for (multiple) Ganeti clusters. It is developed as 
 the frontend of a VPS service.
 
+.. image:: _static/images/ss_01_main.png
+	:scale: 50 %
 
 A simplified architecture of ganetimgr is depicted here::
 
