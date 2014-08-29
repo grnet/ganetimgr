@@ -6,18 +6,13 @@
 Welcome to ganetimgr's documentation!
 =====================================
 
-.. toctree::
-   :maxdepth: 2
-
-   install
-   admin
-   ganeti
-   upgrade
-
-
 What is ganetimgr?
 ==================
-ganetimgr is a web platform that eases the provisioning of virtual machines over miltiple ganeti clusters. In essence, ganetimgr aims to be the frontend of a VPS service. A simplified architecture of ganetimgr is depicted here::
+ganetimgr is a Django project that servers as an administration frontend for (multiple) Ganeti clusters. It is developed as 
+the frontend of a VPS service.
+
+
+A simplified architecture of ganetimgr is depicted here::
 
 	+------------------------+           +---------------+
 	|                        |           |               |
@@ -43,10 +38,17 @@ If running an older version, look through the :doc:`Upgrade Notes <upgrade>` bef
 
 Compatibility
 =============
-ganetimgr has been tested with ganeti versions 2.4-2.9. Unless something really big has changed with the ganeti REST API client, ganetimgr should be able to interoperate with later versions.
+ganetimgr has been tested with ganeti versions 2.4-2.9. Due to the nature of the Ganeti RAPI, ganetimgr should be able to communicate with any Ganeti v.2.X cluster.
 
 Some ganeti changes that are required for some of ganetimgr's features to work, see :doc:`Ganeti Patches <ganeti>`
 
+Table of Contents
+=================
 
+.. toctree::
+   :maxdepth: 2
 
-
+   install
+   admin
+   ganeti
+   upgrade
