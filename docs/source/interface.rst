@@ -1,3 +1,4 @@
+===============
 Interface Guide
 ===============
 
@@ -49,6 +50,3 @@ An administrator can direclty send mail to vm owners. The Recipient field is dyn
 
 .. image:: _static/images/ss_15_admin_mail.png
 	:scale: 50 %
-
-
-
