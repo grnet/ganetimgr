@@ -33,18 +33,23 @@ $(document).ready( function(){
         	{% if not activated %}
             You are about to {% if action == 1 %}reinstall{% endif %}{% if action == 2 %}destroy{% endif %} {% if action == 3 %}rename{% endif %} instance: <strong>{{instance}}</strong>{% if action == 3 %} to <strong>{{action_value}}</strong>{% endif %}<br>
             {% if action != 3 %}
-            <h4>Warning!</h4> 
+            <h4>Warning!</h4>
             {% if action == 1 %}{% trans "All your data will be lost!" %}{% endif %}
             {% if action == 2 %}{% trans "Your instance will be deleted!" %}{% endif %}
             <br>{% trans "Make sure you have a recent backup of your data!" %}
             <br>{% trans "Once initiated, this process cannot be undone or stop!" %}
              {% endif %}
-                         <br>
-                         {% if action == 3 %}<div class="alert alert-warning"><strong>{% trans "Important" %}</strong>: {% trans "To rename an instance make sure that it is turned off" %}</div>{% endif %}
+                        <br>
+                        {% if action == 3 and instance_object.oper_state %}
+                          <div class="alert alert-warning"><strong>{% trans "Important" %}</strong>: {% trans "To rename an instance make sure that it is turned off" %}</div>
+                        {% endif %}
             <br>
              <form method="post" align="center" id="conf_form" class="form">
              {% csrf_token %}
-            		<button type="submit" class="btn btn-danger requestaction">{% if action == 1 %}{% trans "Re-install" %}{% endif %}{% if action == 2 %}{% trans "Destroy" %}{% endif %}{% if action == 3 %}{% trans "Rename" %}{% endif %}</button>
+            		<button {% if instance_object.oper_state and action == 3 %}disabled='disabled' {% endif %} type="submit" class="btn btn-danger requestaction">{% if action == 1 %}{% trans "Re-install" %}{% endif %}{% if action == 2 %}{% trans "Destroy" %}{% endif %}
+                {% if action == 3 %}
+                  {% trans "Rename" %}
+                {% endif %}</button>
              </form>
              {% else %}
               {% if action == 1 %}{% trans "Re-install" %}{% endif %}{% if action == 2 %}{% trans "Destroy" %}{% endif %} {% blocktrans %}on instance <strong>{{instance}}</strong> is no longer available. It has either expired or it is already performed.{% endblocktrans %}<br>

@@ -721,6 +721,7 @@ def reinstalldestreview(request, application_hash, action_id):
     cluster = action.cluster
     action_value = action.action_value
     activated = False
+    instance_object = Instance.objects.get(name=instance)
     if action.activation_key_expired():
         activated = True
     if request.method == 'POST':
@@ -765,11 +766,13 @@ def reinstalldestreview(request, application_hash, action_id):
                                                              'action': action_id,
                                                              'activated': activated,
                                                              'instance': instance,
+                                                             'instance_object': instance_object,
                                                              'hash': application_hash},
                               context_instance=RequestContext(request))
 
     elif request.method == 'GET':
         return render_to_response('verify_action.html', {'instance': instance,
+                                                         'instance_object': instance_object,
                                                          'action': action_id,
                                                          'action_value': action_value,
                                                          'cluster':cluster,
