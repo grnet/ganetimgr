@@ -28,12 +28,12 @@ and then start the daemon with::
 Database Setup
 --------------
 
-Create a mysql user for the ganetimgr. 
+Create a mysql user for ganetimgr. 
 
 .. note::
 This is only defined on the project's settings.py so use a strong random password.
 
-Login to the mysql interface::
+Login to the mysql server::
 
     mysql -u root -p
 
@@ -43,7 +43,6 @@ Create database and user::
     mysql> CREATE USER 'ganetimgr'@'localhost' IDENTIFIED BY <PASSWORD>;
     mysql> GRANT ALL PRIVILEGES ON ganetimgr.* TO 'ganetimgr';
     mysql> flush privileges;
-
 
 Pre-Setup
 ---------
@@ -57,13 +56,11 @@ Get the source and checkout to latest stable::
     cd ganetimgr
     git checkout stable
 
-
 Create the required ``settings.py`` and ``urls.py`` files for the example files::
     
     cd ganetimgr
     cp settings.py.dist settings.py
     cp urls.py.dist urls.py
-
 
 Settings.py
 -----------
@@ -72,38 +69,36 @@ There are a lot of parts of ganetimgr that are customizable. Most of them are ch
 Below are explanations for most of the settings:
 
 - Fill the default ``DATABASES`` dictionary with the credentials and info about the database you created before.
-- Set CACHE_BACKEND = "redis_cache.cache://127.0.0.1:6379/?timeout=1500".
+- Set ``CACHE_BACKEND`` to "redis_cache.cache://127.0.0.1:6379/?timeout=1500".
 - Set ``STATIC_URL`` to the relative URL where Django expects the static resources (e.g. '/static/')
 - Set ``STATIC_ROOT`` to the file path of the collected static resources (e.g. '/srv/www/ganetimgr/static/')
 - ``TEMPLATE_DIRS`` should contain the project's template folder (e.g. '/srv/www/ganetimgr/static/' )
-- The BRANDING dictionary allows you to customize the logo, moto and footer.
-  - You can create your own logo starting with the static/branding/logo.* files.
-- FEED_URL is an RSS feed that is displayed in the user login page.
-- SHOW_ADMINISTRATIVE_FORM toggles the admin info panel for the instance application form.
-- SHOW_ORGANIZATION_FORM does the same for the Organization dropdown menu.
+- The ``BRANDING`` dictionary allows you to customize the logo, moto and footer.
+  You can create your own logo starting with the static/branding/logo.* files.
+- ``FEED_URL`` is an RSS feed that is displayed in the user login page.
+- ``SHOW_ADMINISTRATIVE_FORM`` toggles the admin info panel for the instance application form.
+- ``SHOW_ORGANIZATION_FORM`` does the same for the Organization dropdown menu.
 - You can use use an analytics service (Piwik, Google Analytics) by editing ``templates/analytics.html`` and adding the JS code that is generated for you by the service. This is souruced from all the project's pages.
 
 External Services
 ^^^^^^^^^^^^^^^^^
 
-You can use Google re-CAPTCHA during registration to avoid spam accounts. Generate a key pair from [here](http://www.google.com/recaptcha) and fill these settings::
+You can use Google re-CAPTCHA during registration to avoid spam accounts. Generate a key pair from `here <http://www.google.com/recaptcha>`_ and fill these settings::
 
     RECAPTCHA_PUBLIC_KEY = '<key>'
     RECAPTCHA_PRIVATE_KEY = '<key>'
 
-
-You can use LDAP as an authentication backend. The package python-ldap needs to be installed.
+You can use LDAP as an authentication backend. The package ``python-ldap`` needs to be installed.
 You need to uncomment the LDAPBackend entry in the ``AUTHENTICATION_BACKENDS`` and uncomment and edit accordingly the AUTH_LDAP_* variables. LDap authentication works simultaneously with normal account auth.
 
 ``SERVER_MONITORING_URL`` is used to link ganeti node information with ganetimgr. This URL with the hostname appended 
-is used to create a link for every node. We use [servermon](https://github.com/servermon/servermon) for node information.
+is used to create a link for every node. We use `servermon <https://github.com/servermon/servermon>`_ for node information.
 
 If you deploy a Jira installation then you can append a tab on the left of ganetimgr web interface via an issue
 collection plugin that can be setup via::
 
     HELPDESK_INTEGRATION_JAVASCRIPT_URL
     HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS
-
 
 If you want to embed collectd statistics in ganetimgr instance view fill the::
 
@@ -139,7 +134,6 @@ As of v.1.5.0 there is an autodiscovery mechanism for the images.
 
     OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/', 'http://example.com/images/']
 
-
 All the given HTTP URLs from OPERATING_SYSTEMS_URLS will be searched for images. This discovers all images found on these URLS and makes them available for usage. 
 
 The desciption of the images can be automatically fetched from
@@ -168,16 +162,18 @@ We provide 6 flatpages placeholders (3 flatpages x 2 languages - English and Gre
 
 the flatpages placeholders are inserted in the database and become available for editing via the admin interface (Flat Pages).
 
-
 VNC
 ^^^
+We provide 2 VNC options for the users. 
 
-- For info on how to get the JAVA VNC applet to work, see the ganeti modifications page on the docs.
-- For setup instructions for the Websocker VNC applet, check the ganeti modification docs.
+- For the Java VNC applet to work, ``vncauthproxy`` must be running on the server. Setup instructions can be found :doc:`here </ganeti>`.
+- For setup instructions for the Websocker VNC applet, check :doc:`here </ganeti>`.
+
 There are three relevant options here:
-- WEBSOCK_VNC_ENABLED enables/disabled the options for the noVNC console
-- NOVNC_PROXY defines the host vncauthproxy is running (default is 'localhost:8888')
-- NOVNC_USE_TLS specifies the use or not of TLS in the connection. For cert info look at the installation docs.
+
+- ``WEBSOCK_VNC_ENABLED`` enables/disabled the options for the noVNC console.
+- ``NOVNC_PROXY`` defines the host vncauthproxy is running (default is 'localhost:8888').
+- ``NOVNC_USE_TLS`` specifies the use or not of TLS in the connection. For cert info look at :doc:`here </ganeti>`.
 
 
 Install
@@ -249,7 +245,6 @@ Create (or edit) an nginx vhost with the following::
 Restart nginx::
 
     service nginx restart
-
 
 End
 ---
