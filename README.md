@@ -1,5 +1,3 @@
-[![Documentation Status](https://readthedocs.org/projects/ganetimgr/badge/?version=stable)](https://readthedocs.org/projects/ganetimgr/?badge=stable)
-
 # ganetimgr
 
 `ganetimgr` is a web platform that eases the provisioning of virtual machines over multiple `ganeti` clusters.
@@ -18,6 +16,9 @@ In essence, ganetimgr aims to be the frontend of a VPS service.
 This is the main repository. The code can also be found at [code.grnet.gr](https://code.grnet.gr/projects/ganetimgr).
 
 For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.org/en/latest/) page.
+
+[![Documentation Status](https://readthedocs.org/projects/ganetimgr/badge/?version=stable)](https://readthedocs.org/projects/ganetimgr/?badge=stable)
+
 
 =====================================================================
 
