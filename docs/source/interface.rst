@@ -50,6 +50,24 @@ Main view
 ---------
 The admin main view lists all the vms from all the clusters ganetimgr knows about. The interaction with the vm is the same as a regular users.
 
+Cluster Info
+------------
+
+Nodes view
+----------
+
+Jobs
+----
+
+Audit Log
+---------
+
+Applications
+------------
+
+Instance Owners
+---------------
+
 Statistics
 ----------
 The statistics page shows data from all the clusters that ganetimgr knows about. There is a view for administrering applications (approving/denying the pending ones, viewing past ones), viewing interesting users (users and vm associations, inactive users, etc...).
