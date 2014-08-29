@@ -69,7 +69,7 @@ MEDIA_ROOT = ''
 MEDIA_URL = ''
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '!c&bm88vo=gby*vxf2gydv8hc!+f+eo+yu&!g&!)#n5quwsr82'
+SECRET_KEY = <CHANGE_ME>
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -91,7 +91,7 @@ MIDDLEWARE_CLASSES = (
     'middleware.UserMessages.UserMessageMiddleware',
 )
 
-STATIC_URL = 'https://example.com/static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = '/path/to/static/'
 
 # Additional locations of static files
@@ -343,5 +343,3 @@ FLATPAGES = {
              }
 
 MARKDOWN_EDITOR_SKIN = 'simple'
-
-GRAPPELLI_ADMIN_TITLE = 'Ganetimgr'
