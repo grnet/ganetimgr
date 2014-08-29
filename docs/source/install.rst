@@ -28,7 +28,10 @@ and then start the daemon with::
 Database Setup
 --------------
 
-Create a mysql user for the ganetimgr. This is only defined on the project's settings.py so use a strong random password
+Create a mysql user for the ganetimgr. 
+
+.. note::
+This is only defined on the project's settings.py so use a strong random password.
 
 Login to the mysql interface::
 
