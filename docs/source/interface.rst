@@ -22,12 +22,12 @@ There is a statistics view that shows graphs and data about the user (stats , ac
 This is the profile settings page. The user can change the profile full name, the password or the registered email address. Also SSH key management.
 The SSH keys defined here are auto-injected to the vms when an instance application is approved by the admins.
 
-.. image:: _static/images/ss_03_user_profile.png
+.. image:: _static/images/ss_04_user_profile.png
 	:scale: 50 %
 
 The instance application form. The user requests the resources needed and contact information.
 
-.. image:: _static/images/ss_03_user_profile.png
+.. image:: _static/images/ss_05_user_application.png
 	:scale: 50 %
 
 
