@@ -48,6 +48,7 @@ Pre-Setup
 Get the source and checkout to latest stable::
 
     mkdir /srv/www/
+    mkdir /var/log/ganetimgr
     cd /srv/www/
     git clone https://code.grnet.gr/git/ganetimgr
     cd ganetimgr
@@ -199,7 +200,6 @@ To get the admin interface files, invoke collectstatic::
 
 Run the watcher.py::
 
-    mkdir /var/log/ganetimgr
     ./watcher.py
 
 
@@ -218,8 +218,6 @@ Create the gunicorn configuration file (/etc/gunicorn.d/ganetimgr)::
             '--workers=2',
             '--worker-class=egg:gunicorn#gevent',
             '--timeout=30',
-            '--debug',
-            '--log-level=debug',
             '--log-file=/var/log/ganetimgr/ganetimgr.log',
         ),
     }
@@ -242,10 +240,6 @@ Create (or edit) an nginx vhost with the following::
    }
 
    location / {
-          proxy_pass http://127.0.0.1:8088;
-   }
-
-   location /admin {
           proxy_pass http://127.0.0.1:8088;
    }
 
