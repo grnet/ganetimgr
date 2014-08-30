@@ -3,24 +3,24 @@ Features/Bugfixing release
 
 Requirements:
 	- Perform south migration: python manage.py migrate
-	- Update settings.py to settings.py.dist. A new context proccessor is deployed
+	- Update settings.py to settings.py.dist. A new context processor is deployed
 	- Update urls.py to urls.py.dist. The graph url has been updated
 
 New Features:
     - Add support for snf-image in operating_systems (settings.py)
     - Add support for remote discovery and retrieval of available operating systems images
     - Code refactoring in accordance with the new ganeti RAPI client Query capability
-    - Decouple netowrk selection from cluster selection in application approval form
+    - Decouple network selection from cluster selection in application approval form
     - Add extra fields with more options in instance application approval
     - Add a live clusters job overview page
     - Deploy an audit log mechanism to track user actions
-    - Add new fields that render instance params
+    - Add new fields that render instance parameters
     - Add free address count in network info
     - Implement a compact cluster view
     - Switch to the new ganeti API client
     - Re-implement fetch functions to match new API client features
     - Implement auto logout on session expiration
-    - Implement support for multiple graphs for vms with many nics
+    - Implement support for multiple graphs for VMs with many network interfaces
 
 Fixes/Enhancements:
     - Allow failed and approved-but-not-submitted applications to be resubmitted
@@ -34,7 +34,7 @@ Fixes/Enhancements:
     - Fix issue with disk size not being properly calculated (was 1000 instead of 1024)
     - Fix issue with single disk units sorting
     - Remove network field from admin
-    - Change instance application review form logic to match instance params
+    - Change instance application review form logic to match instance parameters
     - Minor Javascript syntax fixes
     - Add disks columns in user/group instances view
     - Get number of instances in cluster aggregated info function
@@ -42,7 +42,7 @@ Fixes/Enhancements:
     - Update nodes view with cluster filtering and instances listing
     - Provide better visual feedback on start, stop, reboot
     - Add default disk template and disabled nodegroup formatting
-    - Patch the Django pass reset form with more informative msg
+    - Patch the Django pass reset form with more informative messages
     - Filter only active users in user mailing functions
     - Add a __unicode__ method to user profile model
     - Cleanup application review form
@@ -55,9 +55,9 @@ Fixes/Enhancements:
     - Introduce 2 timeout variables to curl config of cluster _client
     - Minor fix in disk templates parsing
     - Switch to different source of info for disk templates in cluster html template
-    - Add instance needsreboot
+    - Add instance 'needsreboot' tag
     - Add the 'safe' messages extra arg handler in messages placeholder
-    - Generate a warning in case one or more instances carry the needsreboot attr
+    - Generate a warning in case one or more instances carry the 'needsreboot' tag
     - Ensure an instance is turned off when pressing the Rename button
 
 ===========
