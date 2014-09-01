@@ -8,7 +8,7 @@ ganetimgr is the frontend to a VPS service, albeit without a pricing component. 
 A user can't create a vm by themself, they needs to submit an instance application which needs to be approved by an administrator for the vm to be created.
 
 User View
-=========
+^^^^^^^^^
 
 Main view
 ---------
@@ -42,7 +42,7 @@ The instance application form. The user requests the resources needed and contac
 
 
 Admin view
-==========
+^^^^^^^^^^
 
 The administrator has access to quite a few more views.
 
@@ -52,21 +52,42 @@ The admin main view lists all the vms from all the clusters ganetimgr knows abou
 
 Cluster Info
 ------------
+Real-time lookup of cluster-wide properties of a specific cluster.
+
+.. image:: _static/images/cluster_info.png
+	:scale: 50 %
+
 
 Nodes view
 ----------
 
+List of all available hardware nodes with important resources for easy sorting. Ability to filter based on Ganeti node status (master, master-candidate, regular, drained, offline).
+
+.. image:: _static/images/ss_10_admin_node.png
+	:scale: 50 %
+
 Jobs
 ----
+Real-time view of the cluster(s) job queue. Ability to sort based on job status (running, success, failed, waiting) and per cluster).
+
+.. image:: _static/images/jobs.png
+	:scale: 50 %
+
 
 Audit Log
 ---------
 
+Logging of vm-related user initiated events such as Instance shutdown/reboot/startup/
+
+.. image:: _static/images/audit-log.png
+	:scale: 50 %
+
 Applications
 ------------
 
-Instance Owners
----------------
+.. image:: _static/images/applications.png
+	:scale: 50 %
+
 
 Statistics
 ----------
