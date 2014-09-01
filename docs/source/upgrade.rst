@@ -9,9 +9,11 @@ Migrating to v.1.5.3
 
 - Perform south migration::
 
-python manage.py collectstatic
-
 python manage.py migrate
+
+- Collect static files::
+
+python manage.py collectstatic
 
 - Update settings.py to settings.py.dist. A new context proccessor is deployed
 - Update urls.py to urls.py.dist. The graph url has been updated
