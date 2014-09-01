@@ -4,7 +4,7 @@ Upgrading
 
 This article describes the actions that are needed when upgrading from a previous version of Gametimgr.
 
-Migrating to v.1.5.0
+Migrating to v.1.5.3
 --------------------
 
 - Perform south migration::
