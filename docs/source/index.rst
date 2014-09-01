@@ -8,7 +8,7 @@ Welcome to ganetimgr's documentation!
 
 What is ganetimgr?
 ==================
-ganetimgr is a Django project that servers as an administration frontend for (multiple) Ganeti clusters. It is developed as
+ganetimgr is a Django project that serves as an administration frontend for (multiple) Ganeti clusters. It is developed as
 the frontend of a VPS service.
 
 .. image:: _static/images/ss_01_main.png
