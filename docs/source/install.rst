@@ -31,7 +31,7 @@ Database Setup
 Create a mysql user for ganetimgr.
 
 .. note::
-This is only defined on the project's settings.py so use a strong random password.
+    This is only defined on the project's settings.py so use a strong random password.
 
 Login to the mysql server::
 
