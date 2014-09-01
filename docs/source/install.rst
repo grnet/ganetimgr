@@ -2,7 +2,17 @@
 Installation Instructions
 =========================
 
-We test (and use) ganetimgr on Debian Stable. This guides documents how to install it on Debian Stable with Nginx, gunicorn and Mysql.
+We test (and use) ganetimgr on the latest stable version of Debian. We also prefer using the Debian packages for Django and any python dependencies instead of using pip and virtualenv. That way we don't have to worry about any of the upstream projects breaking anything and we have quicker/easier security updates. 
+
+This guide documents how to install ganetimgr with the following software:
+
+- Debian Stable, the base OS
+- gunicorn with gevent, it runs the Django project
+- Nginx, the web server that serves the static content and proxies to gunicorn
+- Mysql, the database backend
+- Redis, as Django's caching backend. Stores session info and caches data
+- Beanstalkd, used by worker.py
+
 Any feedback on how to install under different circumstances is welcome.
 
 Install packages
