@@ -8,12 +8,10 @@ Migrating to v.1.5.3
 --------------------
 
 - Perform south migration::
-
-python manage.py migrate
+    python manage.py migrate
 
 - Collect static files::
-
-python manage.py collectstatic
+    python manage.py collectstatic
 
 - Update settings.py to settings.py.dist. A new context proccessor is deployed
 - Update urls.py to urls.py.dist. The graph url has been updated
@@ -66,6 +64,7 @@ Migrating to v.1.2.3
 --------------------
 
 - Make sure to include `HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS` in settings.py.
+
 If you deploy Jira and want to set custom javascript parameters, set
 ```
 HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = { 'key' : 'value' # eg. 'customfield_23123': '1stline' }
@@ -100,8 +99,9 @@ Migrating to v1.0:
 
 - install python-ipaddr lib
 - update settings.py and urls.py with latest changes from dist files
-Run:
-manage.py migrate
+
+Run::
+    manage.py migrate
 
 If your web server is nginx, consider placing:
 ```
