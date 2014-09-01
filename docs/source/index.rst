@@ -40,7 +40,7 @@ If running an older version, look through the :doc:`Upgrade Notes <upgrade>` bef
 
 Compatibility
 =============
-ganetimgr has been tested with ganeti versions 2.4-2.9. Due to the nature of the Ganeti RAPI, ganetimgr should be able to communicate with any Ganeti v.2.X cluster.
+ganetimgr has been tested with ganeti versions 2.4-2.10. Due to the nature of the Ganeti RAPI, ganetimgr should be able to communicate with any Ganeti v.2.X cluster.
 
 Some ganeti changes that are required for some of ganetimgr's features to work, see :doc:`Ganeti Patches <ganeti>`
 
