@@ -39,6 +39,13 @@ The instance application form. The user requests the resources needed and contac
 .. image:: _static/images/ss_05_user_application.png
 	:scale: 50 %
 
+History
+-------
+
+User can view a timeline of the events for all his vms.
+
+.. image:: _static/images/history.png
+	:scale: 50 %
 
 
 Admin view
