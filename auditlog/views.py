@@ -42,7 +42,7 @@ def auditlog_json(request):
         entrydict['user'] = entry.requester.username
         entrydict['user_id'] = entry.requester.id
         entrydict['user_href'] = "%s"%(reverse("user-info",
-                    kwargs={'type': 'user', 'usergroup':request.user.username}
+                    kwargs={'type': 'user', 'usergroup':entry.requester.username}
                     ))
         entrydict['job_id'] = entry.job_id
         entrydict['instance'] = entry.instance
