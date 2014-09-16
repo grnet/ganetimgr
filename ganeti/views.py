@@ -33,6 +33,7 @@ from django.contrib import messages
 from django.conf import settings
 
 from ganeti.models import *
+from ganeti.utils import prepare_clusternodes, get_nodes_with_graphs
 
 from auditlog.models import *
 from ganeti.forms import *
@@ -1223,80 +1224,82 @@ def get_clusternodes(request):
             if n['role'] == 'M':
                 status_dict['master'] += 1
         clusters = list(set([n['cluster'] for n in nodes]))
-        return render_to_response('cluster_nodes.html', {'nodes': nodes, 'clusters': clusters, 'statuses':status_dict, 'servermon':servermon_url},
-                                  context_instance=RequestContext(request))
+        return render_to_response(
+            'cluster_nodes.html',
+            {
+                'nodes': nodes,
+                'clusters': clusters,
+                'statuses': status_dict,
+                'servermon':servermon_url
+            },
+            context_instance=RequestContext(request)
+        )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
 
+
+@login_required
+def cluster_nodes(request, cluster_slug):
+    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+        res = get_nodes_with_graphs(cluster_slug=cluster_slug)
+        return HttpResponse(json.dumps(res), mimetype='application/json')
+    else:
+        return HttpResponse(
+            json.dumps({'error': 'Unauthorized access'}),
+            mimetype='application/json'
+        )
+
+
 @login_required
 def clusternodes_json(request):
-        if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
-            nodedetails = []
-            jresp={}
-            nodes = cache.get('allclusternodes')
-            bad_clusters = cache.get('badclusters')
-            bad_nodes = cache.get('badnodes')
-            if nodes is None:
-                nodes, bad_clusters, bad_nodes = prepare_clusternodes()
-                cache.set('allclusternodes', nodes, 90)
-            if bad_clusters:
-                messages.add_message(request, messages.WARNING,
-                                 "Some nodes may be missing because the" +
-                                 " following clusters are unreachable: " +
-                                 ", ".join([c.description for c in bad_clusters]))
-                cache.set('badclusters', bad_clusters, 90)
-            if bad_nodes:
-                messages.add_message(request, messages.ERROR,
-                                 "Some nodes appear to be offline: "+
-                                 ", ".join(bad_nodes))
-                cache.set('badnodes', bad_nodes, 90)
-            for node in nodes:
-                node_dict = {}
-                node_dict['name'] = node['name']
-                #node_dict['node_group'] = node['node_group']
-                node_dict['mem_used'] = node['mem_used']
-                node_dict['mfree'] = node['mfree']
-                node_dict['mtotal'] = node['mtotal']
-                node_dict['shared_storage'] = node['shared_storage']
-                node_dict['disk_used'] = node['disk_used']
-                node_dict['dfree'] = node['dfree']
-                node_dict['dtotal'] = node['dtotal']
-                node_dict['ctotal'] = node['ctotal']
-                node_dict['pinst_cnt'] = node['pinst_cnt']
-                node_dict['pinst_list'] = node['pinst_list']
-                node_dict['role'] = node['role']
-                node_dict['cluster'] = node['cluster']
-                nodedetails.append(node_dict)
-            jresp['aaData'] = nodedetails
-            #if messages:
-                #jresp['messages'] = messages
-            #cache.set(cache_key, jresp, 90)
-            res = jresp
-            return HttpResponse(json.dumps(res), mimetype='application/json')
-        else:
-            return HttpResponse(json.dumps({'error':"Unauthorized access"}), mimetype='application/json')
+    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
+        nodedetails = []
+        jresp = {}
+        nodes = None
+        nodes = cache.get('allclusternodes')
+        bad_clusters = cache.get('badclusters')
+        bad_nodes = cache.get('badnodes')
+        if nodes is None:
+            nodes, bad_clusters, bad_nodes = prepare_clusternodes()
+            cache.set('allclusternodes', nodes, 90)
+        if bad_clusters:
+            messages.add_message(request, messages.WARNING,
+                             "Some nodes may be missing because the" +
+                             " following clusters are unreachable: " +
+                             ", ".join([c.description for c in bad_clusters]))
+            cache.set('badclusters', bad_clusters, 90)
+        if bad_nodes:
+            messages.add_message(request, messages.ERROR,
+                             "Some nodes appear to be offline: "+
+                             ", ".join(bad_nodes))
+            cache.set('badnodes', bad_nodes, 90)
+        for node in nodes:
+            node_dict = {}
+            node_dict['name'] = node['name']
+            #node_dict['node_group'] = node['node_group']
+            node_dict['mem_used'] = node['mem_used']
+            node_dict['mfree'] = node['mfree']
+            node_dict['mtotal'] = node['mtotal']
+            node_dict['shared_storage'] = node['shared_storage']
+            node_dict['disk_used'] = node['disk_used']
+            node_dict['dfree'] = node['dfree']
+            node_dict['dtotal'] = node['dtotal']
+            node_dict['ctotal'] = node['ctotal']
+            node_dict['pinst_cnt'] = node['pinst_cnt']
+            node_dict['pinst_list'] = node['pinst_list']
+            node_dict['role'] = node['role']
+            node_dict['cluster'] = node['cluster']
+            nodedetails.append(node_dict)
+        jresp['aaData'] = nodedetails
+        res = jresp
+        return HttpResponse(json.dumps(res), mimetype='application/json')
+    else:
+        return HttpResponse(
+            json.dumps({'error': 'Unauthorized access'}),
+            mimetype='application/json'
+        )
 
-def prepare_clusternodes():
-    clusters = Cluster.objects.all()
-    p = Pool(15)
-    nodes = []
-    bad_clusters = []
-    bad_nodes = []
-    servermon_url = None
-    def _get_nodes(cluster):
-        try:
-            for node in cluster.get_cluster_nodes():
-                nodes.append(node)
-                if node['offline'] == True:
-                    bad_nodes.append(node['name'])
-        except (GanetiApiError, Exception):
-            cluster._client = None
-            bad_clusters.append(cluster)
-        finally:
-            close_connection()
-    p.imap(_get_nodes, clusters)
-    p.join()
-    return nodes, bad_clusters, bad_nodes
+
 
 def prepare_tags(taglist):
     tags = []
