@@ -200,11 +200,14 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 {% if not instance.adminlock or  user.is_superuser or perms.ganeti.view_instances %}
 	{% if not instance.is_locked %}
 		{% if instance.oper_state %}
+		
 			<div id="actions_container_inner" class="row-fluid" style="text-align:center;">
 				<div class="span12">
+				{% if not instance.node_group_locked %}
 				<div class="span6">
 				<div class="row-fluid"><div class="span12"><a class="btn btn-danger btn-small btn-fixed" id="shutdown" href="#"><i class="icon-off"></i> {% trans "Shutdown" %}</a></div></div>
 				<div class="row-fluid"><div class="span12"><a class="btn btn-warning  btn-small btn-fixed" id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div></div>
+				
 				{% if WEBSOCK_VNC_ENABLED %}
 				<div class="row-fluid"><div class="span12"><a class="btn btn-inverse  btn-small btn-fixed" id="consolenovnc" href="{% url instance-novnc cluster.slug instance.name %}"><i class='icon-terminal'></i> {% trans "Console" %} (WebSock)</a></div></div>
 				{% endif %}
@@ -216,12 +219,18 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#"><i class='icon-cloud-download'></i> {% trans "Reinstall..." %}</a></div></div>
 				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='icon-trash'></i> {% trans "Destroy..." %}</a></div></div>
 				</div>
+				{% else %}
+				<div class="span12">Due to maintenance, actions have been disabled on a group of instances that includes this instance.</div>  
+				{% endif %}
 				</div>
 			</div>
 		{% else %}
+		
 			<div id="actions_container_inner" class="row-fluid" style="text-align:center;">
 			<div class="span12">
+				{% if not instance.node_group_locked %}
 				<div class="span6">
+					
 				<div class="row-fluid"><div class="span12"><a class="btn btn btn-success btn-small btn-fixed " id="start" href="#"><i class="icon-play"></i> {% trans "Start" %}</a></div></div>
 				<div class="row-fluid"><div class="span12"><a class="btn btn-warning btn-small btn-fixed " id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div></div>
 				</div>
@@ -230,6 +239,9 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 				<div class="row-fluid"><div class="span12"><a class="btn btn-fixed btn-small btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#"><i class='icon-cloud-download'></i> {% trans "Reinstall..." %}</a></div></div>
 				<div class="row-fluid"><div class="span12"><a class="btn btn-fixed btn-small btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='icon-trash'></i> {% trans "Destroy..." %}</a></div></div>
 				</div>
+				{% else %}
+			<div class="span12">Due to maintenance, actions have been disabled on a group of instances that includes this instance.</div>  
+			{% endif %}
 				</div>
 			</div>
 			
