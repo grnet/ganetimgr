@@ -127,7 +127,7 @@
 
     <div class="row-fluid">
         <div class="row-fluid">
-        	<h2>{{ instance.name }} {% if instance.adminlock %}<span class="label label-important"><i class="icon-lock"></i> Admin Lock</span>{% endif %}
+        	<h2>{{ instance.name }} {% if instance.node_group_locked %}<span class="label label-important"><i class="icon-lock"></i> Actions Lock</span>{% endif %}{% if instance.adminlock %}<span class="label label-important"><i class="icon-lock"></i> Admin Lock</span>{% endif %}
         		{% if instance.isolate %}<span class="label label-inverse"><i class="icon-shield"></i> Isolated</span>{% endif %}</h2>
             <table class="table visoverflow">
                 <thead>
@@ -233,7 +233,7 @@
     <div class="row-fluid">
     <h2>{% trans "Configuration Options" %}</h2>
 
-
+{% if not instance.node_group_locked %}
 <form method="POST" class="form-horizontal" id="conf_form">
 	<table class="table">
        <thead>
@@ -351,7 +351,7 @@
 </tr>
 </table>
 </form>
-
+{% endif %}
         </div>
         </div>
        
