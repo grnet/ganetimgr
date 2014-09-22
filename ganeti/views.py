@@ -504,7 +504,9 @@ def generate_json(instance, user):
         inst_dict['status'] = "Generic cluster error"
         inst_dict['status_style'] = "important"
 
-    if i.adminlock:
+    # if instance is locked and
+    # the user is not an admin
+    if i.adminlock and not request.user.is_superuser:
         inst_dict['adminlock'] = True
 
     if i.isolate:
