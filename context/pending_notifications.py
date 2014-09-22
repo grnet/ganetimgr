@@ -18,7 +18,7 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-from apply.models import InstanceApplication, PENDING_CODES
+from apply.models import InstanceApplication, STATUS_PENDING
 from django.core.cache import cache
 
 def notify(request):
@@ -32,7 +32,7 @@ def notify(request):
             return res
         cres = cache.get('pendingapplications')
         if cres is None:
-            pend = InstanceApplication.objects.filter(status__in=PENDING_CODES)
+            pend = InstanceApplication.objects.filter(status=STATUS_PENDING)
             res.update(pending_count=pend.count())
             cache.set('pendingapplications', res, 45)
         else:
