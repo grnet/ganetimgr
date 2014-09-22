@@ -761,6 +761,14 @@ class Cluster(models.Model):
         else:
             return False
 
+    def check_node_group_lock_by_node(self, node):
+        n = self.get_node_info(node)
+        ng = self.get_node_group_info(n['group'])
+        for t in ng['tags']:
+            if t == 'locked':
+                return True
+        return False
+
     def destroy_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
