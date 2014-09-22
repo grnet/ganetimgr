@@ -438,6 +438,12 @@ $(document).ready( function(){
                     			if (full.hasOwnProperty('locked')){
                     				return '<div class="shortcuts"><span class="label label-inverse">Action Pending</span></div>';
                     			}
+                    			if (full.hasOwnProperty('node_group_locked')){
+                    				if (full.node_group_locked == true){
+                    					return '<div class="shortcuts"><span class="label label-inverse">Actions disabled due to maintainance</span></div>';
+                    				}
+                    			}
+                    			
                     			if (full.status == 'Running'){
                     			 lock = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="stopbuttonpre btn btn-small btn-danger"><i class="icon-off"></i></a> ';
                     			 lock += '<a href="#" data-toggle="tooltip" title="Reboot" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="rebootbuttonpre btn btn-small btn-warning"><i class="icon-refresh"></i></a> ';
