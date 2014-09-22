@@ -11,47 +11,57 @@
 
 $(document).ready( function(){
 	{% if pending %}
-			var oTable1 = $('#pending_instance_table').dataTable( {
-			"bPaginate": true,
-            "bLengthChange": true,
-            "bFilter": true,
-            "bSort": true,
-            "bDeferRender": true,
-            "bInfo": true,
-            "bAutoWidth": true,
-            "oLanguage": {
-            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
-            },
-            "sPaginationType": "bootstrap",
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-            "sPaginationType": "bootstrap",
-			"iDisplayLength": 25,
-	} );
-			oTable1.fnDraw();
+	var oTable1 = $('#pending_instance_table').dataTable( {
+		"bPaginate": true,
+        "bLengthChange": true,
+        "bFilter": true,
+        "bSort": true,
+        "bDeferRender": true,
+        "bInfo": true,
+        "bAutoWidth": true,
+        "oLanguage": {
+        	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
+        },
+        "sPaginationType": "bootstrap",
+        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+        "sPaginationType": "bootstrap",
+		"iDisplayLength": 25,
+	});
+	oTable1.fnDraw();
 	{% endif %}
 	{% if completed %}
-			var oTable2 = $('#completed_instance_table').dataTable( {
-				"bPaginate": true,
-	            "bLengthChange": true,
-	            "bFilter": true,
-	            "bSort": true,
-	            "bDeferRender": true,
-	            "bInfo": true,
-	            "bAutoWidth": true,
-	            "oLanguage": {
-	            	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
-	            },
-	            "sPaginationType": "bootstrap",
-	            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-	            "sPaginationType": "bootstrap",
-				"iDisplayLength": 25,
-		} );
-	
+	var oTable2 = $('#completed_instance_table').dataTable( {
+		"bPaginate": true,
+        "bLengthChange": true,
+        "bFilter": true,
+        "bSort": true,
+        "bDeferRender": true,
+        "bInfo": true,
+        "bAutoWidth": true,
+        "oLanguage": {
+        	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
+        },
+        "sPaginationType": "bootstrap",
+        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+        "sPaginationType": "bootstrap",
+		"iDisplayLength": 25,
+	} );
 	oTable2.fnDraw();
 	{% endif %}
 
+	// show approved and failed
+	var filters = $('.pending-filters .btn');
+	$('tr.approved, tr.failed').css({'display': 'none'});
+	filters.on('click', function () {
+		if ($(this).hasClass('active')) {
+			$(this).removeClass('active');
+			$('#pending_instance_table').find('tr.' + $(this).data('toggle')).css({'display': 'none'});
+		} else {
+			$(this).addClass('active');
+			$('#pending_instance_table').find('tr.' + $(this).data('toggle')).css({'display': 'table-row'});
+		}
+	});
 });
-
 </script>
 <style>
 .dropdown-menu.instanceopt{
@@ -64,9 +74,9 @@ $(document).ready( function(){
 {% block applications %}class="active"{% endblock %}
 
 {% block crumbs %}
-	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Instance Applications" %}</li>
-	    		{% endblock %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li class="active">{% trans "Instance Applications" %}</li>
+{% endblock %}
 
 {% block content %}
 
@@ -75,8 +85,13 @@ $(document).ready( function(){
     <div class="row-fluid">
         <div class="row-fluid">
         {% if pending %}
-        
+
             <h2>{% trans "Pending applications" %}</h2>
+
+<div class="pending-filters">
+	<button class="btn show-approved" data-toggle="approved">{% trans "Show Active" %}</button>
+	<button class="btn show-failed" data-toggle="failed">{% trans "Show Failed" %}</button>
+</div>
 
 <table class="table table-first-column-number data-table display full" id="pending_instance_table">
 <thead>
@@ -94,7 +109,7 @@ $(document).ready( function(){
 
 <tbody>
 {% for app in pending %}
-<tr>
+<tr class="{{ app.get_status_display }}">
     <td>{% if perms.apply.change_instanceapplication %}<a href="{% url application-review app.pk %}">{{ app.hostname }}</a>{% else %}{{ app.hostname }}{% endif %}</td>
     <td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td>
     <td>{{ app.instance_params.network|default_if_none:"&mdash;" }}</td>
