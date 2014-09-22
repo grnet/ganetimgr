@@ -475,6 +475,7 @@ def generate_json(instance, user):
     else:
         inst_dict['cluster'] = i.cluster.description
         inst_dict['clusterslug'] = i.cluster.slug
+        inst_dict['node_group_locked'] = i.cluster.check_node_group_lock_by_node(i.pnode)
     inst_dict['memory'] = memsize(i.beparams['maxmem'])
     inst_dict['disk'] = ", ".join(disksizes(i.disk_sizes))
     inst_dict['vcpus'] = i.beparams['vcpus']
@@ -499,6 +500,9 @@ def generate_json(instance, user):
         else:
             inst_dict['status'] = "%s, should be stopped" %inst_dict['status']
         inst_dict['status_style'] = "warning"
+    if i.status == 'ERROR_nodedown':
+        inst_dict['status'] = "Generic cluster error"
+        inst_dict['status_style'] = "important"
 
     if i.adminlock:
         inst_dict['adminlock'] = True
@@ -1050,7 +1054,7 @@ def instance(request, cluster_slug, instance):
             instance.osname = instance.osparams['img_id']
         except Exception:
             instance.osname = instance.os
-
+    instance.node_group_locked = instance.cluster.check_node_group_lock_by_node(instance.pnode)
     for (nic_i, link) in enumerate(instance.nic_links):
         if instance.nic_ips[nic_i] == None:
             instance.netw.append("%s"%(instance.nic_links[nic_i]))
@@ -1106,6 +1110,7 @@ def poll(request, cluster_slug, instance):
             instance.osname = instance.osparams['img_id']
         except Exception:
             instance.osname = instance.os
+        instance.node_group_locked = instance.cluster.check_node_group_lock_by_node(instance.pnode)
         return render_to_response("instance_actions.html",
                                   {'cluster':cluster,
                                    'instance': instance,
