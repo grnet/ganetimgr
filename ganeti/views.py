@@ -29,7 +29,6 @@ from django.core.context_processors import request
 from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
-from django.contrib import messages
 from django.conf import settings
 
 from ganeti.models import *
@@ -201,7 +200,7 @@ def clear_cache(request):
 def jobs_index_json(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         cluster_slug = request.GET.get('cluster', None)
-        messages = None
+        messages = ""
         p = Pool(20)
         jobs = []
         bad_clusters = []
@@ -310,9 +309,10 @@ def clusterdetails(request):
     else:
         return HttpResponseRedirect(reverse('user-instances'))
 
+
 @login_required
 def user_index_json(request):
-    messages = None
+    messages = ""
     cluster_slug = request.GET.get('cluster', None)
     if request.user.is_anonymous():
         action = {'error':_("Permissions' violation. This action has been logged and our admins will be notified about it")}
@@ -321,7 +321,12 @@ def user_index_json(request):
     instances = []
     bad_clusters = []
     bad_instances = []
+    locked_clusters = []
+
     def _get_instances(cluster):
+        locked = cluster.has_locked_nodes()
+        if locked:
+            locked_clusters.append(str(cluster))
         try:
             instances.extend(cluster.get_user_instances(request.user))
         except (GanetiApiError, Exception):
@@ -337,6 +342,7 @@ def user_index_json(request):
     j = Pool(80)
     user = request.user
     locked_instances = cache.get('locked_instances')
+
     def _get_instance_details(instance):
         try:
             if locked_instances is not None and locked_instances.has_key('%s'%instance.name):
@@ -364,6 +370,10 @@ def user_index_json(request):
         j.imap(_get_instance_details, instances)
         j.join()
 
+        if locked_clusters:
+            messages += 'Some clusters are under maintenance: <br>'
+            messages += ', '.join(locked_clusters)
+            messages += '.'
         if bad_instances:
             bad_inst_text = "Could not get details for " + str(len(bad_instances)) + " instances.<br> %s. Please try again later." %bad_instances
             if messages:
@@ -456,26 +466,30 @@ def user_sum_stats(request):
         return_dict = {'aaData': instances_stats_list}
         cache.set(cache_key_stats, return_dict, 120)
         instances_stats = return_dict
-
     return HttpResponse(json.dumps(instances_stats), mimetype='application/json')
+
 
 def generate_json(instance, user):
     jresp_list = []
     i = instance
     inst_dict = {}
     if not i.admin_view_only:
-        inst_dict['name_href'] = "%s"%(reverse("instance-detail",
-                        kwargs={'cluster_slug': i.cluster.slug, 'instance':i.name}
-                        ))
-
-    inst_dict['name'] =  i.name
+        inst_dict['name_href'] = "%s" % (
+            reverse(
+                'instance-detail',
+                kwargs={
+                    'cluster_slug': i.cluster.slug, 'instance': i.name
+                }
+            )
+        )
+    inst_dict['name'] = i.name
     if user.is_superuser or user.has_perm('ganeti.view_instances'):
         inst_dict['cluster'] = i.cluster.slug
         inst_dict['pnode'] = i.pnode
     else:
         inst_dict['cluster'] = i.cluster.description
         inst_dict['clusterslug'] = i.cluster.slug
-        inst_dict['node_group_locked'] = i.cluster.check_node_group_lock_by_node(i.pnode)
+    inst_dict['node_group_locked'] = i.cluster.check_node_group_lock_by_node(i.pnode)
     inst_dict['memory'] = memsize(i.beparams['maxmem'])
     inst_dict['disk'] = ", ".join(disksizes(i.disk_sizes))
     inst_dict['vcpus'] = i.beparams['vcpus']
@@ -504,9 +518,7 @@ def generate_json(instance, user):
         inst_dict['status'] = "Generic cluster error"
         inst_dict['status_style'] = "important"
 
-    # if instance is locked and
-    # the user is not an admin
-    if i.adminlock and not request.user.is_superuser:
+    if i.adminlock:
         inst_dict['adminlock'] = True
 
     if i.isolate:

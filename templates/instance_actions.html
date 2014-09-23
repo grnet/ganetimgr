@@ -200,10 +200,9 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 {% if not instance.adminlock or  user.is_superuser or perms.ganeti.view_instances %}
 	{% if not instance.is_locked %}
 		{% if instance.oper_state %}
-
 			<div id="actions_container_inner" class="row-fluid" style="text-align:center;">
 				<div class="span12">
-				{% if not instance.node_group_locked %}
+				{% if not instance.node_group_locked or user.is_superuser or perms.ganeti.view_instances %}
 				<div class="span6">
 				<div class="row-fluid"><div class="span12"><a class="btn btn-danger btn-small btn-fixed" id="shutdown" href="#"><i class="icon-off"></i> {% trans "Shutdown" %}</a></div></div>
 				<div class="row-fluid"><div class="span12"><a class="btn btn-warning  btn-small btn-fixed" id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div></div>
@@ -215,7 +214,9 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='icon-trash'></i> {% trans "Destroy..." %}</a></div></div>
 				</div>
 				{% else %}
-				<div class="span12">Due to maintenance, actions have been disabled on a group of instances that includes this instance.</div>
+				<div class="span12">Due to maintenance, actions have been disabled on a group of instances that includes this instance.
+					{% include "console-module.html" %}
+				</div>
 				{% endif %}
 				</div>
 			</div>
@@ -249,7 +250,6 @@ var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
 {% else %}
 	<div id="actions_container_inner" class="row-fluid">
 		<div class="span4" id="show_no_actions"><em>{% trans "Instance actions are disabled by the administrator" %}</em></div>
-		{% include "console-module.html" %}
 	</div>
 
 {% endif %}

@@ -602,6 +602,9 @@ class Cluster(models.Model):
         nodegroupsnets = sorted(nodegroupsnets, key=lambda k: k['network'])
         return nodegroupsnets
 
+
+
+
     def get_node_group_stack(self):
         groups = self.get_node_groups()
         group_stack = []
@@ -765,9 +768,19 @@ class Cluster(models.Model):
         n = self.get_node_info(node)
         ng = self.get_node_group_info(n['group'])
         for t in ng['tags']:
-            if t == 'locked':
+            # TODO: switch to 'locked' before releasing
+            if t == 'dev:mylock':
                 return True
         return False
+
+    # TODO: switch to 'locked' before releasing
+    def has_locked_nodes(self):
+        groups = self.get_node_groups()
+        for group in groups:
+            if 'dev:mylock' in group.get('tags'):
+                return True
+        return False
+
 
     def destroy_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
