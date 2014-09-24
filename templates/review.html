@@ -521,18 +521,19 @@ $(document).ready( function(){
         selnet.empty();
         var parsed_groups = [];
         for (var i=0; i<selected_ng.networks.length; i++) {
-            if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1){
+            if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1) {
                 selgroup = $('#gr_'+selected_ng.networks[i].type+'');
-            }
-            else{
+            } else {
                 parsed_groups.push(selected_ng.networks[i].type);
                 selnet.append($('<optgroup id="gr_'+selected_ng.networks[i].type+'" label="'+selected_ng.networks[i].type.capitalize()+'"></optgroup>'));
                 selgroup = $('#gr_'+selected_ng.networks[i].type+'');
             }
             selecttext = '';
-                    if ("{{application.instance_params.network}}" == selected_ng.networks[i].link && "{{application.instance_params.cluster}}" == selected_cluster.slug){
-                        selecttext = "selected='selected'";
-                    }
+            if (selgroup.attr('id') === 'gr_routed') {
+                if (selecttext === '') {
+                    selecttext = "selected='selected'";
+                }
+            }
             selgroup.append('<option \
                             data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
                             data-free="'+selected_ng.networks[i].free_count+'" \
