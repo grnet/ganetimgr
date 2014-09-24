@@ -740,7 +740,11 @@ def reinstalldestreview(request, application_hash, action_id):
     cluster = action.cluster
     action_value = action.action_value
     activated = False
-    instance_object = Instance.objects.get(name=instance)
+    try:
+        instance_object = Instance.objects.get(name=instance)
+    except ObjectDoesNotExist:
+        # This should occur only when user changes email
+        pass
     if action.activation_key_expired():
         activated = True
     if request.method == 'POST':
@@ -753,7 +757,8 @@ def reinstalldestreview(request, application_hash, action_id):
                                                              'instance': instance,
                                                              'hash': application_hash},
                               context_instance=RequestContext(request))
-            auditlog = auditlog_entry(request, "", instance, cluster.slug, save=False)
+            if action_id in [1, 2, 3]:
+                auditlog = auditlog_entry(request, "", instance, cluster.slug, save=False)
             if action_id == 1:
                 auditlog.update(action = "Reinstall")
                 jobid = cluster.reinstall_instance(instance, instance_action)
