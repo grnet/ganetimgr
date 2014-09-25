@@ -246,6 +246,7 @@ label.required { font-weight: bold; }
             <li {% block clusterinfo %}{% endblock %}><a href="{% url clusterdetails %}"><i class="icon-puzzle-piece"></i> <span>{% trans "Cluster Info" %}</span></a></li>
             <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
             <li {% block clusterjobs %}{% endblock %}><a href="{% url jobs %}"><i class="icon-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>
+            <li {% block nodegraphs %}{% endblock %}><a href="{% url cluster-get-nodes-graphs %}"><i class="icon-bar-chart"></i> <span>{% trans "Graphs" %}</span></a></li>
             {% endif %}
             <li {% block auditlog %}{% endblock %}><a href="{% url auditlog %}"><i class="icon-book"></i> <span>{% if user.is_superuser or perms.ganeti.view_instances %}{% trans "Audit Log" %}{% else %}{% trans "History" %}{% endif %}</span></a></li>
             <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>

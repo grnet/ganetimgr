@@ -30,6 +30,8 @@ from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.shortcuts import render
+from django.core.exceptions import PermissionDenied
 
 from ganeti.models import *
 from ganeti.utils import prepare_clusternodes, get_nodes_with_graphs
@@ -1263,19 +1265,60 @@ def get_clusternodes(request):
 
 
 @login_required
-def cluster_nodes(request, cluster_slug):
-    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
-        res = get_nodes_with_graphs(cluster_slug=cluster_slug)
-        return HttpResponse(json.dumps(res), mimetype='application/json')
+def cluster_nodes_graphs(request, cluster_slug=None):
+    nodes_string = request.GET.get('nodes', None)
+    if nodes_string:
+        nodes = nodes_string.split(',')
     else:
-        return HttpResponse(
-            json.dumps({'error': 'Unauthorized access'}),
-            mimetype='application/json'
-        )
+        nodes = None
+    form = GraphForm(request.POST or None)
+    if (
+        request.user.is_superuser
+        or
+        request.user.has_perm('ganeti.view_instances')
+    ):
+        if form.is_valid():
+            cluster = form.cleaned_data['cluster']
+            nodes_from_form = form.cleaned_data['nodes']
+            keyword_args = False
+            if cluster:
+                keyword_args = {'cluster_slug': cluster.slug}
+            if nodes_from_form:
+                get_data = '?nodes=%s' % (nodes_from_form)
+            else:
+                get_data = ''
+            if keyword_args:
+                return HttpResponseRedirect(
+                    '%s%s' % (
+                        reverse(
+                            'cluster-get-nodes-graphs',
+                            kwargs=keyword_args
+                        ), get_data
+                    )
+                )
+            else:
+                return HttpResponseRedirect(reverse('cluster-get-nodes-graphs'))
+
+        elif cluster_slug:
+            cluster = Cluster.objects.get(slug=cluster_slug)
+            initial_data = {}
+            if cluster:
+                initial_data.update({'cluster': cluster})
+            if nodes:
+                initial_data.update({'nodes': nodes_string})
+            form.initial = initial_data
+            res = get_nodes_with_graphs(
+                cluster_slug=cluster_slug, nodes=nodes
+            )
+            return render(request, 'nodes-graphs.html', {'form': form, 'results': res})
+        else:
+            return render(request, 'nodes-graphs.html', {'form': form})
+    else:
+        raise PermissionDenied
 
 
 @login_required
-def clusternodes_json(request):
+def clusternodes_json(request, cluster=None):
     if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
         nodedetails = []
         jresp = {}
@@ -1297,23 +1340,33 @@ def clusternodes_json(request):
                              "Some nodes appear to be offline: "+
                              ", ".join(bad_nodes))
             cache.set('badnodes', bad_nodes, 90)
+        if cluster:
+            try:
+                cluster = Cluster.objects.get(hostname=cluster)
+            except Cluster.DoesNotExist:
+                cluster = None
         for node in nodes:
-            node_dict = {}
-            node_dict['name'] = node['name']
-            #node_dict['node_group'] = node['node_group']
-            node_dict['mem_used'] = node['mem_used']
-            node_dict['mfree'] = node['mfree']
-            node_dict['mtotal'] = node['mtotal']
-            node_dict['shared_storage'] = node['shared_storage']
-            node_dict['disk_used'] = node['disk_used']
-            node_dict['dfree'] = node['dfree']
-            node_dict['dtotal'] = node['dtotal']
-            node_dict['ctotal'] = node['ctotal']
-            node_dict['pinst_cnt'] = node['pinst_cnt']
-            node_dict['pinst_list'] = node['pinst_list']
-            node_dict['role'] = node['role']
-            node_dict['cluster'] = node['cluster']
-            nodedetails.append(node_dict)
+            # raise Exception
+            if cluster is None or (cluster and node['cluster'] == cluster.slug):
+                node_dict = {}
+                node_dict['name'] = node['name']
+                # node_dict['node_group'] = node['node_group']
+                node_dict['mem_used'] = node['mem_used']
+                node_dict['mfree'] = node['mfree']
+                node_dict['mtotal'] = node['mtotal']
+                node_dict['shared_storage'] = node['shared_storage']
+                node_dict['disk_used'] = node['disk_used']
+                node_dict['dfree'] = node['dfree']
+                node_dict['dtotal'] = node['dtotal']
+                node_dict['ctotal'] = node['ctotal']
+                node_dict['pinst_cnt'] = node['pinst_cnt']
+                node_dict['pinst_list'] = node['pinst_list']
+                node_dict['role'] = node['role']
+                if cluster:
+                    node_dict['cluster'] = cluster.hostname
+                else:
+                    node_dict['cluster'] = node['cluster']
+                nodedetails.append(node_dict)
         jresp['aaData'] = nodedetails
         res = jresp
         return HttpResponse(json.dumps(res), mimetype='application/json')
@@ -1322,7 +1375,6 @@ def clusternodes_json(request):
             json.dumps({'error': 'Unauthorized access'}),
             mimetype='application/json'
         )
-
 
 
 def prepare_tags(taglist):

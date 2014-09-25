@@ -1762,7 +1762,7 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 }
 /* Large desktop */
 @media (min-width: 1200px) {
-  
+
 }
 @media (max-width: 1020px) {
   .content {
@@ -1816,7 +1816,7 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 }
 /* Portrait tablet to landscape and desktop */
 @media (min-width: 768px) and (max-width: 979px) {
-  
+
 }
 /* Landscape phone to portrait tablet */
 @media (max-width: 767px) {
@@ -1891,15 +1891,15 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 	position: absolute;
 }
 
-	
+
 .logoimg {
-    
+
     left: -7px;
     position: absolute;
     top: -10px;
     padding-bottom: 0px !important;
     margin-bottom: 0px !important;
-    
+
    }
 	.padwidget{
 		padding: 1em;
@@ -1915,3 +1915,8 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 	min-width: 130px !important;
 	max-width: 130px !important;
 }
+
+
+.margin-top20 {
+  margin-top: 20px;
+};

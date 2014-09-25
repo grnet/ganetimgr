@@ -24,24 +24,29 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_unicode
-from ganeti.models import Instance
+from ganeti.models import Instance, Cluster
 
 import re
 
 _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
 
+
 class tagsForm(forms.Form):
     tags = forms.CharField(required=False, help_text=ugettext_lazy("Type a username or group name"))
+
 
 class lockForm(forms.Form):
     lock = forms.BooleanField(required=False)
 
+
 class isolateForm(forms.Form):
     isolate = forms.BooleanField(required=False)
+
 
 class InstanceRenameForm(forms.Form):
     hostname = forms.CharField(help_text=ugettext_lazy("A fully qualified domain name,"
                                          " e.g. host.domain.com"), label=ugettext_lazy("Hostname"))
+
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"].rstrip(".")
 
@@ -64,4 +69,12 @@ class InstanceRenameForm(forms.Form):
         if hostname in names:
             raise forms.ValidationError(_("Hostname already exists."))
         return hostname
+
+
+class GraphForm(forms.Form):
+    cluster = forms.ModelChoiceField(
+        queryset=Cluster.objects.all(),
+        empty_label=None
+    )
+    nodes = forms.CharField(required=False, widget=forms.widgets.HiddenInput())
 
