@@ -4,7 +4,7 @@
 <script>
 $(document).ready(function() {
 
-    
+
 	$("#lockapplybutton").click(function(){
 		$(this).html('Saving...');
 		var instance = $("#instancelockform").data('instance');
@@ -26,14 +26,14 @@ $(document).ready(function() {
 					}
 					catch (exception) {
 						$('#instDetsbody').html(data);
-					}			
+					}
 				}
 				});
 		return false;
 	});
-	
-	
-	
+
+
+
 });
 
 
@@ -54,26 +54,26 @@ th {
 </style>
 
 <form method="POST" class="form-horizontal" id="instancelockform" data-instance="{{instance}}">
-                                         <fieldset>
-                                        {% csrf_token %}
-                                        {% if form.non_field_errors %}
-                                        <p class="error">
-                                            {{ form.non_field_errors}}
-                                        </p>
-                                        {% endif %}
-                                    <div class="control-group {% if form.tags.errors %} error {% endif %}">
-                                            <div class="controls make-switch" data-on="danger" data-off="info" data-on-label="<i class='icon-lock'></i>" 
-                                            		data-off-label="<i class='icon-unlock'></i>">
-                                                {{ form.lock }}
-                                            </div>
-                                            </div>
-                                        <div class="control-group">
-                                            <div class="controls">
-                                                <a href="#" id="lockapplybutton" value="Save" class="btn">Save</a>
-                                            </div>
-                                        </div>
-                                        </fieldset>
-                                    </form>
+	 <fieldset>
+		{% csrf_token %}
+		{% if form.non_field_errors %}
+		<p class="error">
+			{{ form.non_field_errors}}
+		</p>
+		{% endif %}
+		<div class="control-group {% if form.tags.errors %} error {% endif %}">
+			<div class="controls make-switch" data-on="danger" data-off="info" data-on-label="<i class='icon-lock'></i>"
+					data-off-label="<i class='icon-unlock'></i>">
+				{{ form.lock }}
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<a href="#" id="lockapplybutton" value="Save" class="btn">Save</a>
+			</div>
+		</div>
+	</fieldset>
+</form>
 
 <input type='hidden' id='e1' style='width:300px' />
 
