@@ -768,16 +768,14 @@ class Cluster(models.Model):
         n = self.get_node_info(node)
         ng = self.get_node_group_info(n['group'])
         for t in ng['tags']:
-            # TODO: switch to 'locked' before releasing
-            if t == 'dev:mylock':
+            if t == 'locked':
                 return True
         return False
 
-    # TODO: switch to 'locked' before releasing
     def has_locked_nodes(self):
         groups = self.get_node_groups()
         for group in groups:
-            if 'dev:mylock' in group.get('tags'):
+            if 'locked' in group.get('tags'):
                 return True
         return False
 
