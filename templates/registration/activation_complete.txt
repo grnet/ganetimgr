@@ -1,11 +1,6 @@
-Ο λογαριασμός σας με όνομα χρήστη «{{user.username}}» ενεργοποιήθηκε.
-Μπορείτε να χρησιμοποιήσετε την υπηρεσία ViMa, κάνοντας login στην παρακάτω
-διεύθυνση:
+{% load i18n %}
 
-	http://{{ site.domain }}{% url login %}
-
----------------------------------------------------------------------------
-Your account with username “{{ user.username }}” has been activated.
-You may login to ViMa using the following URL:
+{% blocktrans %}Your account with username  {% endblocktrans %}“{{ user.username }}” {% blocktrans %}has been activated.{% endblocktrans %}
+{% blocktrans %}You may login to ganetimgr using the following URL:{% endblocktrans %}
 
 	http://{{ site.domain }}{% url login %}

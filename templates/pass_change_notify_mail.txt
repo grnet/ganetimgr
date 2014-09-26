@@ -1,17 +1,13 @@
-Αγαπητέ χρήστη,
-
-Με το παρόν σας ενημερώνουμε πως ο κωδικός για το λογαριασμό σας {{user.username}} στην υπηρεσία ViMa
-άλλαξε επιτυχώς.
-
-Σε περίπτωση που η αλλαγή του κωδικού δεν πραγματοποιήθηκε από εσάς παρακαλούμε όπως ενημερώσετε άμεσα
-το Helpdesk της ΕΔΕΤ
-
------------------------------------------------------------------------------
-
+{% load i18n %}
+{% blocktrans %}
 Dear user,
-
+{% endblocktrans %}
+{% blocktrans %}
 We hereby inform you that the password for your account {{user.username}}
 in the ViMa service has been changed successfully.
+{% endblocktrans %}
 
+{% blocktrans %}
 If the password change was not made by you, please inform
 the GRNET Helpdesk.
+{% endblocktrans %}

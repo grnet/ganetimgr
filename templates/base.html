@@ -1,7 +1,7 @@
 {% load i18n %}
 <html>
 <head>
-<title>ViMa :: {% block title %}{% endblock %} </title>
+<title>{% block title %}{% endblock %} </title>
 <script src="/static/js/jquery-1.7.1.min.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/base.css">
 <link rel="stylesheet" type="text/css" href="/static/css/smoothness/jquery-ui-1.8.13.custom.css">
@@ -19,7 +19,7 @@
 //    setTimeout(function() { $(elemId).animate({ backgroundColor: "white" }, 2000)}, 1500);
 //}
 //
-//   
+//
 //$(document).ready( function(){
 //	if (document.location.hash) {
 //	    highlight(document.location.hash);
@@ -73,7 +73,7 @@
 						<span class="topmenuaction"><a href="{% url login %}">{% trans "Login" %}</a></span>
 						{% endif %}
 					</div>
-					
+
 				</div>
 			</div>
 			<div id="content">

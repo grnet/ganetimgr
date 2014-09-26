@@ -19,7 +19,7 @@
 $(function () {
 
 	 jQuery.cssProps.opacity = 'opacity';
-	
+
 	var options = {
 	        chart: {
 	        	zoomType: 'x',
@@ -55,7 +55,7 @@ $(function () {
 	            }
 	        }
 	    };
-	
+
 	$.getJSON('{% url stats_ajax_instances %}', function(dt) {
 		var items = [];
 		$.each(dt, function(i, item) {
@@ -67,12 +67,12 @@ $(function () {
 			{
 				options.series[i].data.push({x:item.instances[j].time, y:j+1, vm:item.instances[j].name});
 			}
-			
+
 		});
-		var chart = new Highcharts.Chart(options);	
+		var chart = new Highcharts.Chart(options);
 		});
 
-	   
+
 	var options2 = {
 	        chart: {
 	        	zoomType: 'x',
@@ -111,20 +111,20 @@ $(function () {
 	            }
 	        }
 	    };
-	
+
 	$.getJSON('{% url stats_ajax_apps %}', function(dt) {
 		var items2 = [];
 		$.each(dt, function(i, item) {
 				options2.series[0].data.push({x:item.time, y:item.count, vm:item.instance, user:item.user});
-			
-			
+
+
 		});
-		var chart2 = new Highcharts.Chart(options2);	
+		var chart2 = new Highcharts.Chart(options2);
 		});
-	
+
 	{% if user.is_superuser or perms.ganeti.view_instances %}
 	{% for cluster in clusters %}
-		
+
 	var options_{{cluster.pk}} = {
 			chart: {
                 plotBackgroundColor: null,
@@ -158,11 +158,11 @@ $(function () {
                         formatter: function() {
                             return '<b>'+ this.point.name +'</b>: '+ this.y + ' (' + Math.round(this.percentage) +' %)';
                         }
-            		
+
                     }*/
                 }
             },
-            
+
             series: [{
                 type: 'pie',
                 name: '{{cluster.slug}}',
@@ -170,17 +170,17 @@ $(function () {
 
                 ]
             }]
-            
+
 	    };
 	$.getJSON('{% url stats_ajax_vms_pc cluster.slug %}', function(dt) {
-		
+
 		options_{{cluster.pk}}.series[0].data.push({name:'Running', y:dt.instances.up, color: '#51A351'})
 		options_{{cluster.pk}}.series[0].data.push({name:'Stopped', y:dt.instances.down, color: '#BD362F'})
-			
+
 		var chart_cluster_vms_{{cluster.pk}} = new Highcharts.Chart(options_{{cluster.pk}});
 		});
-		
-	
+
+
 	{% endfor %}
 	{% endif %}
 });
@@ -230,7 +230,7 @@ $(document).ready( function(){
                     	 "mRender": function (data, type, full) {
                     		 return (data/full.instances).toFixed(2);
                     	 }
-                     
+
                      },
                      {"mData":"disk", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
                      {"mData":"disk", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
@@ -238,14 +238,14 @@ $(document).ready( function(){
                     		 return (data/full.instances).toFixed(2);
                     	 }
                      },
-                     
-                     
+
+
          ],
          "fnInitComplete": function(oSettings, json) {
-			
-         }	
-         
-         
+
+         }
+
+
 } );
  {% else %}
  $.getJSON('{% url user-stats-json %}', function(dt) {
@@ -285,10 +285,10 @@ $(document).ready( function(){
 
     <div class="row-fluid">
         <div class="row-fluid">
-            <h2>{% trans "ViMa Statistics" %}
+            <h2>{% trans "ganetimgr Statistics" %}
             </h2>
             {% if user.is_superuser or perms.ganeti.view_instances %}
-            
+
             <div class="row-fluid">
 {% for cluster in clusters %}
 
@@ -305,7 +305,7 @@ $(document).ready( function(){
 {% if user.is_superuser or perms.ganeti.view_instances %}
 
 			<div class="row-fluid">
-<h3>User Instance Statistics</h3>			           
+<h3>User Instance Statistics</h3>
 			<table class="table table-first-column-number data-table display full visoverflow highchart" data-graph-container=".. .. .highchart-container" data-graph-type="column" id="vm_instance_table">
 <thead>
 <tr>
@@ -338,7 +338,7 @@ $(document).ready( function(){
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">Clusters</p>
                     <p class="pull-right text-success strong">{{clusters|length}}</p>
-                    <p class="info">{% trans "Managed by ViMa" %}</p>
+                    <p class="info">{% trans "Managed by ganetimgr" %}</p>
                 </li>
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Instances " %}</p>
@@ -349,7 +349,7 @@ $(document).ready( function(){
                     <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Applications" %}</p>
                     <p class="pull-right text-info strong">{{instance_apps}}</p>
                     <p class="info">{% trans "Submitted " %}</p>
-                </li>                
+                </li>
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Users" %}</p>
                     <p class="pull-right text-info strong">{{users}}</p>
@@ -377,7 +377,7 @@ $(document).ready( function(){
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "My Instances" %}</p>
                     <p class="pull-right text-success strong" id="instance_no"></p>
-                    <p class="info">{% trans "Managed by ViMa" %}</p>
+                    <p class="info">{% trans "Managed by ganetimgr" %}</p>
                 </li>
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">CPUs</p>
@@ -388,7 +388,7 @@ $(document).ready( function(){
                     <p style=" line-height: 1em; margin-top: 0em" class="title">Mem (MB)</p>
                     <p class="pull-right text-warning strong" id="mem_no"></p>
                     <p class="info">{% trans "Total" %}</p>
-                </li>                
+                </li>
                 <li>
                     <p style=" line-height: 1em; margin-top: 0em" class="title">Disk (MB)</p>
                     <p class="pull-right text-error strong" id="disk_no"></p>
@@ -412,6 +412,6 @@ $(document).ready( function(){
             </ul>
 </div>
 </div>
-{% endif %}   
+{% endif %}
 
 {% endblock %}

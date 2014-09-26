@@ -1,42 +1,26 @@
-Αγαπητέ χρήστη,
-
-Προκειμένου να διασφαλίσουμε την εγκυρότητα των λογαριασμών χρηστών της 
-υπηρεσίας ViMa πραγματοποιούμε ελέγχους πρόσβασης στην ιστοσελίδα διαχείρισης 
-της υπηρεσίας.
-
-Με το παρόν θα θέλαμε να σας ενημερώσουμε πως η τελευταία φορά που κάνατε login
-στη σελίδα ήταν πριν από {{days}} ημέρες (ή περισσότερο).
-
-Ως εκ τούτου θα σας παρακαλούσαμε θερμά να επιβεβαιώσετε την ισχύ του λογαριασμού σας
-στην υπηρεσία. Η επιβεβαίωση πραγματοποιείται με login στη σελίδα της υπηρεσίας:
-
-https://{{ site.domain }}{% url login %}
-
-Παρακαλούμε για τις ενέργειές σας το συντομότερο δυνατό.
-
-
-Με εκτίμηση,
-
-Η ομάδα διαχείρισης της υπηρεσίας ViMa 
-
------------------------------------------------------------------------------
-
-Dear user,
-
+{% load i18n %}
+{% trans 'Dear user,' %}
+{% blocktrans %}
 To ensure the validity of user accounts in the
-ViMa service we monitor usage of the web management interface.
+ganetimgr service we monitor usage of the web management interface.
+{% endblocktrans %}
 
+{% blocktrans %}
 We would like to inform you that the last time you logged in
 was {{days}} ago (or more).
+{% endblocktrans %}
 
+{% blocktrans %}
 Therefore we kindly ask you to confirm the validity of your account.
 The confirmation is performed by accessing the login page of the service:
-
+{% endblocktrans %}
 https://{{ site.domain }}{% url login %}
 
-Please can you do this as soon as possible.
+{% blocktrans %}
+Please do this as soon as possible.
+{% endblocktrans %}
 
-
+{% blocktrans %}
 Sincerely,
-
-The ViMa Management.
+The ganetimgr Management.
+{% endblocktrans %}
