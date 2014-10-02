@@ -22,7 +22,11 @@ from django.contrib import messages
 from django.core import urlresolvers
 from django.utils.safestring import mark_safe
 from django.core.mail import send_mail, mail_managers
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
+from django.http import (
+    HttpResponseRedirect,
+    HttpResponseForbidden,
+    HttpResponse, HttpResponseBadRequest
+)
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.template.loader import render_to_string, get_template
@@ -77,11 +81,14 @@ def apply(request):
 
     if user_networks:
         InstanceApplicationForm.base_fields["network"] = \
-            forms.ModelChoiceField(queryset=user_networks, required=False,
-                                   label=ugettext_lazy("Network"),
-                                   help_text=ugettext_lazy("Optionally, select"
-                                    " a network to connect the virtual machine"
-                                    " to if you have a special requirement"))
+            forms.ModelChoiceField(
+                queryset=user_networks, required=False,
+                label=ugettext_lazy("Network"),
+                help_text=ugettext_lazy(
+                    "Optionally, select a network to connect the virtual"
+                    "machine to if you have a special requirement"
+                )
+            )
     else:
         try:
             del InstanceApplicationForm.base_fields["network"]
@@ -100,10 +107,14 @@ def apply(request):
             application.operating_system = form.cleaned_data['operating_system']
             application.applicant = request.user
             application.status = STATUS_PENDING
-            net = request.POST.get('network','')
+            net = request.POST.get('network', '')
             if net:
                 network = Network.objects.get(pk=net)
-                application.instance_params = {"cluster":network.cluster.slug, "network":network.link, "mode":network.mode}
+                application.instance_params = {
+                    "cluster": network.cluster.slug,
+                    "network": network.link,
+                    "mode":network.mode
+                }
             application.save()
             fqdn = Site.objects.get_current().domain
             admin_url = "https://%s%s" % \
@@ -128,7 +139,10 @@ def apply(request):
                                       context_instance=RequestContext(request))
 
 
-@any_permission_required("apply.change_instanceapplication", "apply.view_applications")
+@any_permission_required(
+    "apply.change_instanceapplication",
+    "apply.view_applications"
+)
 def application_list(request):
     applications = InstanceApplication.objects.all()
     pending = applications.filter(status__in=PENDING_CODES)
@@ -145,44 +159,61 @@ def application_list(request):
 def review_application(request, application_id):
     applications = InstanceApplication.objects.filter(status__in=PENDING_CODES)
     app = get_object_or_404(InstanceApplication, pk=application_id)
-    fast_clusters = Cluster.objects.filter(fast_create=True).exclude(disable_instance_creation=True).order_by('description')
+    fast_clusters = Cluster.objects.filter(fast_create=True).exclude(
+        disable_instance_creation=True
+    ).order_by('description')
 
     if request.method == "GET":
-        form = InstanceApplicationReviewForm(instance=app, initial={'operating_system': app.operating_system})
+        form = InstanceApplicationReviewForm(
+            instance=app,
+            initial={
+                'operating_system': app.operating_system
+            }
+        )
         if app.instance_params and 'cluster' in app.instance_params.keys():
-            form = InstanceApplicationReviewForm(instance=app, initial={"cluster":Cluster.objects.get(slug=app.instance_params['cluster']).pk, 'operating_system': app.operating_system})
-        return render_to_response('review.html',
-                                  {'application': app,
-                                   'applications': applications,
-                                   'appform': form,
-                                   'fast_clusters': fast_clusters},
-                                  context_instance=RequestContext(request))
-
+            form = InstanceApplicationReviewForm(
+                instance=app,
+                initial={
+                    "cluster": Cluster.objects.get(
+                        slug=app.instance_params['cluster']
+                    ).pk,
+                    'operating_system': app.operating_system
+                })
+        return render_to_response(
+            'review.html',
+            {
+                'application': app,
+                'applications': applications,
+                'appform': form,
+                'fast_clusters': fast_clusters
+            },
+            context_instance=RequestContext(request)
+        )
     else:
         nodegroup = request.POST.get('node_group', '')
-        form_ngs = (('',''),)
+        form_ngs = (('', ''),)
         if nodegroup:
             form_ngs = ((nodegroup, nodegroup),)
 
         netw = request.POST.get('netw', '')
-        form_netw = (('',''),)
+        form_netw = (('', ''),)
         if netw:
             form_netw = ((netw, netw),)
 
         vgs = request.POST.get('vgs', '')
-        form_vgs = (('',''),)
+        form_vgs = (('', ''),)
         if vgs:
             form_vgs = ((vgs, vgs),)
 
         dt = request.POST.get('disk_template', '')
-        form_dt = (('',''),)
+        form_dt = (('', ''),)
         if dt:
             form_dt = ((dt, dt),)
         form = InstanceApplicationReviewForm(request.POST, instance=app)
-        form.fields['node_group'] = forms.ChoiceField(choices = form_ngs)
-        form.fields['netw'] = forms.ChoiceField(choices = form_netw)
-        form.fields['vgs'] = forms.ChoiceField(choices = form_vgs)
-        form.fields['disk_template'] = forms.ChoiceField(choices = form_dt)
+        form.fields['node_group'] = forms.ChoiceField(choices=form_ngs)
+        form.fields['netw'] = forms.ChoiceField(choices=form_netw)
+        form.fields['vgs'] = forms.ChoiceField(choices=form_vgs)
+        form.fields['disk_template'] = forms.ChoiceField(choices=form_dt)
         if form.is_valid():
             application = form.save(commit=False)
             application.operating_system = form.cleaned_data['operating_system']
@@ -201,13 +232,15 @@ def review_application(request, application_id):
             else:
                 application.status = STATUS_APPROVED
                 application.instance_params = {
-                                               'cluster': Cluster.objects.get(pk=form.cleaned_data['cluster']).slug,
-                                               'network': form.cleaned_data['netw'].split("::")[0],
-                                               'mode': form.cleaned_data['netw'].split("::")[1],
-                                               'node_group': form.cleaned_data['node_group'],
-                                               'vgs': form.cleaned_data['vgs'],
-                                               'disk_template': form.cleaned_data['disk_template'],
-                                              }
+                    'cluster': Cluster.objects.get(
+                        pk=form.cleaned_data['cluster']
+                    ).slug,
+                    'network': form.cleaned_data['netw'].split("::")[0],
+                    'mode': form.cleaned_data['netw'].split("::")[1],
+                    'node_group': form.cleaned_data['node_group'],
+                    'vgs': form.cleaned_data['vgs'],
+                    'disk_template': form.cleaned_data['disk_template'],
+                }
                 application.save()
                 application.submit()
                 messages.add_message(request, messages.INFO,
@@ -222,6 +255,7 @@ def review_application(request, application_id):
                                        'appform': form,
                                        'fast_clusters': fast_clusters},
                                       context_instance=RequestContext(request))
+
 
 @permission_required("apply.change_instanceapplication")
 def get_nodegroups_fromnet(request):
@@ -239,13 +273,17 @@ def get_nodegroups_fromnet(request):
         nodegroups_list.append(nodeg_dict)
     return HttpResponse(json.dumps(nodegroups_list), mimetype='application/json')
 
+
 @permission_required("apply.change_instanceapplication")
 def get_groupnets_fromcluster(request):
     cluster_id = request.GET.get('cluster_id', '')
     try:
         cluster = Cluster.objects.get(pk=cluster_id)
     except Cluster.DoesNotExist:
-        return HttpResponse(json.dumps({'response':'Error. Cluster does not exist!'}), mimetype='application/json')
+        return HttpResponse(
+            json.dumps({
+                'response': 'Error. Cluster does not exist!'
+            }), mimetype='application/json')
     if cluster:
         nodegroups = cluster.get_node_groups()
     nodegroups_list = []
@@ -253,7 +291,10 @@ def get_groupnets_fromcluster(request):
         nodeg_dict = {}
         nodeg_dict['name'] = g['name']
         nodegroups_list.append(nodeg_dict)
-    return HttpResponse(json.dumps(nodegroups_list), mimetype='application/json')
+    return HttpResponse(
+        json.dumps(nodegroups_list), mimetype='application/json'
+    )
+
 
 @permission_required("apply.change_instanceapplication")
 def get_cluster_node_group_stack(request):
@@ -261,7 +302,14 @@ def get_cluster_node_group_stack(request):
     try:
         cluster = Cluster.objects.get(pk=cluster_id)
     except Cluster.DoesNotExist:
-        return HttpResponse(json.dumps({'response':'Error. Cluster does not exist!'}), mimetype='application/json')
+        return HttpResponse(
+            json.dumps(
+                {
+                    'response': 'Error. Cluster does not exist!'
+                }
+            ),
+            mimetype='application/json'
+        )
     res = prepare_cluster_node_group_stack(cluster)
     return HttpResponse(json.dumps(res), mimetype='application/json')
 
@@ -277,6 +325,7 @@ def prepare_cluster_node_group_stack(cluster):
     res['disk_templates'] = cluster_info['ipolicy']['disk-templates']
     res['node_groups'] = cluster.get_node_group_stack()
     return res
+
 
 @login_required
 def user_keys(request):
@@ -322,7 +371,10 @@ def delete_key(request, key_id):
 
 @login_required
 def profile(request):
-        return render_to_response("profile.html", context_instance=RequestContext(request))
+        return render_to_response(
+            "profile.html",
+            context_instance=RequestContext(request)
+        )
 
 
 @login_required
@@ -339,28 +391,55 @@ def mail_change(request):
             usermail = form.cleaned_data['email1']
             user = User.objects.get(username=request.user)
             if user.email:
-                mailchangereq = InstanceAction.objects.create_action(request.user, '', None, 4, usermail)
-                fqdn = Site.objects.get_current().domain
-                url = "https://%s%s" % \
-                    (fqdn,
-                     reverse("reinstall-destroy-review",
-                     kwargs={'application_hash': mailchangereq.activation_key, 'action_id':4}
-                     )
+                mailchangereq = InstanceAction.objects.create_action(
+                    request.user,
+                    '',
+                    None,
+                    4,
+                    usermail
                 )
-                email = render_to_string("reinstall_mail.txt",
-                                         {"user": request.user,
-                                          "action": mailchangereq.get_action_display(),
-                                          "action_value": mailchangereq.action_value,
-                                          "url": url})
-                send_mail("%sUser email change requested" % (EMAIL_SUBJECT_PREFIX),
-                  email, SERVER_EMAIL, [request.user.email])
+                fqdn = Site.objects.get_current().domain
+                url = "https://%s%s" % (
+                    fqdn,
+                    reverse(
+                        "reinstall-destroy-review",
+                        kwargs={
+                            'application_hash': mailchangereq.activation_key,
+                            'action_id': 4
+                        }
+                    )
+                )
+                email = render_to_string(
+                    "reinstall_mail.txt",
+                    {
+                        "user": request.user,
+                        "action": mailchangereq.get_action_display(),
+                        "action_value": mailchangereq.action_value,
+                        "url": url
+                    }
+                )
+                send_mail(
+                    "%sUser email change requested" % (EMAIL_SUBJECT_PREFIX),
+                    email,
+                    SERVER_EMAIL, [request.user.email]
+                )
                 pending = True
             else:
                 user.email = usermail
                 user.save()
                 changed = True
                 form = EmailChangeForm()
-    return render_to_response("mail_change.html", {'mail':usermail, 'form':form, 'changed':changed, 'pending': pending}, context_instance=RequestContext(request))
+    return render_to_response(
+        "mail_change.html",
+        {
+            'mail': usermail,
+            'form': form,
+            'changed': changed,
+            'pending': pending
+        },
+        context_instance=RequestContext(request)
+    )
+
 
 def check_mail_change_pending(user):
     actions = []
@@ -375,6 +454,7 @@ def check_mail_change_pending(user):
         return True
     else:
         return False
+
 
 @login_required
 def name_change(request):
@@ -394,7 +474,15 @@ def name_change(request):
             changed = True
             user_full_name = user.get_full_name()
             form = NameChangeForm()
-    return render_to_response("name_change.html", {'name':user_full_name, 'form':form, 'changed':changed}, context_instance=RequestContext(request))
+    return render_to_response(
+        "name_change.html",
+        {
+            'name': user_full_name,
+            'form': form,
+            'changed': changed
+        }, context_instance=RequestContext(request)
+    )
+
 
 def instance_ssh_keys(request, application_id, cookie):
     app = get_object_or_404(InstanceApplication, pk=application_id)
@@ -411,13 +499,16 @@ def instance_ssh_keys(request, application_id, cookie):
 @login_required
 def pass_notify(request):
     user = User.objects.get(username=request.user)
-    up = user.get_profile().force_logout()
+    user.get_profile().force_logout()
     if user.email:
-        fqdn = Site.objects.get_current().domain
         email = render_to_string("pass_change_notify_mail.txt",
                                  {"user": request.user})
-        send_mail("%sUser password change" % (EMAIL_SUBJECT_PREFIX),
-          email, SERVER_EMAIL, [request.user.email])
+        send_mail(
+            "%sUser password change" % (EMAIL_SUBJECT_PREFIX),
+            email,
+            SERVER_EMAIL,
+            [request.user.email]
+        )
         return HttpResponse("mail sent", mimetype="text/plain")
     else:
         return HttpResponse("mail not sent", mimetype="text/plain")

@@ -19,9 +19,10 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def appstatus(value):
-    if value  == "pending":
+    if value == "pending":
         return "info"
     if value == "approved":
         return "success"

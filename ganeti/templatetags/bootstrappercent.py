@@ -19,14 +19,16 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def perctobootstrap(value):
     if value < 50:
         return "success"
     if value >= 50 and value < 80:
         return "warning"
-    if value >=80:
+    if value >= 80:
         return "danger"
+
 
 @register.filter
 def perctobootstrapbadge(value):
@@ -34,5 +36,5 @@ def perctobootstrapbadge(value):
         return "success"
     if value >= 50 and value < 80:
         return "warning"
-    if value >=80:
+    if value >= 80:
         return "important"

@@ -18,34 +18,37 @@
 
 from django import forms
 from django.conf import settings
-from django.core.mail import mail_managers
-from django.contrib.sites.models import Site
-from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_unicode
 
 from recaptcha.client import captcha
-from registration.models import RegistrationProfile
 from registration.forms import RegistrationFormUniqueEmail as _RegistrationForm
-from django.contrib.auth.forms import PasswordResetForm 
+from django.contrib.auth.forms import PasswordResetForm
 
 # Add the new google service URLs, as the old ones to recaptcha.net are
 # redirects and break HTTPs due to the certificate belonging to www.google.com
 captcha.API_SSL_SERVER = "https://www.google.com/recaptcha/api"
 captcha.API_SERVER = "http://www.google.com/recaptcha/api"
 
+
 class ReCaptcha(forms.widgets.Widget):
     recaptcha_challenge_name = 'recaptcha_challenge_field'
     recaptcha_response_name = 'recaptcha_response_field'
 
     def render(self, name, value, attrs=None):
-        return mark_safe(u'%s' % captcha.displayhtml(settings.RECAPTCHA_PUBLIC_KEY,
-						     use_ssl=settings.RECAPTCHA_USE_SSL))
+        return mark_safe(
+            u'%s' % captcha.displayhtml(
+                settings.RECAPTCHA_PUBLIC_KEY,
+                use_ssl=settings.RECAPTCHA_USE_SSL
+            )
+        )
 
     def value_from_datadict(self, data, files, name):
-        return [data.get(self.recaptcha_challenge_name, None),
-            data.get(self.recaptcha_response_name, None)]
+        return [
+            data.get(self.recaptcha_challenge_name, None),
+            data.get(self.recaptcha_response_name, None)
+        ]
 
 
 class ReCaptchaField(forms.CharField):
@@ -62,8 +65,12 @@ class ReCaptchaField(forms.CharField):
         super(ReCaptchaField, self).clean(values[1])
         recaptcha_challenge_value = smart_unicode(values[0])
         recaptcha_response_value = smart_unicode(values[1])
-        check_captcha = captcha.submit(recaptcha_challenge_value,
-            recaptcha_response_value, settings.RECAPTCHA_PRIVATE_KEY, {})
+        check_captcha = captcha.submit(
+            recaptcha_challenge_value,
+            recaptcha_response_value,
+            settings.RECAPTCHA_PRIVATE_KEY,
+            {}
+        )
         if not check_captcha.is_valid:
             raise forms.util.ValidationError(self.error_messages['captcha_invalid'])
         return values[0]
@@ -73,6 +80,7 @@ class RegistrationForm(_RegistrationForm):
     name = forms.CharField()
     surname = forms.CharField()
     recaptcha = ReCaptchaField(label=_("Verify"), required=False)
+
 
 class PasswordResetFormPatched(PasswordResetForm):
     error_messages = {

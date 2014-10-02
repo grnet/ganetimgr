@@ -16,13 +16,13 @@
 #
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
-from django.shortcuts import get_object_or_404, render_to_response
-from django.core.context_processors import request
+from django.http import HttpResponse
+from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
-from auditlog.models import *
+from auditlog.models import AuditEntry
 import json
+
 
 @login_required
 def auditlog(request):
@@ -32,7 +32,10 @@ def auditlog(request):
 
 @login_required
 def auditlog_json(request):
-    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+    if (
+        request.user.is_superuser or
+        request.user.has_perm('ganeti.view_instances')
+    ):
         al = AuditEntry.objects.all()
     else:
         al = AuditEntry.objects.filter(requester=request.user)
@@ -41,17 +44,29 @@ def auditlog_json(request):
         entrydict = {}
         entrydict['user'] = entry.requester.username
         entrydict['user_id'] = entry.requester.id
-        entrydict['user_href'] = "%s"%(reverse("user-info",
-                    kwargs={'type': 'user', 'usergroup':entry.requester.username}
-                    ))
+        entrydict['user_href'] = "%s" % (
+            reverse(
+                "user-info",
+                kwargs={
+                    'type': 'user',
+                    'usergroup': entry.requester.username
+                }
+            )
+        )
         entrydict['job_id'] = entry.job_id
         entrydict['instance'] = entry.instance
         entrydict['cluster'] = entry.cluster
         entrydict['action'] = entry.action
-        entrydict['last_upd'] = "%s" %entry.last_updated
-        entrydict['name_href'] = "%s"%(reverse("instance-detail",
-                    kwargs={'cluster_slug': entry.cluster, 'instance':entry.instance}
-                    ))
+        entrydict['last_upd'] = "%s" % entry.last_updated
+        entrydict['name_href'] = "%s" % (
+            reverse(
+                "instance-detail",
+                kwargs={
+                    'cluster_slug': entry.cluster,
+                    'instance': entry.instance
+                }
+            )
+        )
         entries.append(entrydict)
     jresp = {}
     jresp['aaData'] = entries

@@ -14,12 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-from django.contrib import messages
-from django.core.urlresolvers import reverse
-from django.utils.safestring import mark_safe
 from apply.models import InstanceApplication, STATUS_PENDING
 from django.core.cache import cache
+
 
 def notify(request):
     res = {}

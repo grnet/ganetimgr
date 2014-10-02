@@ -16,14 +16,9 @@
 #
 
 from django import forms
-from django.conf import settings
-from django.core.mail import mail_managers
-from django.contrib.sites.models import Site
-from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.utils.safestring import mark_safe
-from django.utils.encoding import smart_unicode
 from ganeti.models import Instance, Cluster
 
 import re
@@ -32,7 +27,9 @@ _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
 
 
 class tagsForm(forms.Form):
-    tags = forms.CharField(required=False, help_text=ugettext_lazy("Type a username or group name"))
+    tags = forms.CharField(required=False, help_text=ugettext_lazy(
+        "Type a username or group name"
+    ))
 
 
 class lockForm(forms.Form):
@@ -44,18 +41,24 @@ class isolateForm(forms.Form):
 
 
 class InstanceRenameForm(forms.Form):
-    hostname = forms.CharField(help_text=ugettext_lazy("A fully qualified domain name,"
-                                         " e.g. host.domain.com"), label=ugettext_lazy("Hostname"))
+    hostname = forms.CharField(
+        help_text=ugettext_lazy(
+            "A fully qualified domain name, e.g. host.domain.com"
+        ),
+        label=ugettext_lazy("Hostname")
+    )
 
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"].rstrip(".")
 
         # Check copied from ganeti's code
-        if (not _VALID_NAME_RE.match(hostname) or
+        if (
+            not _VALID_NAME_RE.match(hostname) or
             # double-dots, meaning empty label
             ".." in hostname or
             # empty initial label
-            hostname.startswith(".")):
+            hostname.startswith(".")
+        ):
             raise forms.ValidationError(_("Invalid hostname %s") % hostname)
 
         if not hostname.count("."):

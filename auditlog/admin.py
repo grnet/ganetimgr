@@ -16,11 +16,18 @@
 #
 
 from django.contrib import admin
-from models import *
-from django.forms import PasswordInput
+from models import AuditEntry
+
 
 class AuditEntryAdmin(admin.ModelAdmin):
-    list_display = ('requester', 'action', 'instance', 'cluster', 'job_id', 'last_updated')
+    list_display = (
+        'requester',
+        'action',
+        'instance',
+        'cluster',
+        'job_id',
+        'last_updated'
+    )
     list_filter = ('cluster', 'action', 'last_updated')
 
 admin.site.register(AuditEntry, AuditEntryAdmin)

@@ -46,6 +46,7 @@ class JSONFormFieldBase(object):
 class JSONFormField(JSONFormFieldBase, fields.Field):
     pass
 
+
 class JSONCharFormField(JSONFormFieldBase, fields.CharField):
     pass
 
@@ -63,14 +64,14 @@ class JSONFieldBase(six.with_metaclass(SubfieldBase, models.Field)):
 
     def pre_init(self, value, obj):
         """Convert a string value to JSON only if it needs to be deserialized.
-
-        SubfieldBase meteaclass has been modified to call this method instead of
-        to_python so that we can check the obj state and determine if it needs to be
-        deserialized"""
+        SubfieldBase meteaclass has been modified to call this method instead
+        of to_python so that we can check the obj state and determine if it
+        needs to be deserialized"""
 
         if obj._state.adding:
             # Make sure the primary key actually exists on the object before
-            # checking if it's empty. This is a special case for South datamigrations
+            # checking if it's empty. This is a special case for South
+            # datamigrations.
             # see: https://github.com/bradjasper/django-jsonfield/issues/52
             if not hasattr(obj, "pk") or obj.pk is not None:
                 if isinstance(value, six.string_types):
@@ -82,8 +83,8 @@ class JSONFieldBase(six.with_metaclass(SubfieldBase, models.Field)):
         return value
 
     def to_python(self, value):
-        """The SubfieldBase metaclass calls pre_init instead of to_python, however to_python
-        is still necessary for Django's deserializer"""
+        """The SubfieldBase metaclass calls pre_init instead of to_python,
+        however to_python is still necessary for Django's deserializer"""
         return value
 
     def get_db_prep_value(self, value, connection, prepared=False):
@@ -145,25 +146,30 @@ class JSONFieldBase(six.with_metaclass(SubfieldBase, models.Field)):
         else:
             return super(JSONFieldBase, self).db_type(connection)
 
+
 class JSONField(JSONFieldBase, models.TextField):
-    """JSONField is a generic textfield that serializes/unserializes JSON objects"""
+    """JSONField is a generic textfield
+    that serializes/unserializes JSON objects"""
     form_class = JSONFormField
 
     def dumps_for_display(self, value):
-        kwargs = { "indent": 2 }
+        kwargs = {"indent": 2}
         kwargs.update(self.dump_kwargs)
         return json.dumps(value, **kwargs)
 
 
 class JSONCharField(JSONFieldBase, models.CharField):
-    """JSONCharField is a generic textfield that serializes/unserializes JSON objects,
-    stored in the database like a CharField, which enables it to be used
-    e.g. in unique keys"""
+    """JSONCharField is a generic textfield that serializes/unserializes
+    JSON objects, stored in the database like a CharField, which enables it to
+    be used e.g. in unique keys"""
     form_class = JSONCharFormField
 
 
 try:
     from south.modelsinspector import add_introspection_rules
-    add_introspection_rules([], ["^ganeti\.fields\.jsonfield\.fields\.(JSONField|JSONCharField)"])
+    add_introspection_rules(
+        [],
+        ["^ganeti\.fields\.jsonfield\.fields\.(JSONField|JSONCharField)"]
+    )
 except ImportError:
     pass

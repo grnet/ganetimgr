@@ -14,34 +14,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-from django.db import models
-from django.http import Http404
-from django.core.cache import cache
-from django.contrib.auth.models import User, Group
-from django.contrib.sites.models import Site
-from apply.models import Organization, InstanceApplication
-from django.utils.translation import ugettext_lazy as _
-from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
-from django.conf import settings
-from datetime import datetime, timedelta
-from socket import gethostbyname
-from time import sleep
-
-from gevent.pool import Pool
-from gevent.timeout import Timeout
-
-from util import vapclient
-from util.client import GanetiRapiClient, GanetiApiError, GenericCurlConfig
-from ganetimgr.settings import RAPI_CONNECT_TIMEOUT, RAPI_RESPONSE_TIMEOUT, GANETI_TAG_PREFIX, OPERATING_SYSTEMS_PROVIDER
 import re
 import random
 import sha
 import ipaddr
 import base64
 
+from datetime import datetime, timedelta
+from gevent.pool import Pool
+from socket import gethostbyname
+from time import sleep
+
+from django.db import models
+from django.http import Http404, render_to_string
+from django.core.cache import cache
+from django.contrib.auth.models import User, Group
+from django.contrib.sites.models import Site
+from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
+from django.conf import settings
+
+from util import vapclient
+from util.client import GanetiRapiClient, GanetiApiError, GenericCurlConfig
+from ganetimgr.settings import GANETI_TAG_PREFIX
+
+from apply.models import Organization, InstanceApplication
 from apply.utils import get_os_details
 
+REQUEST_ACTIONS = (
+    (1, 'reinstall'),
+    (2, 'destroy'),
+    (3, 'rename'),
+    (4, 'mailchange')
+)
 
 RAPI_CONNECT_TIMEOUT = settings.RAPI_CONNECT_TIMEOUT
 RAPI_RESPONSE_TIMEOUT = settings.RAPI_RESPONSE_TIMEOUT
@@ -69,7 +74,6 @@ class InstanceManager(object):
         users, orgs, groups, instanceapps, networks = preload_instance_data()
         p = Pool(20)
         instances = []
-        bad_clusters = []
 
         def _get_instances(cluster):
             try:
@@ -113,7 +117,7 @@ class InstanceManager(object):
             elif arg == 'group':
                 if not isinstance(val, Group):
                     try:
-                        val = group[val]
+                        val = groups[val]
                     except:
                         return []
                 results = [result for result in results if val in result.groups]
@@ -121,7 +125,11 @@ class InstanceManager(object):
                 results = [result for result in results if result.name == val]
             elif arg == 'name__icontains':
                 valre = re.compile(val)
-                results = [result for result in results if valre.search(result.name) is not None]
+                results = [
+                    result for result in results if valre.search(
+                        result.name
+                    ) is not None
+                ]
             else:
                 results = [result for result in results
                            if '%s:%s' % (arg, val) in result.tags]
@@ -140,7 +148,17 @@ class InstanceManager(object):
 class Instance(object):
     objects = InstanceManager()
 
-    def __init__(self, cluster, name, info=None, listusers=None, listorganizations=None, listgroups=None, listinstanceapplications=None, networks=None):
+    def __init__(
+        self,
+        cluster,
+        name,
+        info=None,
+        listusers=None,
+        listorganizations=None,
+        listgroups=None,
+        listinstanceapplications=None,
+        networks=None
+    ):
         self.cluster = cluster
         self.name = name
         self.listusers = listusers
@@ -184,7 +202,7 @@ class Instance(object):
             needsreboot_tag = "%s:needsreboot" % GANETI_TAG_PREFIX
             whitelist_pfx = "%s:whitelist_ip:" % GANETI_TAG_PREFIX
             if tag.startswith(group_pfx):
-                group = tag.replace(group_pfx,'')
+                group = tag.replace(group_pfx, '')
                 if group not in group_cache:
                     try:
                         g = self.listgroups[group]
@@ -194,7 +212,7 @@ class Instance(object):
                 if group_cache[group] is not None:
                     self.groups.append(group_cache[group])
             elif tag.startswith(user_pfx):
-                user = tag.replace(user_pfx,'')
+                user = tag.replace(user_pfx, '')
                 if user not in user_cache:
                     try:
                         u = self.listusers[user]
@@ -204,7 +222,7 @@ class Instance(object):
                 if user_cache[user] is not None:
                     self.users.append(user_cache[user])
             elif tag.startswith(org_pfx):
-                org = tag.replace(org_pfx,'')
+                org = tag.replace(org_pfx, '')
                 if org not in org_cache:
                     try:
                         o = self.listorganizations[org]
@@ -214,7 +232,7 @@ class Instance(object):
                 if org_cache[org] is not None:
                     self.organization = org_cache[org]
             elif tag.startswith(app_pfx):
-                app = tag.replace(app_pfx,'')
+                app = tag.replace(app_pfx, '')
                 if app not in app_cache:
                     try:
                         a = self.listinstanceapplications[app]
@@ -224,7 +242,7 @@ class Instance(object):
                 if app_cache[app] is not None:
                     self.application = app_cache[app]
             elif tag.startswith(serv_pfx):
-                serv = tag.replace(serv_pfx,'')
+                serv = tag.replace(serv_pfx, '')
                 if serv not in serv_cache:
                     serv_cache[serv] = serv
                 if serv_cache[serv] is not None:
@@ -236,7 +254,7 @@ class Instance(object):
             elif tag == needsreboot_tag:
                 self.needsreboot = True
             elif tag.startswith(whitelist_pfx):
-                self.whitelistip = tag.replace(whitelist_pfx,'')
+                self.whitelistip = tag.replace(whitelist_pfx, '')
         if getattr(self, 'ctime', None):
             self.ctime = datetime.fromtimestamp(self.ctime)
         if getattr(self, 'mtime', None):
@@ -244,7 +262,7 @@ class Instance(object):
         for nlink in self.nic_links:
             try:
                 self.links.append(self.networks[nlink])
-            except Exception as e:
+            except Exception:
                 pass
         for i in range(len(self.nic_modes)):
             if self.nic_modes[i] == 'bridged':
@@ -254,8 +272,8 @@ class Instance(object):
                 ipv6addr = self.generate_ipv6(self.links[i], self.nic_macs[i])
                 if not ipv6addr:
                     continue
-                self.ipv6s.append("%s"%(ipv6addr))
-            except Exception as e:
+                self.ipv6s.append("%s" % (ipv6addr))
+            except Exception:
                 pass
         if self.admin_state == 'up':
             self.admin_state = True
@@ -267,11 +285,11 @@ class Instance(object):
             prefix = ipaddr.IPv6Network(prefix)
             mac_parts = mac.split(":")
             prefix_parts = prefix.network.exploded.split(':')
-            eui64 = mac_parts[:3] + [ "ff", "fe" ] + mac_parts[3:]
+            eui64 = mac_parts[:3] + ["ff", "fe"] + mac_parts[3:]
             eui64[0] = "%02x" % (int(eui64[0], 16) ^ 0x02)
             ip = ":".join(prefix_parts[:4])
             for l in range(0, len(eui64), 2):
-                ip += ":%s" % "".join(eui64[l:l+2])
+                ip += ":%s" % "".join(eui64[l:l + 2])
             ip = ipaddr.IPAddress(ip).compressed
             return ip
         except:
@@ -303,7 +321,11 @@ class Instance(object):
     def _pending_action_request(self, action):
         '''This should return either 1 or 0 instance actions'''
         actions = []
-        pending_actions = InstanceAction.objects.filter(instance=self.name, cluster=self.cluster, action=action)
+        pending_actions = InstanceAction.objects.filter(
+            instance=self.name,
+            cluster=self.cluster,
+            action=action
+        )
         for pending in pending_actions:
             if pending.activation_key_expired():
                 continue
@@ -316,7 +338,6 @@ class Instance(object):
             for action in actions:
                 action.expire_now()
             return False
-
 
     def pending_reinstall(self):
         return self._pending_action_request(1)
@@ -335,19 +356,23 @@ class Cluster(models.Model):
     description = models.CharField(max_length=128, blank=True, null=True)
     username = models.CharField(max_length=64, blank=True, null=True)
     password = models.CharField(max_length=64, blank=True, null=True)
-    fast_create = models.BooleanField(default=False,
-                                      verbose_name="Enable fast instance"
-                                                   " creation",
-                                      help_text="Allow fast instance creations"
-                                                " on this cluster using the"
-                                                " admin interface")
+    fast_create = models.BooleanField(
+        default=False,
+        verbose_name="Enable fast instance creation",
+        help_text="Allow fast instance creations on this cluster using the"
+        " admin interface"
+    )
     default_disk_template = models.CharField(max_length=255, default="plain")
-    use_gnt_network = models.BooleanField(default=True,
-                                          verbose_name="Cluster uses gnt-network",
-                                      help_text="Set to True only if you use gnt-network.")
-    disable_instance_creation = models.BooleanField(default=False,
-                                          verbose_name="Disable Instance Creation",
-                                      help_text="True disables setting a network at the application review form and blocks instance creation")
+    use_gnt_network = models.BooleanField(
+        default=True,
+        verbose_name="Cluster uses gnt-network",
+        help_text="Set to True only if you use gnt-network."
+    )
+    disable_instance_creation = models.BooleanField(
+        default=False,
+        verbose_name="Disable Instance Creation",
+        help_text="True disables setting a network at the application review form and blocks instance creation"
+    )
 
     class Meta:
         permissions = (
@@ -356,11 +381,16 @@ class Cluster(models.Model):
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
-        curl_conf = GenericCurlConfig(connect_timeout=RAPI_CONNECT_TIMEOUT, timeout=RAPI_RESPONSE_TIMEOUT)
-        self._client = GanetiRapiClient(host=self.hostname,
-                                        username=self.username,
-                                        password=self.password,
-                                        curl_config_fn = curl_conf)
+        curl_conf = GenericCurlConfig(
+            connect_timeout=RAPI_CONNECT_TIMEOUT,
+            timeout=RAPI_RESPONSE_TIMEOUT
+        )
+        self._client = GanetiRapiClient(
+            host=self.hostname,
+            username=self.username,
+            password=self.password,
+            curl_config_fn=curl_conf
+        )
 
     def __unicode__(self):
         return self.hostname
@@ -377,29 +407,31 @@ class Cluster(models.Model):
         cache.set(lock_key, reason, timeout)
         locked_instances = cache.get('locked_instances')
         if locked_instances is not None:
-            locked_instances["%s"%instance]=reason
+            locked_instances["%s" % instance] = reason
             cache.set('locked_instances', locked_instances, 90)
         else:
-            cache.set('locked_instances', {'%s'%instance:"%s"%reason}, 90)
+            cache.set('locked_instances', {'%s' % instance: "%s" % reason}, 90)
         if job_id is not None:
             b = None
             for i in range(5):
                 try:
                     b = beanstalkc.Connection()
                     break
-                except Exception, err:
+                except Exception:
                     sleep(1)
             if b is None:
                 return
 
             if BEANSTALK_TUBE:
                 b.use(BEANSTALK_TUBE)
-            b.put(json.dumps({"type": "JOB_LOCK",
-                              "cluster": self.slug,
-                              "instance": instance,
-                              "job_id": job_id,
-                              "lock_key": lock_key,
-                              "flush_keys": [self._instance_cache_key(instance)]}))
+            b.put(json.dumps({
+                "type": "JOB_LOCK",
+                "cluster": self.slug,
+                "instance": instance,
+                "job_id": job_id,
+                "lock_key": lock_key,
+                "flush_keys": [self._instance_cache_key(instance)]
+            }))
 
     @classmethod
     def get_all_instances(cls):
@@ -413,7 +445,16 @@ class Cluster(models.Model):
         if info is None:
             raise Http404()
         users, orgs, groups, instanceapps, networks = preload_instance_data()
-        return Instance(self, info["name"], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks)
+        return Instance(
+            self,
+            info["name"],
+            info,
+            listusers=users,
+            listorganizations=orgs,
+            listgroups=groups,
+            listinstanceapplications=instanceapps,
+            networks=networks
+        )
 
     def get_instance_or_404(self, name):
         try:
@@ -425,20 +466,49 @@ class Cluster(models.Model):
                 raise
 
     def get_instances(self):
-        instances_min = []
         retinstances = []
         instances = cache.get("cluster:%s:instances" % self.slug)
         if instances is None:
-            instances = parseQuery(self._client.Query('instance', ['name','tags', 'pnode', 'disk.sizes', 'nic.modes','nic.ips','nic.links','status', 'admin_state', 'beparams', 'oper_state', 'hvparams', 'nic.macs', 'ctime', 'mtime']))
+            instances = parseQuery(
+                self._client.Query(
+                    'instance',
+                    [
+                        'name',
+                        'tags',
+                        'pnode',
+                        'disk.sizes',
+                        'nic.modes',
+                        'nic.ips',
+                        'nic.links',
+                        'status',
+                        'admin_state',
+                        'beparams',
+                        'oper_state',
+                        'hvparams',
+                        'nic.macs',
+                        'ctime',
+                        'mtime'
+                    ]))
             cache.set("cluster:%s:instances" % self.slug, instances, 45)
         users, orgs, groups, instanceapps, networks = preload_instance_data()
-        retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks) for info in instances]
+        retinstances = [
+            Instance(
+                self,
+                info['name'],
+                info,
+                listusers=users,
+                listorganizations=orgs,
+                listgroups=groups,
+                listinstanceapplications=instanceapps,
+                networks=networks
+            ) for info in instances
+        ]
         return retinstances
 
     def force_cluster_cache_refresh(self, instance):
         '''Used in cases of actions that could potentially lock the cluster
-        thus preventing users from listing, even for some seconds, their instances
-        and delay node listing for admins
+        thus preventing users from listing, even for some seconds, their
+        instances and delay node listing for admins
         '''
         retinstances = []
         instances = self._client.GetInstances(bulk=True)
@@ -447,30 +517,41 @@ class Cluster(models.Model):
                 i['action_lock'] = True
         cache.set("cluster:%s:instances" % self.slug, instances, 45)
         users, orgs, groups, instanceapps, networks = preload_instance_data()
-        retinstances = [Instance(self, info['name'], info, listusers = users, listorganizations = orgs, listgroups = groups, listinstanceapplications = instanceapps, networks = networks) for info in instances]
+        retinstances = [
+            Instance(
+                self,
+                info['name'],
+                info,
+                listusers=users,
+                listorganizations=orgs,
+                listgroups=groups,
+                listinstanceapplications=instanceapps,
+                networks=networks
+            ) for info in instances
+        ]
         return retinstances
 
     def get_user_instances(self, user):
         instances = self.get_instances()
         if user.is_superuser or user.has_perm('ganeti.view_instances'):
             return instances
-#         elif user.has_perm('ganeti.view_instances'):
-#             user = User.objects.filter(pk=user.pk).select_related('groups').get()
-#             ugroups = []
-#             for ug in user.groups.all():
-#                 ugroups.append(ug.pk)
-#             user_inst = [i for i in instances if (user in i.users or
-#                     len(list(set(ugroups).intersection(set([g.id for g in i.groups]))))> 0)]
-#             other_inst = [i for i in instances if (i not in user_inst)]
-#             map(lambda i: i.set_admin_view_only_True(), other_inst)
-#             return user_inst + other_inst
         else:
-            user = User.objects.filter(pk=user.pk).select_related('groups').get()
+            user = User.objects.filter(pk=user.pk).select_related(
+                'groups'
+            ).get()
             ugroups = []
             for ug in user.groups.all():
                 ugroups.append(ug.pk)
-            return [i for i in instances if (user in i.users or
-                   len(list(set(ugroups).intersection(set([g.id for g in i.groups]))))> 0)]
+            return [
+                i for i in instances if (
+                    user in i.users or
+                    len(
+                        list(set(ugroups).intersection(
+                            set([g.id for g in i.groups]))
+                        )
+                    ) > 0
+                )
+            ]
 
     def get_cluster_info(self):
         info = cache.get("cluster:%s:info" % self.slug)
@@ -496,7 +577,23 @@ class Cluster(models.Model):
         nodes = cache.get("cluster:%s:nodes" % self.slug)
         if nodes is None:
             cachenodes = []
-            nodes = parseQuery(self._client.Query('node', ['name','role','mfree', 'mtotal', 'dtotal', 'dfree', 'ctotal', 'group', 'pinst_cnt','offline', 'vm_capable', 'pinst_list']))
+            nodes = parseQuery(
+                self._client.Query(
+                    'node',
+                    [
+                        'name',
+                        'role',
+                        'mfree',
+                        'mtotal',
+                        'dtotal',
+                        'dfree',
+                        'ctotal',
+                        'group',
+                        'pinst_cnt',
+                        'offline',
+                        'vm_capable',
+                        'pinst_list'
+                    ]))
             for info in nodes:
                 info['cluster'] = self.slug
                 if info['mfree'] is None:
@@ -508,14 +605,20 @@ class Cluster(models.Model):
                 if info['dfree'] is None:
                     info['dfree'] = 0
                 try:
-                    info['mem_used'] = 100*(info['mtotal']-info['mfree'])/info['mtotal']
+                    info['mem_used'] = 100 * (
+                        info['mtotal'] - info['mfree']
+                    ) / info['mtotal']
                 except ZeroDivisionError:
-                    '''this is the case where the node is offline and reports none, thus it is 0'''
+                    '''this is the case where the node is offline and reports
+                    none, thus it is 0'''
                     info['mem_used'] = 0
                 try:
-                    info['disk_used'] = 100*(info['dtotal']-info['dfree'])/info['dtotal']
+                    info['disk_used'] = 100 * (
+                        info['dtotal'] - info['dfree']
+                    ) / info['dtotal']
                 except ZeroDivisionError:
-                    '''this is the case where the node is offline and reports none, thus it is 0'''
+                    '''this is the case where the node is offline and reports
+                    none, thus it is 0'''
                     info['disk_used'] = 0
                 info['shared_storage'] = False
                 if self.default_disk_template in ['drbd', 'plain']:
@@ -535,30 +638,29 @@ class Cluster(models.Model):
                 continue
             if n['group'] != node_group:
                 continue
-            if n['vm_capable'] == False:
+            if n['vm_capable'] is False:
                 continue
             ret_nodes.append(n['name'])
         return ret_nodes[0:number_of_nodes]
 
-
     def get_node_groups(self):
-        info = cache.get('cluster:%s:nodegroups' %self.slug)
+        info = cache.get('cluster:%s:nodegroups' % self.slug)
         if info is None:
             #info = parseQuery(self._client.Query('group',['name', 'tags']))
             info = self._client.GetGroups(bulk=True)
-            cache.set('cluster:%s:nodegroups' %self.slug, info, 180)
+            cache.set('cluster:%s:nodegroups' % self.slug, info, 180)
         return info
 
     def get_networks(self):
-        info = cache.get('cluster:%s:networks' %self.slug)
+        info = cache.get('cluster:%s:networks' % self.slug)
         if info is None:
             info = self._client.GetNetworks(bulk=True)
-            cache.set('cluster:%s:networks' %self.slug, info, 180)
+            cache.set('cluster:%s:networks' % self.slug, info, 180)
         return info
 
     def get_node_group_networks(self, nodegroup):
-        # This gets networks per nodegroup as received via a GetNetworks RAPI call
-        # We then perform a check for the existing networks in database
+        # This gets networks per nodegroup as received via a GetNetworks RAPI
+        # callWe then perform a check for the existing networks in database
         # and add the bridged networks
         nodegroupsnets = []
         networks = self.get_networks()
@@ -567,15 +669,20 @@ class Cluster(models.Model):
             for group in net['group_list']:
                 group_dict = {}
                 if group[0] == nodegroup:
-                    #Let's try to link with database saved networks. Get the description
+                    #Let's try to link with database saved networks.
+                    # Get the description
                     try:
-                        nd = Network.objects.get(cluster=self, link=group[2]).description
+                        nd = Network.objects.get(
+                            cluster=self, link=group[2]
+                        ).description
                     except Network.DoesNotExist:
                         nd = net['name']
                     group_dict['defaultnet'] = False
-                    # TODO: For the time get the default network from the database.
-                    # Later on we can get it from the cluster.
-                    if self.network_set.filter(cluster_default=True, link=group[2]):
+                    # TODO: For the time get the default network from the
+                    # database. Later on we can get it from the cluster.
+                    if self.network_set.filter(
+                        cluster_default=True, link=group[2]
+                    ):
                         group_dict['defaultnet'] = True
                     group_dict['network'] = nd
                     group_dict['link'] = group[2]
@@ -602,9 +709,6 @@ class Cluster(models.Model):
         nodegroupsnets = sorted(nodegroupsnets, key=lambda k: k['network'])
         return nodegroupsnets
 
-
-
-
     def get_node_group_stack(self):
         groups = self.get_node_groups()
         group_stack = []
@@ -612,7 +716,9 @@ class Cluster(models.Model):
             group_dict = {}
             group_dict['name'] = group['name']
             group_dict['alloc_policy'] = group['alloc_policy']
-            group_dict['networks'] = self.get_node_group_networks(group['name'])
+            group_dict['networks'] = self.get_node_group_networks(
+                group['name']
+            )
             group_dict['nodes'] = group['node_list']
             group_dict['vgs'] = []
             group_tags = group['tags']
@@ -629,8 +735,14 @@ class Cluster(models.Model):
         info = self._client.GetJobs(bulk=True)
         for i in info:
             i['cluster'] = self.slug
-            i['start_time'] = "%s" %(datetime.fromtimestamp(int(i['start_ts'][0])).strftime('%Y-%m-%d %H:%M:%S'))
-            i['ops'][0]['OP_ID'] = i['ops'][0]['OP_ID'].replace("OP_",'').replace("_",' ').lower().capitalize()
+            i['start_time'] = "%s" % (
+                datetime.fromtimestamp(
+                    int(i['start_ts'][0])
+                ).strftime('%Y-%m-%d %H:%M:%S')
+            )
+            i['ops'][0]['OP_ID'] = i['ops'][0]['OP_ID'].replace(
+                "OP_", ''
+            ).replace("_", ' ').lower().capitalize()
         return info
 
     def get_job(self, job_id):
@@ -644,7 +756,10 @@ class Cluster(models.Model):
         if info is None:
             info = self._client.GetGroup(nodegroup)
             info['cluster'] = self.slug
-            cache.set("cluster:%s:nodegroup:%s" % (self.slug, nodegroup), info, 180)
+            cache.set("cluster:%s:nodegroup:%s" % (
+                self.slug,
+                nodegroup
+            ), info, 180)
         return info
 
     def get_node_info(self, node):
@@ -652,7 +767,10 @@ class Cluster(models.Model):
         if info is None:
             for info in self.get_cluster_nodes():
                 if info['name'] == node:
-                    cache.set("cluster:%s:node:%s" % (self.slug, node), info, 180)
+                    cache.set("cluster:%s:node:%s" % (
+                        self.slug,
+                        node
+                    ), info, 180)
                     return info
         return info
 
@@ -662,9 +780,33 @@ class Cluster(models.Model):
 
         if info is None:
             try:
-                info = parseQuery(self._client.Query('instance', ['name','tags', 'pnode', 'disk.sizes', 'nic.modes','nic.ips','nic.links','status', 'admin_state', 'beparams', 'oper_state', 'hvparams', 'nic.macs', 'ctime', 'mtime', 'osparams', 'os', 'network_port'],  ["|", ["=", "name", "%s" %instance]]))[0]
+                info = parseQuery(
+                    self._client.Query(
+                        'instance',
+                        [
+                            'name',
+                            'tags',
+                            'pnode',
+                            'disk.sizes',
+                            'nic.modes',
+                            'nic.ips',
+                            'nic.links',
+                            'status',
+                            'admin_state',
+                            'beparams',
+                            'oper_state',
+                            'hvparams',
+                            'nic.macs',
+                            'ctime',
+                            'mtime',
+                            'osparams',
+                            'os',
+                            'network_port'
+                        ],
+                        ["|", ["=", "name", "%s" % instance]]
+                    ))[0]
                 cache.set(cache_key, info, 3)
-            except GanetiApiError, Exception:
+            except GanetiApiError:
                 info = None
         return info
 
@@ -685,8 +827,13 @@ class Cluster(models.Model):
         node = info['pnode']
         node_ip = gethostbyname(node)
         proxy_server = settings.NOVNC_PROXY.split(":")
-        res = vapclient.request_novnc_forwarding(proxy_server, node_ip, port, password,
-                                        sport=sport, tls=tls)
+        res = vapclient.request_novnc_forwarding(
+            proxy_server,
+            node_ip,
+            port,
+            password,
+            sport=sport, tls=tls
+        )
         return proxy_server[0], int(res), password
 
     def shutdown_instance(self, instance):
@@ -722,7 +869,9 @@ class Cluster(models.Model):
             if "ssh_key_param" in details:
                 fqdn = "https://" + Site.objects.get_current().domain
                 try:
-                    key_url = self.get_instance_or_404(instance).application.get_ssh_keys_url(fqdn)
+                    key_url = self.get_instance_or_404(
+                        instance
+                    ).application.get_ssh_keys_url(fqdn)
                     if details["ssh_key_param"]:
                         osparams[details["ssh_key_param"]] = key_url
                 except:
@@ -730,7 +879,9 @@ class Cluster(models.Model):
             if "ssh_key_users" in details and details["ssh_key_users"]:
                 ssh_keys = None
                 try:
-                    ssh_keys = self.get_instance_or_404(instance).application.applicant.sshpublickey_set.all()
+                    ssh_keys = self.get_instance_or_404(
+                        instance
+                    ).application.applicant.sshpublickey_set.all()
                 except:
                     pass
                 if ssh_keys:
@@ -742,11 +893,11 @@ class Cluster(models.Model):
                         # user[:group[:/path/to/authorized_keys]]
                         owner, group, path = map_ssh_user(*user.split(":"))
                         osparams["img_personality"].append({
-                            "path":     path,
+                            "path": path,
                             "contents": ssh_base64,
-                            "owner":    owner,
-                            "group":    group,
-                            "mode":     0600,
+                            "owner": owner,
+                            "group": group,
+                            "mode": 0600,
                         })
             osparams.update(details.get('osparams'))
             for (key, val) in osparams.iteritems():
@@ -779,7 +930,6 @@ class Cluster(models.Model):
                 return True
         return False
 
-
     def destroy_instance(self, instance):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
@@ -790,7 +940,12 @@ class Cluster(models.Model):
     def rename_instance(self, instance, newname):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
-        job_id = self._client.RenameInstance(instance, newname, ip_check=False, name_check=False)
+        job_id = self._client.RenameInstance(
+            instance,
+            newname,
+            ip_check=False,
+            name_check=False
+        )
         self._lock_instance(instance, reason="renaming", job_id=job_id)
         return job_id
 
@@ -808,7 +963,10 @@ class Cluster(models.Model):
         self._lock_instance(instance, reason="rebooting", job_id=job_id)
         instanceObj = self.get_instance_or_404(instance)
         if instanceObj.needsreboot:
-            self.untag_instance(instance, ["%s:needsreboot" %GANETI_TAG_PREFIX])
+            self.untag_instance(
+                instance,
+                ["%s:needsreboot" % GANETI_TAG_PREFIX]
+            )
         return job_id
 
     def tag_instance(self, instance, tags):
@@ -832,10 +990,18 @@ class Cluster(models.Model):
         self._lock_instance(instance, reason="migrating", job_id=job_id)
         return job_id
 
-
-    def create_instance(self, name=None, disk_template=None, disks=None,
-                        nics=None, os=None, memory=None, vcpus=None, tags=None,
-                        osparams=None, nodes=None):
+    def create_instance(
+        self,
+        name=None,
+        disk_template=None,
+        disks=None,
+        nics=None,
+        os=None,
+        memory=None,
+        vcpus=None,
+        tags=None,
+        osparams=None, nodes=None
+    ):
         beparams = {}
         if memory is not None:
             beparams["memory"] = memory
@@ -859,19 +1025,18 @@ class Cluster(models.Model):
             nodesdict['pnode'] = nodes[0]
             if len(nodes) == 2:
                 nodesdict['snode'] = nodes[1]
-
-
-
-
-        job_id = self._client.CreateInstance(mode="create", name=name, os=os,
-                                             disk_template=disk_template,
-                                             disks=disks, nics=nics,
-                                             start=False, ip_check=False,
-                                             name_check=False,
-                                             beparams=beparams,
-                                             tags=tags, osparams=osparams,
-                                             wait_for_sync=False, **nodesdict)
-
+        job_id = self._client.CreateInstance(
+            mode="create",
+            name=name,
+            os=os,
+            disk_template=disk_template,
+            disks=disks, nics=nics,
+            start=False, ip_check=False,
+            name_check=False,
+            beparams=beparams,
+            tags=tags, osparams=osparams,
+            wait_for_sync=False, **nodesdict
+        )
         self._lock_instance(name, reason=_("creating"), job_id=job_id)
         return job_id
 
@@ -897,7 +1062,7 @@ class Network(models.Model):
     groups = models.ManyToManyField(Group, blank=True, null=True)
 
     def __unicode__(self):
-        return "%s (%s)" %(self.description, self.cluster.slug)
+        return "%s (%s)" % (self.description, self.cluster.slug)
 
     def save(self, *args, **kwargs):
         # Ensure that only one cluster_default exists per cluster
@@ -911,7 +1076,6 @@ class Network(models.Model):
             except Network.DoesNotExist:
                 pass
         super(Network, self).save()
-
 
 
 def preload_instance_data():
@@ -951,22 +1115,12 @@ def preload_instance_data():
     instanceapps = cache.get('instaceapplist')
     if not instanceapps:
         instanceapps = InstanceApplication.objects.all()
-        instappdict= {}
+        instappdict = {}
         for instapp in instanceapps:
             instappdict[str(instapp.pk)] = instapp
         instanceapps = instappdict
         cache.set('instaceapplist', instanceapps, 30)
     return users, orgs, groups, instanceapps, networks
-
-
-
-
-REQUEST_ACTIONS = (
-                   (1, 'reinstall'),
-                   (2, 'destroy'),
-                   (3, 'rename'),
-                   (4, 'mailchange')
-                   )
 
 
 class InstanceActionManager(models.Manager):
@@ -984,11 +1138,25 @@ class InstanceActionManager(models.Manager):
                 return instreq
         return False
 
-    def create_action(self, user, instance, cluster, action, action_value=None, operating_system=None):
+    def create_action(
+        self,
+        user,
+        instance,
+        cluster,
+        action,
+        action_value=None,
+        operating_system=None
+    ):
         salt = sha.new(str(random.random())).hexdigest()[:5]
         activation_key = sha.new(salt + user.username).hexdigest()
-        return self.create(applicant=user, instance=instance, cluster=cluster, action=action, action_value = action_value,
-                           activation_key=activation_key, operating_system=operating_system)
+        return self.create(
+            applicant=user,
+            instance=instance,
+            cluster=cluster,
+            action=action,
+            action_value=action_value,
+            activation_key=activation_key, operating_system=operating_system
+        )
 
 
 class InstanceAction(models.Model):
@@ -1017,7 +1185,7 @@ class InstanceAction(models.Model):
 
         expiration_date = timedelta(days=settings.INSTANCE_ACTION_ACTIVE_DAYS)
         return self.activation_key == self.ACTIVATED or \
-               (self.filed + expiration_date <= datetime.now())
+            (self.filed + expiration_date <= datetime.now())
     has_expired.boolean = True
 
     def expire_now(self):
@@ -1032,9 +1200,10 @@ class InstanceAction(models.Model):
         subject = "test"
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
-
-        message = render_to_string('instance_actions/action_mail.txt',
-                                   ctx_dict)
+        message = render_to_string(
+            'instance_actions/action_mail.txt',
+            ctx_dict
+        )
         self.user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
 
 
@@ -1042,15 +1211,16 @@ def parseQuery(response):
     field_dict = {}
     data = response['data']
     fields = response['fields']
-    for i,field in enumerate(fields):
-         field_dict[i]=field['name']
+    for i, field in enumerate(fields):
+        field_dict[i] = field['name']
     reslist = []
     for datai in data:
         res_dict = {}
         for fieldnum, result in enumerate(datai):
-            res_dict[field_dict[fieldnum]]=result[1]
+            res_dict[field_dict[fieldnum]] = result[1]
         reslist.append(res_dict)
     return reslist
+
 
 def parseQuerysimple(response):
     data = response['data']

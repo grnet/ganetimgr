@@ -16,8 +16,7 @@
 #
 
 from django.contrib import admin
-from models import *
-from django.forms import PasswordInput
+from models import Cluster, Network, InstanceAction
 
 
 class ClusterAdmin(admin.ModelAdmin):
@@ -27,12 +26,24 @@ class ClusterAdmin(admin.ModelAdmin):
 
 
 class NetworkAdmin(admin.ModelAdmin):
-    list_display = ('description', 'cluster', 'cluster_default', 'mode', 'link')
+    list_display = (
+        'description',
+        'cluster',
+        'cluster_default',
+        'mode',
+        'link'
+    )
     list_filter = ('cluster',)
 
 
 class InstanceActionAdmin(admin.ModelAdmin):
-    list_display = ('instance', 'cluster', 'action', 'action_value', 'activation_key')
+    list_display = (
+        'instance',
+        'cluster',
+        'action',
+        'action_value',
+        'activation_key'
+    )
     list_filter = ('instance',)
 
 admin.site.register(Cluster, ClusterAdmin)

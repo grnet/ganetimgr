@@ -26,7 +26,6 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from ganetimgr.settings import GANETI_TAG_PREFIX
-from django.core.cache import cache
 
 try:
     from ganetimgr.settings import BEANSTALK_TUBE
@@ -60,6 +59,7 @@ APPLICATION_CODES = (
 )
 
 PENDING_CODES = [STATUS_PENDING, STATUS_APPROVED, STATUS_FAILED]
+
 
 def generate_cookie():
     """Generate a randomized cookie"""
@@ -110,12 +110,10 @@ class InstanceApplication(models.Model):
     filed = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
-
     class Meta:
         permissions = (
             ("view_applications", "Can view all applications"),
         )
-
 
     def __unicode__(self):
         return self.hostname
@@ -131,10 +129,10 @@ class InstanceApplication(models.Model):
     @cluster.setter
     def cluster(self, c):
         self.instance_params = {
-                                'network': c.get_default_network().link,
-                                'mode': c.get_default_network().mode,
-                                'cluster' : c.slug
-                                }
+            'network': c.get_default_network().link,
+            'mode': c.get_default_network().mode,
+            'cluster': c.slug
+        }
 
     def is_pending(self):
         return self.status in PENDING_CODES
@@ -145,7 +143,6 @@ class InstanceApplication(models.Model):
         self.save()
 
     def submit(self):
-        from ganeti.models import Cluster
         if self.status not in [STATUS_APPROVED, STATUS_FAILED]:
             raise ApplicationError("Invalid application status %d" %
                                    self.status)
@@ -177,11 +174,11 @@ class InstanceApplication(models.Model):
                                        self.organization.tag))
         if 'vgs' in self.instance_params.keys():
             if self.instance_params['vgs'] != 'default':
-                tags.append("%s:vg:%s" % (GANETI_TAG_PREFIX,
-                                       self.instance_params['vgs']))
-
+                tags.append("%s:vg:%s" % (
+                    GANETI_TAG_PREFIX,
+                    self.instance_params['vgs'])
+                )
         uses_gnt_network = self.cluster.use_gnt_network
-
         nic_dict = dict(link=self.instance_params['network'],
                         mode=self.instance_params['mode'])
 
@@ -219,13 +216,15 @@ class InstanceApplication(models.Model):
                 for user in os["ssh_key_users"].split():
                     # user[:group[:/path/to/authorized_keys]]
                     owner, group, path = map_ssh_user(*user.split(":"))
-                    osparams["img_personality"].append({
-                        "path":     path,
-                        "contents": ssh_base64,
-                        "owner":    owner,
-                        "group":    group,
-                        "mode":     0600,
-                    })
+                    osparams["img_personality"].append(
+                        {
+                            "path": path,
+                            "contents": ssh_base64,
+                            "owner": owner,
+                            "group": group,
+                            "mode": 0600,
+                        }
+                    )
         for (key, val) in osparams.iteritems():
             # Encode nested JSON. See
             # <https://code.google.com/p/ganeti/issues/detail?id=835>
@@ -233,28 +232,34 @@ class InstanceApplication(models.Model):
                 osparams[key] = json.dumps(val)
         disk_template = self.instance_params['disk_template']
         nodes = None
-        vg = None
-        disks=[{"size": self.disk_size * 1024}]
+        disks = [{"size": self.disk_size * 1024}]
         if self.instance_params['node_group'] != 'default':
             if self.instance_params['disk_template'] == 'drbd':
-                nodes = self.cluster.get_available_nodes(self.instance_params['node_group'], 2)
+                nodes = self.cluster.get_available_nodes(
+                    self.instance_params['node_group'],
+                    2
+                )
             else:
-                nodes = self.cluster.get_available_nodes(self.instance_params['node_group'], 1)
+                nodes = self.cluster.get_available_nodes(
+                    self.instance_params['node_group'],
+                    1
+                )
             # We should select the two first non offline nodes
         if self.instance_params['disk_template'] in ['drbd', 'plain']:
             if self.instance_params['vgs'] != 'default':
                 disks[0]['vg'] = self.instance_params['vgs']
-        job = self.cluster.create_instance(name=self.hostname,
-                                           os=provider,
-                                           vcpus=self.vcpus,
-                                           memory=self.memory,
-                                           disks=disks,
-                                           nics=[nic_dict],
-                                           tags=tags,
-                                           osparams=osparams,
-                                           nodes = nodes,
-                                           disk_template = disk_template,
-                                           )
+        job = self.cluster.create_instance(
+            name=self.hostname,
+            os=provider,
+            vcpus=self.vcpus,
+            memory=self.memory,
+            disks=disks,
+            nics=[nic_dict],
+            tags=tags,
+            osparams=osparams,
+            nodes=nodes,
+            disk_template=disk_template,
+        )
         self.status = STATUS_SUBMITTED
         self.job_id = job
         self.backend_message = None
@@ -264,8 +269,10 @@ class InstanceApplication(models.Model):
         b = beanstalkc.Connection()
         if BEANSTALK_TUBE:
             b.use(BEANSTALK_TUBE)
-        b.put(json.dumps({"type": "CREATE",
-               "application_id": self.id}))
+        b.put(json.dumps({
+            "type": "CREATE",
+            "application_id": self.id
+        }))
 
     def get_ssh_keys_url(self, prefix=None):
         if prefix is None:

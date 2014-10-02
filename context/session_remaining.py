@@ -15,16 +15,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.core.cache import cache
-from django.conf import settings 
+from django.conf import settings
 import datetime
 
 
 def seconds(request):
     remaining = False
-    if request.user.is_authenticated() and request.user.get_profile().force_logout_date and \
-           ( 'LAST_LOGIN_DATE' not in request.session or \
-             request.session['LAST_LOGIN_DATE'] < request.user.get_profile().force_logout_date ):
+    if (
+        request.user.is_authenticated() and
+        request.user.get_profile().force_logout_date and
+        (
+            'LAST_LOGIN_DATE' not in request.session or
+            request.session['LAST_LOGIN_DATE'] < request.user.get_profile().force_logout_date
+        )
+    ):
         remaining = 2
     if not request.user.is_anonymous():
         if 'LAST_LOGIN_DATE' in request.session:

@@ -7,7 +7,10 @@ from util.client import GanetiApiError
 
 
 def get_instance_data(instance, cluster, node=None):
-    instance.cpu_url = reverse('graph', args=(cluster.slug, instance.name, 'cpu-ts'))
+    instance.cpu_url = reverse(
+        'graph',
+        args=(cluster.slug, instance.name, 'cpu-ts')
+    )
     instance.net_url = []
     for (nic_i, link) in enumerate(instance.nic_links):
         instance.net_url.append(

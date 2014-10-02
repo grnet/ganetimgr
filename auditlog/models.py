@@ -28,10 +28,10 @@ class AuditEntry(models.Model):
     job_id = models.IntegerField(null=True, blank=True)
     recorded = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
-    
+
     def __unicode__(self):
-        return "%s %s %s" %(self.requester, self.action, self.instance)
-    
+        return "%s %s %s" % (self.requester, self.action, self.instance)
+
     def update(self, **kwargs):
         for k, v in kwargs.iteritems():
             setattr(self, k, v)
