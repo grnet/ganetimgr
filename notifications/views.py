@@ -16,13 +16,11 @@
 #
 
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
-from django.template.loader import render_to_string
+from django.http import HttpResponseRedirect, HttpResponse
 from notifications.forms import *
 from ganeti.models import *
 from django.contrib.auth.decorators import login_required
@@ -32,10 +30,10 @@ import json
 from django.core.mail.message import EmailMessage
 
 from gevent.pool import Pool
-from gevent.timeout import Timeout
 
 from util.ganeti_client import GanetiApiError
 from django.db import close_connection
+
 
 @csrf_exempt
 @login_required
@@ -52,37 +50,59 @@ def notify(request, instance=None):
                 mail_list = get_mails(rlist)
                 email = form.cleaned_data['message']
                 if len(mail_list) > 0:
-                    send_new_mail("%s%s" % (settings.EMAIL_SUBJECT_PREFIX, form.cleaned_data['subject']),
-                              email, settings.SERVER_EMAIL, [], mail_list)
+                    send_new_mail(
+                        "%s%s" % (
+                            settings.EMAIL_SUBJECT_PREFIX,
+                            form.cleaned_data['subject']
+                        ),
+                        email,
+                        settings.SERVER_EMAIL,
+                        [],
+                        mail_list
+                    )
                 if request.is_ajax():
-                    ret = {'result':'success'}
-                    return HttpResponse(json.dumps(ret), mimetype='application/json')
-                messages.add_message(request, messages.SUCCESS,
-                             "Mail sent to %s" %','.join(mail_list))
+                    ret = {'result': 'success'}
+                    return HttpResponse(
+                        json.dumps(ret),
+                        mimetype='application/json'
+                    )
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    "Mail sent to %s" % ','.join(mail_list)
+                )
                 return HttpResponseRedirect(reverse('user-instances'))
         else:
             if instance:
                 for user in instance.users:
                     userd = {}
-                    userd['text']=user.username
-                    userd['id']="u_%s"%user.pk
-                    userd['type']="user"
+                    userd['text'] = user.username
+                    userd['id'] = "u_%s" % user.pk
+                    userd['type'] = "user"
                     users.append(userd)
                 for group in instance.groups:
                     groupd = {}
-                    groupd['text']=group.name
-                    groupd['id']="u_%s"%group.pk
-                    groupd['type']="group"
+                    groupd['text'] = group.name
+                    groupd['id'] = "u_%s" % group.pk
+                    groupd['type'] = "group"
                     users.append(groupd)
             form = MessageForm()
         if request.is_ajax():
-            return render_to_response('notifications/create_ajax.html', {
-                                    'form': form, 'users': users, 'ajax': 'true',
-                                    },context_instance=RequestContext(request))
-        
-        return render_to_response('notifications/create.html', {
-            'form': form, 'users': users
-            },context_instance=RequestContext(request))
+            return render_to_response(
+                'notifications/create_ajax.html',
+                {
+                    'form': form, 'users': users, 'ajax': 'true',
+                },
+                context_instance=RequestContext(request)
+            )
+        return render_to_response(
+            'notifications/create.html',
+            {
+                'form': form,
+                'users': users
+            },
+            context_instance=RequestContext(request)
+        )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
 
@@ -92,28 +112,33 @@ def get_mails(itemlist):
     for i in itemlist:
         #User
         if i.startswith('u'):
-            mails.append(User.objects.get(pk=i.replace('u_','')).email)
+            mails.append(
+                User.objects.get(pk=i.replace('u_', '')).email
+            )
         #Group
         if i.startswith('g'):
-            group = Group.objects.get(pk=i.replace('g_',''))
+            group = Group.objects.get(pk=i.replace('g_', ''))
             users = group.user_set.all()
             mails.extend([u.email for u in users])
         #Instance
         if i.startswith('i'):
-            instance = Instance.objects.get(name=i.replace('i_',''))
+            instance = Instance.objects.get(name=i.replace('i_', ''))
             users = instance.users
             mails.extend([u.email for u in users])
         if i.startswith('c'):
-            cluster = Cluster.objects.get(pk=i.replace('c_',''))
+            cluster = Cluster.objects.get(pk=i.replace('c_', ''))
             instances = cluster.get_instances()
             for instance in instances:
                 mails.extend([u.email for u in instance.users])
     return list(set(mails))
-        
+
 
 @login_required
 def get_user_group_list(request):
-    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+    if (
+        request.user.is_superuser or
+        request.user.has_perm('ganeti.view_instances')
+    ):
         q_params = None
         try:
             q_params = request.GET['q']
@@ -125,6 +150,7 @@ def get_user_group_list(request):
         clusters = Cluster.objects.all()
         p = Pool(20)
         bad_clusters = []
+
         def _get_instances(cluster):
             try:
                 instances.extend(cluster.get_user_instances(request.user))
@@ -143,36 +169,42 @@ def get_user_group_list(request):
         ret_list = []
         for user in users:
             userd = {}
-            userd['text']=user.username
-            userd['email']=user.email
-            userd['id']="u_%s"%user.pk
-            userd['type']="user"
+            userd['text'] = user.username
+            userd['email'] = user.email
+            userd['id'] = "u_%s" % user.pk
+            userd['type'] = "user"
             ret_list.append(userd)
         for group in groups:
             groupd = {}
-            groupd['text']=group.name
-            groupd['id']="g_%s"%group.pk
-            groupd['type']="group"
+            groupd['text'] = group.name
+            groupd['id'] = "g_%s" % group.pk
+            groupd['type'] = "group"
             ret_list.append(groupd)
         for instance in instances:
             instd = {}
-            instd['text']=instance.name
-            instd['id']="i_%s"%instance.name
-            instd['type']="vm"
+            instd['text'] = instance.name
+            instd['id'] = "i_%s" % instance.name
+            instd['type'] = "vm"
             ret_list.append(instd)
         for cluster in clusters:
             cld = {}
-            cld['text']=cluster.slug
-            cld['id']="c_%s"%cluster.pk
-            cld['type']="cluster"
+            cld['text'] = cluster.slug
+            cld['id'] = "c_%s" % cluster.pk
+            cld['type'] = "cluster"
             ret_list.append(cld)
         action = ret_list
         return HttpResponse(json.dumps(action), mimetype='application/json')
     else:
-        action = {'error':"Permissions' violation. This action has been logged and our admins will be notified about it"}
+        action = {
+            'error': "Permissions' violation. This action has been logged and our admins will be notified about it"
+        }
         return HttpResponse(json.dumps(action), mimetype='application/json')
 
+
 def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
-    return EmailMessage(subject, message, from_email, recipient_list, bcc_list).send()
+    return EmailMessage(
+        subject, message, from_email, recipient_list, bcc_list
+    ).send()
+
 
 
