@@ -912,6 +912,8 @@ class Cluster(models.Model):
                 os=details.get('provider'),
                 osparams=osparams
             )
+            # manually change os params because client has a bug
+            self._client.ModifyInstance(instance, osparams=osparams)
             self._lock_instance(instance, reason="reinstalling", job_id=job_id)
             return job_id
         else:
