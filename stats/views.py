@@ -14,17 +14,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from gevent.pool import Pool
 
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
-from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from ganeti.models import Cluster
-from gevent.pool import Pool
-from gevent.timeout import Timeout
-from django.conf import settings
-from util.ganeti_client import GanetiApiError
+from util.client import GanetiApiError
+
 
 def instance_owners(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
@@ -41,11 +40,12 @@ def instance_owners(request):
             p.imap(_get_instances, Cluster.objects.all())
             p.join()
         instances = [i for i in instancesall if i.users]
+
         def cmp_users(x, y):
             return cmp(",".join([ u.username for u in x.users]),
                        ",".join([ u.username for u in y.users]))
         instances.sort(cmp=cmp_users)
-    
+
         return render_to_response("instance_owners.html",
                                   {"instances": instances},
                                   context_instance=RequestContext(request))

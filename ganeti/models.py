@@ -19,6 +19,7 @@ import random
 import sha
 import ipaddr
 import base64
+import os
 
 from datetime import datetime, timedelta
 from gevent.pool import Pool
@@ -26,10 +27,11 @@ from socket import gethostbyname
 from time import sleep
 
 from django.db import models
-from django.http import Http404, render_to_string
+from django.http import Http404
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.conf import settings

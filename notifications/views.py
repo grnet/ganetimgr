@@ -31,7 +31,7 @@ from django.core.mail.message import EmailMessage
 
 from gevent.pool import Pool
 
-from util.ganeti_client import GanetiApiError
+from util.client import GanetiApiError
 from django.db import close_connection
 
 

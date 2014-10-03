@@ -26,13 +26,16 @@ from time import mktime
 import datetime
 
 from ipaddr import *
-
 from django import forms
 from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, HttpResponseServerError
+from django.http import (
+    HttpResponseRedirect,
+    HttpResponseForbidden,
+    HttpResponse, HttpResponseServerError
+)
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template.context import RequestContext
 from django.template.loader import get_template
@@ -44,6 +47,7 @@ from django.utils.translation import ugettext_lazy
 from django.utils.translation import ugettext as _
 from django.core.mail import send_mail
 from django.template.defaultfilters import filesizeformat
+from django.template.loader import render_to_string
 
 from operator import itemgetter
 
@@ -1783,7 +1787,6 @@ def clusternodes_json(request, cluster=None):
             except Cluster.DoesNotExist:
                 cluster = None
         for node in nodes:
-            # raise Exception
             if not cluster or (cluster and node['cluster'] == cluster.slug):
                 node_dict = {}
                 node_dict['name'] = node['name']
