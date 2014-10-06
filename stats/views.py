@@ -42,8 +42,10 @@ def instance_owners(request):
         instances = [i for i in instancesall if i.users]
 
         def cmp_users(x, y):
-            return cmp(",".join([ u.username for u in x.users]),
-                       ",".join([ u.username for u in y.users]))
+            return cmp(
+                ",".join([u.username for u in x.users]),
+                ",".join([u.username for u in y.users])
+            )
         instances.sort(cmp=cmp_users)
 
         return render_to_response("instance_owners.html",

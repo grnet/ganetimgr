@@ -60,6 +60,7 @@ DEFAULT_PID_FILE = "/var/run/ganetimgr-watcher.pid"
 DEFAULT_LOG_FILE = "/var/log/ganetimgr/watcher.log"
 RESERVE_ERROR_THRESHOLD = 30
 
+
 def next_poll_interval():
     for t in POLL_INTERVALS:
         yield t

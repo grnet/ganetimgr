@@ -14,6 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+from ganeti.decorators import check_instance_auth
+
+# proxies
+from graphs_views import *
+
+# TODO: Cleanup and separate to files
 
 import urllib2
 import re
@@ -54,7 +60,7 @@ from operator import itemgetter
 from auditlog.models import *
 
 from ganeti.models import *
-from ganeti.utils import prepare_clusternodes, get_nodes_with_graphs
+from ganeti.utils import prepare_clusternodes
 from ganeti.forms import *
 
 
@@ -130,45 +136,6 @@ def check_admin_lock(view_fn):
             t = get_template("403.html")
             return HttpResponseForbidden(content=t.render(RequestContext(request)))
     return check_lock
-
-
-def check_instance_auth(view_fn):
-    def check_auth(request, *args, **kwargs):
-        try:
-            cluster_slug = kwargs["cluster_slug"]
-            instance_name = kwargs["instance"]
-        except KeyError:
-            cluster_slug = args[0]
-            instance_name = args[1]
-
-        cache_key = "cluster:%s:instance:%s:user:%s" % (
-            cluster_slug,
-            instance_name,
-            request.user.username
-        )
-        res = cache.get(cache_key)
-        if res is None:
-            cluster = get_object_or_404(Cluster, slug=cluster_slug)
-            instance = cluster.get_instance_or_404(instance_name)
-            res = False
-
-            if (
-                request.user.is_superuser or
-                request.user in instance.users or
-                set.intersection(
-                    set(request.user.groups.all()), set(instance.groups)
-                )
-            ):
-                res = True
-
-            cache.set(cache_key, res, 60)
-
-        if not res:
-            t = get_template("403.html")
-            return HttpResponseForbidden(content=t.render(RequestContext(request)))
-        else:
-            return view_fn(request, *args, **kwargs)
-    return check_auth
 
 
 def check_instance_readonly(view_fn):
@@ -1683,71 +1650,6 @@ def get_clusternodes(request):
         return HttpResponseRedirect(reverse('user-instances'))
 
 
-@login_required
-def cluster_nodes_graphs(request, cluster_slug=None):
-    nodes_string = request.GET.get('nodes', None)
-    if nodes_string:
-        nodes = nodes_string.split(',')
-    else:
-        nodes = None
-    form = GraphForm(request.POST or None)
-    if (
-        request.user.is_superuser
-        or
-        request.user.has_perm('ganeti.view_instances')
-    ):
-        if form.is_valid():
-            cluster = form.cleaned_data['cluster']
-            nodes_from_form = form.cleaned_data['nodes']
-            keyword_args = False
-            if cluster:
-                keyword_args = {'cluster_slug': cluster.slug}
-            if nodes_from_form:
-                get_data = '?nodes=%s' % (nodes_from_form)
-            else:
-                get_data = ''
-            if keyword_args:
-                return HttpResponseRedirect(
-                    '%s%s' % (
-                        reverse(
-                            'cluster-get-nodes-graphs',
-                            kwargs=keyword_args
-                        ), get_data
-                    )
-                )
-            else:
-                return HttpResponseRedirect(
-                    reverse('cluster-get-nodes-graphs')
-                )
-
-        elif cluster_slug:
-            cluster = Cluster.objects.get(slug=cluster_slug)
-            initial_data = {}
-            if cluster:
-                initial_data.update({'cluster': cluster})
-            if nodes:
-                initial_data.update({'nodes': nodes_string})
-            form.initial = initial_data
-            res = get_nodes_with_graphs(
-                cluster_slug=cluster_slug, nodes=nodes
-            )
-            return render(
-                request,
-                'nodes-graphs.html',
-                {
-                    'form': form,
-                    'results': res
-                }
-            )
-        else:
-            return render(
-                request,
-                'nodes-graphs.html',
-                {'form': form}
-            )
-    else:
-        raise PermissionDenied
-
 
 @login_required
 def clusternodes_json(request, cluster=None):
@@ -2013,7 +1915,10 @@ def get_user_groups(request):
     for user in users:
         userd = {}
         userd['text'] = user.username
-        if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+        if (
+            request.user.is_superuser or
+            request.user.has_perm('ganeti.view_instances')
+        ):
             userd['email'] = user.email
         userd['id'] = "u_%s" % user.pk
         userd['type'] = "user"
@@ -2035,43 +1940,6 @@ def disksizes(value):
 def memsize(value):
     return filesizeformat(value * 1024 ** 2)
 
-
-@login_required
-@check_instance_auth
-def graph(
-    request,
-    cluster_slug,
-    instance,
-    graph_type,
-    start=None,
-    end=None,
-    nic=None
-):
-    if not start:
-        start = "-1d"
-    start = str(start)
-    if not end:
-        end = "-20s"
-    end = str(end)
-    try:
-        url = "%s/%s/%s.png/%s,%s" % (
-            settings.COLLECTD_URL,
-            instance,
-            graph_type,
-            start,
-            end
-        )
-        if nic and graph_type == "net-ts":
-            url = "%s/%s" % (url, nic)
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-    except urllib2.HTTPError:
-        response = open(settings.NODATA_IMAGE, "r")
-    except urllib2.URLError:
-        response = open(settings.NODATA_IMAGE, "r")
-    except Exception:
-        response = open(settings.NODATA_IMAGE, "r")
-    return HttpResponse(response.read(), mimetype="image/png")
 
 
 @login_required

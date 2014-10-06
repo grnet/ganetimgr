@@ -15,17 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.contrib.auth import logout
+from django.conf.urls.defaults import patterns, url
 
-
-class ForceLogoutMiddleware(object):
-    def process_request(self, request):
-        if (
-            request.user.is_authenticated() and
-            request.user.get_profile().force_logout_date and
-            (
-                'LAST_LOGIN_DATE' not in request.session or
-                request.session['LAST_LOGIN_DATE'] < request.user.get_profile().force_logout_date
-            )
-        ):
-            logout(request)
+urlpatterns = patterns(
+    '',
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/(?P<graph_type>[^/]+)(/(?P<start>[\\:\w\d\s\.+-]+),(?P<end>[\\:\w\d\s\.+-]+))?(/(?P<nic>eth\d+))?$', 'ganeti.views.graph', name='graph'),
+    url(r'^all/$', 'ganeti.views.cluster_nodes_graphs', name="cluster-get-nodes-graphs"),
+    url(r'^(?P<cluster_slug>\w+)/instances/$', 'ganeti.views.cluster_nodes_graphs', name="cluster-get-nodes-graphs"),
+)

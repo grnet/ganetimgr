@@ -15,17 +15,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.contrib.auth import logout
+from django.conf.urls.defaults import patterns, url, include
+from django.contrib.auth import views as auth_v
+
+from accounts import views
+from accounts.forms import RegistrationForm, PasswordResetFormPatched
 
 
-class ForceLogoutMiddleware(object):
-    def process_request(self, request):
-        if (
-            request.user.is_authenticated() and
-            request.user.get_profile().force_logout_date and
-            (
-                'LAST_LOGIN_DATE' not in request.session or
-                request.session['LAST_LOGIN_DATE'] < request.user.get_profile().force_logout_date
-            )
-        ):
-            logout(request)
+urlpatterns = patterns(
+    '',
+    url(r'^activate/(?P<activation_key>\w+)/$', views.activate, name='activate_account'),
+    url(r'^register/$', 'registration.views.register', {'backend': 'regbackends.ganetimgr.GanetimgrBackend', 'form_class': RegistrationForm}, name='registration.views.register'),
+    url(r'^password/reset/$', auth_v.password_reset, {'password_reset_form': PasswordResetFormPatched}, name='password_reset'),
+    (r'^', include('registration.backends.default.urls')),
+)
