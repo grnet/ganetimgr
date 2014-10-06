@@ -22,18 +22,18 @@ from django.contrib import admin
 from django_markdown import flatpages
 
 from accounts import urls as accounts_urls
-from ganeti.urls import graphs_urls
+from ganeti.urls import graphs_urls, instances_urls
 
 admin.autodiscover()
 flatpages.register()
 
 urlpatterns = patterns('',
     (r'^setlang/?$', 'django.views.i18n.set_language'),
-    url(r'^/?$', 'ganeti.views.user_index', name="user-instances"),
-    url(r'^instances_json/?$', 'ganeti.views.user_index_json', name="user-instances-json"),
-    url(r'^instances_stats_json/?$', 'ganeti.views.user_sum_stats', name="user-stats-json"),
+    url(r'^$', 'ganeti.views.user_index', name="user-instances"),
+
     url(r'^jobs_json/?$', 'ganeti.views.jobs_index_json', name="jobs_json"),
     url(r'^jobs/?$', 'ganeti.views.jobs', name="jobs"),
+
     url(r'^cluster/jobdetails/?$', 'ganeti.views.job_details', name="jobdets-popup"),
     url(r'^cluster/jnodes/(?P<cluster>[^/]+)/$', 'ganeti.views.clusternodes_json', name="cluster-nodes-json"),
     url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/poll/?$', 'ganeti.views.poll', name="instance-poll"),
@@ -49,10 +49,13 @@ urlpatterns = patterns('',
     url(r'^cluster/popup/?', 'ganeti.views.instance_popup', name="instance-popup"),
     url(r'^cluster/nodes/?', 'ganeti.views.get_clusternodes', name="cluster-nodes"),
     url(r'^cluster/jnodes/$', 'ganeti.views.clusternodes_json', name="cluster-nodes-json"),
+
     url(r'^apply/?$', 'apply.views.apply', name="apply"),
+
     url(r'^application/?$', 'apply.views.application_list', name="application-list"),
     url(r'^application/(?P<application_id>\d+)/review', 'apply.views.review_application', name="application-review"),
     url(r'^application/(?P<application_id>\d+)/(?P<cookie>\w+)/ssh_keys', 'apply.views.instance_ssh_keys', name="instance-ssh-keys"),
+
     url(r'^user/info/(?P<type>\w+)/(?P<usergroup>[\w\.\@-]+)/?$', 'ganeti.views.user_info', name="user-info"),
     url(r'^user/idle/?$', 'ganeti.views.idle_accounts', name="idle_accounts"),
     url(r'^user/profile/?$', 'apply.views.profile', name="profile"),
@@ -65,11 +68,11 @@ urlpatterns = patterns('',
     url(r'^user/pass_change/$', 'django.contrib.auth.views.password_change', {'template_name':'pass_change.html', 'post_change_redirect':'done'}, name="pass_change"),
     url(r'^user/pass_change/done/$',  'django.contrib.auth.views.password_change_done', {'template_name':'pass_change_done.html'}, name="pass_change_done" ),
     url(r'^user/pass_change/notify/$', 'apply.views.pass_notify', name="pass_change_notify"),
-    url(r'^apply/?$', 'apply.views.apply', name="apply"),
+
     url(r'^news/?$', 'ganeti.views.news', name="news"),
+
     url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
 
-    (r'^accounts/', include(accounts_urls)),
 
     url(r'^notify/(?P<instance>[^/]+)?$', 'notifications.views.notify', name="notify"),
     url(r'^lock/(?P<instance>[^/]+)?$', 'ganeti.views.lock', name="lock"),
@@ -87,16 +90,21 @@ urlpatterns = patterns('',
     url(r'^clustersdetail/json/?$', 'ganeti.views.clusterdetails_json', name="clusterdetails_json"),
     url(r'^stats/instance_owners/?$', 'stats.views.instance_owners', name="instance_owners"),
     url(r'^stats/?', 'ganeti.views.stats', name="stats"),
+
     url(r'^instance/destreinst/(?P<application_hash>\w+)/(?P<action_id>\d+)/$', 'ganeti.views.reinstalldestreview', name='reinstall-destroy-review'),
+
     url(r'^nodegroup/fromnet/$', 'apply.views.get_nodegroups_fromnet', name='ng_from_net'),
     url(r'^nodegroups/cluster/$', 'apply.views.get_cluster_node_group_stack', name='cluster_ng_stack'),
+
     url(r'^history/$', 'auditlog.views.auditlog', name='auditlog'),
     url(r'^history_json/$', 'auditlog.views.auditlog_json', name='auditlog_json'),
+
     # get a list of the available operating systems
     url(r'^operating_systems_json/$', 'apply.views.get_operating_systems', name='operating_systems_json'),
     url(r'^markdown/', include('django_markdown.urls')),
 
-
+    (r'^instances/', include(instances_urls)),
+    (r'^accounts/', include(accounts_urls)),
     (r'^graph/', include(graphs_urls)),
     (r'^admin/', include(admin.site.urls)),
 )
