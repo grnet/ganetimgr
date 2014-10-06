@@ -22,7 +22,7 @@ from django.contrib import admin
 from django_markdown import flatpages
 
 from accounts import urls as accounts_urls
-from ganeti.urls import graphs_urls, instances_urls
+from ganeti.urls import graphs_urls, instances_urls, jobs_urls
 
 admin.autodiscover()
 flatpages.register()
@@ -30,9 +30,6 @@ flatpages.register()
 urlpatterns = patterns('',
     (r'^setlang/?$', 'django.views.i18n.set_language'),
     url(r'^$', 'ganeti.views.user_index', name="user-instances"),
-
-    url(r'^jobs_json/?$', 'ganeti.views.jobs_index_json', name="jobs_json"),
-    url(r'^jobs/?$', 'ganeti.views.jobs', name="jobs"),
 
     url(r'^cluster/jobdetails/?$', 'ganeti.views.job_details', name="jobdets-popup"),
     url(r'^cluster/jnodes/(?P<cluster>[^/]+)/$', 'ganeti.views.clusternodes_json', name="cluster-nodes-json"),
@@ -103,6 +100,7 @@ urlpatterns = patterns('',
     url(r'^operating_systems_json/$', 'apply.views.get_operating_systems', name='operating_systems_json'),
     url(r'^markdown/', include('django_markdown.urls')),
 
+    (r'^jobs/', include(jobs_urls)),
     (r'^instances/', include(instances_urls)),
     (r'^accounts/', include(accounts_urls)),
     (r'^graph/', include(graphs_urls)),
