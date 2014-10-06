@@ -1,3 +1,3 @@
-from graphs_urls import *
-from instances_urls import *
-from jobs_urls import *
+from graphs import *
+from instances import *
+from jobs import *
