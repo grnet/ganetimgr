@@ -77,7 +77,6 @@ except ImportError:
 from ganetimgr.settings import GANETI_TAG_PREFIX
 
 from django.contrib.messages import constants as msgs
-from django.db import close_connection
 
 MESSAGE_TAGS = {
     msgs.ERROR: '',
@@ -191,17 +190,6 @@ def clusterdetails(request):
         return HttpResponseRedirect(reverse('user-instances'))
 
 
-
-
-
-
-
-
-
-
-
-
-
 @login_required
 @csrf_exempt
 def reinstalldestreview(request, application_hash, action_id):
@@ -312,12 +300,6 @@ def reinstalldestreview(request, application_hash, action_id):
         )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
-
-
-
-
-
-
 
 
 @csrf_exempt
@@ -451,10 +433,6 @@ def isolate(request, instance):
         return HttpResponseRedirect(reverse('user-instances'))
 
 
-
-
-
-
 @csrf_exempt
 @login_required
 def tagInstance(request, instance):
@@ -543,9 +521,6 @@ def tagInstance(request, instance):
         )
 
 
-
-
-
 def prepare_tags(taglist):
     tags = []
     for i in taglist:
@@ -567,163 +542,6 @@ def prepare_tags(taglist):
     return list(set(tags))
 
 
-@login_required
-def stats(request):
-    clusters = Cluster.objects.all()
-    exclude_pks = []
-    if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
-        instances = cache.get('leninstances')
-        if instances is None:
-            p = Pool(20)
-            instances = []
-
-            def _get_instances(cluster):
-                try:
-                    instances.extend(cluster.get_user_instances(request.user))
-                except (GanetiApiError, Exception):
-                    exclude_pks.append(cluster.pk)
-                finally:
-                    close_connection()
-            if not request.user.is_anonymous():
-                p.imap(_get_instances, clusters)
-                p.join()
-            instances = len(instances)
-            cache.set('leninstances', instances, 90)
-        users = cache.get('lenusers')
-        if users is None:
-            users = len(User.objects.all())
-            cache.set('lenusers', users, 90)
-        groups = cache.get('lengroups')
-        if groups is None:
-            groups = len(Group.objects.all())
-            cache.set('lengroups', groups, 90)
-        instance_apps = cache.get('leninstapps')
-        if instance_apps is None:
-            instance_apps = len(InstanceApplication.objects.all())
-            cache.set('leninstapps', instance_apps, 90)
-        orgs = cache.get('lenorgs')
-        if orgs is None:
-            orgs = len(Organization.objects.all())
-            cache.set('lenorgs', orgs, 90)
-        if exclude_pks:
-            clusters = clusters.exclude(pk__in=exclude_pks)
-        return render_to_response(
-            'statistics.html',
-            {
-                'clusters': clusters,
-                'instances': instances,
-                'users': users,
-                'groups': groups,
-                'instance_apps': instance_apps,
-                'orgs': orgs
-            },
-            context_instance=RequestContext(request)
-        )
-    else:
-        return render_to_response(
-            'statistics.html',
-            {'clusters': clusters},
-            context_instance=RequestContext(request)
-        )
-
-
-@login_required
-def stats_ajax_instances(request):
-    username = request.user.username
-    cluster_list = cache.get('%s:ajaxinstances' % username)
-    if cluster_list is None:
-        clusters = Cluster.objects.all()
-        i = 0
-        cluster_list = []
-        for cluster in clusters:
-            cinstances = []
-            i = 0
-            cluster_dict = {}
-            if (
-                request.user.is_superuser or
-                request.user.has_perm('ganeti.view_instances')
-            ):
-                cluster_dict['name'] = cluster.slug
-            else:
-                cluster_dict['name'] = cluster.description
-            cluster_dict['instances'] = []
-            try:
-                cinstances.extend(cluster.get_user_instances(request.user))
-            except (GanetiApiError, Timeout):
-                cinstances = []
-            for instance in cinstances:
-                inst_dict = {}
-                inst_dict['time'] = (1000 * mktime(instance.ctime.timetuple()))
-                inst_dict['name'] = instance.name
-                cluster_dict['instances'].append(inst_dict)
-            cluster_dict['instances'] = sorted(
-                cluster_dict['instances'],
-                key=itemgetter('time')
-            )
-            for item in cluster_dict['instances']:
-                i = i + 1
-                item['count'] = i
-            if len(cinstances) > 0:
-                cluster_list.append(cluster_dict)
-        cache.set('%s:ajaxinstances' % username, cluster_list, 90)
-    return HttpResponse(json.dumps(cluster_list), mimetype='application/json')
-
-
-@login_required
-def stats_ajax_vms_per_cluster(request, cluster_slug):
-    cluster_dict = cache.get('%s:ajaxvmscluster:%s' % (
-        request.user.username,
-        cluster_slug)
-    )
-    if cluster_dict is None:
-        cluster = Cluster.objects.get(slug=cluster_slug)
-        cluster_dict = {}
-        cluster_dict['name'] = cluster.slug
-        cluster_dict['instances'] = {'up': 0, 'down': 0}
-        cinstances = []
-        try:
-            cinstances.extend(cluster.get_user_instances(request.user))
-        except (GanetiApiError, Timeout):
-            return HttpResponse(json.dumps([]), mimetype='application/json')
-        for instance in cinstances:
-            if instance.admin_state:
-                cluster_dict['instances']['up'] = cluster_dict['instances']['up'] + 1
-            else:
-                cluster_dict['instances']['down'] = cluster_dict['instances']['down'] + 1
-        cache.set(
-            '%s:ajaxvmscluster:%s' % (
-                request.user.username,
-                cluster_slug
-            ),
-            cluster_dict,
-            90
-        )
-    return HttpResponse(json.dumps(cluster_dict), mimetype='application/json')
-
-
-@login_required
-def stats_ajax_applications(request):
-    username = request.user.username
-    app_list = cache.get('%s:ajaxapplist' % username)
-    if app_list is None:
-        applications = InstanceApplication.objects.all().order_by('filed')
-        if not (
-            request.user.is_superuser or
-            request.user.has_perm('ganeti.view_instances')
-        ):
-            applications = applications.filter(applicant=request.user)
-        app_list = []
-        i = 0
-        for app in applications:
-            appd = {}
-            appd['instance'] = app.hostname
-            i = i + 1
-            appd['count'] = i
-            appd['user'] = app.applicant.username
-            appd['time'] = (1000 * mktime(app.filed.timetuple()))
-            app_list.append(appd)
-        cache.set('%s:ajaxapplist' % username, app_list, 90)
-    return HttpResponse(json.dumps(app_list), mimetype='application/json')
 
 
 @login_required
@@ -768,8 +586,3 @@ def refresh_cluster_cache(cluster, instance):
     cache.set('allclusternodes', nodes, 90)
     cache.set('badclusters', bc, 90)
     cache.set('badnodes', bn, 90)
-
-
-
-
-

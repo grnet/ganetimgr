@@ -24,6 +24,7 @@ from django_markdown import flatpages
 # import urls
 from accounts import urls as accounts
 from ganeti.urls import graphs, instances, jobs, clusters
+from stats import urls as stats_urls
 from apply.urls import application, user
 from ganeti.views import discovery
 
@@ -34,26 +35,17 @@ urlpatterns = patterns('',
     (r'^setlang/?$', 'django.views.i18n.set_language'),
     url(r'^$', 'ganeti.views.user_index', name="user-instances"),
     url(r'^news/?$', 'ganeti.views.news', name="news"),
-
-    url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
-
-
     url(r'^notify/(?P<instance>[^/]+)?$', 'notifications.views.notify', name="notify"),
+    url(r'^usergrps/?$', 'notifications.views.get_user_group_list', name="usergroups"),
     url(r'^lock/(?P<instance>[^/]+)?$', 'ganeti.views.lock', name="lock"),
     url(r'^isolate/(?P<instance>[^/]+)?$', 'ganeti.views.isolate', name="isolate"),
-    url(r'^usergrps/?$', 'notifications.views.get_user_group_list', name="usergroups"),
-
     url(r'^tags/(?P<instance>[^/]+)?$', 'ganeti.views.tagInstance', name="instance-tags"),
     url(r'^tagusergrps/?$', 'ganeti.views.get_user_groups', name="tagusergroups"),
 
 
-    url(r'^stats_ajax/applications/?', 'ganeti.views.stats_ajax_applications', name="stats_ajax_apps"),
-    url(r'^stats_ajax/instances/?', 'ganeti.views.stats_ajax_instances', name="stats_ajax_instances"),
-    url(r'^stats_ajax/vms_cluster/(?P<cluster_slug>\w+)/?', 'ganeti.views.stats_ajax_vms_per_cluster', name="stats_ajax_vms_pc"),
     url(r'^clustersdetail/?$', 'ganeti.views.clusterdetails', name="clusterdetails"),
     url(r'^clustersdetail/json/?$', 'ganeti.views.clusterdetails_json', name="clusterdetails_json"),
-    url(r'^stats/instance_owners/?$', 'stats.views.instance_owners', name="instance_owners"),
-    url(r'^stats/?', 'ganeti.views.stats', name="stats"),
+
 
     url(r'^instance/destreinst/(?P<application_hash>\w+)/(?P<action_id>\d+)/$', 'ganeti.views.reinstalldestreview', name='reinstall-destroy-review'),
 
@@ -63,17 +55,18 @@ urlpatterns = patterns('',
     url(r'^history/$', 'auditlog.views.auditlog', name='auditlog'),
     url(r'^history_json/$', 'auditlog.views.auditlog_json', name='auditlog_json'),
 
-    # get a list of the available operating systems
-    url(r'^markdown/', include('django_markdown.urls')),
-
+    url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
     url(r'^operating_systems/$', discovery.get_operating_systems, name='operating_systems_json'),
     (r'^application/', include(application)),
     (r'^user/', include(user)),
+    (r'^stats/', include(stats_urls)),
     (r'^jobs/', include(jobs)),
     (r'^cluster/', include(clusters)),
     (r'^instances/', include(instances)),
     (r'^accounts/', include(accounts)),
     (r'^graph/', include(graphs)),
+    # get a list of the available operating systems
+    url(r'^markdown/', include('django_markdown.urls')),
     (r'^admin/', include(admin.site.urls)),
 )
 
