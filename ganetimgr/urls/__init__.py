@@ -17,12 +17,13 @@
 from django.conf.urls.defaults import *
 from ganeti.models import *
 from django.conf import settings
-# Uncomment the next two lines to enable the admin:
+
 from django.contrib import admin
 from django_markdown import flatpages
 
-from accounts import urls as accounts_urls
-from ganeti.urls import graphs_urls, instances_urls, jobs_urls
+# import urls
+from accounts import urls as accounts
+from ganeti.urls import graphs, instances, jobs, clusters
 
 admin.autodiscover()
 flatpages.register()
@@ -30,23 +31,6 @@ flatpages.register()
 urlpatterns = patterns('',
     (r'^setlang/?$', 'django.views.i18n.set_language'),
     url(r'^$', 'ganeti.views.user_index', name="user-instances"),
-
-    url(r'^cluster/jobdetails/?$', 'ganeti.views.job_details', name="jobdets-popup"),
-    url(r'^cluster/jnodes/(?P<cluster>[^/]+)/$', 'ganeti.views.clusternodes_json', name="cluster-nodes-json"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/poll/?$', 'ganeti.views.poll', name="instance-poll"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/vnc/?$', 'ganeti.views.vnc', name="instance-vnc"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/novnc/?$', 'ganeti.views.novnc', name="instance-novnc"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/novnc-proxy/?$', 'ganeti.views.novnc_proxy', name="instance-novnc-proxy"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/shutdown/?$', 'ganeti.views.shutdown', name="instance-shutdown"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/startup/?$', 'ganeti.views.startup', name="instance-startup"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/reboot/?$', 'ganeti.views.reboot', name="instance-reboot"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/reinstalldestroy/(?P<action_id>\d+)/(?P<action_value>[^/]+)?$', 'ganeti.views.reinstalldestroy', name="instance-reinstall-destroy"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/rename/(?P<action_id>\d+)(/(?P<action_value>[^/]+))?$', 'ganeti.views.rename_instance', name="instance-rename"),
-    url(r'^cluster/(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/?', 'ganeti.views.instance', name="instance-detail"),
-    url(r'^cluster/popup/?', 'ganeti.views.instance_popup', name="instance-popup"),
-    url(r'^cluster/nodes/?', 'ganeti.views.get_clusternodes', name="cluster-nodes"),
-    url(r'^cluster/jnodes/$', 'ganeti.views.clusternodes_json', name="cluster-nodes-json"),
-
     url(r'^apply/?$', 'apply.views.apply', name="apply"),
 
     url(r'^application/?$', 'apply.views.application_list', name="application-list"),
@@ -100,10 +84,11 @@ urlpatterns = patterns('',
     url(r'^operating_systems_json/$', 'apply.views.get_operating_systems', name='operating_systems_json'),
     url(r'^markdown/', include('django_markdown.urls')),
 
-    (r'^jobs/', include(jobs_urls)),
-    (r'^instances/', include(instances_urls)),
-    (r'^accounts/', include(accounts_urls)),
-    (r'^graph/', include(graphs_urls)),
+    (r'^jobs/', include(jobs)),
+    (r'^cluster/', include(clusters)),
+    (r'^instances/', include(instances)),
+    (r'^accounts/', include(accounts)),
+    (r'^graph/', include(graphs)),
     (r'^admin/', include(admin.site.urls)),
 )
 

@@ -1,10 +1,17 @@
 from gevent.pool import Pool
 
-from django.db import close_connection
+from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
+from django.core.mail import send_mail
+from django.contrib.sites.models import Site
+from django.db import close_connection
+from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import filesizeformat
+from django.template.loader import render_to_string
+from django.utils.translation import ugettext_lazy as _
 
-from ganeti.models import Instance, Cluster
+from ganeti.models import Instance, Cluster, InstanceAction
 from util.client import GanetiApiError
 
 
@@ -237,3 +244,80 @@ def generate_json_light(instance, user):
         ]
     jresp_list.append(inst_dict)
     return jresp_list
+
+
+def clear_cluster_user_cache(username, cluster_slug):
+    cache.delete("user:%s:index:instances" % username)
+    cache.delete("cluster:%s:instances" % cluster_slug)
+
+
+def notifyuseradvancedactions(
+    user,
+    cluster_slug,
+    instance,
+    action_id,
+    action_value,
+    new_operating_system
+):
+    action_id = int(action_id)
+    if action_id not in [1, 2, 3]:
+        action = {'action': _("Not allowed action")}
+        return action
+    cluster = get_object_or_404(Cluster, slug=cluster_slug)
+    instance = cluster.get_instance_or_404(instance)
+    reinstalldestroy_req = InstanceAction.objects.create_action(
+        user,
+        instance,
+        cluster,
+        action_id,
+        action_value,
+        new_operating_system
+    )
+    fqdn = Site.objects.get_current().domain
+    url = "https://%s%s" % \
+        (
+            fqdn,
+            reverse(
+                "reinstall-destroy-review",
+                kwargs={
+                    'application_hash': reinstalldestroy_req.activation_key,
+                    'action_id': action_id
+                }
+            )
+        )
+    email = render_to_string(
+        "reinstall_mail.txt",
+        {
+            "instance": instance,
+            "user": user,
+            "action": reinstalldestroy_req.get_action_display(),
+            "action_value": reinstalldestroy_req.action_value,
+            "url": url,
+            "operating_system": reinstalldestroy_req.operating_system
+        }
+    )
+    if action_id == 1:
+        action_mail_text = _("re-installation")
+    if action_id == 2:
+        action_mail_text = _("destruction")
+    if action_id == 3:
+        action_mail_text = _("rename")
+    try:
+        send_mail(
+            _("%(pref)sInstance %(action)s requested: %(instance)s") % {
+                "pref": settings.EMAIL_SUBJECT_PREFIX,
+                "action": action_mail_text,
+                "instance": instance.name
+            },
+            email,
+            settings.SERVER_EMAIL,
+            [user.email]
+        )
+    # if anything goes wrong do nothing.
+    except:
+        # remove entry
+        reinstalldestroy_req.delete()
+        action = {'action': _("Could not send email")}
+    else:
+        action = {'action': _("Mail sent")}
+    return action

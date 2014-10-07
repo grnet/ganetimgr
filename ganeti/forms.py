@@ -14,14 +14,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import socket
+import re
+import urllib2
 
 from django import forms
+from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.utils.safestring import mark_safe
-from ganeti.models import Instance, Cluster
 
-import re
+from ganeti.models import Instance, Cluster
+from ipaddr import IPNetwork
+
 
 _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
 
@@ -80,4 +85,95 @@ class GraphForm(forms.Form):
         empty_label=None
     )
     nodes = forms.CharField(required=False, widget=forms.widgets.HiddenInput())
+
+
+class InstanceConfigForm(forms.Form):
+    nic_type = forms.ChoiceField(label=ugettext_lazy("Network adapter model"),
+                                 choices=(('paravirtual', 'Paravirtualized'),
+                                          ('rtl8139', 'Realtek 8139+'),
+                                          ('e1000', 'Intel PRO/1000'),
+                                          ('ne2k_pci', 'NE2000 PCI')))
+
+    disk_type = forms.ChoiceField(label=ugettext_lazy("Hard disk type"),
+                                  choices=(('paravirtual', 'Paravirtualized'),
+                                           ('scsi', 'SCSI'),
+                                           ('ide', 'IDE')))
+
+    boot_order = forms.ChoiceField(label=ugettext_lazy("Boot device"),
+                                   choices=(('disk', 'Hard disk'),
+                                            ('cdrom', 'CDROM')))
+
+    cdrom_type = forms.ChoiceField(label=ugettext_lazy("CD-ROM Drive"),
+                                   choices=(('none', 'Disabled'),
+                                            ('iso',
+                                             'ISO Image over HTTP (see below)')),
+                                   widget=forms.widgets.RadioSelect())
+
+    cdrom_image_path = forms.CharField(required=False,
+                                       label=ugettext_lazy("ISO Image URL (http)"))
+
+    use_localtime = forms.BooleanField(
+        label=ugettext_lazy(
+            "Hardware clock uses local time"
+            " instead of UTC"
+        ),
+        required=False
+    )
+    whitelist_ip = forms.CharField(
+        required=False,
+        label=ugettext_lazy("Allow From"),
+        help_text="If isolated, allow access from v4/v6 address/network"
+    )
+
+    def clean_cdrom_image_path(self):
+        data = self.cleaned_data['cdrom_image_path']
+        if data:
+            if not (data == 'none' or re.match(r'(https?|ftp)://', data)):
+                raise forms.ValidationError(_('Only HTTP URLs are allowed'))
+
+            elif data != 'none':
+                # Check if the image is there
+                oldtimeout = socket.getdefaulttimeout()
+                socket.setdefaulttimeout(5)
+                try:
+                    urllib2.urlopen(data)
+                    socket.setdefaulttimeout(oldtimeout)
+                except ValueError:
+                    socket.setdefaulttimeout(oldtimeout)
+                    raise forms.ValidationError(
+                        _('%(url)s is not a valid URL') % {'url': data}
+                    )
+                except:  # urllib2 HTTP errors
+                    socket.setdefaulttimeout(oldtimeout)
+                    raise forms.ValidationError(_('Invalid URL'))
+        return data
+
+    def clean_whitelist_ip(self):
+        data = self.cleaned_data['whitelist_ip']
+        if data:
+            try:
+                address = IPNetwork(data)
+                if address.version == 4:
+                    if address.prefixlen < settings.WHITELIST_IP_MAX_SUBNET_V4:
+                        error = _(
+                            "Currently no prefix lengths < %s are allowed"
+                        ) % settings.WHITELIST_IP_MAX_SUBNET_V4
+                        raise forms.ValidationError(error)
+                if address.version == 6:
+                    if address.prefixlen < settings.WHITELIST_IP_MAX_SUBNET_V6:
+                        error = _(
+                            "Currently no prefix lengths < %s are allowed"
+                        ) % settings.WHITELIST_IP_MAX_SUBNET_V6
+                        raise forms.ValidationError(error)
+                if address.is_unspecified:
+                    raise forms.ValidationError('Address is unspecified')
+            except ValueError:
+                raise forms.ValidationError(
+                    _(
+                        '%(address)s is not a valid address'
+                    ) % {'address': data}
+                )
+            data = address.compressed
+        return data
+
 
