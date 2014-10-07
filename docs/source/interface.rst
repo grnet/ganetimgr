@@ -73,6 +73,14 @@ List of all available hardware nodes with important resources for easy sorting. 
 .. image:: _static/images/ss_10_admin_node.png
 	:scale: 50 %
 
+Batch Graphs
+------------
+
+List all instances Cpu and nerwork graphs, per cluster or per node. You can collapse and expand the graphs per instance and one can select graphs between a specific time period.
+
+.. image:: _static/images/graphs.png
+	:scale: 50 %
+	
 Jobs
 ----
 Real-time view of the cluster(s) job queue. Ability to sort based on job status (running, success, failed, waiting) and per cluster).
