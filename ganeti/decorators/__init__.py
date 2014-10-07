@@ -1,10 +1,29 @@
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.template.context import RequestContext
 
 from ganeti.models import Cluster, Instance
+
+
+def ajax_required(f):
+    """
+    AJAX request required decorator
+    use it in your views:
+
+    @ajax_required
+    def my_view(request):
+        ....
+
+    """
+    def wrap(request, *args, **kwargs):
+            if not request.is_ajax():
+                return HttpResponseBadRequest()
+            return f(request, *args, **kwargs)
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
+    return wrap
 
 
 def check_instance_auth(view_fn):

@@ -39,9 +39,9 @@ from django.conf import settings
 from util import vapclient
 from util.client import GanetiRapiClient, GanetiApiError, GenericCurlConfig
 from ganetimgr.settings import GANETI_TAG_PREFIX
-
 from apply.models import Organization, InstanceApplication
-from apply.utils import get_os_details
+
+from ganeti.utils import get_os_details
 
 REQUEST_ACTIONS = (
     (1, 'reinstall'),
@@ -1083,6 +1083,7 @@ class Network(models.Model):
 
 
 def preload_instance_data():
+
     networks = cache.get('networklist')
     if not networks:
         networks = Network.objects.select_related('cluster').all()

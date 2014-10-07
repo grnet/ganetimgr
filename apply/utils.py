@@ -14,116 +14,32 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-import requests
-from bs4 import BeautifulSoup
-import json
-from django.core.cache import cache
-from requests.exceptions import ConnectionError
-
-try:
-    from ganetimgr.settings import OPERATING_SYSTEMS_URLS
-except ImportError:
-    OPERATING_SYSTEMS_URLS = False
-else:
-    from ganetimgr.settings import OPERATING_SYSTEMS_PROVIDER, OPERATING_SYSTEMS_SSH_KEY_PARAM
-
-try:
-    from ganetimgr.settings import OPERATING_SYSTEMS
-except ImportError:
-    OPERATING_SYSTEMS = False
+from ganeti.models import InstanceAction
 
 
-def discover_available_operating_systems():
-    operating_systems = {}
-    if OPERATING_SYSTEMS_URLS:
-        for url in OPERATING_SYSTEMS_URLS:
-            try:
-                raw_response = requests.get(url)
-            except ConnectionError:
-                # fail silently if url is unreachable
-                break
-            else:
-                if raw_response.ok:
-                    soup = BeautifulSoup(raw_response.text)
-                    extensions = {
-                        '.tar.gz': 'tarball',
-                        '.img': 'qemu',
-                        '-root.dump': 'dump'
-                    }
-                    architectures = ['-x86_', '-amd' '-i386']
-                    for link in soup.findAll('a'):
-                        try:
-                            extension = '.' + '.'.join(link.text.split('.')[-2:])
-                        # in case of false link
-                        except IndexError:
-                            pass
-                        else:
-                            # if the file is tarball, qemu or dump then it is valid
-                            if extension in extensions.keys() or '-root.dump' in link.text:
-                                re = requests.get(url + link.text + '.dsc')
-                                if re.ok:
-                                    name = re.text
-                                else:
-                                    name = link.text
-                                for arch in architectures:
-                                    if arch in link.text:
-                                        img_id = link.text.replace(extension, '').split(arch)[0]
-                                        architecture = arch
-                                        break
-                                description = name
-                                img_format = extensions[extension]
-                                operating_systems.update({
-                                    img_id: {
-                                        'description': description,
-                                        'provider': OPERATING_SYSTEMS_PROVIDER,
-                                        'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
-                                        'arch': architecture,
-                                        'osparams': {
-                                            'img_id': img_id,
-                                            'img_format': img_format,
-                                        }
-                                    }
-                                })
-        return operating_systems
+def check_mail_change_pending(user):
+    actions = []
+    pending_actions = InstanceAction.objects.filter(applicant=user, action=4)
+    for pending in pending_actions:
+        if pending.activation_key_expired():
+            continue
+        actions.append(pending)
+    if len(actions) == 0:
+        return False
+    elif len(actions) == 1:
+        return True
     else:
-        return {}
+        return False
 
 
-def get_operating_systems_dict():
-    if OPERATING_SYSTEMS:
-        return OPERATING_SYSTEMS
-    else:
-        return {}
-
-
-def operating_systems():
-    # check if results exist in cache
-    response = cache.get('operating_systems')
-    # if no items in cache
-    if not response:
-        discovery = discover_available_operating_systems()
-        dictionary = get_operating_systems_dict()
-        operating_systems = sorted(dict(discovery.items() + dictionary.items()).items())
-        # move 'none' on the top of the list for ui purposes.
-        for os in operating_systems:
-            if os[0] == 'none':
-                operating_systems.remove(os)
-                operating_systems.insert(0, os)
-        if discovery:
-            status = 'success'
-        else:
-            status = 'success'
-        response = json.dumps({'status': status, 'operating_systems': operating_systems})
-        # add results to cache for one day
-        cache.set('operating_systems', response, timeout=86400)
-    return response
-
-
-# find os info given its img_id
-def get_os_details(img_id):
-    oss = json.loads(operating_systems()).get('operating_systems')
-    for os in oss:
-        if os[0] == img_id:
-            return os[1]
-    return False
+def prepare_cluster_node_group_stack(cluster):
+    cluster_info = cluster.get_cluster_info()
+    len_instances = len(cluster.get_cluster_instances())
+    res = {}
+    res['slug'] = cluster.slug
+    res['cluster_id'] = cluster.pk
+    res['num_inst'] = len_instances
+    res['description'] = cluster.description
+    res['disk_templates'] = cluster_info['ipolicy']['disk-templates']
+    res['node_groups'] = cluster.get_node_group_stack()
+    return res

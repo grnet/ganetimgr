@@ -21,13 +21,10 @@ from graphs import *
 from instances import *
 from jobs import *
 from clusters import *
-from ganeti.decorators import check_admin_lock
-from ganeti.utils import clear_cluster_user_cache
+from discovery import *
+
 
 # TODO: Cleanup and separate to files
-import urllib2
-import re
-import socket
 
 from gevent.pool import Pool
 from gevent.timeout import Timeout
@@ -68,7 +65,6 @@ from ganeti.utils import prepare_clusternodes
 from ganeti.forms import *
 
 
-from apply.utils import get_os_details
 from util.client import GanetiApiError
 
 
@@ -103,25 +99,6 @@ def news(request):
         'news.html',
         context_instance=RequestContext(request)
     )
-
-
-@login_required
-def user_info(request, type, usergroup):
-    if (
-        request.user.is_superuser or
-        request.user.has_perm('ganeti.view_instances')
-    ):
-        if type == 'user':
-            usergroup_info = User.objects.get(username=usergroup)
-        if type == 'group':
-            usergroup_info = Group.objects.get(name=usergroup)
-        return render_to_response(
-            'user_info.html',
-            {'usergroup': usergroup_info, 'type': type},
-            context_instance=RequestContext(request)
-        )
-    else:
-        return HttpResponseRedirect(reverse('user-instances'))
 
 
 @login_required
@@ -781,26 +758,6 @@ def get_user_groups(request):
         ret_list.append(groupd)
     action = ret_list
     return HttpResponse(json.dumps(action), mimetype='application/json')
-
-
-@login_required
-def idle_accounts(request):
-    if (
-        request.user.is_superuser or
-        request.user.has_perm('ganeti.view_instances')
-    ):
-        idle_users = []
-        idle_users.extend([
-            u for u in User.objects.filter(
-                is_active=True,
-                last_login__lte=datetime.datetime.now() - datetime.timedelta(
-                    days=int(settings.IDLE_ACCOUNT_NOTIFICATION_DAYS)
-                )
-            ) if u.email
-        ])
-        idle_users = list(set(idle_users))
-        return render_to_response('idle_accounts.html', {'users': idle_users},
-                                  context_instance=RequestContext(request))
 
 
 def refresh_cluster_cache(cluster, instance):

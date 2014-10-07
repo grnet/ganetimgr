@@ -28,7 +28,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from apply.utils import get_os_details
+from ganeti.utils import get_os_details
 
 from auditlog.utils import auditlog_entry
 from ganeti.forms import InstanceConfigForm
