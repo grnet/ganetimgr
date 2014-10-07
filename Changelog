@@ -1,13 +1,13 @@
 1.5.4 RELEASE (stable)
 Features/Bugfixing release
+	- [Feature] Batch graphs per cluster/node
+	- [Feature] Functionality to lock nodegroups 
+	- [Workaround] When reinstalling instance with a new os, os params are changed as they should
 	- Minor fix on user resolution in auditlog
 	- Code cleanup
-	- Functionality to lock nodegroups and instances
-	- Toggle the visibilitu of approved and failed applications
+	- Toggle the visibiliti of approved and failed applications
 	- Pending applications notification does not count failed and approved applications
-	- fix bug that causes mail to crash
-	- batch graphs per cluster/node
-	- When reinstalling instance with a new os, os params are changed as they should
+	- Fix bug that causes mail to crash
 
 
 1.5.3 RELEASE
