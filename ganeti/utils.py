@@ -436,3 +436,13 @@ def get_os_details(img_id):
         if os[0] == img_id:
             return os[1]
     return False
+
+
+def refresh_cluster_cache(cluster, instance):
+    cluster.force_cluster_cache_refresh(instance)
+    for u in User.objects.all():
+        cache.delete("user:%s:index:instances" % u.username)
+    nodes, bc, bn = prepare_clusternodes()
+    cache.set('allclusternodes', nodes, 90)
+    cache.set('badclusters', bc, 90)
+    cache.set('badnodes', bn, 90)

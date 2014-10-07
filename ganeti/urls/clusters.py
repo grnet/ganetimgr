@@ -36,4 +36,6 @@ urlpatterns = patterns(
     url(r'^nodes/?', views.get_clusternodes, name="cluster-nodes"),
     url(r'^jnodes/(?P<cluster>[^/]+)/$', views.clusternodes_json, name="cluster-nodes-json"),
     url(r'^jnodes/$', views.clusternodes_json, name="cluster-nodes-json"),
+    url(r'^instance/destreinst/(?P<application_hash>\w+)/(?P<action_id>\d+)/$', 'ganeti.views.reinstalldestreview', name='reinstall-destroy-review'),
+
 )

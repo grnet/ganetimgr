@@ -35,28 +35,32 @@ urlpatterns = patterns('',
     (r'^setlang/?$', 'django.views.i18n.set_language'),
     url(r'^$', 'ganeti.views.user_index', name="user-instances"),
     url(r'^news/?$', 'ganeti.views.news', name="news"),
+    url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
+    url(r'^operating_systems/$', discovery.get_operating_systems, name='operating_systems_json'),
+
+    # TODO: Group somehow, perhaps under /notifications
     url(r'^notify/(?P<instance>[^/]+)?$', 'notifications.views.notify', name="notify"),
     url(r'^usergrps/?$', 'notifications.views.get_user_group_list', name="usergroups"),
+
+    # TODO: Group somehow, maybe under 'instances/' or 'tags/'?
     url(r'^lock/(?P<instance>[^/]+)?$', 'ganeti.views.lock', name="lock"),
     url(r'^isolate/(?P<instance>[^/]+)?$', 'ganeti.views.isolate', name="isolate"),
     url(r'^tags/(?P<instance>[^/]+)?$', 'ganeti.views.tagInstance', name="instance-tags"),
     url(r'^tagusergrps/?$', 'ganeti.views.get_user_groups', name="tagusergroups"),
 
-
+    # TODO: Group somehow, perhaps under 'cluster/detail/'
     url(r'^clustersdetail/?$', 'ganeti.views.clusterdetails', name="clusterdetails"),
     url(r'^clustersdetail/json/?$', 'ganeti.views.clusterdetails_json', name="clusterdetails_json"),
 
-
-    url(r'^instance/destreinst/(?P<application_hash>\w+)/(?P<action_id>\d+)/$', 'ganeti.views.reinstalldestreview', name='reinstall-destroy-review'),
-
+    # TODO: Group somehow, perhaps under 'cluster/detail/'
     url(r'^nodegroup/fromnet/$', 'apply.views.get_nodegroups_fromnet', name='ng_from_net'),
     url(r'^nodegroups/cluster/$', 'apply.views.get_cluster_node_group_stack', name='cluster_ng_stack'),
 
+    # TODO: Group somehow, perhaps under 'history/'
     url(r'^history/$', 'auditlog.views.auditlog', name='auditlog'),
     url(r'^history_json/$', 'auditlog.views.auditlog_json', name='auditlog_json'),
 
-    url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
-    url(r'^operating_systems/$', discovery.get_operating_systems, name='operating_systems_json'),
+
     (r'^application/', include(application)),
     (r'^user/', include(user)),
     (r'^stats/', include(stats_urls)),

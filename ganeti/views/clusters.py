@@ -21,14 +21,19 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.messages import constants as msgs
+from djang.contrib.auth.models import User
 from django.core.cache import cache
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+    HttpResponseServerError
+)
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from ganeti.utils import get_os_details
+from ganeti.utils import get_os_details, refresh_cluster_cache
 
 from auditlog.utils import auditlog_entry
 from ganeti.forms import InstanceConfigForm
@@ -44,7 +49,7 @@ from ganeti.utils import (
     clear_cluster_user_cache,
     notifyuseradvancedactions
 )
-from ganeti.models import Cluster
+from ganeti.models import Cluster, InstanceAction, Instance
 
 
 @login_required
@@ -577,4 +582,114 @@ def get_clusternodes(request):
         return HttpResponseRedirect(reverse('user-instances'))
 
 
+@login_required
+@csrf_exempt
+def reinstalldestreview(request, application_hash, action_id):
+    action_id = int(action_id)
+    instance = None
+    if action_id not in [1, 2, 3, 4]:
+        return HttpResponseRedirect(reverse('user-instances'))
+    # Normalize before trying anything with it.
+    activation_key = application_hash.lower()
+    try:
+        action = InstanceAction.objects.get(
+            activation_key=activation_key,
+            action=action_id
+        )
+    except InstanceAction.DoesNotExist:
+        activated = True
+        return render(
+            request,
+            'verify_action.html',
+            {
+                'action': action_id,
+                'activated': activated,
+                'instance': instance,
+                'hash': application_hash
+            }
+        )
+    instance = action.instance
+    cluster = action.cluster
+    action_value = action.action_value
+    activated = False
+    try:
+        instance_object = Instance.objects.get(name=instance)
+    except Instance.DoesNotExist:
+        # This should occur only when user changes email
+        pass
+    if action.activation_key_expired():
+        activated = True
+    if request.method == 'POST':
+        if not activated:
+            instance_action = InstanceAction.objects.activate_request(
+                application_hash
+            )
+            if not instance_action:
+                return render(
+                    request,
+                    'verify_action.html',
+                    {
+                        'action': action_id,
+                        'activated': activated,
+                        'instance': instance,
+                        'hash': application_hash
+                    }
+                )
+            if action_id in [1, 2, 3]:
+                auditlog = auditlog_entry(request, "", instance, cluster.slug, save=False)
+            if action_id == 1:
+                auditlog.update(action="Reinstall")
+                jobid = cluster.reinstall_instance(instance, instance_action)
+                # in case there is no selected os
+                if jobid:
+                    auditlog.update(job_id=jobid)
+                else:
+                    return HttpResponseServerError()
+            if action_id == 2:
+                auditlog.update(action="Destroy")
+                jobid = cluster.destroy_instance(instance)
+                auditlog.update(job_id=jobid)
+            if action_id == 3:
+                # As rename causes cluster lock we perform some cache
+                # engineering on the cluster instances,
+                # nodes and the users cache
+                refresh_cluster_cache(cluster, instance)
+                auditlog.update(action="Rename to %s" % action_value)
+                jobid = cluster.rename_instance(instance, action_value)
+                auditlog.update(job_id=jobid)
+            if action_id == 4:
+                user = User.objects.get(username=request.user)
+                user.email = action_value
+                user.save()
+                return HttpResponseRedirect(reverse('profile'))
+            activated = True
+            return HttpResponseRedirect(reverse('user-instances'))
+        else:
+            return render(
+                request,
+                'verify_action.html',
+                {
+                    'action': action_id,
+                    'activated': activated,
+                    'instance': instance,
+                    'instance_object': instance_object,
+                    'hash': application_hash
+                }
+            )
+    elif request.method == 'GET':
+        return render(
+            request,
+            'verify_action.html',
+            {
+                'instance': instance,
+                'instance_object': instance_object,
+                'action': action_id,
+                'action_value': action_value,
+                'cluster': cluster,
+                'activated': activated,
+                'hash': application_hash
+            }
+        )
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
 
