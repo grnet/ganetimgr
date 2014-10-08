@@ -17,8 +17,20 @@
 
 from django.conf.urls.defaults import patterns, url
 
+from ganeti import views
+
 urlpatterns = patterns(
     '',
-    url(r'^json/?$', 'ganeti.views.user_index_json', name="user-instances-json"),
-    url(r'^stats/json/?$', 'ganeti.views.user_sum_stats', name="user-stats-json"),
+    url(r'^json/?$', views.user_index_json, name="user-instances-json"),
+    url(r'^stats/json/?$', views.user_sum_stats, name="user-stats-json"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/poll/?$', views.poll, name="instance-poll"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/vnc/?$', views.vnc, name="instance-vnc"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/novnc/?$', views.novnc, name="instance-novnc"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/novnc-proxy/?$', views.novnc_proxy, name="instance-novnc-proxy"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/shutdown/?$', views.shutdown, name="instance-shutdown"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/startup/?$', views.startup, name="instance-startup"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/reboot/?$', views.reboot, name="instance-reboot"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/reinstalldestroy/(?P<action_id>\d+)/(?P<action_value>[^/]+)?$', views.reinstalldestroy, name="instance-reinstall-destroy"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/rename/(?P<action_id>\d+)(/(?P<action_value>[^/]+))?$', views.rename_instance, name="instance-rename"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/?', views.instance, name="instance-detail"),
 )
