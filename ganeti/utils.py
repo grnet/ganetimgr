@@ -16,7 +16,7 @@ from django.template.defaultfilters import filesizeformat
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from ganeti.models import Cluster, Instance
+from ganeti.models import Cluster, Instance, InstanceAction
 from util.client import GanetiApiError
 
 
@@ -470,3 +470,5 @@ def clusterdetails_generator(slug):
     cluster_profile['nodes'] = nodes
     cluster_profile['networks'] = networks
     return cluster_profile
+
+
