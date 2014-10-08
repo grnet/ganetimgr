@@ -1,4 +1,4 @@
-{% extends "theme/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% block title %}{% if action == 1 %}Re-install{% endif %}{% if action == 2 %}Destroy{% endif %}{% if action == 3 %}Rename{% endif %} instance {{instance}}{% endblock %}
 {% block extrahead %}
@@ -60,7 +60,7 @@ $(document).ready( function(){
               <div class="alert alert-info">
         	{% if not activated %}
             {% trans "You are about to change your email to" %}: <strong>{{action_value}}</strong><br>
-            
+
             <br>
              <form method="post" align="center" id="conf_form" class="form">
              {% csrf_token %}

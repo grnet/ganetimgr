@@ -1,4 +1,4 @@
-{% extends "theme/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% block extrahead %}
 
@@ -87,11 +87,11 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         var x = a.match(/data-size="(.*?)"/)[1].toLowerCase();
         return parseFloat( x );
     },
- 
+
     "dataattr-string-asc": function ( a, b ) {
         return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
- 
+
     "dataattr-string-desc": function ( a, b ) {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
@@ -101,11 +101,11 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         var x = a.match(/data-ninst="(.*?)"/)[1].toLowerCase();
         return parseFloat( x );
     },
- 
+
     "pinstcnt-string-asc": function ( a, b ) {
         return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
- 
+
     "pinstcnt-string-desc": function ( a, b ) {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
@@ -138,10 +138,10 @@ $(document).ready( function(){
 			"iDisplayLength": 25,
 	} );
 	oTable.fnDraw();
-	
-	    
-    
-    
+
+
+
+
 var itoggle = '<div id="itoggle" class="span12" style="text-align:center;"> \
    <div class="btn-group" data-toggle="buttons-checkbox"> \
     <button type="button" class="btn" name="status_filter" value="Master" id="show_master"><span class="badge badge-success">Master {{statuses.master}}</span></button> \
@@ -150,14 +150,14 @@ var itoggle = '<div id="itoggle" class="span12" style="text-align:center;"> \
     <button type="button" class="btn" name="status_filter" value="Drained" id="show_drained"><span class="badge badge-warning">Drained {{statuses.drained}}</span></button> \
     <button type="button" class="btn" name="status_filter" value="Offline" id="show_offline"><span class="badge badge-important">Offline {{statuses.offline}}</span></button> \
     </div></div> ';
-    
+
     $("#itoggleph").html(itoggle);
-    
+
 var clustertoggle = '<select id="clusterfilter" multiple>{% for cluster in clusters %}<option value="{{cluster}}">{{cluster}}</option>{% endfor %}</select>';
  $("#clusterph").html(clustertoggle);
- 
+
  $("#clusterfilter").select2({placeholder: "Select Clusters"});
- 
+
  var reg_exp = '';
     var checkboxs = document.getElementsByName('status_filter');
     for (var i = 0, inp; inp = checkboxs[i]; i++) {
@@ -170,18 +170,18 @@ var clustertoggle = '<select id="clusterfilter" multiple>{% for cluster in clust
                 $(inp).removeClass('active');
             }
         }
-        
+
         if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
             reg_exp = reg_exp + inp.value + '|';
         }
-        
+
     }
 	if (reg_exp == '') {
             reg_exp = '|';
         }
-	
+
     oTable.fnFilter(reg_exp.slice(0, -1), 6, true, false, false);
-    
+
     $('body').on('click', 'button[name="status_filter"]', function(){
     	var reg_exp = '';
         var checkboxs = document.getElementsByName('status_filter');
@@ -200,7 +200,7 @@ var clustertoggle = '<select id="clusterfilter" multiple>{% for cluster in clust
         oTable.fnFilter(reg_exp.slice(0, -1), 6, true, false, false);
         return false;
     });
-    
+
     $('body').on('change', '#clusterfilter', function(){
     	var cl_reg_exp_arr = $('#clusterfilter').val();
     	cl_reg_exp = '';
@@ -215,7 +215,7 @@ var clustertoggle = '<select id="clusterfilter" multiple>{% for cluster in clust
         oTable.fnFilter(cl_reg_exp.slice(0, -1), 7, true, false, false);
         return false;
     });
-    
+
     oTable.$("a[rel=popover]"
 		).
 		popover().click(function(e) {

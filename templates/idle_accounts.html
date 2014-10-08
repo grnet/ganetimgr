@@ -1,4 +1,4 @@
-{% extends "theme/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
@@ -9,11 +9,11 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         var x = a.split(" ")[0];
         return parseInt( x );
     },
- 
+
     "daysago-string-asc": function ( a, b ) {
         return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
- 
+
     "daysago-string-desc": function ( a, b ) {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
@@ -46,9 +46,9 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 </script>
 {% endblock %}
 {% block title %}
-	
+
 		{% trans "Idle Accounts" %}
-	
+
 {% endblock %}
 {% block idle %}class="active"{% endblock %}
 				{% block crumbs %}

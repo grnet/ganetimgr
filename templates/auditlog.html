@@ -1,4 +1,4 @@
-{% extends "theme/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% block extrahead %}
 
@@ -54,7 +54,7 @@
 	<th style="text-align: center;">{% trans "User" %} <span class="sort-icon"></span></th>
 	{% endif %}
 	<th style="text-align: center;">{% trans "Time" %} <span class="sort-icon"></span></th>
-	
+
 </tr>
 
 </thead>
@@ -91,7 +91,7 @@
 
 
 $(document).ready( function(){
-    
+
 
 	var oTable = $('#auditlog_table').dataTable( {
 		"bPaginate": true,
@@ -109,7 +109,7 @@ $(document).ready( function(){
             if(json.hasOwnProperty('messages')){
             	$('#jsonmessages').show();
             	$('#jsonmessage').html(json.messages);
-            	
+
             }
             var seen_clusters = [];
 
@@ -153,17 +153,17 @@ $(document).ready( function(){
                      	return '<a class="btn btn-small" href="'+full.user_href+'"><i class="icon-user"></i> '+data+'</a>';
                    	 }},
                    	 {% endif %}
-                     {"mData":"last_upd", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},                     
+                     {"mData":"last_upd", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
          ]
 } );
   $(window).resize(function() {
     clearTimeout(window.refresh_size);
     window.refresh_size = setTimeout(function() { update_size(); }, 250);
   });
-  
+
 var update_size = function() {
     $(oTable).css({ width: $(oTable).parent().width() });
-    oTable.fnAdjustColumnSizing(); 
+    oTable.fnAdjustColumnSizing();
  };
 {% if user.is_superuser or perms.ganeti.view_instances %}
 
@@ -192,7 +192,7 @@ var update_size = function() {
 		return false;
 	}
 	{% endif %}
-	
+
 
 </script>
 {% endblock %}

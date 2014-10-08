@@ -1,4 +1,4 @@
-{% extends "theme/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% block extraticketinfo %} {% trans "about my profile" %}{% endblock %}
 {% block extrahead %}
@@ -11,7 +11,7 @@ $(document).ready(function () {
 		$('#change_email_placeholder').load("{% url mail-change %}");
 //		change user full name
 		$('#change_name_placeholder').load("{% url name-change %}");
-   
+
 });
 
 	</script>
@@ -51,7 +51,7 @@ $(document).ready(function () {
 			<h2><i class="icon-certificate"></i> {% trans "Change Password" %}</h2>
 				<div id="pass_change_placeholder"></div>
 		</div></div></div>
-		
+
 		<div class="span4 sidebar">
 
 	<div class="widget">
@@ -68,7 +68,7 @@ $(document).ready(function () {
 			<h2><i class="icon-lock"></i> {% trans "Manage SSH Keys" %}</h2>
 				<div id="manage_sshkeys_placeholder"></div>
 		</div></div></div>
-		
+
 </div>
 </div>
 

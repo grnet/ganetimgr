@@ -1,4 +1,4 @@
-{% extends "theme/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 	{% block extrahead %}
 	{% if FEED_URL %}
@@ -19,9 +19,9 @@
 {% endif %}
 {% endblock %}
 {% block title %}
-	
+
 		{% trans "Latest News" %}
-	
+
 {% endblock %}
 {% block news %}class="active"{% endblock %}
 				{% block crumbs %}

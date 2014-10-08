@@ -1,4 +1,4 @@
-{% extends "theme/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% block extrahead %}
 
@@ -48,7 +48,7 @@
 	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Opcode Id" %} <span class="sort-icon"></span></th>
 	<th style="text-align: center;">{% trans "Start" %} <span class="sort-icon"></span></th>
-	
+
 </tr>
 
 </thead>
@@ -86,13 +86,13 @@ var oTable;
 var ajaxSource;
 
  $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
-{   
+{
     // DataTables 1.10 compatibility - if 1.10 then versionCheck exists.
     // 1.10s API has ajax reloading built in, so we use those abilities
     // directly.
     if ( $.fn.dataTable.versionCheck ) {
         var api = new $.fn.dataTable.Api( oSettings );
- 
+
         if ( sNewSource ) {
             api.ajax.url( sNewSource ).load( fnCallback, !bStandingRedraw );
         }
@@ -101,50 +101,50 @@ var ajaxSource;
         }
         return;
     }
- 
+
     if ( sNewSource !== undefined && sNewSource !== null ) {
         oSettings.sAjaxSource = sNewSource;
     }
- 
+
     // Server-side processing should just call fnDraw
     if ( oSettings.oFeatures.bServerSide ) {
         this.fnDraw();
         return;
     }
- 
+
     this.oApi._fnProcessingDisplay( oSettings, true );
     var that = this;
     var iStart = oSettings._iDisplayStart;
     var aData = [];
- 
+
     this.oApi._fnServerParams( oSettings, aData );
- 
+
     oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource, aData, function(json) {
         /* Clear the old information from the table */
         that.oApi._fnClearTable( oSettings );
- 
+
         /* Got the data - add it to the table */
         var aData =  (oSettings.sAjaxDataProp !== "") ?
             that.oApi._fnGetObjectDataFn( oSettings.sAjaxDataProp )( json ) : json;
- 
+
         for ( var i=0 ; i<aData.length ; i++ )
         {
             that.oApi._fnAddData( oSettings, aData[i] );
         }
-         
+
         oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
- 
+
         that.fnDraw();
- 
+
         if ( bStandingRedraw === true )
         {
             oSettings._iDisplayStart = iStart;
             that.oApi._fnCalculateEnd( oSettings );
             that.fnDraw( false );
         }
- 
+
         that.oApi._fnProcessingDisplay( oSettings, false );
- 
+
         /* Callback user function - for event handlers etc */
         if ( typeof fnCallback == 'function' && fnCallback !== null )
         {
@@ -153,7 +153,7 @@ var ajaxSource;
     }, oSettings );
 };
 $(document).ready( function(){
-   
+
 
 	ajaxSource = "{% url jobs_json %}";
 	oTable = $('#jobs_table').dataTable( {
@@ -174,7 +174,7 @@ $(document).ready( function(){
             if(json.hasOwnProperty('messages')){
             	$('#jsonmessages').show();
             	$('#jsonmessage').html(json.messages);
-            	
+
             }
             if(json.hasOwnProperty('clusters')){
             	var clustertoggle = $('<select id="clusterfilter" multiple></select>');
@@ -191,7 +191,7 @@ $(document).ready( function(){
             statusObj.success = 0;
             for (var i=0; i<json.aaData.length; i++) {
             	jobitem = json.aaData[i];
-            	statusObj[jobitem.status] = statusObj[jobitem.status] + 1; 
+            	statusObj[jobitem.status] = statusObj[jobitem.status] + 1;
             }
             $("#success_num").html(statusObj.success);
             $("#error_num").html(statusObj.error);
@@ -224,7 +224,7 @@ $(document).ready( function(){
                          return status;
                          }},
                      {"mData":"ops.0.OP_ID", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-                     {"mData":"start_time", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},                     
+                     {"mData":"start_time", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
          ]
 } );
 
@@ -236,7 +236,7 @@ var itoggle = '<div id="itoggle" class="span12" style="text-align:center;"> \
     <button type="button" class="btn" name="status_filter" value="Waiting" id="show_drained"><span class="badge badge-warning">Waiting <span id="waiting_num"></span></span></button> \
     <button type="button" class="btn" name="status_filter" value="Error" id="show_offline"><span class="badge badge-important">Error <span id="error_num"></span></span></button> \
     </div></div> ';
-    
+
     $("#itoggleph").html(itoggle);
 
  var reg_exp = '';
@@ -251,18 +251,18 @@ var itoggle = '<div id="itoggle" class="span12" style="text-align:center;"> \
                 $(inp).removeClass('active');
             }
         }
-        
+
         if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
             reg_exp = reg_exp + inp.value + '|';
         }
-        
+
     }
 	if (reg_exp == '') {
             reg_exp = '|';
         }
-	
+
     oTable.fnFilter(reg_exp.slice(0, -1), 2, true, false, false);
-    
+
     $('body').on('click', 'button[name="status_filter"]', function(){
     	var reg_exp = '';
         var checkboxs = document.getElementsByName('status_filter');
@@ -281,7 +281,7 @@ var itoggle = '<div id="itoggle" class="span12" style="text-align:center;"> \
         oTable.fnFilter(reg_exp.slice(0, -1), 2, true, false, false);
         return false;
     });
-    
+
 
 $('body').on('change', '#clusterfilter', function(){
     	var cl_reg_exp_arr = $('#clusterfilter').val();
@@ -297,7 +297,7 @@ $('body').on('change', '#clusterfilter', function(){
         oTable.fnFilter(cl_reg_exp.slice(0, -1), 1, true, false, false);
         return false;
     });
-    
+
 var tid = setInterval(refreshJobs, 5000);
 function refreshJobs() {
   oTable.fnReloadAjax(ajaxSource, function(data){
@@ -308,7 +308,7 @@ function refreshJobs() {
             statusObj.success = 0;
             for (var i=0; i<data.jqXHR.responseJSON.aaData.length; i++) {
             	jobitem = data.jqXHR.responseJSON.aaData[i];
-            	statusObj[jobitem.status] = statusObj[jobitem.status] + 1; 
+            	statusObj[jobitem.status] = statusObj[jobitem.status] + 1;
             }
             $("#success_num").html(statusObj.success);
             $("#error_num").html(statusObj.error);
@@ -321,10 +321,10 @@ function refreshJobs() {
     clearTimeout(window.refresh_size);
     window.refresh_size = setTimeout(function() { update_size(); }, 250);
   });
-  
+
 var update_size = function() {
     $(oTable).css({ width: $(oTable).parent().width() });
-    oTable.fnAdjustColumnSizing(); 
+    oTable.fnAdjustColumnSizing();
   }
 
 });
@@ -336,6 +336,6 @@ var update_size = function() {
 		$( "#instDets" ).modal('show');
 		return false;
 	}
-	
+
 </script>
 {% endblock %}

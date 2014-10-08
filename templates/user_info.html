@@ -1,4 +1,4 @@
-{% extends "theme/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
@@ -37,7 +37,7 @@
 			"iDisplayLength": 25,
 	} );
 		});
-	
+
 	var status;
 	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "file-size-pre": function ( a ) {
@@ -47,7 +47,7 @@
     		// Found many disks, let's sum
     		var total = 0;
     		for (var i = 0;i < xm.length; i++){
-    			
+
     			var x = xm[i].substring(0,xm[i].length - 3);
         		var x_unit = (
         			xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ? 1000 : (
@@ -57,15 +57,15 @@
         				)
         			);
             	total += parseInt( x * x_unit, 10 );
-            	
-            	
+
+
     		}
     		return total;
-    		
+
     	}
     	else{
         var x = a.substring(0,a.length - 3);
-        
+
         var x_unit = (
         			a.substring(a.length - 2, a.length) == "MB" ? 1000 : (
         				a.substring(a.length - 2, a.length) == "GB" ? 1000000 : (
@@ -76,11 +76,11 @@
         return parseInt( x * x_unit, 10 );
        }
     },
- 
+
     "file-size-asc": function ( a, b ) {
         return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
- 
+
     "file-size-desc": function ( a, b ) {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
@@ -142,7 +142,7 @@
 	                         "mRender": function (data, type, full) {
 	                       	 status = "";
 	                       	 for(var i = 0; i < data.length; i++) {
-	                       		status = '<span class="label label-info">'+data[i]+'</span> ' + status;	 
+	                       		status = '<span class="label label-info">'+data[i]+'</span> ' + status;
 	                       	 }
 	                       	 if (data.length == 0){
 	                       		status = '<span class="label label-warning">-</span> ';
@@ -150,12 +150,12 @@
 	                       	 ipv6s = full.ipv6address;
 	                       	 status6 = ""
 	                       	 for(var i = 0; i < ipv6s.length; i++) {
-	                       		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;	 
+	                       		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;
 	                       	 }
 	                       	 if (ipv6s.length >= 0){
 	                       		status = status+"<br>"+status6
 	                       	 }
-	                       	 
+
 	                         return status;
 	                         }
 	                     },
@@ -166,7 +166,7 @@
 	                    	 "mRender": function (data, type, full) {
 	                           	 status = "";
 	                           	 for(var i = 0; i < data.length; i++) {
-	                           		status = '<span class="label label-info">'+data[i]+'</span> ' + status;	 
+	                           		status = '<span class="label label-info">'+data[i]+'</span> ' + status;
 	                           	 }
 	                           	 if (data.length == 0){
 	                           		status = '<span class="label label-warning">-</span> ';
@@ -174,7 +174,7 @@
 	                           	 /*ipv6s = full.ipv6address;
 	                           	 status6 = ""
 	                           	 for(var i = 0; i < ipv6s.length; i++) {
-	                           		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;	 
+	                           		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;
 	                           	 }
 	                           	 if (ipv6s.length >= 0){
 	                           		status = status+"<br>"+status6
@@ -220,7 +220,7 @@
 	                     return ret;
 	                     }
 	                     },
-	                     {"mData":"users","bVisible":false, 
+	                     {"mData":"users","bVisible":false,
 	                    	 "mRender": function (data, type, full) {
 	                    		 var users = '';
 	                    		 for(var i = 0; i < data.length; i++) {
@@ -237,7 +237,7 @@
 	                    	 }
 	                     },
 	                     {% endif %}
-	                     
+
 	         ]
 	} );
 		var filter = '"{% url user-info type usergroup %}"';
@@ -251,7 +251,7 @@
 			$( "#instDets" ).modal('show');
 			return false;
 		}
-		
+
 		function showTags(cluster, instance){
 			$( "#instDetsbody" ).html( "" );
 			$( "#myModalLabelservdets" ).text('Instance Tags: '+instance);
@@ -259,7 +259,7 @@
 			$( "#instDets" ).modal('show');
 			return false;
 		}
-		
+
 		function showNotify(cluster, instance){
 			$( "#instDetsbody" ).html( "" );
 			$( "#myModalLabelservdets" ).text('Notify: '+instance);
@@ -275,7 +275,7 @@
 			$( "#instDets" ).modal('show');
 			return false;
 		}
-	
+
 </script>
 {% endblock %}
 {% block title %}
