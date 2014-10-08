@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-	{% load i18n %}
-	{% block navbars %}{% endblock %}
-	{% block title %}{{ flatpage.title }}{% endblock %}
-	{% block brcrmb_container %}{% endblock %}
-	{% block extrahead %}
+{% load i18n %}
+{% block navbars %}{% endblock %}
+{% block title %}{{ flatpage.title }}{% endblock %}
+{% block brcrmb_container %}{% endblock %}
+{% block extrahead %}
 <script type="text/javascript">
 function setlang(lang) {
 	$("#langsel").val(lang);
@@ -20,39 +20,29 @@ function setlang(lang) {
 }
 </script>
 {% endblock %}
-	{% block blockcontainer %}
-    <div class="logincontent">
-        <div class="container-fluid">
-         <div class="row-fluid">
-
-
-
-	<div class="span12">
-<div class="row-fluid">
-<div class="span2"></div>
-<div class="span8 sidebar">
-
-	<div class="widget">
-		<div class="row-fluid">
-			<h2><i class="icon-cloud"></i> {% trans flatpage.title %}</h2>
-				<div id="change_name_placeholder" class="padwidget">
-				{{ flatpage.content|linebreaks }}
+{% block blockcontainer %}
+<div class="logincontent">
+    <div class="container-fluid">
+     <div class="row-fluid">
+		<div class="span12">
+			<div class="row-fluid">
+				<div class="span2"></div>
+				<div class="span8 sidebar">
+					<div class="widget">
+						<div class="row-fluid">
+							<h2>
+								<i class="icon-cloud"></i>
+								{% trans flatpage.title %}
+							</h2>
+							<div id="change_name_placeholder" class="padwidget">
+								{{ flatpage.content|linebreaks }}
+							</div>
+						</div>
+					</div>
 				</div>
-		</div></div></div>
-
-		<div class="span2"></div>
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-	</div>
+				<div class="span2"></div>
+			</div>
+		</div>
 	</div>
 {% endblock %}
+</div>
