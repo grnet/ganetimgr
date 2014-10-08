@@ -26,20 +26,18 @@ from ganeti.urls import graphs, instances, jobs, clusters
 from stats import urls as stats_urls
 from apply.urls import application, user
 from ganeti.views import discovery
+from notifications import urls as notifications
 
 admin.autodiscover()
 flatpages.register()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     (r'^setlang/?$', 'django.views.i18n.set_language'),
     url(r'^$', 'ganeti.views.user_index', name="user-instances"),
     url(r'^news/?$', 'ganeti.views.news', name="news"),
     url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
     url(r'^operating_systems/$', discovery.get_operating_systems, name='operating_systems_json'),
-
-    # TODO: Group somehow, perhaps under /notifications
-    url(r'^notify/(?P<instance>[^/]+)?$', 'notifications.views.notify', name="notify"),
-    url(r'^usergrps/?$', 'notifications.views.get_user_group_list', name="usergroups"),
 
     # TODO: Group somehow, maybe under 'instances/' or 'tags/'?
     url(r'^lock/(?P<instance>[^/]+)?$', 'ganeti.views.lock', name="lock"),
@@ -61,6 +59,7 @@ urlpatterns = patterns('',
 
 
     (r'^application/', include(application)),
+    (r'^notifications/', include(notifications)),
     (r'^user/', include(user)),
     (r'^stats/', include(stats_urls)),
     (r'^jobs/', include(jobs)),
