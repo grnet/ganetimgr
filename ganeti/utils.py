@@ -15,7 +15,7 @@ from django.template.defaultfilters import filesizeformat
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from ganeti.models import *
+from ganeti.models import Cluster, Instance
 from util.client import GanetiApiError
 
 
