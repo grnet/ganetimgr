@@ -129,68 +129,6 @@ def clear_cache(request):
     return HttpResponse(json.dumps(result), mimetype='application/json')
 
 
-def clusterdetails_generator(slug):
-    cluster_profile = {}
-    cluster_profile['slug'] = slug
-    cluster = Cluster.objects.get(slug=slug)
-    cluster_profile['description'] = cluster.description
-    cluster_profile['hostname'] = cluster.hostname
-    # We want to fetch info about the cluster per se, networks,
-    # nodes and nodegroups plus a really brief instances outline.
-    # Nodegroups
-    nodegroups = cluster.get_node_group_stack()
-    nodes = cluster.get_cluster_nodes()
-    # Networks
-    networks = cluster.get_networks()
-    # Instances later on...
-    cluster_profile['clusterinfo'] = cluster.get_cluster_info()
-    cluster_profile['clusterinfo']['mtime'] = str(cluster_profile['clusterinfo']['mtime'])
-    cluster_profile['clusterinfo']['ctime'] = str(cluster_profile['clusterinfo']['ctime'])
-    cluster_profile['nodegroups'] = nodegroups
-    cluster_profile['nodes'] = nodes
-    cluster_profile['networks'] = networks
-    return cluster_profile
-
-
-@login_required
-def clusterdetails_json(request):
-    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
-        clusterlist = cache.get("cluster:allclusterdetails")
-        if clusterlist is None:
-            clusterlist = []
-            errors = []
-            p = Pool(10)
-
-            def _get_cluster_details(cluster):
-                try:
-                    clusterlist.append(clusterdetails_generator(cluster.slug))
-                except (GanetiApiError, Exception):
-                    errors.append(Exception)
-                finally:
-                    close_connection()
-            p.imap(_get_cluster_details, Cluster.objects.all())
-            p.join()
-            cache.set("clusters:allclusterdetails", clusterlist, 180)
-        return HttpResponse(json.dumps(clusterlist), mimetype='application/json')
-    else:
-        return HttpResponse(
-            json.dumps({'error': "Unauthorized access"}),
-            mimetype='application/json'
-        )
-
-
-@login_required
-def clusterdetails(request):
-    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
-        return render_to_response(
-            'clusters.html',
-            context_instance=RequestContext(request)
-        )
-    else:
-        return HttpResponseRedirect(reverse('user-instances'))
-
-
-
 
 @csrf_exempt
 @login_required

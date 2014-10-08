@@ -36,13 +36,11 @@ urlpatterns = patterns(
     (r'^setlang/?$', 'django.views.i18n.set_language'),
     url(r'^$', 'ganeti.views.user_index', name="user-instances"),
     url(r'^news/?$', 'ganeti.views.news', name="news"),
+
+    # unique, helper urls
     url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
     url(r'^operating_systems/$', discovery.get_operating_systems, name='operating_systems_json'),
     url(r'^tagusergrps/?$', 'ganeti.views.get_user_groups', name="tagusergroups"),
-
-    # TODO: Group somehow, perhaps under 'cluster/detail/'
-    url(r'^clustersdetail/?$', 'ganeti.views.clusterdetails', name="clusterdetails"),
-    url(r'^clustersdetail/json/?$', 'ganeti.views.clusterdetails_json', name="clusterdetails_json"),
 
     # TODO: Group somehow, perhaps under 'cluster/detail/'
     url(r'^nodegroup/fromnet/$', 'apply.views.get_nodegroups_fromnet', name='ng_from_net'),
@@ -53,6 +51,7 @@ urlpatterns = patterns(
     url(r'^history_json/$', 'auditlog.views.auditlog_json', name='auditlog_json'),
 
 
+    # mount apps
     (r'^application/', include(application)),
     (r'^notifications/', include(notifications)),
     (r'^user/', include(user)),

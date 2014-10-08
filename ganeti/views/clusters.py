@@ -16,6 +16,7 @@
 #
 
 import json
+from gevent.pool import Pool
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -23,6 +24,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.messages import constants as msgs
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.db import close_connection
 from django.http import (
     HttpResponse,
     HttpResponseRedirect,
@@ -31,12 +33,15 @@ from django.http import (
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 
+from util.client import GanetiApiError
+
 from ganeti.utils import refresh_cluster_cache
 
 from auditlog.utils import auditlog_entry
 
 from ganeti.utils import (
-    prepare_clusternodes
+    prepare_clusternodes,
+    clusterdetails_generator,
 )
 from ganeti.models import Cluster, InstanceAction, Instance
 
@@ -308,4 +313,42 @@ def reinstalldestreview(request, application_hash, action_id):
         )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
+
+
+@login_required
+def clusterdetails(request):
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+        return render(
+            request,
+            'clusters.html'
+        )
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
+
+
+@login_required
+def clusterdetails_json(request):
+    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
+        clusterlist = cache.get("cluster:allclusterdetails")
+        if clusterlist is None:
+            clusterlist = []
+            errors = []
+            p = Pool(10)
+
+            def _get_cluster_details(cluster):
+                try:
+                    clusterlist.append(clusterdetails_generator(cluster.slug))
+                except (GanetiApiError, Exception):
+                    errors.append(Exception)
+                finally:
+                    close_connection()
+            p.imap(_get_cluster_details, Cluster.objects.all())
+            p.join()
+            cache.set("clusters:allclusterdetails", clusterlist, 180)
+        return HttpResponse(json.dumps(clusterlist), mimetype='application/json')
+    else:
+        return HttpResponse(
+            json.dumps({'error': "Unauthorized access"}),
+            mimetype='application/json'
+        )
 

@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import User
 from django.db import close_connection
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import filesizeformat
@@ -446,3 +447,26 @@ def refresh_cluster_cache(cluster, instance):
     cache.set('allclusternodes', nodes, 90)
     cache.set('badclusters', bc, 90)
     cache.set('badnodes', bn, 90)
+
+
+def clusterdetails_generator(slug):
+    cluster_profile = {}
+    cluster_profile['slug'] = slug
+    cluster = Cluster.objects.get(slug=slug)
+    cluster_profile['description'] = cluster.description
+    cluster_profile['hostname'] = cluster.hostname
+    # We want to fetch info about the cluster per se, networks,
+    # nodes and nodegroups plus a really brief instances outline.
+    # Nodegroups
+    nodegroups = cluster.get_node_group_stack()
+    nodes = cluster.get_cluster_nodes()
+    # Networks
+    networks = cluster.get_networks()
+    # Instances later on...
+    cluster_profile['clusterinfo'] = cluster.get_cluster_info()
+    cluster_profile['clusterinfo']['mtime'] = str(cluster_profile['clusterinfo']['mtime'])
+    cluster_profile['clusterinfo']['ctime'] = str(cluster_profile['clusterinfo']['ctime'])
+    cluster_profile['nodegroups'] = nodegroups
+    cluster_profile['nodes'] = nodes
+    cluster_profile['networks'] = networks
+    return cluster_profile
