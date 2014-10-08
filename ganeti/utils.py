@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import close_connection
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import filesizeformat
@@ -483,3 +483,24 @@ def prepare_cluster_node_group_stack(cluster):
     res['disk_templates'] = cluster_info['ipolicy']['disk-templates']
     res['node_groups'] = cluster.get_node_group_stack()
     return res
+
+
+def prepare_tags(taglist):
+    tags = []
+    for i in taglist:
+        #User
+        if i.startswith('u'):
+            tags.append(
+                "%s:user:%s" % (
+                    settings.GANETI_TAG_PREFIX, User.objects.get(
+                        pk=i.replace('u_', '')
+                    ).username
+                )
+            )
+        #Group
+        if i.startswith('g'):
+            tags.append("%s:group:%s" % (
+                settings.GANETI_TAG_PREFIX,
+                Group.objects.get(pk=i.replace('g_','')).name
+            ))
+    return list(set(tags))

@@ -187,6 +187,7 @@ def stats(request):
         )
     else:
         return render(
+            request,
             'statistics.html',
             {'clusters': clusters}
         )

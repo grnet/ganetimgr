@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from ganeti.decorators import check_instance_auth
+import json
 
 # proxies
 from graphs import *
@@ -24,58 +24,13 @@ from clusters import *
 from discovery import *
 from nodegroup import *
 
-
+from ganeti.utils import prepare_tags
 # TODO: Cleanup and separate to files
-
-from gevent.pool import Pool
-from gevent.timeout import Timeout
-
-from time import mktime
-import datetime
-
-from ipaddr import *
-from django import forms
 from django.core.cache import cache
-from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-from django.http import (
-    HttpResponseRedirect,
-    HttpResponseForbidden,
-    HttpResponse, HttpResponseServerError
-)
-from django.shortcuts import get_object_or_404, render_to_response
 from django.template.context import RequestContext
 from django.template.loader import get_template
-from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.shortcuts import render
-from django.core.exceptions import PermissionDenied
-from django.utils.translation import ugettext_lazy
-from django.utils.translation import ugettext as _
-from django.core.mail import send_mail
-from django.template.defaultfilters import filesizeformat
-from django.template.loader import render_to_string
-
-from operator import itemgetter
-from auditlog.utils import auditlog_entry
-
-from auditlog.models import *
-
-from ganeti.models import *
-from ganeti.utils import prepare_clusternodes
-from ganeti.forms import *
-
-
-from util.client import GanetiApiError
-
-
-import pprint
-try:
-    import json
-except ImportError:
-    import simplejson as json
-
-from ganetimgr.settings import GANETI_TAG_PREFIX
 
 from django.contrib.messages import constants as msgs
 
@@ -85,19 +40,10 @@ MESSAGE_TAGS = {
 }
 
 
-def cluster_overview(request):
-    clusters = Cluster.objects.all()
-    return render_to_response(
-        'index.html',
-        {'object_list': clusters},
-        context_instance=RequestContext(request)
-    )
-
-
 def news(request):
-    return render_to_response(
-        'news.html',
-        context_instance=RequestContext(request)
+    return render(
+        request,
+        'news.html'
     )
 
 
@@ -128,7 +74,6 @@ def clear_cache(request):
     else:
         result = {'error': "Violation"}
     return HttpResponse(json.dumps(result), mimetype='application/json')
-
 
 
 @csrf_exempt
@@ -184,14 +129,14 @@ def tagInstance(request, instance):
             res = {'result': 'success'}
             return HttpResponse(json.dumps(res), mimetype='application/json')
         else:
-            return render_to_response(
+            return render(
+                request,
                 'tagging/itags.html',
                 {
                     'form': form,
                     'users': users,
                     'instance': instance
-                },
-                context_instance=RequestContext(request)
+                }
             )
     elif request.method == 'GET':
         form = tagsForm()
@@ -208,38 +153,15 @@ def tagInstance(request, instance):
             groupd['id'] = "g_%s" % group.pk
             groupd['type'] = "group"
             users.append(groupd)
-        return render_to_response(
+        return render(
+            request,
             'tagging/itags.html',
             {
                 'form': form,
                 'users': users,
                 'instance': instance
-            },
-            context_instance=RequestContext(request)
+            }
         )
-
-
-def prepare_tags(taglist):
-    tags = []
-    for i in taglist:
-        #User
-        if i.startswith('u'):
-            tags.append(
-                "%s:user:%s" % (
-                    GANETI_TAG_PREFIX, User.objects.get(
-                        pk=i.replace('u_', '')
-                    ).username
-                )
-            )
-        #Group
-        if i.startswith('g'):
-            tags.append("%s:group:%s" % (
-                GANETI_TAG_PREFIX,
-                Group.objects.get(pk=i.replace('g_','')).name
-            ))
-    return list(set(tags))
-
-
 
 
 @login_required
