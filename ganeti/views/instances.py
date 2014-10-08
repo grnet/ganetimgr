@@ -41,10 +41,16 @@ from ganeti.utils import (
     generate_json_light,
     clear_cluster_user_cache,
     notifyuseradvancedactions,
-
+    get_os_details,
 )
-from ganeti.forms import InstanceRenameForm, InstanceConfigForm
-from ganeti.models import Cluster
+from ganeti.forms import (
+    InstanceRenameForm,
+    InstanceConfigForm,
+    lockForm,
+    isolateForm
+)
+
+from ganeti.models import Cluster, Instance
 from ganeti.decorators import (
     check_instance_auth,
     check_admin_lock,
@@ -638,3 +644,135 @@ def instance(request, cluster_slug, instance):
         'instance.html',
         ret_dict
     )
+
+
+@csrf_exempt
+@login_required
+def lock(request, instance):
+    if (
+        request.user.is_superuser or
+        request.user.has_perm('ganeti.view_instances')
+    ):
+        if instance:
+            instance = Instance.objects.get(name=instance)
+        instance_adminlock = instance.adminlock
+        if request.method == 'POST':
+            form = lockForm(request.POST)
+            if form.is_valid():
+                adminlock = form.cleaned_data['lock']
+                if adminlock:
+                    auditlog = auditlog_entry(
+                        request,
+                        "Lock Instance",
+                        instance, instance.cluster.slug
+                    )
+                    jobid = instance.cluster.tag_instance(
+                        instance.name,
+                        ["%s:adminlock" % settings.GANETI_TAG_PREFIX]
+                    )
+                    auditlog.update(job_id=jobid)
+                if adminlock is False:
+                    auditlog = auditlog_entry(
+                        request,
+                        "Unlock Instance",
+                        instance,
+                        instance.cluster.slug
+                    )
+                    jobid = instance.cluster.untag_instance(
+                        instance.name,
+                        ["%s:adminlock" % settings.GANETI_TAG_PREFIX]
+                    )
+                    auditlog.update(job_id=jobid)
+                res = {
+                    'result': 'success'
+                }
+                return HttpResponse(json.dumps(res), mimetype='application/json')
+            else:
+                return render_to_response(
+                    'tagging/lock.html',
+                    {
+                        'form': form,
+                        'instance': instance
+                    },
+                    context_instance=RequestContext(request)
+                )
+        elif request.method == 'GET':
+            form = lockForm(initial={'lock': instance_adminlock})
+            return render_to_response(
+                'tagging/lock.html',
+                {
+                    'form': form,
+                    'instance': instance
+                },
+                context_instance=RequestContext(request)
+            )
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
+
+
+@csrf_exempt
+@login_required
+def isolate(request, instance):
+    if (
+        request.user.is_superuser or
+        request.user.has_perm('ganeti.view_instances')
+    ):
+        if instance:
+            instance = Instance.objects.get(name=instance)
+        instance_isolate = instance.isolate
+        if request.method == 'POST':
+            form = isolateForm(request.POST)
+            if form.is_valid():
+                isolate = form.cleaned_data['isolate']
+                if isolate:
+                    auditlog = auditlog_entry(
+                        request,
+                        "Isolate",
+                        instance,
+                        instance.cluster.slug
+                    )
+                    jobid = instance.cluster.tag_instance(
+                        instance.name,
+                        ["%s:isolate" % settings.GANETI_TAG_PREFIX]
+                    )
+                    auditlog.update(job_id=jobid)
+                    instance.cluster.migrate_instance(instance.name)
+                if not isolate:
+                    auditlog = auditlog_entry(
+                        request,
+                        "De-Isolate",
+                        instance,
+                        instance.cluster.slug
+                    )
+                    jobid = instance.cluster.untag_instance(
+                        instance.name,
+                        ["%s:isolate" % settings.GANETI_TAG_PREFIX]
+                    )
+                    auditlog.update(job_id=jobid)
+                    instance.cluster.migrate_instance(instance.name)
+                res = {'result': 'success'}
+                return HttpResponse(
+                    json.dumps(res), mimetype='application/json'
+                )
+            else:
+                return render_to_response(
+                    'tagging/isolate.html',
+                    {
+                        'form': form,
+                        'instance': instance
+                    },
+                    context_instance=RequestContext(request)
+                )
+        elif request.method == 'GET':
+            form = isolateForm(initial={'isolate': instance_isolate})
+            return render_to_response(
+                'tagging/isolate.html',
+                {
+                    'form': form,
+                    'instance': instance
+                },
+                context_instance=RequestContext(request)
+            )
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
+

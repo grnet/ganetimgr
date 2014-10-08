@@ -38,11 +38,6 @@ urlpatterns = patterns(
     url(r'^news/?$', 'ganeti.views.news', name="news"),
     url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
     url(r'^operating_systems/$', discovery.get_operating_systems, name='operating_systems_json'),
-
-    # TODO: Group somehow, maybe under 'instances/' or 'tags/'?
-    url(r'^lock/(?P<instance>[^/]+)?$', 'ganeti.views.lock', name="lock"),
-    url(r'^isolate/(?P<instance>[^/]+)?$', 'ganeti.views.isolate', name="isolate"),
-    url(r'^tags/(?P<instance>[^/]+)?$', 'ganeti.views.tagInstance', name="instance-tags"),
     url(r'^tagusergrps/?$', 'ganeti.views.get_user_groups', name="tagusergroups"),
 
     # TODO: Group somehow, perhaps under 'cluster/detail/'
