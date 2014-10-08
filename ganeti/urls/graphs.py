@@ -16,10 +16,11 @@
 #
 
 from django.conf.urls.defaults import patterns, url
+from ganeti import views
 
 urlpatterns = patterns(
     '',
-    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/(?P<graph_type>[^/]+)(/(?P<start>[\\:\w\d\s\.+-]+),(?P<end>[\\:\w\d\s\.+-]+))?(/(?P<nic>eth\d+))?$', 'ganeti.views.graph', name='graph'),
-    url(r'^all/$', 'ganeti.views.cluster_nodes_graphs', name="cluster-get-nodes-graphs"),
-    url(r'^(?P<cluster_slug>\w+)/instances/$', 'ganeti.views.cluster_nodes_graphs', name="cluster-get-nodes-graphs"),
+    url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/(?P<graph_type>[^/]+)(/(?P<start>[\\:\w\d\s\.+-]+),(?P<end>[\\:\w\d\s\.+-]+))?(/(?P<nic>eth\d+))?$', views.graph, name='graph'),
+    url(r'^all/$', views.cluster_nodes_graphs, name="cluster-get-nodes-graphs"),
+    url(r'^(?P<cluster_slug>\w+)/instances/$', views.cluster_nodes_graphs, name="cluster-get-nodes-graphs"),
 )

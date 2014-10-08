@@ -20,6 +20,7 @@ from ganeti import views
 
 urlpatterns = patterns(
     '',
-    url(r'^json/?$', views.jobs_index_json, name="jobs_json"),
-    url(r'^$', views.jobs, name="jobs"),
+    url(r'^fromnet/$', views.get_nodegroups_fromnet, name='ng_from_net'),
+    url(r'^cluster/$', views.get_cluster_node_group_stack, name='cluster_ng_stack'),
+
 )

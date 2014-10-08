@@ -22,12 +22,12 @@ from django_markdown import flatpages
 
 # import urls
 from accounts import urls as accounts
-from ganeti.urls import graphs, instances, jobs, clusters
+from ganeti.urls import graphs, instances, jobs, clusters, nodegroup
 from stats import urls as stats_urls
 from apply.urls import application, user
 from ganeti.views import discovery
 from notifications import urls as notifications
-
+from auditlog import urls as auditlog
 admin.autodiscover()
 flatpages.register()
 
@@ -42,17 +42,10 @@ urlpatterns = patterns(
     url(r'^operating_systems/$', discovery.get_operating_systems, name='operating_systems_json'),
     url(r'^tagusergrps/?$', 'ganeti.views.get_user_groups', name="tagusergroups"),
 
-    # TODO: Group somehow, perhaps under 'cluster/detail/'
-    url(r'^nodegroup/fromnet/$', 'apply.views.get_nodegroups_fromnet', name='ng_from_net'),
-    url(r'^nodegroups/cluster/$', 'apply.views.get_cluster_node_group_stack', name='cluster_ng_stack'),
-
-    # TODO: Group somehow, perhaps under 'history/'
-    url(r'^history/$', 'auditlog.views.auditlog', name='auditlog'),
-    url(r'^history_json/$', 'auditlog.views.auditlog_json', name='auditlog_json'),
-
-
     # mount apps
     (r'^application/', include(application)),
+    (r'^history/', include(auditlog)),
+    (r'^nodegroups/', include(nodegroup)),
     (r'^notifications/', include(notifications)),
     (r'^user/', include(user)),
     (r'^stats/', include(stats_urls)),

@@ -472,3 +472,14 @@ def clusterdetails_generator(slug):
     return cluster_profile
 
 
+def prepare_cluster_node_group_stack(cluster):
+    cluster_info = cluster.get_cluster_info()
+    len_instances = len(cluster.get_cluster_instances())
+    res = {}
+    res['slug'] = cluster.slug
+    res['cluster_id'] = cluster.pk
+    res['num_inst'] = len_instances
+    res['description'] = cluster.description
+    res['disk_templates'] = cluster_info['ipolicy']['disk-templates']
+    res['node_groups'] = cluster.get_node_group_stack()
+    return res

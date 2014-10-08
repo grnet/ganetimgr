@@ -16,10 +16,10 @@
 #
 
 from django.conf.urls.defaults import patterns, url
-from ganeti import views
+from auditlog import views
 
 urlpatterns = patterns(
     '',
-    url(r'^json/?$', views.jobs_index_json, name="jobs_json"),
-    url(r'^$', views.jobs, name="jobs"),
+    url(r'^$', views.auditlog, name='auditlog'),
+    url(r'^json/$', views.auditlog_json, name='auditlog_json'),
 )

@@ -22,6 +22,7 @@ from instances import *
 from jobs import *
 from clusters import *
 from discovery import *
+from nodegroup import *
 
 
 # TODO: Cleanup and separate to files
