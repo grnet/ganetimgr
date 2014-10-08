@@ -33,7 +33,7 @@ urlpatterns = patterns(
     url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/reinstalldestroy/(?P<action_id>\d+)/(?P<action_value>[^/]+)?$', views.reinstalldestroy, name="instance-reinstall-destroy"),
     url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/rename/(?P<action_id>\d+)(/(?P<action_value>[^/]+))?$', views.rename_instance, name="instance-rename"),
     url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/?', views.instance, name="instance-detail"),
-    url(r'^(?P<instance>[^/]+)/lock/?$', views.lock, name="lock"),
-    url(r'^(?P<instance>[^/]+)/isolate/?$', 'ganeti.views.isolate', name="isolate"),
-    url(r'^(?P<instance>[^/]+)/tags/?$', 'ganeti.views.tagInstance', name="instance-tags"),
+    url(r'^lock/(?P<instance>[^/]+)?$', views.lock, name="lock"),
+    url(r'^isolate/(?P<instance>[^/]+)?$', 'ganeti.views.isolate', name="isolate"),
+    url(r'^tags/(?P<instance>[^/]+)?$', 'ganeti.views.tagInstance', name="instance-tags"),
 )
