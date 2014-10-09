@@ -175,7 +175,7 @@ def stats(request):
             clusters = clusters.exclude(pk__in=exclude_pks)
         return render(
             request,
-            'statistics.html',
+            'stats/statistics.html',
             {
                 'clusters': clusters,
                 'instances': instances,
@@ -188,7 +188,7 @@ def stats(request):
     else:
         return render(
             request,
-            'statistics.html',
+            'stats/statistics.html',
             {'clusters': clusters}
         )
 
@@ -218,7 +218,7 @@ def instance_owners(request):
 
         return render(
             request,
-            'instance_owners.html',
+            'stats/instance_owners.html',
             {"instances": instances},
         )
     else:

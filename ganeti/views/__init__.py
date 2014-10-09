@@ -43,7 +43,7 @@ MESSAGE_TAGS = {
 def news(request):
     return render(
         request,
-        'news.html'
+        'news/news.html'
     )
 
 

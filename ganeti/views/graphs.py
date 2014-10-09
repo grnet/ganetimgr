@@ -117,7 +117,7 @@ def cluster_nodes_graphs(request, cluster_slug=None):
             )
             return render(
                 request,
-                'nodes-graphs.html',
+                'graphs/nodes-graphs.html',
                 {
                     'form': form,
                     'results': res
@@ -126,7 +126,7 @@ def cluster_nodes_graphs(request, cluster_slug=None):
         else:
             return render(
                 request,
-                'nodes-graphs.html',
+                'graphs/nodes-graphs.html',
                 {'form': form}
             )
     else:

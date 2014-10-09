@@ -242,7 +242,7 @@ def handle_creation(job):
                                (fqdn, urlresolvers.reverse("instance-detail",
                                                 args=(application.cluster.slug,
                                                       application.hostname)))
-                mail_body = render_to_string("instance_created_mail.txt",
+                mail_body = render_to_string("instances/emails/instance_created_mail.txt",
                                              {"application": application,
                                               "instance_url": instance_url})
                 try_log(send_mail, settings.EMAIL_SUBJECT_PREFIX +

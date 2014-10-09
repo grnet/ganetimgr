@@ -8,60 +8,59 @@
 <script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <script type="text/javascript">
+	$(document).ready( function(){
+		{% if pending %}
+		var oTable1 = $('#pending_instance_table').dataTable( {
+			"bPaginate": true,
+	        "bLengthChange": true,
+	        "bFilter": true,
+	        "bSort": true,
+	        "bDeferRender": true,
+	        "bInfo": true,
+	        "bAutoWidth": true,
+	        "oLanguage": {
+	        	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
+	        },
+	        "sPaginationType": "bootstrap",
+	        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+	        "sPaginationType": "bootstrap",
+			"iDisplayLength": 25,
+		});
+		oTable1.fnDraw();
+		{% endif %}
+		{% if completed %}
+		var oTable2 = $('#completed_instance_table').dataTable( {
+			"bPaginate": true,
+	        "bLengthChange": true,
+	        "bFilter": true,
+	        "bSort": true,
+	        "bDeferRender": true,
+	        "bInfo": true,
+	        "bAutoWidth": true,
+	        "oLanguage": {
+	        	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
+	        },
+	        "sPaginationType": "bootstrap",
+	        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+	        "sPaginationType": "bootstrap",
+			"iDisplayLength": 25,
+		} );
+		oTable2.fnDraw();
+		{% endif %}
 
-$(document).ready( function(){
-	{% if pending %}
-	var oTable1 = $('#pending_instance_table').dataTable( {
-		"bPaginate": true,
-        "bLengthChange": true,
-        "bFilter": true,
-        "bSort": true,
-        "bDeferRender": true,
-        "bInfo": true,
-        "bAutoWidth": true,
-        "oLanguage": {
-        	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
-        },
-        "sPaginationType": "bootstrap",
-        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-        "sPaginationType": "bootstrap",
-		"iDisplayLength": 25,
+		// show approved and failed
+		var filters = $('.pending-filters .btn');
+		$('tr.approved, tr.failed').css({'display': 'none'});
+		filters.on('click', function () {
+			if ($(this).hasClass('active')) {
+				$(this).removeClass('active');
+				$('#pending_instance_table').find('tr.' + $(this).data('toggle')).css({'display': 'none'});
+			} else {
+				$(this).addClass('active');
+				$('#pending_instance_table').find('tr.' + $(this).data('toggle')).css({'display': 'table-row'});
+			}
+		});
 	});
-	oTable1.fnDraw();
-	{% endif %}
-	{% if completed %}
-	var oTable2 = $('#completed_instance_table').dataTable( {
-		"bPaginate": true,
-        "bLengthChange": true,
-        "bFilter": true,
-        "bSort": true,
-        "bDeferRender": true,
-        "bInfo": true,
-        "bAutoWidth": true,
-        "oLanguage": {
-        	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "applications" %}'
-        },
-        "sPaginationType": "bootstrap",
-        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-        "sPaginationType": "bootstrap",
-		"iDisplayLength": 25,
-	} );
-	oTable2.fnDraw();
-	{% endif %}
-
-	// show approved and failed
-	var filters = $('.pending-filters .btn');
-	$('tr.approved, tr.failed').css({'display': 'none'});
-	filters.on('click', function () {
-		if ($(this).hasClass('active')) {
-			$(this).removeClass('active');
-			$('#pending_instance_table').find('tr.' + $(this).data('toggle')).css({'display': 'none'});
-		} else {
-			$(this).addClass('active');
-			$('#pending_instance_table').find('tr.' + $(this).data('toggle')).css({'display': 'table-row'});
-		}
-	});
-});
 </script>
 <style>
 .dropdown-menu.instanceopt{

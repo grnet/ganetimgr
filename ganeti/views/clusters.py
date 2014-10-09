@@ -130,7 +130,7 @@ def instance_popup(request):
 
         return render(
             request,
-            'instance_popup.html',
+            'instances/instance_popup.html',
             {
                 'cluster': cluster,
                 'instance': instance
@@ -191,7 +191,7 @@ def get_clusternodes(request):
         clusters = list(set([n['cluster'] for n in nodes]))
         return render(
             request,
-            'cluster_nodes.html',
+            'clusters/cluster_nodes.html',
             {
                 'nodes': nodes,
                 'clusters': clusters,
@@ -221,7 +221,7 @@ def reinstalldestreview(request, application_hash, action_id):
         activated = True
         return render(
             request,
-            'verify_action.html',
+            'instances/verify_action.html',
             {
                 'action': action_id,
                 'activated': activated,
@@ -248,7 +248,7 @@ def reinstalldestreview(request, application_hash, action_id):
             if not instance_action:
                 return render(
                     request,
-                    'verify_action.html',
+                    'instances/verify_action.html',
                     {
                         'action': action_id,
                         'activated': activated,
@@ -288,7 +288,7 @@ def reinstalldestreview(request, application_hash, action_id):
         else:
             return render(
                 request,
-                'verify_action.html',
+                'instances/verify_action.html',
                 {
                     'action': action_id,
                     'activated': activated,
@@ -300,7 +300,7 @@ def reinstalldestreview(request, application_hash, action_id):
     elif request.method == 'GET':
         return render(
             request,
-            'verify_action.html',
+            'instances/verify_action.html',
             {
                 'instance': instance,
                 'instance_object': instance_object,
@@ -320,7 +320,7 @@ def clusterdetails(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         return render(
             request,
-            'clusters.html'
+            'clusters/clusters.html'
         )
     else:
         return HttpResponseRedirect(reverse('user-instances'))

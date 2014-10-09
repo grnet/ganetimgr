@@ -79,7 +79,7 @@ def apply(request):
         form = InstanceApplicationForm()
         return render(
             request,
-            'apply.html',
+            'apply/apply.html',
             {'form': form},
         )
     else:
@@ -107,7 +107,7 @@ def apply(request):
                 )
             )
             mail_body = render_to_string(
-                'apply_mail.txt',
+                'apply/emails/apply_mail.txt',
                 {
                     "application": application,
                     "user": request.user,
@@ -132,7 +132,7 @@ def apply(request):
         else:
             return render(
                 request,
-                'apply.html',
+                'apply/apply.html',
                 {'form': form}
             )
 
@@ -148,7 +148,7 @@ def application_list(request):
 
     return render(
         request,
-        'application_list.html',
+        'apply/application_list.html',
         {
             'applications': applications,
             'pending': pending,
@@ -183,7 +183,7 @@ def review_application(request, application_id):
                 })
         return render(
             request,
-            'review.html',
+            'apply/review.html',
             {
                 'application': app,
                 'applications': applications,
@@ -222,7 +222,7 @@ def review_application(request, application_id):
             if "reject" in request.POST:
                 application.status = STATUS_REFUSED
                 application.save()
-                mail_body = render_to_string("application_rejected_mail.txt",
+                mail_body = render_to_string("apply/emails/application_rejected_mail.txt",
                                              {"application": application})
                 send_mail(
                     settings.EMAIL_SUBJECT_PREFIX + "Application for %s rejected" % (
@@ -257,7 +257,7 @@ def review_application(request, application_id):
         else:
             return render(
                 request,
-                'review.html',
+                'apply/review.html',
                 {
                     'application': app,
                     'applications': applications,

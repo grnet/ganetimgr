@@ -36,7 +36,7 @@ def user_info(request, type, usergroup):
             usergroup_info = Group.objects.get(name=usergroup)
         return render(
             request,
-            'user_info.html',
+            'users/user_info.html',
             {'usergroup': usergroup_info, 'type': type}
         )
     else:
@@ -60,7 +60,7 @@ def idle_accounts(request):
         ])
         idle_users = list(set(idle_users))
         return render(
-            'idle_accounts.html',
+            'users/idle_accounts.html',
             {'users': idle_users},
         )
 
@@ -69,7 +69,7 @@ def idle_accounts(request):
 def profile(request):
     return render(
         request,
-        'profile.html',
+        'users/profile.html',
         {}
     )
 
@@ -131,7 +131,7 @@ def mail_change(request):
                 form = EmailChangeForm()
     return render(
         request,
-        "mail_change.html",
+        "users/mail_change.html",
         {
             'mail': usermail,
             'form': form,
@@ -161,7 +161,7 @@ def name_change(request):
             form = NameChangeForm()
     return render(
         request,
-        'name_change.html',
+        'users/name_change.html',
         {
             'name': user_full_name,
             'form': form,
@@ -198,7 +198,7 @@ def user_keys(request):
 
     keys = SshPublicKey.objects.filter(owner=request.user)
     return render(
-        'user_keys.html',
+        'users/user_keys.html',
         {
             'form': form,
             'keys': keys,
@@ -223,7 +223,7 @@ def pass_notify(request):
     user.get_profile().force_logout()
     if user.email:
         email = render_to_string(
-            "pass_change_notify_mail.txt",
+            "users/emails/pass_change_notify_mail.txt",
             {"user": request.user}
         )
         send_mail(

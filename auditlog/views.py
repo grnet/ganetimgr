@@ -26,7 +26,7 @@ import json
 
 @login_required
 def auditlog(request):
-    return render_to_response('auditlog.html',
+    return render_to_response('auditlog/auditlog.html',
                               context_instance=RequestContext(request))
 
 

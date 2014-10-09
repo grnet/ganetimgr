@@ -45,7 +45,7 @@ def job_details(request):
             cluster = get_object_or_404(Cluster, slug=cluster_slug)
             job = cluster.get_job(jobid)
         return render_to_response(
-            'job_details.html',
+            'jobs/job_details.html',
             {
                 'job': pprint.pformat(job)
             },
@@ -103,7 +103,7 @@ def jobs_index_json(request):
 def jobs(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         return render_to_response(
-            'jobs.html',
+            'jobs/jobs.html',
             context_instance=RequestContext(request)
         )
     else:

@@ -62,7 +62,7 @@ def user_index(request):
     if request.user.is_anonymous():
         return HttpResponseRedirect(reverse('login'))
     return render_to_response(
-        'user_instances_json.html',
+        'instances/user_instances_json.html',
         context_instance=RequestContext(request)
     )
 
@@ -287,7 +287,7 @@ def poll(request, cluster_slug, instance):
         )
         return render(
             request,
-            'instance_actions.html',
+            'instances/instance_actions.html',
             {
                 'cluster': cluster,
                 'instance': instance,
@@ -303,7 +303,7 @@ def vnc(request, cluster_slug, instance):
 
     return render(
         request,
-        'vnc.html',
+        'instances/vnc.html',
         {
             'cluster': cluster,
             'instance': instance,
@@ -321,7 +321,7 @@ def novnc(request, cluster_slug, instance):
     use_tls = settings.NOVNC_USE_TLS
     return render(
         request,
-        'novnc.html',
+        'instances/novnc.html',
         {
             'cluster': cluster,
             'instance': instance,
@@ -441,7 +441,7 @@ def rename_instance(
     else:
         return render(
             request,
-            'rename_instance.html',
+            'instances/rename_instance.html',
             {
                 'form': form,
                 'instance': instance,
@@ -641,7 +641,7 @@ def instance(request, cluster_slug, instance):
             ret_dict['configform'] = configform
     return render(
         request,
-        'instance.html',
+        'instances/instance.html',
         ret_dict
     )
 

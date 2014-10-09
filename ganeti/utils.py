@@ -291,7 +291,7 @@ def notifyuseradvancedactions(
             )
         )
     email = render_to_string(
-        "reinstall_mail.txt",
+        "instances/emails/reinstall_mail.txt",
         {
             "instance": instance,
             "user": user,
