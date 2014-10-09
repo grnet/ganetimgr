@@ -60,6 +60,7 @@ def idle_accounts(request):
         ])
         idle_users = list(set(idle_users))
         return render(
+            request,
             'users/idle_accounts.html',
             {'users': idle_users},
         )
