@@ -21,8 +21,11 @@ from ganeti import views
 
 urlpatterns = patterns(
     '',
+    url(r'^tags/(?P<instance>[^/]+)?$', views.tagInstance, name="instance-tags"),
     url(r'^json/?$', views.user_index_json, name="user-instances-json"),
     url(r'^stats/json/?$', views.user_sum_stats, name="user-stats-json"),
+    url(r'^lock/(?P<instance>[^/]+)?$', views.lock, name="lock"),
+    url(r'^isolate/(?P<instance>[^/]+)?$', views.isolate, name="isolate"),
     url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/poll/?$', views.poll, name="instance-poll"),
     url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/vnc/?$', views.vnc, name="instance-vnc"),
     url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/novnc/?$', views.novnc, name="instance-novnc"),
@@ -33,7 +36,4 @@ urlpatterns = patterns(
     url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/reinstalldestroy/(?P<action_id>\d+)/(?P<action_value>[^/]+)?$', views.reinstalldestroy, name="instance-reinstall-destroy"),
     url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/rename/(?P<action_id>\d+)(/(?P<action_value>[^/]+))?$', views.rename_instance, name="instance-rename"),
     url(r'^(?P<cluster_slug>\w+)/(?P<instance>[^/]+)/?', views.instance, name="instance-detail"),
-    url(r'^lock/(?P<instance>[^/]+)?$', views.lock, name="lock"),
-    url(r'^isolate/(?P<instance>[^/]+)?$', 'ganeti.views.isolate', name="isolate"),
-    url(r'^tags/(?P<instance>[^/]+)?$', 'ganeti.views.tagInstance', name="instance-tags"),
 )

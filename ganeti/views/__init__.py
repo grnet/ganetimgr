@@ -31,6 +31,7 @@ from django.contrib.auth.decorators import login_required
 from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.shortcuts import render
+from ganeti.forms import tagsForm
 
 from django.contrib.messages import constants as msgs
 
