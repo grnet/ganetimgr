@@ -4,3 +4,5 @@ grappelli/
 *.pyc
 apache/django.wsgi
 docs/build/
+static/admin/
+static/django_markdown/
