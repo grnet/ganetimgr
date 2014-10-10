@@ -88,8 +88,8 @@
 {% endblock %}
 {% block bottomblock %}
 
-<script type="text/javascript" src="/static/theme/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/static/theme/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/includes/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/js/includes/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <script type="text/javascript">
 var status;
@@ -218,7 +218,7 @@ $(document).ready( function(){
             $('body').on('click', ".stopbutton", function(){
             	last_element = false;
             	var my = $(this);
-            	$(this).html("<img src='/static/ajax-loader.gif'>");
+            	$(this).html("<img src='/static/img/gifs/ajax-loader.gif'>");
 				var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
 				var stopurl = "{% url instance-shutdown 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
@@ -235,7 +235,7 @@ $(document).ready( function(){
 			$('body').on('click', ".rebootbutton", function(){
 				last_element = false;
 				var my = $(this);
-				$(this).html("<img src='/static/ajax-loader.gif'>");
+				$(this).html("<img src='/static/img/gifs/ajax-loader.gif'>");
 				var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
 				var rebooturl = "{% url instance-reboot 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
@@ -252,7 +252,7 @@ $(document).ready( function(){
 			$('body').on('click', ".startbutton", function(){
 				last_element = false;
 				var my = $(this);
-				$(this).html("<img src='/static/ajax-loader.gif'>");
+				$(this).html("<img src='/static/img/gifs/ajax-loader.gif'>");
 				var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
 				var starturl = "{% url instance-startup 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());

@@ -10,8 +10,8 @@
         <title>Ganetimgr .:: {% block title %}{% endblock %} </title>
         <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-responsive.min.css">
-        <link rel="stylesheet" href="/static/awesome/css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="/static/theme/theme.css">
+        <link rel="stylesheet" href="/static/css/includes/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/theme.css">
         <!--[if lt IE 9]>
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
@@ -59,9 +59,9 @@
                 min-height:400px;
             }
         </style>
-        <script src="/static/js/jquery-1.10.1.min.js"></script>
-        <script src="/static/js/jquery.cookie.js"></script>
-        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/includes/jquery-1.10.1.min.js"></script>
+        <script src="/static/js/includes/jquery.cookie.js"></script>
+        <script src="/static/js/includes/bootstrap.min.js"></script>
         {% if user.is_authenticated and HELPDESK_INTEGRATION_JAVASCRIPT_URL %}
         <script type="text/javascript" src="{{HELPDESK_INTEGRATION_JAVASCRIPT_URL}}"></script>
         <script type="text/javascript">

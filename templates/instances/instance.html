@@ -3,9 +3,9 @@
 {% block title %}{{ instance.name }} on {{ instance.cluster.description }}{% endblock %}
 {% block extraticketinfo %} {% trans "about" %} {{ instance.name }} {% trans "on cluster" %} {{ instance.cluster.description }}{% endblock %}
 {% block extrahead %}
-<script type="text/javascript" src="/static/daterangepicker/moment.min.js"></script>
-<script type="text/javascript" src="/static/daterangepicker/daterangepicker.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/daterangepicker/daterangepicker.css">
+<script type="text/javascript" src="/static/js/includes/moment.min.js"></script>
+<script type="text/javascript" src="/static/js/includes/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/includes/daterangepicker.css">
 <style type="text/css">
 		#toolbar {
 		padding: 10px 4px;
@@ -20,30 +20,30 @@
     cursor: pointer;
     line-height: 18px;
     padding: 8px;
-}
-#reportrange .caret {
-    margin-left: 2px;
-    margin-top: 8px;
-}
+  }
+  #reportrange .caret {
+      margin-left: 2px;
+      margin-top: 8px;
+  }
 
-.dropdown-menu.instanceopt{
-	right: 0px;
-	left: auto;
-	text-align: left !important;
-}
+  .dropdown-menu.instanceopt{
+  	right: 0px;
+  	left: auto;
+  	text-align: left !important;
+  }
 
-.alignCenter{
-	text-align: center !important;
-}
-.alignLeft{
-	text-align: left !important;
-}
-.alignRight{
-	text-align: right !important;
-}
-.visoverflow{
-	overflow: visible;
-}
+  .alignCenter{
+  	text-align: center !important;
+  }
+  .alignLeft{
+  	text-align: left !important;
+  }
+  .alignRight{
+  	text-align: right !important;
+  }
+  .visoverflow{
+  	overflow: visible;
+  }
 
 </style>
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.css">
@@ -105,9 +105,6 @@
              );
              //Set the initial state of the picker label
              $('#reportrange span').html(moment().subtract('days', 1).format('D MMMM, YYYY') + ' - ' + moment().format('D MMMM, YYYY'));
-
-
-
     });
 	</script>
 {% endblock %}

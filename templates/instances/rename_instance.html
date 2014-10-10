@@ -2,14 +2,14 @@
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
 <script>
 $(document).ready(function() {
-	
-	
+
+
 	$("#renamebutton").click(function(){
 		$(this).html('Sending Email...');
 		var instance = $("#instancetagsform").data('instance');
 		var cluster = $("#instancetagsform").data('cluster');
 		$.ajax({
-			
+
 			url:"{% url instance-rename cluster_slug instance 3 %}",
 			data:$("#renameform").serialize(),
 			type: "POST",
@@ -23,16 +23,16 @@ $(document).ready(function() {
 					catch (exception) {
 						$('#instrenbody').html(data);
 					}
-					
+
 				}
-			
+
 				});
-		
+
 		return false;
 	});
-	
-	
-	
+
+
+
 });
 </script>
 <div class="alert alert-info">

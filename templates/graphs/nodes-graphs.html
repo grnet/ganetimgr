@@ -4,10 +4,10 @@
 {% block title %}{% trans "Nodes" %}{% endblock %}
 
 {% block extrahead %}
-<link rel="stylesheet" href="/static/select2/select2.css">
-<script type="text/javascript" src="/static/daterangepicker/moment.min.js"></script>
-<script type="text/javascript" src="/static/daterangepicker/daterangepicker.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/daterangepicker/daterangepicker.css">
+<link rel="stylesheet" href="/static/css/includes/select2.css">
+<script type="text/javascript" src="/static/js/includes/moment.min.js"></script>
+<script type="text/javascript" src="/static/js/includes/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/includes/daterangepicker.css">
 {% endblock %}
 
 {% block nodegraphs %}class="active"{% endblock %}
@@ -85,7 +85,7 @@
 {% endblock %}
 
 {% block bottomblock %}
-    <script src="/static/select2/select2.js"></script>
+    <script src="/static/js/includes/select2.js"></script>
     <script>
     $(document).ready( function(){
         var $cluster = $('#id_cluster');

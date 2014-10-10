@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block extrahead %}
-<link rel="stylesheet" href="/static/select2/select2.css">
+<link rel="stylesheet" href="/static/css/includes/select2.css">
 {% endblock %}
 {% block applicationstop %}class="active"{% endblock %}
 {% block applications %}class="active"{% endblock %}
@@ -448,8 +448,8 @@ textarea{
 
 {% block bottomblock %}
 <script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
-<script type="text/javascript" src="/static/js/jquery.sparkline.min.js"></script>
-<script src="/static/select2/select2.js"></script>
+<script type="text/javascript" src="/static/js/includes/jquery.sparkline.min.js"></script>
+<script src="/static/js/includes/select2.js"></script>
 <script type="text/javascript">
 var selected_cluster;
 var selected_ng;
