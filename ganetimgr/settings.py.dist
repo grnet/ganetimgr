@@ -293,7 +293,7 @@ USE_X_FORWARDED_HOST = True
 import _version
 SW_VERSION = _version.VERSION
 
-NODATA_IMAGE = os.path.join(STATIC_ROOT, "/img/nodata.jpg")
+NODATA_IMAGE = os.path.join(STATIC_ROOT, "/ganetimgr/img/nodata.jpg")
 
 WHITELIST_IP_MAX_SUBNET_V4 = 26
 WHITELIST_IP_MAX_SUBNET_V6 = 64
@@ -327,7 +327,7 @@ BRANDING = {
                                                          "FONT_COLOR": "#00acee"},
                                                         ]
                                     },
-            "LOGO": "/static/img/logo.png",
+            "LOGO": "/static/ganetimgr/img/logo.png",
             "MOTTO": "virtual private servers",
             "FOOTER_ICONS_IFRAME":  False,
             # show the administrative contact

@@ -3,9 +3,9 @@
 {% block title %}{{ instance.name }} on {{ instance.cluster.description }}{% endblock %}
 {% block extraticketinfo %} {% trans "about" %} {{ instance.name }} {% trans "on cluster" %} {{ instance.cluster.description }}{% endblock %}
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/includes/moment.min.js"></script>
-<script type="text/javascript" src="/static/js/includes/daterangepicker.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/includes/daterangepicker.css">
+<script type="text/javascript" src="/static/ganetimgrjs/includes/moment.min.js"></script>
+<script type="text/javascript" src="/static/ganetimgrjs/includes/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/ganetimgr/css/includes/daterangepicker.css">
 <style type="text/css">
 		#toolbar {
 		padding: 10px 4px;
@@ -46,7 +46,7 @@
   }
 
 </style>
-<link rel="stylesheet" type="text/css" href="/static/css/includes/bootstrap-switch.css">
+<link rel="stylesheet" type="text/css" href="/static/ganetimgr/css/includes/bootstrap-switch.css">
 <script type="text/javascript">
 	var utc_end = Math.round((new Date()).getTime() / 1000);
     $(function(){
