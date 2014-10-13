@@ -1,76 +1,77 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block extraticketinfo %} {% trans "about my profile" %}{% endblock %}
+
 {% block extrahead %}
 	<script>
-$(document).ready(function () {
-	 $('#pass_change_placeholder').load("{% url pass_change %}");
-//		load ssh keys manager
-		$('#manage_sshkeys_placeholder').load("{% url user-keys %}");
-//		change user mail
-		$('#change_email_placeholder').load("{% url mail-change %}");
-//		change user full name
-		$('#change_name_placeholder').load("{% url name-change %}");
-
-});
-
+		$(document).ready(function () {
+			 $('#pass_change_placeholder').load("{% url pass_change %}");
+			// load ssh keys manager
+			$('#manage_sshkeys_placeholder').load("{% url user-keys %}");
+			// change user mail
+			$('#change_email_placeholder').load("{% url mail-change %}");
+			// change user full name
+			$('#change_name_placeholder').load("{% url name-change %}");
+		});
 	</script>
-<style>
-	.padwidget{
-		padding: 1em;
-	}
-	textarea{
-		width: 60%;
-	}
-</style>
+	<style>
+		.padwidget{
+			padding: 1em;
+		}
+		textarea{
+			width: 60%;
+		}
+	</style>
 {% endblock %}
+
 {% block profile %}class="active"{% endblock %}
+
 {% block crumbs %}
-	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{{user}} {% trans "profile" %}</li>
-	    		{% endblock %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li class="active">{{user}} {% trans "profile" %}</li>
+{% endblock %}
 
 {% block title %}{% trans "My profile" %}{% endblock %}
+
 {% block content %}
 <h2>{% trans "My profile" %}</h2>
-
 <div class="span10">
-<div class="row-fluid">
-<div class="span4 sidebar">
-
-	<div class="widget">
-		<div class="row-fluid">
-			<h2><i class="icon-user"></i> {% trans "Change Name" %}</h2>
-				<div id="change_name_placeholder"></div>
-		</div></div></div>
-
-<div class="span4 sidebar">
-
-	<div class="widget">
-		<div class="row-fluid">
-			<h2><i class="icon-certificate"></i> {% trans "Change Password" %}</h2>
-				<div id="pass_change_placeholder"></div>
-		</div></div></div>
-
+	<div class="row-fluid">
 		<div class="span4 sidebar">
-
-	<div class="widget">
-		<div class="row-fluid">
-			<h2><i class="icon-envelope"></i> {% trans "Change Email" %}</h2>
-				<div id="change_email_placeholder"></div>
-		</div></div></div>
-</div>
-		<div class="row-fluid">
+			<div class="widget">
+				<div class="row-fluid">
+					<h2><i class="icon-user"></i> {% trans "Change Name" %}</h2>
+					<div id="change_name_placeholder"></div>
+				</div>
+			</div>
+		</div>
+		<div class="span4 sidebar">
+			<div class="widget">
+				<div class="row-fluid">
+					<h2><i class="icon-certificate"></i> {% trans "Change Password" %}</h2>
+					<div id="pass_change_placeholder"></div>
+				</div>
+			</div>
+		</div>
+		<div class="span4 sidebar">
+			<div class="widget">
+				<div class="row-fluid">
+					<h2><i class="icon-envelope"></i> {% trans "Change Email" %}</h2>
+					<div id="change_email_placeholder"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row-fluid">
 		<div class="span12 sidebar">
-
-	<div class="widget">
-		<div class="row-fluid">
-			<h2><i class="icon-lock"></i> {% trans "Manage SSH Keys" %}</h2>
-				<div id="manage_sshkeys_placeholder"></div>
-		</div></div></div>
-
+			<div class="widget">
+				<div class="row-fluid">
+					<h2><i class="icon-lock"></i> {% trans "Manage SSH Keys" %}</h2>
+					<div id="manage_sshkeys_placeholder"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-</div>
-
-
 {% endblock %}

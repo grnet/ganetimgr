@@ -17,14 +17,18 @@
 	}
 </script>
 {% endblock %}
+
 {% block title %}
 	{{ flatpage.title }}
 {% endblock %}
+
 {% block faq %}class="active"{% endblock %}
+
 {% block crumbs %}
 	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li class="active">{% trans flatpage.title %}</li>
 {% endblock %}
+
 {% block content %}
 <div class="span9 main-content">
     <div class="row-fluid">

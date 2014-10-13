@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load staticfiles %}
+{% load days_since %}
+
 {% block extrahead %}
-<script type="text/javascript" src="/static/ganetimgr/js/includes/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/static/ganetimgr/js/includes/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.bootstrap.js' %}"></script>
 <script type="text/javascript">
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "daysago-string-pre": function ( a ) {
@@ -45,6 +48,7 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 		});
 </script>
 {% endblock %}
+
 {% block title %}
 
 		{% trans "Idle Accounts" %}
@@ -57,39 +61,33 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 	    		{% endblock %}
 
 {% block content %}
-
 <div class="span9 main-content">
-
     <div class="row-fluid">
         <div class="row-fluid">
 			<h2>{% trans "User Idle Accounts" %}</h2>
 			<table width="100%" id="usergroup_instance_table" class="table table-first-column-number data-table display full">
-<thead>
-<tr>
-	<th style="text-align: center;">{% trans "Username" %}<span class="sort-icon"><span></th>
-	<th>{% trans "First Name" %}<span class="sort-icon"><span></th>
-	<th>{% trans "Last Name" %}<span class="sort-icon"><span></th>
-	<th>{% trans "E-mail" %}<span class="sort-icon"><span></th>
-	<th>{% trans "Last Login" %}<span class="sort-icon"><span></th>
-</tr>
-
-</thead>
-{% load days_since %}
-<tbody>
-{% for user in users %}
-<tr class="GradeA">
-	<td style="text-align: center;"><a href="{% url user-info 'user' user.username %}">{{user.username}}</a></td>
-	<td>{{user.first_name}}</td>
-	<td>{{user.last_name}}</td>
-	<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
-	<td>{{user.last_login|days_since}} days ago ({{user.last_login|date:"d M y"}})</td>
-</tr>
-{% endfor %}
-
-
-</tbody>
-</table>
-</div>
-</div>
+				<thead>
+					<tr>
+						<th style="text-align: center;">{% trans "Username" %}<span class="sort-icon"><span></th>
+						<th>{% trans "First Name" %}<span class="sort-icon"><span></th>
+						<th>{% trans "Last Name" %}<span class="sort-icon"><span></th>
+						<th>{% trans "E-mail" %}<span class="sort-icon"><span></th>
+						<th>{% trans "Last Login" %}<span class="sort-icon"><span></th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for user in users %}
+					<tr class="GradeA">
+						<td style="text-align: center;"><a href="{% url user-info 'user' user.username %}">{{user.username}}</a></td>
+						<td>{{user.first_name}}</td>
+						<td>{{user.last_name}}</td>
+						<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
+						<td>{{user.last_login|days_since}} days ago ({{user.last_login|date:"d M y"}})</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
 {% endblock %}

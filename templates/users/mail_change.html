@@ -1,89 +1,101 @@
-
 {% load i18n %}
-	{% load widget_tweaks %}
+{% load widget_tweaks %}
 
 <div id="usermailchange_placeholder" class="padwidget">
-{% if pending %}
-<div class="alert alert-info">{% trans "There is a pending mail change request on your behalf. Check your e-mails for an activation link." %}</div> 
-
-{% else %}
-<script>
-	$(document).ajaxSend(function(event, xhr, settings) {
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    function sameOrigin(url) {
-        // url could be relative or scheme relative or absolute
-        var host = document.location.host; // host + port
-        var protocol = document.location.protocol;
-        var sr_origin = '//' + host;
-        var origin = protocol + sr_origin;
-        // Allow absolute or scheme relative URLs to same origin
-        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-            // or any other URL that isn't scheme relative or absolute i.e relative.
-            !(/^(\/\/|http:|https:).*/.test(url));
-    }
-    function safeMethod(method) {
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-    }
-});
-
-	$(function() {
-	$('#change_email_btn').button();
-	$('#change_email_btn').click(function() {
-			str = $('#change_email_form').serialize();
-            $.ajax({
-                type: "POST",
-                url: "{% url mail-change %}",
-                data: str,
-                success: function(response){
-//					console.log(response);
-//					var $response=$(response);
-//					var resdata =  $response.filter("#sshkeys_placeholder").html();
-                	$("#usermailchange_placeholder").html(response);
+    {% if pending %}
+        <div class="alert alert-info">
+            {% trans "There is a pending mail change request on your behalf. Check your e-mails for an activation link." %}
+        </div>
+    {% else %}
+        <script>
+        	$(document).ajaxSend(function(event, xhr, settings) {
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
                         }
-        });
-    return false;
-        });
-	});
-	</script>
-	{% load i18n %}
-<div><strong>{{ user }}</strong>, {% trans "enter your new mail address twice so we can verify you typed it in correctly." %}</div>
-<div>{% trans "Once you submit this form you will receive an activation email with instructions on how to proceed" %}</div> 
-<div>{% trans "Your e-mail" %} {% if changed %} {% trans "has successfully changed to" %} {% endif %}: <strong>{% ifequal mail|length 0 %} {% trans "you have not registered an address yet" %} {% else %}{{mail}}{% endifequal %}</strong></div>
-<form method="POST" id="change_email_form" class="form">
-				{% csrf_token %}
-				{% for field in form %}
-                  <div class="control-group {% if field.errors %}error{% endif %}">
-                   <div class="controls">
-                   	{% render_field field class+="input-xlarge" style+="width:95%;" placeholder=field.label|capfirst  %}
-                    {% if field.errors %}
-                    <span class="help-block"> {{ field.errors|join:", " }} </span>
-            		{% endif %}
+                    }
+                    return cookieValue;
+                }
+                function sameOrigin(url) {
+                    // url could be relative or scheme relative or absolute
+                    var host = document.location.host; // host + port
+                    var protocol = document.location.protocol;
+                    var sr_origin = '//' + host;
+                    var origin = protocol + sr_origin;
+                    // Allow absolute or scheme relative URLs to same origin
+                    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                        // or any other URL that isn't scheme relative or absolute i.e relative.
+                        !(/^(\/\/|http:|https:).*/.test(url));
+                }
+                function safeMethod(method) {
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                }
+
+                if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            });
+
+           	$(function() {
+            	$('#change_email_btn').button();
+            	$('#change_email_btn').click(function() {
+            		str = $('#change_email_form').serialize();
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url mail-change %}",
+                        data: str,
+                        success: function(response){
+                        	$("#usermailchange_placeholder").html(response);
+                        }
+                    });
+                    return false;
+                });
+            });
+	   </script>
+        <div>
+            <strong>{{ user }}</strong>, {% trans "enter your new mail address twice so we can verify you typed it in correctly." %}
+        </div>
+        <div>{% trans "Once you submit this form you will receive an activation email with instructions on how to proceed" %}</div>
+        <div>
+            {% trans "Your e-mail" %}
+            {% if changed %}
+                {% trans "has successfully changed to" %}
+            {% endif %}:
+            <strong>
+                {% ifequal mail|length 0 %}
+                    {% trans "you have not registered an address yet" %}
+                {% else %}
+                    {{ mail }}
+                {% endifequal %}
+            </strong>
+        </div>
+        <form method="POST" id="change_email_form" class="form">
+			{% csrf_token %}
+			{% for field in form %}
+                <div class="control-group {% if field.errors %}error{% endif %}">
+                    <div class="controls">
+               	        {% render_field field class+="input-xlarge" style+="width:95%;" placeholder=field.label|capfirst  %}
+                        {% if field.errors %}
+                            <span class="help-block"> {{ field.errors|join:", " }} </span>
+                        {% endif %}
                     </div>
                 </div>
-				{% endfor %}
-                <div class="control-group">
-			<div class="controls">
-			<button id="change_email_btn" class="btn btn-success">{% trans "Change email" %}</button>
-			</form>
+			{% endfor %}
+            <div class="control-group">
+                <div class="controls">
+    		      <button id="change_email_btn" class="btn btn-success">{% trans "Change email" %}</button>
+                </div>
+            </div>
+		</form>
 {% endif %}
 </div>
 

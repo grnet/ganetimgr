@@ -1,6 +1,6 @@
-<script type="text/javascript" src="/static/ganetimgr/js/jquery_csrf_protect.js"></script>
-<script type="text/javascript" src="/static/ganetimgr/js/includes/bootstrap-switch.min.js"></script>
-
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/bootstrap-switch.min.js' %}"></script>
 <script>
 	$(document).ready(function() {
 		$("#lockapplybutton").click(function(){
@@ -31,7 +31,6 @@
 		});
 	});
 </script>
-
 <style type="text/css">
 	th {
 		text-align: right;
@@ -44,7 +43,6 @@
 
 	}
 </style>
-
 <form method="POST" class="form-horizontal" id="instancelockform" data-instance="{{instance}}">
 	 <fieldset>
 		{% csrf_token %}
@@ -65,6 +63,5 @@
 		</div>
 	</fieldset>
 </form>
-
 <input type='hidden' id='e1' style='width:300px' />
 

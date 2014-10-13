@@ -1,42 +1,41 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load staticfiles %}
 {% block extrahead %}
-<script type="text/javascript" src="/static/ganetimgr/js/includes/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/static/ganetimgr/js/includes/jquery.dataTables.bootstrap.js"></script>
-<script type="text/javascript" src="/static/ganetimgr/js/jquery_csrf_protect.js"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.bootstrap.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
 <style>
-.dropdown-menu.instanceopt{
-	right: 0px;
-	left: auto;
-	text-align: left !important;
-}
+	.dropdown-menu.instanceopt{
+		right: 0px;
+		left: auto;
+		text-align: left !important;
+	}
 
-.alignCenter{
-	text-align: center !important;
-}
-.alignLeft{
-	text-align: left !important;
-}
-.alignRight{
-	text-align: right !important;
-}
-.visoverflow{
-	overflow: visible;
-}
+	.alignCenter{
+		text-align: center !important;
+	}
+	.alignLeft{
+		text-align: left !important;
+	}
+	.alignRight{
+		text-align: right !important;
+	}
+	.visoverflow{
+		overflow: visible;
+	}
 </style>
-<link rel="stylesheet" type="text/css" href="/static/ganetimgr/css/includes/bootstrap-switch.css">
+<link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap-switch.css' %}">
 <script type="text/javascript">
-
-
 	$(document).ready( function(){
-			$('#usergroup_instance_table').dataTable( {
+		$('#usergroup_instance_table').dataTable({
 			"bJQueryUI": true,
 			"oLanguage": {
 				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select>'
 			},
 			"iDisplayLength": 25,
-	} );
 		});
+	});
 
 	var status;
 	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
@@ -73,18 +72,18 @@
         					)
         				)
         			);
-        return parseInt( x * x_unit, 10 );
-       }
-    },
+	        return parseInt( x * x_unit, 10 );
+	       }
+	    },
 
-    "file-size-asc": function ( a, b ) {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-    },
+	    "file-size-asc": function ( a, b ) {
+	        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+	    },
 
-    "file-size-desc": function ( a, b ) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-    }
-} );
+	    "file-size-desc": function ( a, b ) {
+	        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+	    }
+	});
 	$(document).ready( function(){
 		var oTable = $('#vm_instance_table').dataTable( {
 			"bPaginate": false,
@@ -278,6 +277,7 @@
 
 </script>
 {% endblock %}
+
 {% block title %}
 	{% ifequal type 'user' %}
 		{% trans "User Information" %}
@@ -287,125 +287,120 @@
 	{% endifequal %}
 {% endblock %}
 
-				{% block crumbs %}
-	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% ifequal type 'user' %}
-						{% trans "User Information" %}
-					{% endifequal %}{% ifequal type 'group' %}
-						{% trans "Group Information" %}
-					{% endifequal %}
-					</li>
-	    		{% endblock %}
+{% block crumbs %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li class="active">{% ifequal type 'user' %}
+		{% trans "User Information" %}
+	{% endifequal %}{% ifequal type 'group' %}
+		{% trans "Group Information" %}
+	{% endifequal %}
+	</li>
+{% endblock %}
 
 {% block content %}
-
-<div class="span12 main-content">
-
-    <div class="row-fluid">
-        <div class="row-fluid">
+	<div class="span12 main-content">
+	    <div class="row-fluid">
+    	    <div class="row-fluid">
 			{% ifequal type 'user' %}
-			<h2>{% trans "User Information" %}: {{usergroup}}</h2>
+				<h2>{% trans "User Information" %}: {{usergroup}}</h2>
 			{% endifequal %}
-
 			{% ifequal type 'group' %}
-			<h2>{% trans "Group Information" %}: {{usergroup}}</h2>
+				<h2>{% trans "Group Information" %}: {{usergroup}}</h2>
 			{% endifequal %}
-<table width="100%" id="usergroup_instance_table" class="table table-first-column-number data-table display full">
-<thead>
-<tr>
-	{% ifequal type 'user' %}
-	<th style="text-align: center;">{% trans "Username" %}</th>
-	<th>{% trans "First Name" %}</th>
-	<th>{% trans "Last Name" %}</th>
-	<th>{% trans "E-mail" %}</th>
-	<th style="text-align: center;">{% trans "Groups" %}</th>
-	{% endifequal %}
-	{% ifequal type 'group' %}
-	<th style="text-align: center;">{% trans "Group Name" %}</th>
-	<th>{% trans "Username" %}</th>
-	<th>{% trans "First Name" %}</th>
-	<th>{% trans "Last Name" %}</th>
-	<th>{% trans "E-mail" %}</th>
-	{% endifequal %}
-</tr>
-
-</thead>
-<tbody>
-{% ifequal type 'user' %}
-<tr class="GradeA">
-	<td style="text-align: center;">{{usergroup.username}}</td>
-<td>{{usergroup.first_name}}</td>
-<td>{{usergroup.last_name}}</td>
-<td><a href="mailto:{{usergroup.email}}">{{usergroup.email}}</a></td>
-<td>{% for group in usergroup.groups.all %}<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i> {{ group }}</a>{% if not forloop.last %} {% endif %}{% endfor %}</td></tr>
-{% for group in instance.groups %}<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i>  {{ group }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-
-{% endifequal %}
-{% ifequal type 'group' %}
-{% for user in usergroup.user_set.all %}
-<tr class="GradeA">
-<td style="text-align: center;">{{usergroup.name}}</td>
-<td><a href="{% url user-info 'user' user.username %}" class="btn"><i class="icon-user"></i> {{user.username}}</a></td>
-<td>{{user.first_name}}</td>
-<td>{{user.last_name}}</td>
-<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
-</tr>
-{% endfor %}
-{% endifequal %}
-
-</tbody>
-</table>
-
-
-</div>
-</div>
-
+			<table width="100%" id="usergroup_instance_table" class="table table-first-column-number data-table display full">
+				<thead>
+					<tr>
+						{% ifequal type 'user' %}
+						<th style="text-align: center;">{% trans "Username" %}</th>
+						<th>{% trans "First Name" %}</th>
+						<th>{% trans "Last Name" %}</th>
+						<th>{% trans "E-mail" %}</th>
+						<th style="text-align: center;">{% trans "Groups" %}</th>
+						{% endifequal %}
+						{% ifequal type 'group' %}
+						<th style="text-align: center;">{% trans "Group Name" %}</th>
+						<th>{% trans "Username" %}</th>
+						<th>{% trans "First Name" %}</th>
+						<th>{% trans "Last Name" %}</th>
+						<th>{% trans "E-mail" %}</th>
+						{% endifequal %}
+					</tr>
+				</thead>
+				<tbody>
+				{% ifequal type 'user' %}
+					<tr class="GradeA">
+						<td style="text-align: center;">{{usergroup.username}}</td>
+						<td>{{usergroup.first_name}}</td>
+						<td>{{usergroup.last_name}}</td>
+						<td><a href="mailto:{{usergroup.email}}">{{usergroup.email}}</a></td>
+						<td>
+							{% for group in usergroup.groups.all %}
+								<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i> {{ group }}</a>
+							{% endfor %}
+						</td>
+						<td>
+						{% for group in instance.groups %}
+							<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i>  {{ group }}</a>{% if not forloop.last %}, {% endif %}
+						{% endfor %}
+						</td>
+					</tr>
+				{% endifequal %}
+				{% ifequal type 'group' %}
+					{% for user in usergroup.user_set.all %}
+					<tr class="GradeA">
+						<td style="text-align: center;">{{usergroup.name}}</td>
+						<td><a href="{% url user-info 'user' user.username %}" class="btn"><i class="icon-user"></i> {{user.username}}</a></td>
+						<td>{{user.first_name}}</td>
+						<td>{{user.last_name}}</td>
+						<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
+					</tr>
+					{% endfor %}
+				{% endifequal %}
+				</tbody>
+			</table>
+		</div>
+	</div>
     <div class="row-fluid">
         <div class="row-fluid">
-         <h2>{% trans "Instances" %}
+        	<h2>{% trans "Instances" %}
                 <span class="info">{% blocktrans %}Displaying {{usergroup}} instances{% endblocktrans %}</span>
             </h2>
-<table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
-<thead>
-<tr>
-	<th style="text-align: center;">{% trans "Name" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Disk" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
-	{% if not user.is_superuser and not perms.ganeti.view_instances %}
-	<th style="text-align: center;">IP <span class="sort-icon"></span></th>
-	{% endif %}
-	<th style="display:none">{% trans "MAC" %}</th>
-	{% if user.is_superuser or perms.ganeti.view_instances %}
-	<th style="text-align: center;">{% trans "Network" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Owner" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Options" %}</th>
-	<th style="display:none">{% trans "HiddenContactDetails" %}</th>
-	{% endif %}
-</tr>
-
-</thead>
-<tbody>
-
-</tbody>
-</table>
-
-<div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="myModalLabelservdets">{% trans "Instance Details" %}</h3>
-</div>
-<div class="modal-body" id="instDetsbody">
-
-</div>
-<div class="modal-footer">
-<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
-</div>
-</div>
-
-</div>
-</div>
+			<table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
+				<thead>
+					<tr>
+						<th style="text-align: center;">{% trans "Name" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Disk" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
+						{% if not user.is_superuser and not perms.ganeti.view_instances %}
+						<th style="text-align: center;">IP <span class="sort-icon"></span></th>
+						{% endif %}
+						<th style="display:none">{% trans "MAC" %}</th>
+						{% if user.is_superuser or perms.ganeti.view_instances %}
+						<th style="text-align: center;">{% trans "Network" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Owner" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Options" %}</th>
+						<th style="display:none">{% trans "HiddenContactDetails" %}</th>
+						{% endif %}
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 id="myModalLabelservdets">{% trans "Instance Details" %}</h3>
+				</div>
+				<div class="modal-body" id="instDetsbody">
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}

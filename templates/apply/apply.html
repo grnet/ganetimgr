@@ -1,5 +1,9 @@
-{% extends "base.html" %} {% load i18n %} {% block title %}
-{% trans "Create new Virtual Machine" %}{% endblock %}
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans "Create new Virtual Machine" %}{% endblock %}
+
 {% block crumbs %}
 	<li>
 		<a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span>
@@ -8,9 +12,11 @@
 {% endblock %}
 
 {% block createtop%}class="active"{% endblock %}
+
 {% block extraticketinfo %} about instance creation{% endblock %}
+
 {% block extrahead %}
-<link rel="stylesheet" href="/static/ganetimgr/css/includes/select2.css">
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/select2.css' %}">
 <style type="text/css">
 	th {
 		text-align: right;
@@ -37,7 +43,6 @@
 			<h2>{% trans "Apply for a new instance" %}</h2>
 			<form method="POST" class="form-inline">
 				{% csrf_token %}
-
 				<fieldset>
 					<legend>
 						{% trans "Instance information" %}
@@ -255,7 +260,7 @@
 {% endblock %}
 
 {% block bottomblock %}
-<script src="/static/ganetimgr/js/includes/select2.js"></script>
+<script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
 <script>
 	$(document).ready( function(){
 		$("#id_disk_size").tooltip({

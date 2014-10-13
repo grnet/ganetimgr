@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load staticfiles %}
 {% block extrahead %}
 
 <style>
@@ -22,309 +23,301 @@
 	overflow: visible;
 }
 </style>
-<link rel="stylesheet" type="text/css" href="/static/ganetimgr/css/includes/bootstrap-switch.css">
-<link rel="stylesheet" href="/static/ganetimgr/css/includes/select2.css">
-
+<link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap-switch.css' %}">
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/select2.css' %}">
 {% endblock %}
+
 {% block title %}{% trans "Jobs" %}{% endblock %}
+
 {% block clusterjobs %}class="active"{% endblock %}
+
 {% block crumbs %}
-	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Jobs" %}</li>
-	    		{% endblock %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li class="active">{% trans "Jobs" %}</li>
+{% endblock %}
+
 {% block content %}
 <div class="span12 main-content">
-
-    <div class="row-fluid">
-        <div class="row-fluid">
-            <h2>{% trans "Clusters Jobs" %}
-            </h2>
-
-<table class="table table-first-column-number data-table display full visoverflow" id="jobs_table">
-<thead>
-<tr>
-	<th style="text-align: center;">{% trans "Job Id" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Opcode Id" %} <span class="sort-icon"></span></th>
-	<th style="text-align: center;">{% trans "Start" %} <span class="sort-icon"></span></th>
-
-</tr>
-
-</thead>
-<tbody>
-
-</tbody>
-</table>
-
+	<div class="row-fluid">
+		<div class="row-fluid">
+			<h2>{% trans "Clusters Jobs" %}
+			</h2>
+			<table class="table table-first-column-number data-table display full visoverflow" id="jobs_table">
+				<thead>
+					<tr>
+						<th style="text-align: center;">{% trans "Job Id" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Opcode Id" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Start" %} <span class="sort-icon"></span></th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
-</div>
-</div>
-
 <div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="myModalLabelservdets">{% trans "Job Details" %}</h3>
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabelservdets">{% trans "Job Details" %}</h3>
+	</div>
+	<div class="modal-body" id="instDetsbody">
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+	</div>
 </div>
-<div class="modal-body" id="instDetsbody">
-
-</div>
-<div class="modal-footer">
-<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
-</div>
-</div>
-
 {% endblock %}
-{% block bottomblock %}
 
-<script type="text/javascript" src="/static/ganetimgr/js/includes/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/static/ganetimgr/js/includes/jquery.dataTables.bootstrap.js"></script>
-<script type="text/javascript" src="/static/ganetimgr/js/jquery_csrf_protect.js"></script>
-<script src="/static/ganetimgr/js/includes/select2.js"></script>
+{% block postfooter %}
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.bootstrap.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
+<script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
 <script type="text/javascript">
 var oTable;
 var ajaxSource;
 
- $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
+$.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
 {
-    // DataTables 1.10 compatibility - if 1.10 then versionCheck exists.
-    // 1.10s API has ajax reloading built in, so we use those abilities
-    // directly.
-    if ( $.fn.dataTable.versionCheck ) {
-        var api = new $.fn.dataTable.Api( oSettings );
+	// DataTables 1.10 compatibility - if 1.10 then versionCheck exists.
+	// 1.10s API has ajax reloading built in, so we use those abilities
+	// directly.
+	if ( $.fn.dataTable.versionCheck ) {
+		var api = new $.fn.dataTable.Api( oSettings );
 
-        if ( sNewSource ) {
-            api.ajax.url( sNewSource ).load( fnCallback, !bStandingRedraw );
-        }
-        else {
-            api.ajax.reload( fnCallback, !bStandingRedraw );
-        }
-        return;
-    }
+		if ( sNewSource ) {
+			api.ajax.url( sNewSource ).load( fnCallback, !bStandingRedraw );
+		}
+		else {
+			api.ajax.reload( fnCallback, !bStandingRedraw );
+		}
+		return;
+	}
 
-    if ( sNewSource !== undefined && sNewSource !== null ) {
-        oSettings.sAjaxSource = sNewSource;
-    }
+	if ( sNewSource !== undefined && sNewSource !== null ) {
+		oSettings.sAjaxSource = sNewSource;
+	}
 
-    // Server-side processing should just call fnDraw
-    if ( oSettings.oFeatures.bServerSide ) {
-        this.fnDraw();
-        return;
-    }
+	// Server-side processing should just call fnDraw
+	if ( oSettings.oFeatures.bServerSide ) {
+		this.fnDraw();
+		return;
+	}
 
-    this.oApi._fnProcessingDisplay( oSettings, true );
-    var that = this;
-    var iStart = oSettings._iDisplayStart;
-    var aData = [];
+	this.oApi._fnProcessingDisplay( oSettings, true );
+	var that = this;
+	var iStart = oSettings._iDisplayStart;
+	var aData = [];
 
-    this.oApi._fnServerParams( oSettings, aData );
+	this.oApi._fnServerParams( oSettings, aData );
 
-    oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource, aData, function(json) {
-        /* Clear the old information from the table */
-        that.oApi._fnClearTable( oSettings );
+	oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource, aData, function(json) {
+		/* Clear the old information from the table */
+		that.oApi._fnClearTable( oSettings );
 
-        /* Got the data - add it to the table */
-        var aData =  (oSettings.sAjaxDataProp !== "") ?
-            that.oApi._fnGetObjectDataFn( oSettings.sAjaxDataProp )( json ) : json;
+		/* Got the data - add it to the table */
+		var aData =  (oSettings.sAjaxDataProp !== "") ?
+			that.oApi._fnGetObjectDataFn( oSettings.sAjaxDataProp )( json ) : json;
 
-        for ( var i=0 ; i<aData.length ; i++ )
-        {
-            that.oApi._fnAddData( oSettings, aData[i] );
-        }
+		for ( var i=0 ; i<aData.length ; i++ )
+		{
+			that.oApi._fnAddData( oSettings, aData[i] );
+		}
 
-        oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+		oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
 
-        that.fnDraw();
+		that.fnDraw();
 
-        if ( bStandingRedraw === true )
-        {
-            oSettings._iDisplayStart = iStart;
-            that.oApi._fnCalculateEnd( oSettings );
-            that.fnDraw( false );
-        }
+		if ( bStandingRedraw === true )
+		{
+			oSettings._iDisplayStart = iStart;
+			that.oApi._fnCalculateEnd( oSettings );
+			that.fnDraw( false );
+		}
 
-        that.oApi._fnProcessingDisplay( oSettings, false );
+		that.oApi._fnProcessingDisplay( oSettings, false );
 
-        /* Callback user function - for event handlers etc */
-        if ( typeof fnCallback == 'function' && fnCallback !== null )
-        {
-            fnCallback( oSettings );
-        }
-    }, oSettings );
+		/* Callback user function - for event handlers etc */
+		if ( typeof fnCallback == 'function' && fnCallback !== null )
+		{
+			fnCallback( oSettings );
+		}
+	}, oSettings );
 };
 $(document).ready( function(){
-
-
 	ajaxSource = "{% url jobs_json %}";
 	oTable = $('#jobs_table').dataTable( {
 		"bPaginate": true,
-	    "bFilter": true,
-	    "bAutoWidth": true,
-	    "bStateSave": true,
-	    "oLanguage": {
-	    	"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "jobs" %}'
-	    },
-	    "sPaginationType": "bootstrap",
-	    "sDom": "<'row-fluid'<'span6'<'#itoggleph'>><'span6'<'#clusterph'>>><'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
-	    "iDisplayLength": 20,
+		"bFilter": true,
+		"bAutoWidth": true,
+		"bStateSave": true,
+		"oLanguage": {
+			"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "jobs" %}'
+		},
+		"sPaginationType": "bootstrap",
+		"sDom": "<'row-fluid'<'span6'<'#itoggleph'>><'span6'<'#clusterph'>>><'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
+		"iDisplayLength": 20,
 		"bProcessing": true,
-        "sAjaxSource": ajaxSource,
-        "bDeferRender": true,
-        "fnInitComplete": function(oSettings, json) {
-            if(json.hasOwnProperty('messages')){
-            	$('#jsonmessages').show();
-            	$('#jsonmessage').html(json.messages);
+		"sAjaxSource": ajaxSource,
+		"bDeferRender": true,
+		"fnInitComplete": function(oSettings, json) {
+			if(json.hasOwnProperty('messages')){
+				$('#jsonmessages').show();
+				$('#jsonmessage').html(json.messages);
 
-            }
-            if(json.hasOwnProperty('clusters')){
-            	var clustertoggle = $('<select id="clusterfilter" multiple></select>');
-            	for (var i=0; i<json.clusters.length; i++) {
+			}
+			if(json.hasOwnProperty('clusters')){
+				var clustertoggle = $('<select id="clusterfilter" multiple></select>');
+				for (var i=0; i<json.clusters.length; i++) {
 					clustertoggle.append('<option value="'+json.clusters[i]+'">'+json.clusters[i]+'</option>');
 				}
 				$("#clusterph").append(clustertoggle);
 				clustertoggle.select2({placeholder: "Select Clusters"});
-            }
-            var statusObj = {};
-            statusObj.running = 0;
-            statusObj.error = 0;
-            statusObj.waiting = 0;
-            statusObj.success = 0;
-            for (var i=0; i<json.aaData.length; i++) {
-            	jobitem = json.aaData[i];
-            	statusObj[jobitem.status] = statusObj[jobitem.status] + 1;
-            }
-            $("#success_num").html(statusObj.success);
-            $("#error_num").html(statusObj.error);
-            $("#waiting_num").html(statusObj.waiting);
-            $("#running_num").html(statusObj.running);
-          },
-        "aaSorting": [[ 4, "desc" ]],
-        "aoColumns":[
-                     {"mData":"id", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
-                     "mRender":  function (data, type, full) {
-                             var ret = ''+
-                               '<a class="btn btn-info btn-small" href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">'+data+'</a>';
-                     return ret;
-                     }},
-                     {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
-                     {"mData":"status", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
-                     "mRender": function (data, type, full) {
-	                     if (data == "success"){
-                       	 	status = '<span class="label label-success">Success</span>';
-                         }
-                         if (data == "error"){
-                       	  status = '<span class="label label-important">Error</span>';
-                         }
-                         if (data == "waiting"){
-                       	  status = '<span class="label label-warning">Waiting</span>';
-                         }
-                         if (data == "running"){
-                       	  status = '<span class="label label-info">Running</span>';
-                         }
-                         return status;
-                         }},
-                     {"mData":"ops.0.OP_ID", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-                     {"mData":"start_time", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
-         ]
+			}
+			var statusObj = {};
+			statusObj.running = 0;
+			statusObj.error = 0;
+			statusObj.waiting = 0;
+			statusObj.success = 0;
+			for (var i=0; i<json.aaData.length; i++) {
+				jobitem = json.aaData[i];
+				statusObj[jobitem.status] = statusObj[jobitem.status] + 1;
+			}
+			$("#success_num").html(statusObj.success);
+			$("#error_num").html(statusObj.error);
+			$("#waiting_num").html(statusObj.waiting);
+			$("#running_num").html(statusObj.running);
+		  },
+		"aaSorting": [[ 4, "desc" ]],
+		"aoColumns":[
+					 {"mData":"id", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
+					 "mRender":  function (data, type, full) {
+							 var ret = ''+
+							   '<a class="btn btn-info btn-small" href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">'+data+'</a>';
+					 return ret;
+					 }},
+					 {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+					 {"mData":"status", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
+					 "mRender": function (data, type, full) {
+						 if (data == "success"){
+							status = '<span class="label label-success">Success</span>';
+						 }
+						 if (data == "error"){
+						  status = '<span class="label label-important">Error</span>';
+						 }
+						 if (data == "waiting"){
+						  status = '<span class="label label-warning">Waiting</span>';
+						 }
+						 if (data == "running"){
+						  status = '<span class="label label-info">Running</span>';
+						 }
+						 return status;
+						 }},
+					 {"mData":"ops.0.OP_ID", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
+					 {"mData":"start_time", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},
+		 ]
 } );
 
 
 var itoggle = '<div id="itoggle" class="span12" style="text-align:center;"> \
    <div class="btn-group" data-toggle="buttons-checkbox"> \
-    <button type="button" class="btn" name="status_filter" value="Success" id="show_master"><span class="badge badge-success">Success <span id="success_num"></span></span></button> \
-    <button type="button" class="btn" name="status_filter" value="Running" id="show_regular"><span class="badge badge-info">Running <span id="running_num"></span></span></button> \
-    <button type="button" class="btn" name="status_filter" value="Waiting" id="show_drained"><span class="badge badge-warning">Waiting <span id="waiting_num"></span></span></button> \
-    <button type="button" class="btn" name="status_filter" value="Error" id="show_offline"><span class="badge badge-important">Error <span id="error_num"></span></span></button> \
-    </div></div> ';
+	<button type="button" class="btn" name="status_filter" value="Success" id="show_master"><span class="badge badge-success">Success <span id="success_num"></span></span></button> \
+	<button type="button" class="btn" name="status_filter" value="Running" id="show_regular"><span class="badge badge-info">Running <span id="running_num"></span></span></button> \
+	<button type="button" class="btn" name="status_filter" value="Waiting" id="show_drained"><span class="badge badge-warning">Waiting <span id="waiting_num"></span></span></button> \
+	<button type="button" class="btn" name="status_filter" value="Error" id="show_offline"><span class="badge badge-important">Error <span id="error_num"></span></span></button> \
+	</div></div> ';
 
-    $("#itoggleph").html(itoggle);
+	$("#itoggleph").html(itoggle);
 
  var reg_exp = '';
-    var checkboxs = document.getElementsByName('status_filter');
-    for (var i = 0, inp; inp = checkboxs[i]; i++) {
-        checkCookie = readCookie("cookie_" + inp.value);
-        if (checkCookie) {
-            if (checkCookie == 'true') {
-                $(inp).addClass('active');
-            }
-            else {
-                $(inp).removeClass('active');
-            }
-        }
+	var checkboxs = document.getElementsByName('status_filter');
+	for (var i = 0, inp; inp = checkboxs[i]; i++) {
+		checkCookie = readCookie("cookie_" + inp.value);
+		if (checkCookie) {
+			if (checkCookie == 'true') {
+				$(inp).addClass('active');
+			}
+			else {
+				$(inp).removeClass('active');
+			}
+		}
 
-        if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
-            reg_exp = reg_exp + inp.value + '|';
-        }
+		if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
+			reg_exp = reg_exp + inp.value + '|';
+		}
 
-    }
+	}
 	if (reg_exp == '') {
-            reg_exp = '|';
-        }
+			reg_exp = '|';
+		}
 
-    oTable.fnFilter(reg_exp.slice(0, -1), 2, true, false, false);
+	oTable.fnFilter(reg_exp.slice(0, -1), 2, true, false, false);
 
-    $('body').on('click', 'button[name="status_filter"]', function(){
-    	var reg_exp = '';
-        var checkboxs = document.getElementsByName('status_filter');
-        $(this).button('toggle');
-        for (var i = 0, inp; inp = checkboxs[i]; i++) {
-            if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
-                reg_exp = reg_exp + inp.value + '|';
-            }
-            createCookie("cookie_" + inp.value, $(inp).hasClass('active'), 30);
-        }
-        //passing an empty string will result in no filter
-        //thus, it must be set to something that will not exist in the column
-        if (reg_exp == '') {
-            reg_exp = '|';
-        }
-        oTable.fnFilter(reg_exp.slice(0, -1), 2, true, false, false);
-        return false;
-    });
+	$('body').on('click', 'button[name="status_filter"]', function(){
+		var reg_exp = '';
+		var checkboxs = document.getElementsByName('status_filter');
+		$(this).button('toggle');
+		for (var i = 0, inp; inp = checkboxs[i]; i++) {
+			if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
+				reg_exp = reg_exp + inp.value + '|';
+			}
+			createCookie("cookie_" + inp.value, $(inp).hasClass('active'), 30);
+		}
+		//passing an empty string will result in no filter
+		//thus, it must be set to something that will not exist in the column
+		if (reg_exp == '') {
+			reg_exp = '|';
+		}
+		oTable.fnFilter(reg_exp.slice(0, -1), 2, true, false, false);
+		return false;
+	});
 
 
 $('body').on('change', '#clusterfilter', function(){
-    	var cl_reg_exp_arr = $('#clusterfilter').val();
-    	cl_reg_exp = '';
-    	if (cl_reg_exp_arr){
-	    	for (var i = 0, inp; inp = cl_reg_exp_arr[i]; i++) {
-	    		cl_reg_exp = cl_reg_exp + inp + '|';
-	    	}
-	    }
-        if (cl_reg_exp == '') {
-            cl_reg_exp = '|';
-        }
-        oTable.fnFilter(cl_reg_exp.slice(0, -1), 1, true, false, false);
-        return false;
-    });
+		var cl_reg_exp_arr = $('#clusterfilter').val();
+		cl_reg_exp = '';
+		if (cl_reg_exp_arr){
+			for (var i = 0, inp; inp = cl_reg_exp_arr[i]; i++) {
+				cl_reg_exp = cl_reg_exp + inp + '|';
+			}
+		}
+		if (cl_reg_exp == '') {
+			cl_reg_exp = '|';
+		}
+		oTable.fnFilter(cl_reg_exp.slice(0, -1), 1, true, false, false);
+		return false;
+	});
 
 var tid = setInterval(refreshJobs, 5000);
 function refreshJobs() {
   oTable.fnReloadAjax(ajaxSource, function(data){
-  	var statusObj = {};
-            statusObj.running = 0;
-            statusObj.error = 0;
-            statusObj.waiting = 0;
-            statusObj.success = 0;
-            for (var i=0; i<data.jqXHR.responseJSON.aaData.length; i++) {
-            	jobitem = data.jqXHR.responseJSON.aaData[i];
-            	statusObj[jobitem.status] = statusObj[jobitem.status] + 1;
-            }
-            $("#success_num").html(statusObj.success);
-            $("#error_num").html(statusObj.error);
-            $("#waiting_num").html(statusObj.waiting);
-            $("#running_num").html(statusObj.running);
+	var statusObj = {};
+			statusObj.running = 0;
+			statusObj.error = 0;
+			statusObj.waiting = 0;
+			statusObj.success = 0;
+			for (var i=0; i<data.jqXHR.responseJSON.aaData.length; i++) {
+				jobitem = data.jqXHR.responseJSON.aaData[i];
+				statusObj[jobitem.status] = statusObj[jobitem.status] + 1;
+			}
+			$("#success_num").html(statusObj.success);
+			$("#error_num").html(statusObj.error);
+			$("#waiting_num").html(statusObj.waiting);
+			$("#running_num").html(statusObj.running);
   });
 }
 
   $(window).resize(function() {
-    clearTimeout(window.refresh_size);
-    window.refresh_size = setTimeout(function() { update_size(); }, 250);
+	clearTimeout(window.refresh_size);
+	window.refresh_size = setTimeout(function() { update_size(); }, 250);
   });
 
 var update_size = function() {
-    $(oTable).css({ width: $(oTable).parent().width() });
-    oTable.fnAdjustColumnSizing();
+	$(oTable).css({ width: $(oTable).parent().width() });
+	oTable.fnAdjustColumnSizing();
   }
 
 });

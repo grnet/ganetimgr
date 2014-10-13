@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block notify %}class="active"{% endblock %}
+
 {% block title %}{% trans "Send Mail" %}{% endblock %}
+
 {% block crumbs %}
 <li>
 	<a href="{% url user-instances %}">{% trans "Home" %}</a>
@@ -9,6 +12,7 @@
 </li>
 <li class="active">{% trans "Send Mail" %}</li>
 {% endblock %}
+
 {% block extrahead %}
 	{% include "notifications/create_script.html" %}
 {% endblock %}

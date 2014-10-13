@@ -1,7 +1,11 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% load i18n %}
+
 {% block homepage %}class="active"{% endblock %}
+
 {% block homepagetop %}class="active"{% endblock %}
+
 {% block title %}{{ instance }} - {% trans "Console" %}{% endblock %}
 
 {% block crumbs %}
@@ -12,19 +16,18 @@
 
 {% block content %}
 <div class="span11 main-content">
-
     <div class="row-fluid">
         <div class="row-fluid">
-<h2><i class="icon-terminal"></i> {% trans "VNC session on" %} {{ instance }}</h2>
-<applet archive="/static/javavnc/VncViewer.jar" code="VncViewer.class" width="99%" height="790px" align="middle">
-<param name="PORT" value="{{ port }}">
-<param name="PASSWORD" value="{{ password }}">
-<!--
-<param name="Open new window" value="yes">
-<param name="Scaling factor" value="auto">
--->
-</applet>
-</div>
-</div>
+			<h2><i class="icon-terminal"></i> {% trans "VNC session on" %} {{ instance }}</h2>
+			<applet archive="{% static 'javavnc/VncViewer.jar %}" code="VncViewer.class" width="99%" height="790px" align="middle">
+				<param name="PORT" value="{{ port }}">
+				<param name="PASSWORD" value="{{ password }}">
+				<!--
+				<param name="Open new window" value="yes">
+				<param name="Scaling factor" value="auto">
+				-->
+			</applet>
+		</div>
+	</div>
 </div>
 {% endblock %}
