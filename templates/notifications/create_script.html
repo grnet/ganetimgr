@@ -34,16 +34,16 @@
 	});
 	function format(item) {
 		if (item.type=="user"){
-			return '<i class="icon-user"></i> ' + item.text;
+			return '<i class="fa fa-user"></i> ' + item.text;
 		}
 		else if (item.type=="group"){
-			return '<i class="icon-group"></i> ' + item.text;
+			return '<i class="fa fa-group"></i> ' + item.text;
 		}
 		else if (item.type=="vm"){
-			return '<i class="icon-laptop"></i> ' + item.text;
+			return '<i class="fa fa-laptop"></i> ' + item.text;
 		}
 		else if (item.type=="cluster"){
-			return '<i class="icon-puzzle-piece"></i> ' + item.text;
+			return '<i class="fa fa-puzzle-piece"></i> ' + item.text;
 		}
 		else{
 			return item.text;
@@ -52,10 +52,10 @@
 
 	function formatDjangoObject(type){
 		if (type=="user"){
-			return '<i class="icon-user"></i> ';
+			return '<i class="fa fa-user"></i> ';
 		}
 		else if (type=="group"){
-			return '<i class="icon-group"></i> ';
+			return '<i class="fa fa-group"></i> ';
 		}
 		else return ''
 	}

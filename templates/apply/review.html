@@ -155,9 +155,9 @@
                             <fieldset>
                                 <legend>{% trans "Administrative contact" %}</legend>
                                 <address>
-                                    <i class="icon-user"></i> <strong>{{ application.admin_contact_name }}</strong><br>
-                                    <i class="icon-envelope-alt"></i> <a href="mailto:{{ application.admin_contact_email }}">{{ application.admin_contact_email }}</a><br>
-                                    <i class="icon-phone"></i> {{ application.admin_contact_phone }}
+                                    <i class="fa fa-user"></i> <strong>{{ application.admin_contact_name }}</strong><br>
+                                    <i class="fa fa-envelope-alt"></i> <a href="mailto:{{ application.admin_contact_email }}">{{ application.admin_contact_email }}</a><br>
+                                    <i class="fa fa-phone"></i> {{ application.admin_contact_phone }}
                                 </address>
                             </fieldset>
                             {% endif %}
@@ -166,7 +166,7 @@
                             <fieldset>
                                 <legend>{% trans "Comments" %}</legend>
                                 <div class="alert alert-info">
-                                    <i class="icon-pencil"></i> {{ application.comments }}
+                                    <i class="fa fa-pencil"></i> {{ application.comments }}
                                 </div>
                             </fieldset>
                             <fieldset>
@@ -357,22 +357,22 @@
                             <fieldset>
                                 <legend>{% trans "Administrative contact" %}</legend>
                                 <address>
-                                    <i class="icon-user"></i> <strong>{{ application.admin_contact_name }}</strong><br>
-                                    <i class="icon-envelope-alt"></i> <a href="mailto:{{ application.admin_contact_email }}">{{ application.admin_contact_email }}</a><br>
-                                    <i class="icon-phone"></i> {{ application.admin_contact_phone }}
+                                    <i class="fa fa-user"></i> <strong>{{ application.admin_contact_name }}</strong><br>
+                                    <i class="fa fa-envelope-alt"></i> <a href="mailto:{{ application.admin_contact_email }}">{{ application.admin_contact_email }}</a><br>
+                                    <i class="fa fa-phone"></i> {{ application.admin_contact_phone }}
                                 </address>
                             </fieldset>
                             {% endif %}
                             <fieldset>
                                 <legend>{% trans "Comments" %}</legend>
                                 <div class="alert alert-info">
-                                    <i class="icon-pencil"></i> {{ application.comments }}
+                                    <i class="fa fa-pencil"></i> {{ application.comments }}
                                 </div>
                             </fieldset>
                             <fieldset>
                                 <legend>{% trans "Placement" %}</legend>
                                 <div class="alert alert-success">
-                                    <i class="icon-sitemap"></i> {% trans "The instance has been placed on" %} {{ application.network }} ({{ application.cluster.description }})
+                                    <i class="fa fa-sitemap"></i> {% trans "The instance has been placed on" %} {{ application.network }} ({{ application.cluster.description }})
                                 </div>
                                 {%if application.job_id %}
                                 <div class="control-group">
@@ -403,12 +403,12 @@
     {% if applications %}
     <div class="span3 sidebar">
         <div class="widget">
-            <h2><i class="icon-inbox"></i>  {% trans "Pending Instance Applications" %}</h2>
+            <h2><i class="fa fa-inbox"></i>  {% trans "Pending Instance Applications" %}</h2>
             <ul class="cards">
                 {% for appl in applications %}
                 <li>
-                    <p class="title"><a href="{% url application-review appl.pk %}"><i class="icon-laptop"></i> {{appl.hostname}}</a></p>
-                    <p class="info small"><i class="icon-calendar"></i> {{appl.filed|date }}</p>
+                    <p class="title"><a href="{% url application-review appl.pk %}"><i class="fa fa-laptop"></i> {{appl.hostname}}</a></p>
+                    <p class="info small"><i class="fa fa-calendar"></i> {{appl.filed|date }}</p>
                 </li>
                 {% endfor %}
             </ul>

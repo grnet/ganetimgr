@@ -11,7 +11,7 @@
         <title>Ganetimgr .:: {% block title %}{% endblock %} </title>
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap-responsive.min.css' %}">
-        <link rel="stylesheet" href="{% static 'ganetimgr/css/includes/font-awesome.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/font-awesome.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/theme.css' %}">
         <!--[if lt IE 9]>
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -157,7 +157,7 @@
                     {% endif %}
                         <li class="dropdown pull-right hidden-phone">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                {% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<b class="caret"></b>
+                                {% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<i class="fa fa-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu ">
                             <form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform" >
@@ -167,7 +167,7 @@
                             </form>
                             {% for lang in LANGUAGES %}
                             <li>
-                                <a class="select_lang" href="#" onclick="setlang('{{ lang.0 }}'); return false;" title="{{lang.1}}">{% trans lang.1 %}{% ifequal LANGUAGE_CODE lang.0 %}  <i class="icon-ok"></i>{% endifequal %}</a>
+                                <a class="select_lang" href="#" onclick="setlang('{{ lang.0 }}'); return false;" title="{{lang.1}}">{% trans lang.1 %}{% ifequal LANGUAGE_CODE lang.0 %}  <i class="fa fa-check-square-o"></i>{% endifequal %}</a>
                             </li>
                           {% endfor %}
                         </ul>
@@ -175,8 +175,8 @@
                     {% if user.is_authenticated %}
                     <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="icon-user"></i> {{user}}
-                            <i class="icon-caret-down"></i>
+                            <i class="fa fa-user"></i> {{user}}
+                            <i class="fa fa-caret-down"></i>
                         </a>
 
                         <ul class="dropdown-menu">
@@ -215,33 +215,33 @@
                 </select>
             </div>
             <ul class="nav nav-tabs">
-                <li {% block homepagetop %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>{% trans "Home" %}</span></a></li>
-                <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="icon-plus-sign"></i> <span>{% trans "Create Instance" %}</span></a></li>
+                <li {% block homepagetop %}{% endblock %}><a href="{% url user-instances %}"><i class="fa fa-home"></i> <span>{% trans "Home" %}</span></a></li>
+                <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="fa fa-plus"></i> <span>{% trans "Create Instance" %}</span></a></li>
                 {% if can_handle_applications or can_view_applications %}
                  <li {% block applicationstop %}{% endblock %}><a href="{% url application-list %}">
-                    <i class="icon-inbox"></i> <span>{% trans "Applications" %}
+                    <i class="fa fa-inbox"></i> <span>{% trans "Applications" %}
                     {% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a>
                 </li>
                 {% endif %}
                 {% if user.is_superuser %}
-                <li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
-                <li ><a href="#" id="clearcache"> <i class="icon-adjust"></i> {% trans "Clear Cache" %}</a></li>
+                <li ><a href="{% url admin:index %}" ><i class="fa fa-cog"></i> <span>{% trans "Admin" %}</span></a></li>
+                <li ><a href="#" id="clearcache"> <i class="fa fa-adjust"></i> {% trans "Clear Cache" %}</a></li>
                 {% endif %}
             </ul>
         </div>
         <div id="sidebar-nav">
             <ul id="dashboard-menu" class="nav nav-list">
-                <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="icon-home"></i> <span>{% trans "Home" %}</span></a></li>
+                <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="fa fa-home"></i> <span>{% trans "Home" %}</span></a></li>
                 {% if user.is_superuser or perms.ganeti.view_instances %}
-                    <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="icon-envelope"></i> <span>{% trans "Send Mail" %}</span></a></li>
-                    <li {% block clusterinfo %}{% endblock %}><a href="{% url clusterdetails %}"><i class="icon-puzzle-piece"></i> <span>{% trans "Cluster Info" %}</span></a></li>
-                    <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="icon-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
-                    <li {% block clusterjobs %}{% endblock %}><a href="{% url jobs %}"><i class="icon-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>
-                    <li {% block nodegraphs %}{% endblock %}><a href="{% url cluster-get-nodes-graphs %}"><i class="icon-bar-chart"></i> <span>{% trans "Graphs" %}</span></a></li>
+                    <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="fa fa-envelope"></i> <span>{% trans "Send Mail" %}</span></a></li>
+                    <li {% block clusterinfo %}{% endblock %}><a href="{% url clusterdetails %}"><i class="fa fa-puzzle-piece"></i> <span>{% trans "Cluster Info" %}</span></a></li>
+                    <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="fa fa-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
+                    <li {% block clusterjobs %}{% endblock %}><a href="{% url jobs %}"><i class="fa fa-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>
+                    <li {% block nodegraphs %}{% endblock %}><a href="{% url cluster-get-nodes-graphs %}"><i class="fa fa-area-chart"></i> <span>{% trans "Graphs" %}</span></a></li>
                 {% endif %}
                 <li {% block auditlog %}{% endblock %}>
                     <a href="{% url auditlog %}">
-                        <i class="icon-book"></i>
+                        <i class="fa fa-book"></i>
                         <span>
                             {% if user.is_superuser or perms.ganeti.view_instances %}
                                 {% trans "Audit Log" %}{% else %}{% trans "History" %}
@@ -249,12 +249,12 @@
                         </span>
                     </a>
                 </li>
-                <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="icon-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
+                <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="fa fa-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
                 {% if user.is_superuser or perms.ganeti.view_instances %}
                     {% if can_handle_applications or can_view_applications %}
                     <li {% block applications %}{% endblock %}>
                         <a href="{% url application-list %}">
-                            <i class="icon-inbox"></i>
+                            <i class="fa fa-inbox"></i>
                             <span>{% trans "Applications" %}
                             {% if pending_count %}
                                 <span class="label label-important">{{ pending_count }}</span>
@@ -263,18 +263,18 @@
                         </a>
                     </li>
                     {% endif %}
-                    <li {% block owners %}{% endblock %}><a href="{% url instance_owners %}"><i class="icon-briefcase"></i> <span>{% trans "Instance Owners" %}</span></a></li>
-                    <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="icon-moon"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
+                    <li {% block owners %}{% endblock %}><a href="{% url instance_owners %}"><i class="fa fa-briefcase"></i> <span>{% trans "Instance Owners" %}</span></a></li>
+                    <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="fa fa-moon-o"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
                 {% endif %}
-                <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="icon-user"></i> <span>{% trans "My Profile" %}</span></a></li>
+                <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="fa fa-user"></i> <span>{% trans "My Profile" %}</span></a></li>
                 {% if FEED_URL %}
-                <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="icon-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
+                <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="fa fa-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
                 {% endif %}
                 {% if FLATPAGES.FAQ %}
-                <li {% block faq %}{% endblock %}><a href="/about/faq/{{ LANGUAGE_CODE }}"><i class="icon-question-sign"></i> <span>{% trans "FAQ" %}</span></a></li>
+                <li {% block faq %}{% endblock %}><a href="/about/faq/{{ LANGUAGE_CODE }}"><i class="fa fa-question-circle"></i> <span>{% trans "FAQ" %}</span></a></li>
                 {% endif %}
                 {% if user.is_superuser %}
-                <li ><a href="{% url admin:index %}" ><i class="icon-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
+                <li ><a href="{% url admin:index %}" ><i class="fa fa-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
                 {% endif %}
             </ul>
         </div>
@@ -336,7 +336,7 @@
             {% for sn in BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
             <a target="_blank" href="{{sn.URL}}">
                 <font style="color:{{sn.FONT_COLOR|safe}}; font-size: 30px">
-                    <i class="{{sn.FONT_AWSOME_NAME}}"></i>
+                    <i class="fa {{ sn.FONT_AWSOME_NAME }}"></i>
                 </font>
             </a>
             {% endfor %}

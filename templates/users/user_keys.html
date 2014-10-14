@@ -93,7 +93,7 @@
             {% for key in keys %}
                 <li>
                     <a class="btn btn-danger pull-right" id="remove_key_{{key.id}}" href="#">{% trans "Delete" %}</a>
-                    <i class="pull-left muted icon-key"></i>
+                    <i class="pull-left muted fa fa-key"></i>
                     <div>
                         <p class="title">{{ key.fingerprint }}</p>
                         <p class="info">{{ key.comment|default:"&mdash;" }}</p>

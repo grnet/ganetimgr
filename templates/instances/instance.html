@@ -70,19 +70,19 @@
 					{{ instance.name }}
 					{% if instance.node_group_locked %}
 						<span class="label label-important">
-							<i class="icon-lock"></i>
+							<i class="fa fa-lock"></i>
 							Actions Lock
 						</span>
 					{% endif %}
 					{% if instance.adminlock %}
 					<span class="label label-important">
-						<i class="icon-lock"></i>
+						<i class="fa fa-lock"></i>
 							Admin Lock
 					</span>
 					{% endif %}
 					{% if instance.isolate %}
 						<span class="label label-inverse">
-							<i class="icon-shield"></i>
+							<i class="fa fa-shield"></i>
 							Isolated
 						</span>
 					{% endif %}
@@ -162,7 +162,7 @@
 							<td>
 								{% for service in instance.services %}
 									{% if service == "mail" %}
-										<i class="icon-envelope" title="{{service}}" data-toggle="tooltip"></i>
+										<i class="fa fa-envelope" title="{{service}}" data-toggle="tooltip"></i>
 									{% else %}
 										{{service}}
 									{% endif %}
@@ -183,20 +183,20 @@
 							<td>
 							{% if user.is_superuser or perms.ganeti.view_instances %}
 								{% for u in instance.users %}
-									<a class="btn" href="{% if user.is_superuser %}{% url user-info type='user' usergroup=u.username %}{% else %}#{% endif %}"><i class="icon-user"></i> {{u.username}}</a>
+									<a class="btn" href="{% if user.is_superuser %}{% url user-info type='user' usergroup=u.username %}{% else %}#{% endif %}"><i class="fa fa-user"></i> {{u.username}}</a>
 								{% endfor %}
 								{% for g in instance.groups %}
-									<a class="btn" href="{% if user.is_superuser %}{% url user-info type='group' usergroup=g.name %}{% else %}#{% endif %}"><i class="icon-group"></i> {{g.name}}</a>
+									<a class="btn" href="{% if user.is_superuser %}{% url user-info type='group' usergroup=g.name %}{% else %}#{% endif %}"><i class="fa fa-group"></i> {{g.name}}</a>
 								{% endfor %}
 							{% else %}
 								{% for u in instance.users %}
-									<span class="label label-inverse"><i class="icon-user"></i> {{u.username}}</span>
+									<span class="label label-inverse"><i class="fa fa-user"></i> {{u.username}}</span>
 								{% endfor %}
 								{% for g in instance.groups %}
-									<span class="label label-inverse"><i class="icon-group"></i> {{g.name}}</span>
+									<span class="label label-inverse"><i class="fa fa-group"></i> {{g.name}}</span>
 								{% endfor %}
 									<a href="#" class="btn btn-info btn-small" onclick="javascript:showTags('{{instance.cluster.slug}}','{{instance.name}}'); return false;">
-										<i class="icon-sitemap"></i> {% trans "Manage Owners" %}
+										<i class="fa fa-sitemap"></i> {% trans "Manage Owners" %}
 									</a>
 							{% endif %}
 							</td>
@@ -207,7 +207,7 @@
 							<td>
 								<div class="btn-group">
 							 		<button data-toggle="dropdown" class="btn dropdown-toggle">
-							 			<i class="icon-cog"></i>
+							 			<i class="fa fa-cog"></i>
 							 			{% trans "Options" %}
 							 			<span class="caret"></span>
 							 		</button>
@@ -249,7 +249,7 @@
 				<h2>Graphs</h2>
 				<div class="row-fluid">
 					<div id="reportrange" class="pull-left">
-						<i class="icon-calendar icon-large"></i>
+						<i class="fa fa-calendar fa-lrg"></i>
 						<span></span>
 						<b class="caret"></b>
 			 		</div>

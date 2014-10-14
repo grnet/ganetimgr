@@ -178,8 +178,8 @@ $(document).ready( function(){
 				last_element = my.parent();
 				var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
-				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="stopbutton btn btn-small btn-danger"><i class="icon-off"></i> Shutdown</a>';
-				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="icon-chevron-sign-left"></i></a>';
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="stopbutton btn btn-small btn-danger"><i class="fa fa-off"></i> Shutdown</a>';
+				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="fa fa-chevron-circle-left"></i></a>';
 				my.parent().html(back+" "+btn);
 				return false;
 			});
@@ -192,8 +192,8 @@ $(document).ready( function(){
 				last_element = my.parent();
 				var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
-				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="startbutton btn btn-small btn-success"><i class="icon-play"></i> Start</a>';
-				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="icon-chevron-sign-left"></i></a>';
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="startbutton btn btn-small btn-success"><i class="fa fa-play"></i> Start</a>';
+				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="fa fa-chevron-cirlce-left"></i></a>';
 				my.parent().html(back+" "+btn);
 				return false;
 			});
@@ -206,8 +206,8 @@ $(document).ready( function(){
 				last_element = my.parent();
 				var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
-				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="rebootbutton btn btn-small btn-warning"><i class="icon-refresh"></i> Reboot</a>';
-				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="icon-chevron-sign-left"></i></a>';
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="rebootbutton btn btn-small btn-warning"><i class="fa fa-refresh"></i> Reboot</a>';
+				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="fa fa-chevron-sign-left"></i></a>';
 				my.parent().html(back+" "+btn);
 				return false;
 			});
@@ -292,13 +292,13 @@ $(document).ready( function(){
 						  status = status + ' <span class="label label-warning">CDROM</span>';
 						 }
 						 if (full.node_group_locked){
-						  status = status + ' <span class="label label-important"><i class="icon-lock"></i>Locked</span>';
+						  status = status + ' <span class="label label-important"><i class="fa fa-lock"></i>Locked</span>';
 						 }
 						 if (full.hasOwnProperty("adminlock")){
-							  status = status + ' <span class="label label-important"><i class="icon-lock"></i> Admin Lock</span>';
+							  status = status + ' <span class="label label-important"><i class="fa fa-lock"></i> Admin Lock</span>';
 							}
 						 if (full.hasOwnProperty("isolate")){
-							  status = status + ' <span class="label label-inverse"><i class="icon-shield"></i> Isolated</span>';
+							  status = status + ' <span class="label label-inverse"><i class="fa fa-shield"></i> Isolated</span>';
 							}
 						 if (full.hasOwnProperty("locked_reason")){
 							  status = status + ' <span class="label label-inverse">'+full.locked_reason+'</span>';
@@ -371,12 +371,12 @@ $(document).ready( function(){
 							 var users = '';
 							 for(var i = 0; i < data.length; i++) {
 								 if (data[i].hasOwnProperty("user")){
-									users = '<a class="btn" href="'+data[i].user_href+'"><i class="icon-user"></i> '+data[i].user+'</a>' + ' '+ users;
+									users = '<a class="btn" href="'+data[i].user_href+'"><i class="fa fa-user"></i> '+data[i].user+'</a>' + ' '+ users;
 								 }
 							 }
 							 for(var j = 0; j < full.groups.length; j++) {
 								 if (full.groups[j].hasOwnProperty("group")){
-									users = '<a class="btn" href="'+full.groups[j].group_href+'"><i class="icon-group"></i> '+full.groups[j].group+'</a>' + ' '+ users;
+									users = '<a class="btn" href="'+full.groups[j].group_href+'"><i class="fa fa-group"></i> '+full.groups[j].group+'</a>' + ' '+ users;
 								 }
 							 }
 						return users;
@@ -398,7 +398,7 @@ $(document).ready( function(){
 							 }
 							 var ret = ''+
 							 '<div class="btn-group">'+
-							 '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
+							 '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="fa fa-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
 							 '<ul class="dropdown-menu instanceopt">'+
 							   '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a></li>'+
 							   '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Owners" %}</a></li>'+
@@ -442,18 +442,18 @@ $(document).ready( function(){
 								}
 
 								if (full.status == 'Running'){
-								 lock = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="stopbuttonpre btn btn-small btn-danger"><i class="icon-off"></i></a> ';
-								 lock += '<a href="#" data-toggle="tooltip" title="Reboot" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="rebootbuttonpre btn btn-small btn-warning"><i class="icon-refresh"></i></a> ';
+								 lock = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="stopbuttonpre btn btn-small btn-danger"><i class="fa fa-off"></i></a> ';
+								 lock += '<a href="#" data-toggle="tooltip" title="Reboot" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="rebootbuttonpre btn btn-small btn-warning"><i class="fa fa-refresh"></i></a> ';
 
 								 consoleurl = "{% if WEBSOCK_VNC_ENABLED %}{% url instance-novnc 'cluster_placeholder' 'instance_placeholder' %}{% else %}{% url instance-vnc 'cluster_placeholder' 'instance_placeholder' %}{% endif %}".replace('cluster_placeholder', full.clusterslug.toString()).replace('instance_placeholder', full.name.toString());
-								 lock += '<a href="'+consoleurl+'" data-toggle="tooltip" title="Console" class="consolebutton btn btn-small btn-inverse"><i class="icon-terminal"></i></a> ';
+								 lock += '<a href="'+consoleurl+'" data-toggle="tooltip" title="Console" class="consolebutton btn btn-small btn-inverse"><i class="fa fa-terminal"></i></a> ';
 								}
 								if (full.status == 'Stopped'){
-								 lock = '<a href="#" data-toggle="tooltip" title="Start" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="startbuttonpre btn btn-small btn-success"><i class="icon-play"></i></a> ';
+								 lock = '<a href="#" data-toggle="tooltip" title="Start" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="startbuttonpre btn btn-small btn-success"><i class="fa fa-play"></i></a> ';
 								}
 							ret = '<div class="shortcuts">' + lock + '</div>';
-					 return ret;
-					 }
+							return ret;
+						}
 					 },
 					 {% endif %}
 

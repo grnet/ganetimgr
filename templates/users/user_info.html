@@ -39,47 +39,41 @@
 
 	var status;
 	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    "file-size-pre": function ( a ) {
-    	//Let's see if instance has many disks
-    	xm = a.split(", ");
-    	if (xm.length > 1){
-    		// Found many disks, let's sum
-    		var total = 0;
-    		for (var i = 0;i < xm.length; i++){
+    	"file-size-pre": function ( a ) {
+	    	//Let's see if instance has many disks
+	    	xm = a.split(", ");
+	    	if (xm.length > 1){
+	    		// Found many disks, let's sum
+	    		var total = 0;
+	    		for (var i = 0;i < xm.length; i++){
 
-    			var x = xm[i].substring(0,xm[i].length - 3);
-        		var x_unit = (
-        			xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ? 1000 : (
-        				xm[i].substring(xm[i].length - 2, xm[i].length) == "GB" ? 1000000 : (
-        					xm[i].substring(xm[i].length - 2, xm[i].length) == "TB" ? 1000000000 : 1
-        					)
-        				)
-        			);
-            	total += parseInt( x * x_unit, 10 );
+	    			var x = xm[i].substring(0,xm[i].length - 3);
+	        		var x_unit = (
+	        			xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ? 1000 : (
+	        				xm[i].substring(xm[i].length - 2, xm[i].length) == "GB" ? 1000000 : (
+	        					xm[i].substring(xm[i].length - 2, xm[i].length) == "TB" ? 1000000000 : 1
+	        					)
+	        				)
+	        			);
+	            	total += parseInt( x * x_unit, 10 );
+	    		}
+	    		return total;
+    		} else {
+		        var x = a.substring(0,a.length - 3);
 
-
-    		}
-    		return total;
-
-    	}
-    	else{
-        var x = a.substring(0,a.length - 3);
-
-        var x_unit = (
+		        var x_unit = (
         			a.substring(a.length - 2, a.length) == "MB" ? 1000 : (
         				a.substring(a.length - 2, a.length) == "GB" ? 1000000 : (
         					a.substring(a.length - 2, a.length) == "TB" ? 1000000000 : 1
         					)
         				)
         			);
-	        return parseInt( x * x_unit, 10 );
-	       }
+	        	return parseInt( x * x_unit, 10 );
+	       	}
 	    },
-
 	    "file-size-asc": function ( a, b ) {
 	        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
 	    },
-
 	    "file-size-desc": function ( a, b ) {
 	        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
 	    }
@@ -126,7 +120,7 @@
 	                       	  status = status + ' <span class="label label-inverse">Locked</span>';
 	                         }
 	                         if (full.hasOwnProperty("adminlock")){
-	                          	  status = status + ' <span class="label label-important"><i class="icon-lock"></i> Admin Lock</span>';
+	                          	  status = status + ' <span class="label label-important"><i class="fa fa-lock"></i> Admin Lock</span>';
 	                            }
 	                         if (full.hasOwnProperty("locked_reason")){
 	                          	  status = status + ' <span class="label label-inverse">'+full.locked_reason+'</span>';
@@ -187,12 +181,12 @@
 	                    		 var users = '';
 	                    		 for(var i = 0; i < data.length; i++) {
 		                    		 if (data[i].hasOwnProperty("user")){
-		                    		 	users = '<a class="btn" href="'+data[i].user_href+'"><i class="icon-user"></i> '+data[i].user+'</a>' + ' '+ users;
+		                    		 	users = '<a class="btn" href="'+data[i].user_href+'"><i class="fa fa-user"></i> '+data[i].user+'</a>' + ' '+ users;
 		                    		 }
 	                    		 }
 	                    		 for(var j = 0; j < full.groups.length; j++) {
 		                    		 if (full.groups[j].hasOwnProperty("group")){
-		                    		 	users = '<a class="btn" href="'+full.groups[j].group_href+'"><i class="icon-group"></i> '+full.groups[j].group+'</a>' + ' '+ users;
+		                    		 	users = '<a class="btn" href="'+full.groups[j].group_href+'"><i class="fa fa-group"></i> '+full.groups[j].group+'</a>' + ' '+ users;
 		                    		 }
 	                    		 }
 	                    	return users;
@@ -208,7 +202,7 @@
 	                    		 }
 	                             var ret = ''+
 	                    		 '<div class="btn-group">'+
-	                             '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="icon-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
+	                             '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="fa fa-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
 	                             '<ul class="dropdown-menu instanceopt">'+
 	                               '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a></li>'+
 	                               '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Tags" %}</a></li>'+
@@ -335,12 +329,12 @@
 						<td><a href="mailto:{{usergroup.email}}">{{usergroup.email}}</a></td>
 						<td>
 							{% for group in usergroup.groups.all %}
-								<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i> {{ group }}</a>
+								<a class="btn" href="{% url user-info 'group' group %}"><i class="fa fa-group"></i> {{ group }}</a>
 							{% endfor %}
 						</td>
 						<td>
 						{% for group in instance.groups %}
-							<a class="btn" href="{% url user-info 'group' group %}"><i class="icon-group"></i>  {{ group }}</a>{% if not forloop.last %}, {% endif %}
+							<a class="btn" href="{% url user-info 'group' group %}"><i class="fa fa-group"></i>  {{ group }}</a>{% if not forloop.last %}, {% endif %}
 						{% endfor %}
 						</td>
 					</tr>
@@ -349,7 +343,7 @@
 					{% for user in usergroup.user_set.all %}
 					<tr class="GradeA">
 						<td style="text-align: center;">{{usergroup.name}}</td>
-						<td><a href="{% url user-info 'user' user.username %}" class="btn"><i class="icon-user"></i> {{user.username}}</a></td>
+						<td><a href="{% url user-info 'user' user.username %}" class="btn"><i class="fa fa-user"></i> {{user.username}}</a></td>
 						<td>{{user.first_name}}</td>
 						<td>{{user.last_name}}</td>
 						<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>

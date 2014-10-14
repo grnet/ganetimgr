@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load staticfiles %}
 <link rel="stylesheet" href="{% static 'ganetimgr/css/includes/select2.css' %}">
-<script src="/static/ganetimgr/js/includes/select2.js"></script>
+<script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
 <script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
 
 <script>
@@ -62,16 +62,16 @@
 
 	function format(item) {
 		if (item.type=="user"){
-			return '<i class="icon-user"></i> ' + item.text;
+			return '<i class="fa fa-user"></i> ' + item.text;
 		}
 		else if (item.type=="group"){
-			return '<i class="icon-group"></i> ' + item.text;
+			return '<i class="fa fa-group"></i> ' + item.text;
 		}
 		else if (item.type=="vm"){
-			return '<i class="icon-laptop"></i> ' + item.text;
+			return '<i class="fa fa-laptop"></i> ' + item.text;
 		}
 		else if (item.type=="cluster"){
-			return '<i class="icon-puzzle-piece"></i> ' + item.text;
+			return '<i class="fa fa-puzzle-piece"></i> ' + item.text;
 		}
 		else{
 			return item.text;
@@ -80,10 +80,10 @@
 
 	function formatDjangoObject(type){
 		if (type=="user"){
-			return '<i class="icon-user"></i> ';
+			return '<i class="fa fa-user"></i> ';
 		}
 		else if (type=="group"){
-			return '<i class="icon-group"></i> ';
+			return '<i class="fa fa-group"></i> ';
 		}
 		else return ''
 	}

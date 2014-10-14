@@ -149,7 +149,7 @@ $(document).ready( function(){
                       {% if user.is_superuser or perms.ganeti.view_instances %}
                      {"mData":"user", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true,
                      "mRender": function (data, type, full) {
-                     	return '<a class="btn btn-small" href="'+full.user_href+'"><i class="icon-user"></i> '+data+'</a>';
+                     	return '<a class="btn btn-small" href="'+full.user_href+'"><i class="fa fa-user"></i> '+data+'</a>';
                    	 }},
                    	 {% endif %}
                      {"mData":"last_upd", "sClass" : "alignCenter", "bSearchable": true,"bSortable": true},

@@ -39,7 +39,7 @@
 						<div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
 							<div class="widget">
 								<div class="row-fluid">
-									<h2><i class="icon-cloud"></i> {% trans "Welcome" %}</h2>
+									<h2><i class="fa fa-cloud"></i> {% trans "Welcome" %}</h2>
 									<div id="change_name_placeholder" class="padwidget">
 										{% blocktrans %}
 											<p>Welcome to GRNET's ViMa service.</p>
@@ -55,7 +55,7 @@
 						<div class="span3 sidebar">
 							<div class="widget">
 								<div class="row-fluid">
-									<h2><i class="icon-bullhorn"></i> {% trans "Latest News" %}</h2>
+									<h2><i class="fa fa-bullhorn"></i> {% trans "Latest News" %}</h2>
 									<div id="divRss"></div>
 								</div>
 							</div>
@@ -64,7 +64,7 @@
 						<div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
 							<div class="widget">
 								<div class="row-fluid">
-									<h2><i class="icon-signin"></i> {% trans "Login" %}</h2>
+									<h2><i class="fa fa-sign-in"></i> {% trans "Login" %}</h2>
 									<div id="pass_change_placeholder" class="padwidget">
 									{% if form.errors %}
 										<p  class="error" style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>

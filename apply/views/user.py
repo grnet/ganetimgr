@@ -199,6 +199,7 @@ def user_keys(request):
 
     keys = SshPublicKey.objects.filter(owner=request.user)
     return render(
+        request,
         'users/user_keys.html',
         {
             'form': form,

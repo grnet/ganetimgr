@@ -320,10 +320,10 @@ BRANDING = {
                                     "URL":"http://acme.org",
                                     "SOCIAL_NETWORKS":[
                                                        {"URL":"//facebook.com/acme.org",
-                                                        "FONT_AWSOME_NAME":"icon-facebook-sign",
+                                                        "FONT_AWSOME_NAME":"fa-facebook",
                                                          "FONT_COLOR": "#3b5998"},
                                                        {"URL":"//twitter.com/acme",
-                                                        "FONT_AWSOME_NAME":"icon-twitter-sign",
+                                                        "FONT_AWSOME_NAME":"fa-twitter",
                                                          "FONT_COLOR": "#00acee"},
                                                         ]
                                     },

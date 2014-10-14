@@ -205,14 +205,14 @@
 				<div class="span12">
 				{% if not instance.node_group_locked or user.is_superuser or perms.ganeti.view_instances %}
 				<div class="span6">
-				<div class="row-fluid"><div class="span12"><a class="btn btn-danger btn-small btn-fixed" id="shutdown" href="#"><i class="icon-off"></i> {% trans "Shutdown" %}</a></div></div>
-				<div class="row-fluid"><div class="span12"><a class="btn btn-warning  btn-small btn-fixed" id="reboot" href="#"><i class='icon-refresh'></i> {% trans "Reboot" %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn btn-danger btn-small btn-fixed" id="shutdown" href="#"><i class="fa fa-power-off"></i> {% trans "Shutdown" %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn btn-warning  btn-small btn-fixed" id="reboot" href="#"><i class='fa fa-refresh'></i> {% trans "Reboot" %}</a></div></div>
 				{% include "instances/includes/console-module.html" %}
 			</div>
 			<div class="span6">
-				<div class="row-fluid"><div class="span12"><a class="btn btn-small btn-fixed btn-info {% if instance.pending_rename %}disabled{% endif %}" id="rename" href="#"><i class="icon-font"></i> {% trans "Rename..." %}</a></div></div>
-				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#"><i class='icon-cloud-download'></i> {% trans "Reinstall..." %}</a></div></div>
-				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='icon-trash'></i> {% trans "Destroy..." %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn btn-small btn-fixed btn-info {% if instance.pending_rename %}disabled{% endif %}" id="rename" href="#"><i class="fa fa-font"></i> {% trans "Rename..." %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#"><i class='fa fa-cloud-download'></i> {% trans "Reinstall..." %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='fa fa-trash'></i> {% trans "Destroy..." %}</a></div></div>
 				</div>
 				{% else %}
 				<div class="span12">Due to maintenance, actions have been disabled on a group of instances that includes this instance.
@@ -228,13 +228,13 @@
 						<div class="span6">
 							<div class="row-fluid">
 								<div class="span12">
-									<a class="btn btn btn-success btn-small btn-fixed " id="start" href="#"><i class="icon-play"></i> {% trans "Start" %}</a>
+									<a class="btn btn btn-success btn-small btn-fixed " id="start" href="#"><i class="fa fa-play"></i> {% trans "Start" %}</a>
 								</div>
 							</div>
 							<div class="row-fluid">
 								<div class="span12">
 									<a class="btn btn-warning btn-small btn-fixed " id="reboot" href="#">
-										<i class='icon-refresh'></i>
+										<i class='fa fa-refresh'></i>
 										{% trans "Reboot" %}
 									</a>
 								</div>
@@ -244,7 +244,7 @@
 							<div class="row-fluid">
 								<div class="span12">
 									<a class="btn btn-fixed btn-info btn-small {% if instance.pending_rename %}disabled{% endif %}" id="rename" href="#">
-										<i class="icon-font"></i>
+										<i class="fa fa-font"></i>
 										{% trans "Rename..." %}
 									</a>
 								</div>
@@ -252,7 +252,7 @@
 							<div class="row-fluid">
 								<div class="span12">
 									<a class="btn btn-fixed btn-small btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#">
-										<i class='icon-cloud-download'></i>
+										<i class='fa fa-cloud-download'></i>
 										{% trans "Reinstall..." %}
 									</a>
 								</div>
@@ -260,7 +260,7 @@
 							<div class="row-fluid">
 								<div class="span12">
 									<a class="btn btn-fixed btn-small btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#">
-										<i class='icon-trash'></i>
+										<i class='fa fa-trash'></i>
 										{% trans "Destroy..." %}
 									</a>
 								</div>
