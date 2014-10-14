@@ -15,13 +15,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import json
+import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
+
 from auditlog.models import AuditEntry
-import json
 
 
 @login_required
@@ -36,7 +39,7 @@ def auditlog_json(request):
         request.user.is_superuser or
         request.user.has_perm('ganeti.view_instances')
     ):
-        al = AuditEntry.objects.all()
+        al = AuditEntry.objects.filter(last_updated__gte=datetime.datetime.now() - datetime.timedelta(days=10))
     else:
         al = AuditEntry.objects.filter(requester=request.user)
     entries = []
