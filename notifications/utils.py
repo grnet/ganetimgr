@@ -22,6 +22,7 @@ def notify_instance_owners(instances, subject, message):
         message,
         from_email,
         recipient_list,
-        bcc_list
+        bcc_list,
+        headers = {'Reply-To': 'helpdesk@grnet.gr'}
     ).send()
 
