@@ -176,7 +176,7 @@
 						}
 					for (var i=0; i < response.operating_systems.length; i++) {
 						if (response.operating_systems[i][1].osparams.img_id === os) {
-							options += '<option value="" selected>Keep the same os (' + os + ')</option>';
+							options += '<option value="' + response.operating_systems[i][1].osparams.img_id + '" selected>Keep the same os (' + os + ')</option>';
 							oldos = false;
 						}
 						if (response.operating_systems[i][1].osparams.img_id) {
