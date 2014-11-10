@@ -586,6 +586,13 @@
         $("#id_cluster").select2();
         $("#id_node_group").select2({dropdownAutoWidth : true, formatResult: formatng});
         $("#id_disk_template").select2({dropdownAutoWidth : true, formatResult: formatdt});
+        $('#id_disk_template').on('change', function () {
+            if ($(this).val() === 'sharedfile') {
+                $("#id_vgs").select2('readonly', true);
+            } else {
+                $("#id_vgs").select2('readonly', false);
+            }
+        })
         $("#id_vgs").select2();
         $("#id_netw").select2({dropdownAutoWidth : true, formatResult: formatnet});
         $("#id_cluster").trigger("change");
