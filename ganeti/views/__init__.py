@@ -28,6 +28,7 @@ from ganeti.utils import prepare_tags
 # TODO: Cleanup and separate to files
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group
 from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.shortcuts import render

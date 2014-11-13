@@ -24,7 +24,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from notifications.forms import *
 from ganeti.models import *
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
 from django.contrib import messages
 import json
 from django.core.mail.message import EmailMessage
@@ -33,6 +32,7 @@ from gevent.pool import Pool
 
 from util.client import GanetiApiError
 from django.db import close_connection
+from notifications.utils import get_mails, send_emails
 
 
 @csrf_exempt
@@ -50,15 +50,13 @@ def notify(request, instance=None):
                 mail_list = get_mails(rlist)
                 email = form.cleaned_data['message']
                 if len(mail_list) > 0:
-                    send_new_mail(
+                    send_emails(
                         "%s%s" % (
                             settings.EMAIL_SUBJECT_PREFIX,
                             form.cleaned_data['subject']
                         ),
                         email,
-                        settings.SERVER_EMAIL,
-                        [],
-                        mail_list
+                        mail_list,
                     )
                 if request.is_ajax():
                     ret = {'result': 'success'}
@@ -107,47 +105,14 @@ def notify(request, instance=None):
         return HttpResponseRedirect(reverse('user-instances'))
 
 
-def get_mails(itemlist):
-    mails = []
-    for i in itemlist:
-        #User
-        if i.startswith('u'):
-            mails.append(
-                User.objects.get(pk=i.replace('u_', '')).email
-            )
-        #Group
-        if i.startswith('g'):
-            group = Group.objects.get(pk=i.replace('g_', ''))
-            users = group.user_set.all()
-            mails.extend([u.email for u in users])
-        #Instance
-        if i.startswith('i'):
-            instance = Instance.objects.get(name=i.replace('i_', ''))
-            users = instance.users
-            mails.extend([u.email for u in users])
-        if i.startswith('c'):
-            cluster = Cluster.objects.get(pk=i.replace('c_', ''))
-            instances = cluster.get_instances()
-            for instance in instances:
-                mails.extend([u.email for u in instance.users])
-    return list(set(mails))
-
-
 @login_required
 def get_user_group_list(request):
     if (
         request.user.is_superuser or
         request.user.has_perm('ganeti.view_instances')
     ):
-        q_params = None
-        try:
-            q_params = request.GET['q']
-        except:
-            pass
-        users = User.objects.filter(is_active=True)
-        groups = Group.objects.all()
-        instances = []
-        clusters = Cluster.objects.all()
+        q_params = request.GET.get('q')
+        type_of_search = request.GET.get('type')
         p = Pool(20)
         bad_clusters = []
 
@@ -161,37 +126,67 @@ def get_user_group_list(request):
         if not request.user.is_anonymous():
             p.imap(_get_instances, Cluster.objects.all())
             p.join()
-        if q_params:
-            users = users.filter(username__icontains=q_params)
-            groups = groups.filter(name__icontains=q_params)
-            instances = Instance.objects.filter(name__icontains=q_params)
-            clusters = clusters.filter(slug__icontains=q_params)
-        ret_list = []
-        for user in users:
-            userd = {}
-            userd['text'] = user.username
-            userd['email'] = user.email
-            userd['id'] = "u_%s" % user.pk
-            userd['type'] = "user"
-            ret_list.append(userd)
-        for group in groups:
-            groupd = {}
-            groupd['text'] = group.name
-            groupd['id'] = "g_%s" % group.pk
-            groupd['type'] = "group"
-            ret_list.append(groupd)
-        for instance in instances:
-            instd = {}
-            instd['text'] = instance.name
-            instd['id'] = "i_%s" % instance.name
-            instd['type'] = "vm"
-            ret_list.append(instd)
-        for cluster in clusters:
-            cld = {}
-            cld['text'] = cluster.slug
-            cld['id'] = "c_%s" % cluster.pk
-            cld['type'] = "cluster"
-            ret_list.append(cld)
+        if q_params and type_of_search:
+            ret_list = []
+            if type_of_search == 'cluster':
+                clusters = Cluster.objects.filter(slug__icontains=q_params)
+                for cluster in clusters:
+                    cld = {}
+                    cld['text'] = cluster.slug
+                    cld['id'] = "c_%s" % cluster.pk
+                    cld['type'] = "cluster"
+                    ret_list.append(cld)
+            elif type_of_search == 'users':
+                users = User.objects.filter(is_active=True, username__icontains=q_params)
+                for user in users:
+                    userd = {}
+                    userd['text'] = user.username
+                    userd['email'] = user.email
+                    userd['id'] = "u_%s" % user.pk
+                    userd['type'] = "user"
+                    ret_list.append(userd)
+            elif type_of_search == 'groups':
+                groups = Group.objects.filter(name__icontains=q_params)
+                for group in groups:
+                    groupd = {}
+                    groupd['text'] = group.name
+                    groupd['id'] = "g_%s" % group.pk
+                    groupd['type'] = "group"
+                    ret_list.append(groupd)
+            elif type_of_search == 'instances':
+                instances = []
+                instances = Instance.objects.filter(name__icontains=q_params)
+                for instance in instances:
+                    instd = {}
+                    instd['text'] = instance.name
+                    instd['id'] = "i_%s" % instance.name
+                    instd['type'] = "vm"
+                    ret_list.append(instd)
+            elif type_of_search == 'nodes':
+                for cluster in Cluster.objects.all():
+                    for node in cluster.get_cluster_nodes():
+                        if q_params in node.get('name'):
+                            noded = {
+                                'text': '%s - %s' % (cluster, node.get('name')),
+                                'id': 'n_%s_c_%s' % (node.get('name'), cluster.id),
+                                'type': 'node'
+                            }
+                            ret_list.append(noded)
+            elif type_of_search == 'nodegroups':
+                nodegroups = []
+                for cluster in Cluster.objects.all():
+                    nodegroups.append({cluster: cluster.get_node_groups()})
+                for nodegroup_list in nodegroups:
+                    for cluster, nodegroup in nodegroup_list.items():
+                        for ng in nodegroup:
+                            if q_params in ng.get('name'):
+                                nodegroupsd = {
+                                    'text': '%s - %s' % (cluster, ng.get('name')),
+                                    'id': 'ng_%s_c_%s' % (ng.get('name'), cluster.id),
+                                    'type': 'nodegroup'
+                                }
+                                ret_list.append(nodegroupsd)
+
         action = ret_list
         return HttpResponse(json.dumps(action), mimetype='application/json')
     else:
@@ -200,11 +195,6 @@ def get_user_group_list(request):
         }
         return HttpResponse(json.dumps(action), mimetype='application/json')
 
-
-def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
-    return EmailMessage(
-        subject, message, from_email, recipient_list, bcc_list
-    ).send()
 
 
 

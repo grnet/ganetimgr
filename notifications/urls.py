@@ -20,6 +20,6 @@ from notifications import views
 
 urlpatterns = patterns(
     '',
-    url(r'^(?P<instance>[^/]+)?$', views.notify, name="notify"),
     url(r'^usergrps/?$', views.get_user_group_list, name="usergroups"),
+    url(r'^(?P<instance>[^/]+)?$', views.notify, name="notify"),
 )

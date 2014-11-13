@@ -11,6 +11,7 @@
                             {{ form.non_field_errors}}
                         </p>
                     {% endif %}
+
                     <div class="control-group {% if form.recipient_list.errors %} error {% endif %}">
                         <label class="control-label">
                             {% if form.recipient_list.field.required %}
@@ -22,6 +23,7 @@
                             {% endif %}
                         </label>
                         <div class="controls">
+                            {{ form.search_for }}
                             <input type='hidden' id='id_recipient_list' style='width:300px' name="recipient_list"/>
                             {% if form.recipient_list.errors %}
                                 <span class="help-inline">

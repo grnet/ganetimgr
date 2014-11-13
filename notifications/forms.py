@@ -17,8 +17,18 @@
 from django import forms
 from django.utils.translation import ugettext_lazy
 
+TYPE_CHOICES = (
+    ('cluster', 'clusters'),
+    ('nodes', 'nodes'),
+    ('nodegroups', 'nodegroups'),
+    ('users', 'users'),
+    ('groups', 'groups'),
+    ('instances', 'instances')
+)
+
 
 class MessageForm(forms.Form):
+    search_for = forms.ChoiceField(label=ugettext_lazy("Search for"), choices=TYPE_CHOICES)
     subject = forms.CharField(max_length=100, label=ugettext_lazy("Subject"))
-    message = forms.CharField(widget=forms.Textarea, label=ugettext_lazy("Body"))
+    message = forms.CharField(widget=forms.Textarea, label=ugettext_lazy("Body"), help_text='You can use {% for i in instances %} {{ i }} {% endfor %} if you want to use the body as a mail template.')
     recipient_list = forms.CharField(label=ugettext_lazy("Recipients"))
