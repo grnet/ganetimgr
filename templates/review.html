@@ -598,7 +598,7 @@ $(document).ready( function(){
                         }
                     }
                     if (!found) {
-                        operatingSystemsInput.parent().append('<div style="color: #b94a48;">Δεν βρέθηκε το λειτουργικό που ζητηθηκε: ' + selected + '</div>')
+                        operatingSystemsInput.parent().append('<div style="color: #b94a48;">{% trans "Could not find the requested OS" %}: ' + selected + '</div>')
                     }
                 }
                 operatingSystemsInput.html(options)
