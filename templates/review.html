@@ -576,7 +576,7 @@ $(document).ready( function(){
                 options = '';
                 if (response.status === 'success') {
                     for (var i=0; i < response.operating_systems.length; i++) {
-                        if (response.operating_systems[i][0] === selected) {
+                        if (response.operating_systems[i][1].osparams.img_id === selected) {
                             if (response.operating_systems[i][1].osparams.img_id) {
                                 options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '" selected="selected">' + response.operating_systems[i][1].description + '</option>';
                             } else {
