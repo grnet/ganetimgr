@@ -328,9 +328,6 @@ def notifyuseradvancedactions(
     return action
 
 
-
-
-
 try:
     from ganetimgr.settings import OPERATING_SYSTEMS_URLS
 except ImportError:
