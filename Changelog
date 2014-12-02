@@ -1,5 +1,6 @@
 1.5.4 RELEASE (stable)
 Features/Bugfixing release
+	- Reinstall with same os works now
 	- [Feature] Batch graphs per cluster/node
 	- [Feature] Functionality to lock nodegroups 
 	- [Workaround] When reinstalling instance with a new os, os params are changed as they should
