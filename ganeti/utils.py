@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import filesizeformat
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from ganeti.models import *
+from ganeti.models import Cluster, Instance
 
 from util.client import GanetiApiError
 
@@ -53,6 +53,7 @@ def get_instance_data(instance, cluster, node=None):
         'cpu': instance.cpu_url,
         'network': instance.net_url,
     }
+
 
 
 def get_nodes_with_graphs(cluster_slug, nodes=None):
@@ -361,7 +362,13 @@ def discover_available_operating_systems():
                     architectures = ['-x86_', '-amd' '-i386']
                     for link in soup.findAll('a'):
                         try:
-                            extension = '.' + '.'.join(link.text.split('.')[-2:])
+                            if '.' + '.'.join(link.text.split('.')[-2:]) == '.tar.gz':
+                                extension = '.tar.gz'
+                            elif '.' + '.'.join(link.text.split('.')[-1:]) == '.img':
+                                extension = '.img'
+                            else:
+                                extension = '.' + '.'.join(link.text.split('.')[-2:])
+
                         # in case of false link
                         except IndexError:
                             pass
@@ -407,9 +414,11 @@ def get_operating_systems_dict():
 def operating_systems():
     # check if results exist in cache
     response = cache.get('operating_systems')
+    print 'in cache'
     # if no items in cache
     if not response:
         discovery = discover_available_operating_systems()
+        print discovery
         dictionary = get_operating_systems_dict()
         operating_systems = sorted(dict(discovery.items() + dictionary.items()).items())
         # move 'none' on the top of the list for ui purposes.
