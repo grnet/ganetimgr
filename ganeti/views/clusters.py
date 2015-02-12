@@ -22,6 +22,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.messages import constants as msgs
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import close_connection
@@ -62,7 +63,7 @@ def clusternodes_json(request, cluster=None):
             nodes, bad_clusters, bad_nodes = prepare_clusternodes()
             cache.set('allclusternodes', nodes, 90)
         if bad_clusters:
-            msgs.add_message(
+            messages.add_message(
                 request,
                 msgs.WARNING,
                 "Some nodes may be missing because the" +
@@ -71,7 +72,7 @@ def clusternodes_json(request, cluster=None):
             )
             cache.set('badclusters', bad_clusters, 90)
         if bad_nodes:
-            msgs.add_message(
+            messages.add_message(
                 request,
                 msgs.ERROR,
                 "Some nodes appear to be offline: " +

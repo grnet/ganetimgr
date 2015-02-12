@@ -50,7 +50,7 @@ from ganeti.forms import (
     isolateForm
 )
 
-from ganeti.models import Cluster, Instance
+from ganeti.models import *
 from ganeti.decorators import (
     check_instance_auth,
     check_admin_lock,

@@ -25,7 +25,7 @@ from django.shortcuts import render
 
 from ganeti.decorators import check_instance_auth
 from ganeti.forms import GraphForm
-from ganeti.models import Cluster
+from ganeti.models import *
 from ganeti.utils import get_nodes_with_graphs
 
 
