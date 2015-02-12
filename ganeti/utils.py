@@ -357,48 +357,63 @@ def discover_available_operating_systems():
                     extensions = {
                         '.tar.gz': 'tarball',
                         '.img': 'qemu',
-                        '-root.dump': 'dump'
+                        '-root.dump': 'dump',
+                        '.img-nomount': 'qemu-nomount',
                     }
                     architectures = ['-x86_', '-amd' '-i386']
                     for link in soup.findAll('a'):
                         try:
-                            if '.' + '.'.join(link.text.split('.')[-2:]) == '.tar.gz':
+                            if '.' + '.'.join(link.attrs.get('href').split('.')[-2:]) == '.tar.gz':
                                 extension = '.tar.gz'
-                            elif '.' + '.'.join(link.text.split('.')[-1:]) == '.img':
+                            elif '.' + '.'.join(link.attrs.get('href').split('.')[-1:]) == '.img':
                                 extension = '.img'
                             else:
-                                extension = '.' + '.'.join(link.text.split('.')[-2:])
-
+                                extension = '.' + '.'.join(link.attrs.get('href').split('.')[-1:])
                         # in case of false link
                         except IndexError:
                             pass
                         else:
                             # if the file is tarball, qemu or dump then it is valid
-                            if extension in extensions.keys() or '-root.dump' in link.text:
-                                re = requests.get(url + link.text + '.dsc')
+                            if extension in extensions.keys() or '-root.dump' in link.attrs.get('href'):
+                                re = requests.get(url + link.attrs.get('href') + '.dsc')
                                 if re.ok:
                                     name = re.text
                                 else:
-                                    name = link.text
+                                    name = link.attrs.get('href')
                                 for arch in architectures:
-                                    if arch in link.text:
-                                        img_id = link.text.replace(extension, '').split(arch)[0]
+                                    if arch in link.attrs.get('href'):
+                                        img_id = link.attrs.get('href').replace(extension, '').split(arch)[0]
                                         architecture = arch
                                         break
                                 description = name
                                 img_format = extensions[extension]
-                                operating_systems.update({
-                                    img_id: {
-                                        'description': description,
-                                        'provider': OPERATING_SYSTEMS_PROVIDER,
-                                        'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
-                                        'arch': architecture,
-                                        'osparams': {
-                                            'img_id': img_id,
-                                            'img_format': img_format,
+                                if extension == '.img-nomount':
+                                    operating_systems.update({
+                                        img_id: {
+                                            'description': description,
+                                            'provider': OPERATING_SYSTEMS_PROVIDER,
+                                            'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
+                                            'arch': architecture,
+                                            'osparams': {
+                                                'img_id': img_id,
+                                                'img_format': img_format,
+                                                'img_nomount': 'yes',
+                                            }
                                         }
-                                    }
-                                })
+                                    })
+                                else:
+                                    operating_systems.update({
+                                        img_id: {
+                                            'description': description,
+                                            'provider': OPERATING_SYSTEMS_PROVIDER,
+                                            'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
+                                            'arch': architecture,
+                                            'osparams': {
+                                                'img_id': img_id,
+                                                'img_format': img_format,
+                                            }
+                                        }
+                                    })
         return operating_systems
     else:
         return {}

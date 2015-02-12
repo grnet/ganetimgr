@@ -37,7 +37,6 @@ from paramiko import RSAKey, DSSKey
 from paramiko.util import hexlify
 
 from ganeti.fields.jsonfield import JSONField
-from ganeti.utils import operating_systems
 
 (STATUS_PENDING,
  STATUS_APPROVED,
@@ -187,6 +186,7 @@ class InstanceApplication(models.Model):
         if self.instance_params['mode'] == "routed":
             nic_dict.update(ip="pool")
 
+        from ganeti.utils import operating_systems
         fetch_op_systems = operating_systems()
         op_systems = json.loads(fetch_op_systems).get('operating_systems')
         op_systems_dict = dict(op_systems)
