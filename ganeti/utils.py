@@ -358,7 +358,6 @@ def discover_available_operating_systems():
                         '.tar.gz': 'tarball',
                         '.img': 'qemu',
                         '-root.dump': 'dump',
-                        '.img-nomount': 'qemu-nomount',
                     }
                     architectures = ['-x86_', '-amd' '-i386']
                     for link in soup.findAll('a'):
@@ -387,7 +386,7 @@ def discover_available_operating_systems():
                                         break
                                 description = name
                                 img_format = extensions[extension]
-                                if extension == '.img-nomount':
+                                if link.attrs.get('href').split('-')[0] == 'nomount':
                                     operating_systems.update({
                                         img_id: {
                                             'description': description,
@@ -413,7 +412,7 @@ def discover_available_operating_systems():
                                                 'img_format': img_format,
                                             }
                                         }
-                                    })
+                                     })
         return operating_systems
     else:
         return {}
