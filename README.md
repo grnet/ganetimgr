@@ -19,6 +19,10 @@ For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.
 
 [![Documentation Status](https://readthedocs.org/projects/ganetimgr/badge/?version=stable)](https://readthedocs.org/projects/ganetimgr/?badge=stable)
 
+## Contact Information
+
+User discussions: ganetimgr-users@lists.grnet.gr
+
 
 =====================================================================
 
