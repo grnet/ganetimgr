@@ -293,7 +293,8 @@ USE_X_FORWARDED_HOST = True
 import _version
 SW_VERSION = _version.VERSION
 
-NODATA_IMAGE = STATIC_ROOT + "nodata.jpg"
+NODATA_IMAGE = 'static/nodata.gif'
+
 
 WHITELIST_IP_MAX_SUBNET_V4 = 26
 WHITELIST_IP_MAX_SUBNET_V6 = 64

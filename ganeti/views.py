@@ -1635,7 +1635,7 @@ def get_clusternodes(request):
         if bad_clusters:
             messages.add_message(
                 request,
-                messages.WARNING,
+                msgs.WARNING,
                 "Some nodes may be missing because the" +
                 " following clusters are unreachable: " +
                 ", ".join([c.description for c in bad_clusters])
@@ -1644,7 +1644,7 @@ def get_clusternodes(request):
         if bad_nodes:
             messages.add_message(
                 request,
-                messages.ERROR,
+                msgs.ERROR,
                 "Some nodes appear to be offline: " +
                 ", ".join(bad_nodes)
             )
