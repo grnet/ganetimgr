@@ -82,7 +82,7 @@
 						</div>
 						<span class="help-block"> {{ form.vcpus.help_text }}</span>
 					</div>
-					<div class="control-group span5{% if form.disk_size.errors %}error{% endif %}">
+					<div class="control-group span5 {% if form.disk_size.errors %}error{% endif %}">
 						<label class="control-label {% if form.disk_size.field.required %}required{% endif %}" for="id_applier">{{ form.disk_size.label }}</label>
 					   <div class="controls">{{ form.disk_size }}
 						{% if form.disk_size.errors %}
