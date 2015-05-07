@@ -159,10 +159,10 @@ class InstanceForm(forms.ModelForm):
     )
     disk_size = forms.IntegerField(
         min_value=2,
-        max_value=100,
+        max_value=50,
         initial=5,
         label=ugettext_lazy("Disk size (GB)"),
-        help_text=ugettext_lazy("Specify a size from 2 to 100 GB")
+        help_text=ugettext_lazy("Specify a size from 2 to 50 GB")
     )
     hosts_mail_server = forms.BooleanField(
         required=False,
