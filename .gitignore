@@ -4,3 +4,4 @@ ganeti.db
 grappelli/
 *.pyc
 apache/django.wsgi
+/static/
