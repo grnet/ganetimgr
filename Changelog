@@ -1,8 +1,12 @@
-1.5.4 RELEASE (stable)
+1.5.5 RELEASE (stable)
+Bugfixing release
+	- [fixed] If a cluster's slug contains the dash character it would generate a 404 response
+
+1.5.4 RELEASE
 Features/Bugfixing release
 	- Reinstall with same os works now
 	- [Feature] Batch graphs per cluster/node
-	- [Feature] Functionality to lock nodegroups 
+	- [Feature] Functionality to lock nodegroups
 	- [Workaround] When reinstalling instance with a new os, os params are changed as they should
 	- Minor fix on user resolution in auditlog
 	- Code cleanup
