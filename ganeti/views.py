@@ -71,6 +71,7 @@ except ImportError:
 from ganetimgr.settings import GANETI_TAG_PREFIX
 
 from django.contrib.messages import constants as msgs
+from django.contrib import messages
 from django.db import close_connection
 
 MESSAGE_TAGS = {
