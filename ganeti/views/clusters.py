@@ -154,7 +154,7 @@ def get_clusternodes(request):
             nodes, bad_clusters, bad_nodes = prepare_clusternodes()
             cache.set('allclusternodes', nodes, 90)
         if bad_clusters:
-            msgs.add_message(
+            messages.add_message(
                 request,
                 msgs.WARNING,
                 "Some nodes may be missing because the" +
@@ -163,7 +163,7 @@ def get_clusternodes(request):
             )
             cache.set('badclusters', bad_clusters, 90)
         if bad_nodes:
-            msgs.add_message(
+            messages.add_message(
                 request,
                 msgs.ERROR,
                 "Some nodes appear to be offline: " +
