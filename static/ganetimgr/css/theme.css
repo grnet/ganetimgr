@@ -15,7 +15,19 @@ body {
   margin: 0px;
   padding: 0px;
   color: #333;
+  height: 100%;
 }
+
+html {
+  height: 100%;
+}
+
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+  margin: 0px auto -200px;
+}
+
 a:hover {
   text-decoration: none;
 }
