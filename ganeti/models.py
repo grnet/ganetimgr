@@ -362,7 +362,6 @@ class Cluster(models.Model):
         help_text="Allow fast instance creations on this cluster using the"
         " admin interface"
     )
-    default_disk_template = models.CharField(max_length=255, default="plain")
     use_gnt_network = models.BooleanField(
         default=True,
         verbose_name="Cluster uses gnt-network",
