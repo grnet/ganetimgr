@@ -22,7 +22,14 @@ PROJECT_DIR = os.path.join(BASE_DIR, 'ganetimgr')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# This setting is mandatory when DEBUG is set to False.
+ALLOWED_HOSTS = [
+    '.example.com',  # Allow domain and subdomains
+    '.example.com.', # Also allow FQDN and subdomains
+]
+
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
 
 SITE_ID = 1
 
