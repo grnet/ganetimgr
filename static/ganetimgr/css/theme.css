@@ -1,16 +1,3 @@
-/*---------------------------------------------------
-    LESS Elements 0.6
-  ---------------------------------------------------
-    A set of useful LESS mixins by Dmitry Fadeyev
-    Special thanks for mixin suggestions to:
-      Kris Van Herzeele,
-      Benoit Adam,
-      Portenart Emile-Victor,
-      Ryan Faerman
-
-    More info at: http://lesselements.com
------------------------------------------------------*/
-/*Standard Elements*/
 body {
   margin: 0px;
   padding: 0px;
@@ -31,11 +18,13 @@ html {
 a:hover {
   text-decoration: none;
 }
+
 h1 {
   color: #41414c;
   margin-top: 0px;
   color: #eee;
 }
+
 h2 {
   color: #41414c;
   font-size: 1.25em;
@@ -56,22 +45,15 @@ h2 span.info {
 hr {
   border-top: 1px solid #dddde2;
 }
-/*Navbar*/
-.brand,
-.navbar .brand {
-  color: #646475;
-  text-shadow: 1px 1px 0px #fff;
-  font-size: 2em;
-  margin-left: .5em;
-  padding-left: 0px;
-  /*For fake logo only, remove if change*/
 
-  font-family: 'Aguafina Script', sans-serif;
-  line-height: 1em;
-  margin-bottom: -1em;
-  /*For fake logo only, remove if change*/
-
+.navbar .brand.service-provider {
+  position: absolute;
+  left: 60px;
+  top: 3px;
+  font-size: 20px;
+  padding: 0.1em;
 }
+
 .navbar {
   position: relative;
   z-index: 20;
@@ -81,25 +63,17 @@ hr {
   -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
 }
-.navbar .navbar-inner {
-  background: #dddde2;
-  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #dddde2), color-stop(1, #f9f9f9));
-  background: -ms-linear-gradient(bottom, #dddde2, #f9f9f9);
-  background: -moz-linear-gradient(center bottom, #dddde2 0%, #f9f9f9 100%);
-  background: -o-linear-gradient(bottom, #dddde2, #f9f9f9);
-  filter: progid:dximagetransform.microsoft.gradient(startColorStr='#dddde2', EndColorStr='#f9f9f9');
-  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f9f9f9',EndColorStr='#dddde2')";
-  padding: 1em 1em;
-  margin: 0px;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  border: 0px;
-  border-bottom: 1px solid #9898a7;
+.navbar .brand {
+  padding: 0;
+  margin: 0;
 }
+
+.navbar .navbar-inner {
+  background: #fcfcfc;
+  padding: 0.1em;
+  margin: 0px;
+}
+
 .navbar .nav {
   margin: 0em;
   margin-right: -1em;
@@ -234,7 +208,7 @@ hr {
   position: relative;
   background: #fff;
   margin-left: 200px;
-  padding-bottom: 10px;
+  padding-bottom: 1px;
   border-left: 1px solid #cfcfd6;
   border-bottom: 1px solid #cfcfd6;
 }
@@ -277,24 +251,26 @@ hr {
   color: #585868;
   text-shadow: 1px 1px 0px #fff;
 }
+
 footer {
   clear: both;
   color: #b4b4bf;
   text-shadow: 1px 1px 0px #fff;
-  padding: 1em;
-  padding-top: 4em;
   font-size: .85em;
   line-height: 1.3em;
+  background-color: #F5F5F5;
+  border-top: 1px solid #E5E5E5;
+  margin-top: 30px;
+  text-align: center;
+  padding: 20px 0;
 }
+
 footer hr {
   margin: 2em -2em;
   border-top: 1px solid #cfcfd6;
   display: none;
 }
-/*
-footer a {
-  color: #b4b4bf;
-}*/
+
 /*Navigation*/
 #sidebar-nav {
   position: absolute;
@@ -1892,30 +1868,26 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 }
 
 .brandtext{
-	font-size: 20px !important;
-    left: 87px;
-    position: absolute;
-    top: 30px;
-    letter-spacing:-1px;
+	font-size: 15px !important;
+  left: 62px;
+  position: absolute;
+  top: 22px;
+  letter-spacing:-1px;
 }
-
-.brandimg {
-	position: absolute;
-}
-
 
 .logoimg {
+  left: 5px;
+  position: absolute;
+  top: .1em;
+  padding: 0px !important;
+  margin: 0px !important;
+  width: 50px;
+}
 
-    left: -7px;
-    position: absolute;
-    top: -10px;
-    padding-bottom: 0px !important;
-    margin-bottom: 0px !important;
-
-   }
-	.padwidget{
+.padwidget{
 		padding: 1em;
-	}
+}
+
 .logincontent{
 	 background: none repeat scroll 0 0 #FFFFFF;
 /*    border-bottom: 1px solid #CFCFD6;*/
@@ -1932,3 +1904,36 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 .margin-top20 {
   margin-top: 20px;
 };
+
+.btn-group.open .btn-success.dropdown-toggle, .label.label-success, .badge.badge-success {
+  background: none repeat scroll 0 0 #468847;
+}
+
+.label.label-important, .badge.badge-important {
+  background: none repeat scroll 0 0 #B94A48;
+}
+
+
+.btn-group.open .btn-warning.dropdown-toggle, .label.label-warning, .badge.badge-warning {
+  background: none repeat scroll 0 0 #F89406;
+}
+
+th {
+    text-align: right;
+    padding-right: 0.5em;
+    vertical-align: top;
+}
+
+.help {
+    font-style: italic;
+}
+
+label.required { font-weight: bold; }
+
+.form-horizontal .control-group {
+  margin-bottom: 10px;
+}
+
+.content{
+    min-height:400px;
+}

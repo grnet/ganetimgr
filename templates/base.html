@@ -13,54 +13,11 @@
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap-responsive.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/font-awesome.min.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'ganetimgr/img/favicon.ico' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/theme.css' %}">
         <!--[if lt IE 9]>
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-
-        <style>
-            .btn-group.open .btn-success.dropdown-toggle, .label.label-success, .badge.badge-success {
-              background: none repeat scroll 0 0 #468847;
-            }
-
-            .label.label-important, .badge.badge-important {
-              background: none repeat scroll 0 0 #B94A48;
-            }
-
-
-            .btn-group.open .btn-warning.dropdown-toggle, .label.label-warning, .badge.badge-warning {
-              background: none repeat scroll 0 0 #F89406;
-            }
-
-
-            .footer {
-              background-color: #F5F5F5;
-              border-top: 1px solid #E5E5E5;
-              margin-top: 30px;
-              padding: 30px 0;
-              text-align: center;
-            }
-
-            th {
-                text-align: right;
-                padding-right: 0.5em;
-                vertical-align: top;
-            }
-
-            .help {
-                font-style: italic;
-            }
-
-            label.required { font-weight: bold; }
-
-            .form-horizontal .control-group {
-              margin-bottom: 10px;
-            }
-
-            .content{
-                min-height:400px;
-            }
-        </style>
         <script src="{% static 'ganetimgr/js/includes/jquery-1.10.1.min.js' %}"></script>
         <script src="{% static 'ganetimgr/js/includes/jquery.cookie.js' %}"></script>
         <script src="{% static 'ganetimgr/js/includes/bootstrap.min.js' %}"></script>
@@ -192,10 +149,13 @@
                     {% if BRANDING.LOGO %}
                         <img class="logoimg brand brandimg" src="{{BRANDING.LOGO}}">
                     {% endif %}
+                    {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
+                        <span class="brand service-provider">{{ BRANDING.SERVICE_PROVIDED_BY.NAME }}</span>
+                    {% endif %}
+                    {% if BRANDING.MOTTO %}
+                        <span class="brand brandtext">{{BRANDING.MOTTO}}</span>
+                    {% endif %}
                 </a>
-                {% if BRANDING.MOTTO %}
-                    <span class="brand brandtext">{{BRANDING.MOTTO}}</span>
-                {% endif %}
             </div>
         </div>
         {% block navbars %}
@@ -316,49 +276,44 @@
     </div>
     {% endblock %}
     </div>
-    <footer class="footer">
+    <footer>
         <div class="container" id="footcontainer">
         {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
-            <div style="padding-top: 10px;">
-                {% trans "This is a service provided by" %}
-                    {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
-                        <a target="_blank" href="//noc.grnet.gr">
-                    {% endif %}
-                    {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
-                        {{ BRANDING.SERVICE_PROVIDED_BY.NAME}}
-                    {% endif %}
-                    {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
-                        </a>
-                    {% endif %}
-            </div>
-        {% endif %}
+            {% trans "This is a service provided by" %}
+                {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
+                    <a target="_blank" href="//noc.grnet.gr">
+                {% endif %}
+                {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
+                    {{ BRANDING.SERVICE_PROVIDED_BY.NAME}}
+                {% endif %}
+                {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
+                    </a>
+                {% endif %}
+        {% endif %}|
         {% if BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
             {% for sn in BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
             <a target="_blank" href="{{sn.URL}}">
-                <font style="color:{{sn.FONT_COLOR|safe}}; font-size: 30px">
+                <font style="color:{{sn.FONT_COLOR|safe}};">
                     <i class="fa {{ sn.FONT_AWSOME_NAME }}"></i>
                 </font>
             </a>
             {% endfor %}
-        {% endif %}
+        {% endif %}|
         {% if FLATPAGES.INFO or FLATPAGES.TOS %}
-        <div style="padding-top: 10px;">
-            {% if FLATPAGES.INFO %}
-                <a href="/about/info/{{ LANGUAGE_CODE }}">
-                    {% trans "Info" %}
-                </a>
-            {% endif %}
-            {% if FLATPAGES.INFO and FLATPAGES.TOS %}
-            |
-            {% endif %}
-            {% if FLATPAGES.TOS %}
-            <a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">
-                {% trans "Service Terms" %}
+        {% if FLATPAGES.INFO %}
+            <a href="/about/info/{{ LANGUAGE_CODE }}">
+                {% trans "Info" %}
             </a>
-            {% endif %}
-        </div>
+        {% endif %}|
+        {% if FLATPAGES.INFO and FLATPAGES.TOS %}
         {% endif %}
-        <div style="padding-top: 10px;">Powered by <a href="https://code.grnet.gr/projects/ganetimgr/">ganetimgr</a> v{{VERSION}}</div>
+        {% if FLATPAGES.TOS %}
+        <a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">
+            {% trans "Service Terms" %}
+        </a>
+        {% endif %}
+        {% endif %}
+        <div>Powered by <a href="https://code.grnet.gr/projects/ganetimgr/">ganetimgr</a> v{{VERSION}}</div>
         </div>
         {% if BRANDING.FOOTER_ICONS_IFRAME %}
             {% include "includes/banners.html" %}
