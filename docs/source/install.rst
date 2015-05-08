@@ -21,7 +21,7 @@ Install packages
 Update and install the required packages::
 
     apt-get install git nginx mysql-server gunicorn python-gevent redis-server beanstalkd
-    apt-get install python-mysqldb python-django python-redis python-django-south python-django-registration python-paramiko python-simplejson python-daemon python-setproctitle python-pycurl python-recaptcha python-ipaddr python-bs4 python-requests python-markdown
+    apt-get install python-mysqldb python-django python-redis python-django-registration python-paramiko python-daemon python-setproctitle python-pycurl python-recaptcha python-ipaddr python-bs4 python-requests python-markdown
 
 
 Fabric sript
@@ -47,7 +47,6 @@ In general it performs the following steps:
  - restart nginx, gunicorn, redis, beanstalk, rm "maintenance.on"
  - in case something goes wrong it will try to make a rollback
  - in case no older installations exist or the dist files, it will ask you to log in the server and edit the settings, while waiting for your input.
-
 
 Beanstalkd
 ----------
