@@ -112,6 +112,9 @@
                             <a href="/about/faq/{{ LANGUAGE_CODE }}">{% trans "FAQ" %}</a>
                         </li>
                         {% endif %}
+                        {% if user.is_superuser %}
+                            <li ><a href="{% url admin:index %}" ><i class="fa fa-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
+                        {% endif %}
                     {% endif %}
                         <li class="dropdown pull-right hidden-phone">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -163,7 +166,6 @@
         <div id="main-menu">
             <div id="phone-navigation">
                 <select class="selectnav" id="phone-menu">
-                    <option value="{% url user-instances %}" selected="selected">{% trans "Home" %}</option>
                     <option value="{% url apply %}" >{% trans "Create Instance" %}</option>
                     {% if can_handle_applications or can_view_applications %}
                     <option value="{% url application-list %}">{% trans "Applications" %}{% if pending_count %}({{ pending_count }}){% endif %}</option>
@@ -175,20 +177,6 @@
                     <option value="{% url logout %}" >{% trans "Logout" %}</option>
                 </select>
             </div>
-            <ul class="nav nav-tabs">
-                <li {% block homepagetop %}{% endblock %}><a href="{% url user-instances %}"><i class="fa fa-home"></i> <span>{% trans "Home" %}</span></a></li>
-                <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="fa fa-plus"></i> <span>{% trans "Create Instance" %}</span></a></li>
-                {% if can_handle_applications or can_view_applications %}
-                 <li {% block applicationstop %}{% endblock %}><a href="{% url application-list %}">
-                    <i class="fa fa-inbox"></i> <span>{% trans "Applications" %}
-                    {% if pending_count %} <span class="label label-important">{{ pending_count }}</span>{% endif %}</span></a>
-                </li>
-                {% endif %}
-                {% if user.is_superuser %}
-                <li ><a href="{% url admin:index %}" ><i class="fa fa-cog"></i> <span>{% trans "Admin" %}</span></a></li>
-                <li ><a href="#" id="clearcache"> <i class="fa fa-adjust"></i> {% trans "Clear Cache" %}</a></li>
-                {% endif %}
-            </ul>
         </div>
         <div id="sidebar-nav">
             <ul id="dashboard-menu" class="nav nav-list">
@@ -211,6 +199,7 @@
                     </a>
                 </li>
                 <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="fa fa-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
+                <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="fa fa-plus"></i> <span>{% trans "Create Instance" %}</span></a></li>
                 {% if user.is_superuser or perms.ganeti.view_instances %}
                     {% if can_handle_applications or can_view_applications %}
                     <li {% block applications %}{% endblock %}>
@@ -226,16 +215,12 @@
                     {% endif %}
                     <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="fa fa-moon-o"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
                 {% endif %}
-                <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="fa fa-user"></i> <span>{% trans "My Profile" %}</span></a></li>
                 {% if FEED_URL %}
                 <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="fa fa-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
                 {% endif %}
-                {% if FLATPAGES.FAQ %}
-                <li {% block faq %}{% endblock %}><a href="/about/faq/{{ LANGUAGE_CODE }}"><i class="fa fa-question-circle"></i> <span>{% trans "FAQ" %}</span></a></li>
-                {% endif %}
-                {% if user.is_superuser %}
-                <li ><a href="{% url admin:index %}" ><i class="fa fa-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
-                {% endif %}
+                {% if request.user.is_superuser %}
+                 <li ><a href="#" id="clearcache"> <i class="fa fa-adjust"></i> {% trans "Clear Cache" %}</a></li>
+                 {% endif %}
             </ul>
         </div>
         {% endif %}
