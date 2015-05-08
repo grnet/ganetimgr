@@ -9,7 +9,6 @@ Add SubfieldBase as the __metaclass__ for your Field subclass, implement
 to_python() and the other necessary methods and everything will work seamlessly.
 """
 
-
 class SubfieldBase(type):
     """
     A metaclass for custom Field subclasses. This ensures the model's attribute
@@ -21,7 +20,6 @@ class SubfieldBase(type):
             new_class, attrs.get('contribute_to_class')
         )
         return new_class
-
 
 class Creator(object):
     """
