@@ -62,10 +62,7 @@ else:
 
 from util import beanstalkc
 
-try:
-    import json
-except ImportError:
-    import simplejson as json
+import json
 
 from django.db import close_connection
 

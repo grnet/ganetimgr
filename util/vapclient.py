@@ -3,12 +3,9 @@
 #
 
 import sys
+import json
 import socket
 
-try:
-    import simplejson as json
-except ImportError:
-    import json
 
 CTRL_SOCKET = "/var/run/vncauthproxy/vncproxy.sock"
 

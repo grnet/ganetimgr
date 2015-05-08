@@ -21,6 +21,7 @@ Install packages
 Update and install the required packages::
 
     apt-get install git nginx mysql-server gunicorn python-gevent redis-server beanstalkd
+
     apt-get install python-mysqldb python-django python-redis python-django-registration python-paramiko python-daemon python-setproctitle python-pycurl python-recaptcha python-ipaddr python-bs4 python-requests python-markdown
 
 

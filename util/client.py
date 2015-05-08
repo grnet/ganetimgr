@@ -34,7 +34,7 @@
 # be standalone.
 
 import logging
-import simplejson
+import json
 import socket
 import urllib
 import threading
@@ -356,7 +356,7 @@ class GanetiRapiClient(object): # pylint: disable=R0904
 
   """
   USER_AGENT = "Ganeti RAPI Client"
-  _json_encoder = simplejson.JSONEncoder(sort_keys=True)
+  _json_encoder = json.JSONEncoder(sort_keys=True)
 
   def __init__(self, host, port=GANETI_RAPI_PORT,
                username=None, password=None, logger=logging,
@@ -534,7 +534,7 @@ class GanetiRapiClient(object): # pylint: disable=R0904
 
     # Was anything written to the response buffer?
     if encoded_resp_body.tell():
-      response_content = simplejson.loads(encoded_resp_body.getvalue())
+      response_content = json.loads(encoded_resp_body.getvalue())
     else:
       response_content = None
 
