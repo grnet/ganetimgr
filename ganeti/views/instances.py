@@ -25,7 +25,7 @@ from django.core.cache import cache
 from django.conf import settings
 from django.db import close_connection
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render_to_response, get_object_or_404, render
+from django.shortcuts import get_object_or_404, render
 from django.template.context import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
@@ -61,9 +61,9 @@ from ganeti.decorators import (
 def user_index(request):
     if request.user.is_anonymous():
         return HttpResponseRedirect(reverse('login'))
-    return render_to_response(
+    return render(request,
         'instances/user_instances_json.html',
-        context_instance=RequestContext(request)
+        {}
     )
 
 
@@ -688,23 +688,23 @@ def lock(request, instance):
                 }
                 return HttpResponse(json.dumps(res), mimetype='application/json')
             else:
-                return render_to_response(
+                return render(
+                    request,
                     'tagging/lock.html',
                     {
                         'form': form,
                         'instance': instance
-                    },
-                    context_instance=RequestContext(request)
+                    }
                 )
         elif request.method == 'GET':
             form = lockForm(initial={'lock': instance_adminlock})
-            return render_to_response(
+            return render(
+                request,
                 'tagging/lock.html',
                 {
                     'form': form,
                     'instance': instance
-                },
-                context_instance=RequestContext(request)
+                }
             )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
@@ -755,24 +755,23 @@ def isolate(request, instance):
                     json.dumps(res), mimetype='application/json'
                 )
             else:
-                return render_to_response(
+                return render(
+                    request,
                     'tagging/isolate.html',
                     {
                         'form': form,
                         'instance': instance
-                    },
-                    context_instance=RequestContext(request)
+                    }
                 )
         elif request.method == 'GET':
             form = isolateForm(initial={'isolate': instance_isolate})
-            return render_to_response(
+            return render(
+                request,
                 'tagging/isolate.html',
                 {
                     'form': form,
                     'instance': instance
-                },
-                context_instance=RequestContext(request)
+                }
             )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
-
