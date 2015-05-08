@@ -25,7 +25,6 @@ from discovery import *
 from nodegroup import *
 
 from ganeti.utils import prepare_tags
-# TODO: Cleanup and separate to files
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -67,11 +66,8 @@ def clear_cache(request):
             "*list",
         ]
         for key in keys_pattern:
-            cache_keys = cache.keys(pattern=key)
-            if cache_keys:
-                for cache_key in cache_keys:
-                    if not cache_key.endswith('lock'):
-                        cache.delete(cache_key)
+            if cache.has_key(key):
+                cache.delete(key)
         result = {'result': "Success"}
     else:
         result = {'error': "Violation"}
