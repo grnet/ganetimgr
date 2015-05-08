@@ -620,10 +620,6 @@ class Cluster(models.Model):
                     none, thus it is 0'''
                     info['disk_used'] = 0
                 info['shared_storage'] = False
-                if self.default_disk_template in ['drbd', 'plain']:
-                    info['shared_storage'] = False
-                if self.default_disk_template in ['sharedfile', 'blockdev']:
-                    info['shared_storage'] = True
                 cachenodes.append(info)
             nodes = cachenodes
             cache.set("cluster:%s:nodes" % self.slug, nodes, 180)

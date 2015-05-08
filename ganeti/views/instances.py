@@ -103,9 +103,10 @@ def user_index_json(request):
             cluster_slug
         )
     res = cache.get(cache_key)
+    # delete me
+    res = None
     instancedetails = []
     j = Pool(80)
-    user = request.user
     locked_instances = cache.get('locked_instances')
 
     def _get_instance_details(instance):
@@ -117,17 +118,17 @@ def user_index_json(request):
                 instance.joblock = locked_instances['%s' % instance.name]
             else:
                 instance.joblock = False
-            instancedetails.extend(generate_json(instance, user))
+            instancedetails.extend(generate_json(instance, request.user))
         except (GanetiApiError, Exception):
             bad_instances.append(instance)
         finally:
             close_connection()
-
     if res is None:
         if not request.user.is_anonymous():
-            clusters = Cluster.objects.all()
             if cluster_slug:
                 clusters = clusters.filter(slug=cluster_slug)
+            else:
+                clusters = Cluster.objects.all()
             p.imap(_get_instances, clusters)
             p.join()
         cache_timeout = 90
@@ -138,7 +139,6 @@ def user_index_json(request):
             cache_timeout = 30
         j.imap(_get_instance_details, instances)
         j.join()
-
         if locked_clusters:
             messages += 'Some clusters are under maintenance: <br>'
             messages += ', '.join(locked_clusters)
@@ -146,7 +146,7 @@ def user_index_json(request):
         if bad_instances:
             bad_inst_text = "Could not get details for " + \
                 str(len(bad_instances)) + \
-                " instances.<br> %s. Please try again later." % bad_instances
+                " instances.<br> %s. Please try again later." % ', '.join([i.name for i in bad_instances])
             if messages:
                 messages = messages + "<br>" + bad_inst_text
             else:
