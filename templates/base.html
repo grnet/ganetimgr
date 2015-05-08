@@ -6,6 +6,7 @@
         <meta charset="utf-8">
         <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <meta name="description" content="">
         <meta name="author" content="">
         <title>Ganetimgr .:: {% block title %}{% endblock %} </title>
@@ -263,7 +264,6 @@
                         </a>
                     </li>
                     {% endif %}
-                    <li {% block owners %}{% endblock %}><a href="{% url instance_owners %}"><i class="fa fa-briefcase"></i> <span>{% trans "Instance Owners" %}</span></a></li>
                     <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="fa fa-moon-o"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
                 {% endif %}
                 <li {% block profile %}{% endblock %}><a href="{% url profile %}"><i class="fa fa-user"></i> <span>{% trans "My Profile" %}</span></a></li>

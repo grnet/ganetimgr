@@ -191,35 +191,3 @@ def stats(request):
             'stats/statistics.html',
             {'clusters': clusters}
         )
-
-
-def instance_owners(request):
-    if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
-        p = Pool(20)
-        instancesall = []
-        bad_clusters = []
-
-        def _get_instances(cluster):
-            try:
-                instancesall.extend(cluster.get_user_instances(request.user))
-            except (GanetiApiError, Exception):
-                bad_clusters.append(cluster)
-        if not request.user.is_anonymous():
-            p.imap(_get_instances, Cluster.objects.all())
-            p.join()
-        instances = [i for i in instancesall if i.users]
-
-        def cmp_users(x, y):
-            return cmp(
-                ",".join([u.username for u in x.users]),
-                ",".join([u.username for u in y.users])
-            )
-        instances.sort(cmp=cmp_users)
-
-        return render(
-            request,
-            'stats/instance_owners.html',
-            {"instances": instances},
-        )
-    else:
-        return HttpResponseRedirect(reverse('user-instances'))
