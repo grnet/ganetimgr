@@ -107,6 +107,7 @@
 					<div class="control-group span5{% if form.operating_system.errors %}error{% endif %}">
 						<label class="control-label {% if form.operating_system.field.required %}required{% endif %}" for="id_applier">{{ form.operating_system.label }}</label>
 					   <div class="controls" data-url="{% url operating_systems_json %}">
+						<input type="hidden" name="" id="operating_system_hidden" value="{{ form.data.operating_system }}">
 						{{ form.operating_system }}
 						{% if form.operating_system.errors %}
 						<span class="help-inline" style="clear:both;">
@@ -281,12 +282,22 @@
 				success: function (data) {
 					response = $.parseJSON(data);
 					options = '';
+					var selected = $('#operating_system_hidden').val();
 					if (response.status === 'success') {
 						for (var i=0; i < response.operating_systems.length; i++) {
 							if (response.operating_systems[i][1].osparams.img_id) {
-								options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '">' + response.operating_systems[i][1].description + '</option>';
+								options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '"';
+								if (selected === response.operating_systems[i][1].osparams.img_id) {
+									options += ' selected="selected" ';
+								}
+								 options += '>' + response.operating_systems[i][1].description + '</option>';
+
 							} else {
-								options += '<option value="' +  response.operating_systems[i][1].provider + '" >' + response.operating_systems[i][1].description + '</option>';
+								options += '<option value="' +  response.operating_systems[i][1].provider + '"';
+								if (selected === response.operating_systems[i][1].provider) {
+									options += ' selected="selected" ';
+								}
+								options += '>' + response.operating_systems[i][1].description + '</option>';
 							}
 						}
 					}
