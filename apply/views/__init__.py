@@ -88,6 +88,7 @@ def apply(request):
             application.operating_system = form.cleaned_data['operating_system']
             application.applicant = request.user
             application.status = STATUS_PENDING
+
             net = request.POST.get('network', '')
             if net:
                 network = Network.objects.get(pk=net)
@@ -127,6 +128,11 @@ def apply(request):
                     " will be processed shortly."
                 ) % application.id
             )
+            if request.user.is_superuser:
+                return HttpResponseRedirect(reverse(
+                    'application-review',
+                    kwargs={'application_id': application.id}
+                ))
             return HttpResponseRedirect(reverse("user-instances"))
         else:
             return render(
