@@ -25,6 +25,7 @@ urlpatterns = patterns(
     url(r'^profile/?$', views.profile, name="profile"),
     url(r'^mail_change/?$', views.mail_change, name="mail-change"),
     url(r'^name_change/?$', views.name_change, name="name-change"),
+    url(r'^other_change/?$', views.other_change, name="other-change"),
     url(r'^keys/?$', views.user_keys, name="user-keys"),
     url(r'^keys/delete/(?P<key_id>\d+)?$', views.delete_key, name="delete-key"),
     url(r'^login/?', 'django.contrib.auth.views.login', {'template_name': 'users/login.html'}, name="login"),

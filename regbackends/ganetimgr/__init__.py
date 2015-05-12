@@ -24,12 +24,13 @@ from django.core.mail import mail_managers
 from registration import signals
 from registration.models import RegistrationProfile
 from registration.backends.default import DefaultBackend
+from apply.models import Organization
 
 
 class GanetimgrBackend(DefaultBackend):
 
     def register(self, request, **kwargs):
-        username, email, password, firstname, lastname = kwargs['username'], kwargs['email'], kwargs['password1'], kwargs['name'], kwargs['surname']
+        username, email, password, firstname, lastname, organization, telephone = kwargs['username'], kwargs['email'], kwargs['password1'], kwargs['name'], kwargs['surname'], kwargs['organization'], kwargs['phone']
         if Site._meta.installed:
             site = Site.objects.get_current()
         else:
@@ -44,7 +45,15 @@ class GanetimgrBackend(DefaultBackend):
         new_user.first_name = firstname
         new_user.last_name = lastname
         new_user.save()
-
+        profile = new_user.get_profile()
+        try:
+            organization = Organization.objects.get(title=organization)
+        except Organization.DoesNotExist:
+            pass
+        else:
+            profile.organization = organization
+        profile.telephone = telephone
+        profile.save()
         subject = render_to_string(
             'registration/activation_email_subject.txt',
             {'site': site}

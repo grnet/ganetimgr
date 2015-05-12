@@ -39,7 +39,6 @@ from ganeti.models import (
     Cluster,
 )
 
-
 from apply.forms import InstanceApplicationForm, InstanceApplicationReviewForm
 from apply.decorators import any_permission_required
 from apply.models import (
@@ -47,7 +46,7 @@ from apply.models import (
     STATUS_APPROVED,
     STATUS_PENDING,
     STATUS_REFUSED,
-    PENDING_CODES
+    PENDING_CODES,
 )
 
 # import views files
@@ -76,6 +75,12 @@ def apply(request):
 
     if request.method == "GET":
         form = InstanceApplicationForm()
+        org = request.user.get_profile().organization
+        if org and settings.BRANDING['SHOW_ORGANIZATION_FORM']:
+            form.fields['organization'].initial = org
+        telephone = request.user.get_profile().telephone
+        if telephone and settings.BRANDING['SHOW_ADMINISTRATIVE_FORM']:
+            form.fields['admin_contact_phone'].initial = telephone
         return render(
             request,
             'apply/apply.html',
@@ -88,8 +93,17 @@ def apply(request):
             application.operating_system = form.cleaned_data['operating_system']
             application.applicant = request.user
             application.status = STATUS_PENDING
-
             net = request.POST.get('network', '')
+
+            # fill user profile with any missing data
+            user_profile = request.user.get_profile()
+            # organization
+            if not user_profile.organization and settings.BRANDING['SHOW_ORGANIZATION_FORM']:
+                user_profile.organization = form.cleaned_data['organization']
+            # telephone
+            if not request.user.get_profile().telephone and settings.BRANDING['SHOW_ADMINISTRATIVE_FORM']:
+                user_profile.telephone = form.cleaned_data['admin_contact_phone']
+            user_profile.save()
             if net:
                 network = Network.objects.get(pk=net)
                 application.instance_params = {

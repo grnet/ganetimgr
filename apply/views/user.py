@@ -19,7 +19,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from ganeti.models import InstanceAction
 
-from apply.forms import EmailChangeForm, NameChangeForm, SshKeyForm
+from apply.forms import EmailChangeForm, NameChangeForm, SshKeyForm, OrganizationPhoneChangeForm
 from apply.utils import check_mail_change_pending
 from apply.models import SshPublicKey
 
@@ -165,6 +165,26 @@ def name_change(request):
         'users/name_change.html',
         {
             'name': user_full_name,
+            'form': form,
+            'changed': changed
+        }
+    )
+
+
+@login_required
+def other_change(request):
+    changed = False
+    if request.method == "GET":
+        form = OrganizationPhoneChangeForm(instance=request.user.get_profile())
+    elif request.method == "POST":
+        form = OrganizationPhoneChangeForm(request.POST, instance=request.user.get_profile())
+        if form.is_valid():
+            form.save()
+            changed = True
+    return render(
+        request,
+        'users/other_change.html',
+        {
             'form': form,
             'changed': changed
         }
