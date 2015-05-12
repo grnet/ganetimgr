@@ -202,7 +202,7 @@ hr {
   position: relative;
   background: #fff;
   margin-left: 200px;
-  padding-bottom: 1px;
+  padding-bottom: 20px;
   border-left: 1px solid #cfcfd6;
   border-bottom: 1px solid #cfcfd6;
 }
@@ -272,7 +272,6 @@ footer hr {
   width: 200px;
   float: left;
   margin: 0em;
-  padding-top: 1.5em;
 }
 #sidebar-nav .nav-list {
   padding: 0px;
@@ -1801,8 +1800,15 @@ label.required { font-weight: bold; }
 }
 
 #custom_search h5 {
-  cursor: pointer;
   text-align: right;
+}
+
+#custom_search h5 span {
+  cursor: pointer;
+}
+
+#custom_search h5 span:hover {
+  color: gray;
 }
 
 #custom_search h5 i {

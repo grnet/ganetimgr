@@ -38,7 +38,7 @@
 			<div class="row-fluid">
 				<div class="row-fluid">
 					<div id="custom_search" class="span8 pull-right">
-						<h5>Search By Column <i class="fa fa-plus-square closed"></i><i class="fa fa-minus-square open"></i></h5>
+						<h5><span>Search By Column <i class="fa fa-plus-square closed"></i><i class="fa fa-minus-square open"></i></span></h5>
 						<div class="form-horizontal"></div>
 					</div>
 				</div>
@@ -475,7 +475,7 @@ $(document).ready( function(){
 	};
 
 
-$('#custom_search h5').on('click', function () {
+$('#custom_search h5 span').on('click', function () {
 	$(this).closest('div').toggleClass('open');
 });
 

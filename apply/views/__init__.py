@@ -50,7 +50,6 @@ from apply.models import (
     PENDING_CODES
 )
 
-
 # import views files
 from user import *
 
@@ -68,7 +67,7 @@ def apply(request):
                     "Optionally, select a network to connect the virtual"
                     "machine to if you have a special requirement"
                 )
-            )
+        )
     else:
         try:
             del InstanceApplicationForm.base_fields["network"]
