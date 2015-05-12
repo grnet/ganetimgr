@@ -36,9 +36,12 @@
 	<div class="span12 main-content">
 		<div class="row-fluid">
 			<div class="row-fluid">
-				<h2>
-					{% trans "My instances" %}
-				</h2>
+				<div class="row-fluid">
+					<div id="custom_search" class="span8 pull-right">
+						<h5>Search By Column <i class="fa fa-plus-square closed"></i><i class="fa fa-minus-square open"></i></h5>
+						<div class="form-horizontal"></div>
+					</div>
+				</div>
 				<table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
 					<thead>
 						<tr>
@@ -143,7 +146,7 @@ var needsrebootset = false;
 $(document).ready( function(){
 
 
-	var oTable = $('#vm_instance_table').dataTable( {
+	var oTable = $('#vm_instance_table').dataTable({
 		"bPaginate": true,
 		"bFilter": true,
 		"bAutoWidth": true,
@@ -459,17 +462,51 @@ $(document).ready( function(){
 					 {% endif %}
 
 		 ]
-} );
-  $(window).resize(function() {
-	clearTimeout(window.refresh_size);
-	window.refresh_size = setTimeout(function() { update_size(); }, 250);
-  });
+	});
 
-var update_size = function() {
-	$(oTable).css({ width: $(oTable).parent().width() });
-	oTable.fnAdjustColumnSizing();
- };
+	$(window).resize(function() {
+		clearTimeout(window.refresh_size);
+		window.refresh_size = setTimeout(function() { update_size(); }, 250);
+	});
+
+	var update_size = function() {
+		$(oTable).css({ width: $(oTable).parent().width() });
+		oTable.fnAdjustColumnSizing();
+	};
+
+
+$('#custom_search h5').on('click', function () {
+	$(this).closest('div').toggleClass('open');
 });
+
+$.fn.dataTableExt.afnFiltering.push(
+	function( oSettings, aData, iDataIndex ) {
+		var customSearch = $('#custom_search');
+		var matched = true;
+		customSearch.find('input').each(function (index) {
+		 	if ($(this).val().length && (aData[index].indexOf($(this).val()) === -1)) {
+		 		matched = false;
+		 	}
+		});
+		return matched;
+    }
+);
+	var customSearch = $('#custom_search');
+	var table = $('#vm_instance_table');
+	table.find('th').each(function (index) {
+		// be able to search all the fields exept
+		// from the two last
+		if (index < table.find('th').length - 2) {
+			customSearch.find('div').append('<input name="' + $(this).text() + '" type="text" placeholder="' + $(this).text() + '" class="form-control">');
+		}
+	});
+	customSearch.on('change keyup', 'input', function (ev) {
+		oTable.fnFilter('');
+	});
+});
+
+
+
 
 	function showDetails(cluster, instance){
 		$( "#instDetsbody" ).html( "" );

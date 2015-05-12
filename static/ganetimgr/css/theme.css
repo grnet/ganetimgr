@@ -10,9 +10,10 @@ html {
 }
 
 .wrapper {
-  min-height: 100%;
+  min-height: 90%;
   height: auto !important;
-  margin: 0px auto -92px;
+  margin-bottom: -92px;
+  padding-bottom: 92px;
 }
 
 a:hover {
@@ -258,6 +259,7 @@ footer {
   text-align: center;
   padding: 20px 0;
   margin-top: 20px;
+  height: 30px;
 }
 
 footer hr {
@@ -1798,4 +1800,43 @@ label.required { font-weight: bold; }
 .email-message textarea {
     width: 50%;
 
+}
+
+#custom_search h5 {
+  cursor: pointer;
+  text-align: right;
+}
+
+#custom_search h5 i {
+  display: none;
+}
+
+#custom_search h5 i.closed {
+  display: inline;
+}
+
+#custom_search.open h5 i.open {
+  display: inline;
+}
+
+#custom_search.open h5 i.closed {
+  display: none;
+}
+
+#custom_search div {
+  max-height: 0;
+  overflow: hidden;
+  -webkit-transition: all .5s; /* Safari */
+  transition: all .5s;;
+}
+
+#custom_search.open div {
+  padding: 10px 0;
+  max-height: 200px;
+}
+
+#custom_search input {
+  margin: 1%;
+  width: 21%;
+  /*float: right;*/
 }
