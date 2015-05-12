@@ -82,7 +82,7 @@ class Organization(models.Model):
     email = models.EmailField(null=True, blank=True)
     tag = models.SlugField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
-    users = models.ManyToManyField(User, blank=True, null=True)
+    users = models.ManyToManyField(User, blank=True)
 
     class Meta:
         verbose_name = _("organization")
