@@ -14,43 +14,50 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import functools
 
 from django.contrib import admin
-from apply.models import *
+
+from django.db.utils import ProgrammingError
 from ganeti.models import Cluster
+from apply.models import Organization, InstanceApplication, \
+    STATUS_PENDING, STATUS_APPROVED
+
+
+def make_submit_applications(modeladmin, request, queryset, cluster):
+    for app in queryset:
+        if app.status == STATUS_PENDING:
+            app.approve()
+        if app.status == STATUS_APPROVED:
+            app.cluster = cluster
+            app.save()
+            app.submit()
 
 
 def make_fast_create_actions():
-    actions = []
-    for cluster in Cluster.objects.filter(fast_create=True):
-        def _submit_applications(modeladmin, request, queryset):
-            for app in queryset:
-                if app.status == STATUS_PENDING:
-                    app.approve()
+    cluster_list = Cluster.objects.filter(fast_create=True)
+    try:
+        cluster_list.exists()
+    except ProgrammingError:
+        return
 
-                if app.status == STATUS_APPROVED:
-                    app.cluster = cluster
-                    app.save()
-                    app.submit()
-
-        _submit_applications.short_description = "Approve and submit to %s" % \
-            cluster.description
-        # Change the function name, because the admin interface relies on it
-        _submit_applications.func_name = "submit_applications_%s" % \
-            str(cluster.slug)
-        actions.append(_submit_applications)
-    return actions
+    for cluster in cluster_list:
+        fn = functools.partial(make_submit_applications, cluster=cluster)
+        fn.__name__ = "Approve and submit to %s" % (cluster.description,)
+        yield fn
 
 
-class ApplicationAdmin(admin.ModelAdmin):
+class InstanceApplicationAdmin(admin.ModelAdmin):
     list_display = ["hostname", "applicant", "organization", "cluster",
                     "status", "filed"]
     list_filter = ["status", "organization"]
-    search_fields = ["hostname", "applicant__username", "organization__title"]
+    search_fields = [
+        "hostname", "applicant", "organization", "cluster", "status", "filed"
+    ]
     list_editable = ["organization"]
     readonly_fields = ["job_id", "backend_message", "reviewer"]
     ordering = ["-filed", "hostname"]
-    actions = make_fast_create_actions()
+    actions = list(make_fast_create_actions())
     fieldsets = [
         ('Instance Information', {'fields': ('hostname', 'memory', 'disk_size',
                                              'vcpus', 'operating_system',
@@ -64,5 +71,6 @@ class ApplicationAdmin(admin.ModelAdmin):
                                             'backend_message', 'reviewer')})
     ]
 
+
 admin.site.register(Organization)
-admin.site.register(InstanceApplication, ApplicationAdmin)
+admin.site.register(InstanceApplication, InstanceApplicationAdmin)
