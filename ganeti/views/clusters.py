@@ -344,8 +344,7 @@ def clusterdetails_json(request):
                     errors.append(Exception)
                 finally:
                     close_connection()
-            p.imap(_get_cluster_details, Cluster.objects.all())
-            p.join()
+            p.map(_get_cluster_details, Cluster.objects.all())
             cache.set("clusters:allclusterdetails", clusterlist, 180)
         return HttpResponse(json.dumps(clusterlist), mimetype='application/json')
     else:

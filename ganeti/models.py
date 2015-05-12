@@ -83,8 +83,7 @@ class InstanceManager(object):
             finally:
                 close_connection()
         clusters = Cluster.objects.all()
-        p.imap(_get_instances, clusters)
-        p.join()
+        p.map(_get_instances, clusters)
         return instances
 
     def filter(self, **kwargs):

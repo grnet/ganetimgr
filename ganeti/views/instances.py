@@ -130,16 +130,14 @@ def user_index_json(request):
                 clusters = Cluster.objects.filter(slug=cluster_slug)
             else:
                 clusters = Cluster.objects.all()
-            p.imap(_get_instances, clusters)
-            p.join()
+            p.map(_get_instances, clusters)
         cache_timeout = 90
         if bad_clusters:
             messages = "Some instances may be missing because the" \
                 " following clusters are unreachable: %s" \
                 % (", ".join([c.description for c in bad_clusters]))
             cache_timeout = 30
-        j.imap(_get_instance_details, instances)
-        j.join()
+        j.map(_get_instance_details, instances)
         if locked_clusters:
             messages += 'Some clusters are under maintenance: <br>'
             messages += ', '.join(locked_clusters)
@@ -185,8 +183,7 @@ def user_sum_stats(request):
         finally:
             close_connection()
     if not request.user.is_anonymous():
-        p.imap(_get_instances, Cluster.objects.all())
-        p.join()
+        p.map(_get_instances, Cluster.objects.all())
 
     if bad_clusters:
         msgs.add_message(

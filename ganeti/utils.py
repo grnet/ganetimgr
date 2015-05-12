@@ -93,8 +93,7 @@ def prepare_clusternodes(cluster=None):
             bad_clusters.append(cluster)
         finally:
             close_connection()
-    p.imap(_get_nodes, clusters)
-    p.join()
+    p.map(_get_nodes, clusters)
     return nodes, bad_clusters, bad_nodes
 
 

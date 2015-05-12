@@ -78,8 +78,7 @@ def jobs_index_json(request):
             clusters = Cluster.objects.all()
             if cluster_slug:
                 clusters = clusters.filter(slug=cluster_slug)
-            p.imap(_get_jobs, clusters)
-            p.join()
+            p.map(_get_jobs, clusters)
         if bad_clusters:
             messages = "Some jobs may be missing because the" \
                 " following clusters are unreachable: %s" \

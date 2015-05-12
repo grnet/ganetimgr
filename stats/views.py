@@ -151,8 +151,7 @@ def stats(request):
                 finally:
                     close_connection()
             if not request.user.is_anonymous():
-                p.imap(_get_instances, clusters)
-                p.join()
+                p.map(_get_instances, clusters)
             instances = len(instances)
             cache.set('leninstances', instances, 90)
         users = cache.get('lenusers')

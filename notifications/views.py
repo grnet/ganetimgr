@@ -137,8 +137,7 @@ def get_user_group_list(request):
             finally:
                 close_connection()
         if not request.user.is_anonymous():
-            p.imap(_get_instances, Cluster.objects.all())
-            p.join()
+            p.map(_get_instances, Cluster.objects.all())
         if q_params and type_of_search:
             ret_list = []
             if type_of_search == 'cluster':
