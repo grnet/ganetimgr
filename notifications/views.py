@@ -133,22 +133,7 @@ def get_user_group_list(request):
         type_of_search = request.GET.get('type')
         if not (q_params or type_of_search):
             return HttpResponseBadRequest()
-        p = Pool(20)
         bad_clusters = []
-
-        cache_key = "user:%s:index:instances" % request.user.username
-        instances = cache.get(cache_key, [])
-
-        def _get_instances(cluster):
-            try:
-                instances.extend(cluster.get_user_instances(request.user))
-            except GanetiApiError as e:
-                bad_clusters.append((cluster, format_ganeti_api_error(e)))
-            except Exception as e:
-                bad_clusters.append((cluster, e))
-            finally:
-                close_connection()
-
 
         if q_params and type_of_search:
             ret_list = []
@@ -236,7 +221,6 @@ def get_user_group_list(request):
                     )
                 )
                 messages.add_message(request, messages.WARNING, message_text)
-
 
         action = ret_list
         return HttpResponse(json.dumps(action), content_type='application/json')

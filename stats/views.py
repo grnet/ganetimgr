@@ -46,8 +46,7 @@ def instance_owners(request):
             except (GanetiApiError, Exception):
                 bad_clusters.append(cluster)
         if not request.user.is_anonymous():
-            p.imap(_get_instances, Cluster.objects.all())
-            p.join()
+            p.map(_get_instances, Cluster.objects.all())
         instances = [i for i in instancesall if i.users]
 
         def cmp_users(x, y):

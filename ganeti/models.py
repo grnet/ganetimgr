@@ -81,6 +81,7 @@ class InstanceManager(object):
                 pass
             finally:
                 close_connection()
+
         # get only enabled clusters
         clusters = Cluster.objects.filter(disabled=False)
         p.map(_get_instances, clusters)
