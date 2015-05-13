@@ -211,8 +211,7 @@ def user_sum_stats(request):
         finally:
             close_connection()
     if res is None:
-        j.imap(_get_instance_details, instances)
-        j.join()
+        j.map(_get_instance_details, instances)
         jresp['aaData'] = instancedetails
         cache.set(cache_key, jresp, 125)
         res = jresp
