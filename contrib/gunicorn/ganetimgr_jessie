@@ -1,0 +1,14 @@
+CONFIG = {
+    'mode': 'wsgi',
+    'user': 'www-data',
+    'group': 'www-data',
+    'args': (
+        '--chdir=/srv/www/ganetimgr',
+        '--bind=127.0.0.1:8088',
+        '--workers=2',
+        '--worker-class=gevent',
+        '--timeout=30',
+        '--log-file=/var/log/ganetimgr.log',
+        'ganetimgr.wsgi:application',
+    ),
+}
