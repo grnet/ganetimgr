@@ -1,6 +1,7 @@
 1.5.5 RELEASE (stable)
 Bugfixing release
 	- [fixed] If a cluster's slug contains the dash character it would generate a 404 response
+    - [fixed] If application form is invalid, OS selection is set to noop
 
 1.5.4 RELEASE
 Features/Bugfixing release
