@@ -1872,4 +1872,7 @@ label.required { font-weight: bold; }
   right: 5px;
   top: 12px;
   color: gray;
+  cursor: pointer;
 }
+
+
