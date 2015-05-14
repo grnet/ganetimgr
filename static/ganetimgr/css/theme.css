@@ -1883,7 +1883,7 @@ label.required { font-weight: bold; }
   display: block;
   content: "";
   position: absolute;
-  background: #eeeeee;
+  background: white;
   top: 0;
   bottom: 0;
   left: 0;
@@ -1896,7 +1896,7 @@ label.required { font-weight: bold; }
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  background: white;
+  background: #eeeeee;
   display: block;
   content: "";
   position: fixed;
