@@ -1875,4 +1875,130 @@ label.required { font-weight: bold; }
   cursor: pointer;
 }
 
+.content {
+  position: relative;
+}
 
+.loading:after {
+  display: block;
+  content: "";
+  position: absolute;
+  background: #eeeeee;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0.5;
+  z-index: 10000;
+}
+
+.loading:before {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background: white;
+  display: block;
+  content: "";
+  position: fixed;
+  margin: auto;
+  z-index: 100000;
+  left: 50%;
+  margin-left: -50px;
+  top: 50%;
+  margin-top: -50px;
+  animation: resize 1s forwards;
+  -webkit-animation: resize 2s forwards;
+  -moz-animation: resize 2s forwards;
+  -o-animation: resize 2s forwards;
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  opacity: 0.4;
+
+}
+
+
+@keyframes resize {
+  0% {
+    width: 50px;
+    height: 50px;
+    margin-left: -50px;
+    margin-top: -50px;
+  }
+  50% {
+    width: 60px;
+    height: 60px;
+    margin-left: -55px;
+    margin-top: -55px;
+  }
+  100% {
+    width: 50px;
+    height: 50px;
+    margin-left: -50px;
+    margin-top: -50px;
+  }
+}
+
+@-webkit-keyframes resize {
+0% {
+    width: 50px;
+    height: 50px;
+    margin-left: -50px;
+    margin-top: -50px;
+  }
+  50% {
+    width: 60px;
+    height: 60px;
+    margin-left: -55px;
+    margin-top: -55px;
+  }
+  100% {
+    width: 50px;
+    height: 50px;
+    margin-left: -50px;
+    margin-top: -50px;
+  }
+}
+
+@-moz-keyframes resize {
+0% {
+    width: 50px;
+    height: 50px;
+    margin-left: -50px;
+    margin-top: -50px;
+  }
+  50% {
+    width: 60px;
+    height: 60px;
+    margin-left: -55px;
+    margin-top: -55px;
+  }
+  100% {
+    width: 50px;
+    height: 50px;
+    margin-left: -50px;
+    margin-top: -50px;
+  }
+}
+
+@-o-keyframes resize {
+0% {
+    width: 50px;
+    height: 50px;
+    margin-left: -50px;
+    margin-top: -50px;
+  }
+  50% {
+    width: 60px;
+    height: 60px;
+    margin-left: -55px;
+    margin-top: -55px;
+  }
+  100% {
+    width: 50px;
+    height: 50px;
+    margin-left: -50px;
+    margin-top: -50px;
+  }
+}

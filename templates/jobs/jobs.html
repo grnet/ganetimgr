@@ -148,6 +148,8 @@ $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallba
 	}, oSettings );
 };
 $(document).ready( function(){
+	$('.content').addClass('loading');
+
 	ajaxSource = "{% url jobs_json %}";
 	oTable = $('#jobs_table').dataTable( {
 		"bPaginate": true,
@@ -190,6 +192,7 @@ $(document).ready( function(){
 			$("#error_num").html(statusObj.error);
 			$("#waiting_num").html(statusObj.waiting);
 			$("#running_num").html(statusObj.running);
+			$('.content').removeClass('loading');
 		  },
 		"aaSorting": [[ 4, "desc" ]],
 		"aoColumns":[

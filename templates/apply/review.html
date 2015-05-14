@@ -177,20 +177,6 @@
                                     </div>
                                     {% endif %}
 
-                                    {% comment %}
-                                    <p>{% trans "Choose either a network, or a cluster from the quick list to use the cluster's default network." %}</p>
-                                    <div class="control-group {% if appform.network.errors %}error{% endif %}">
-                                        <label class="control-label {% if appform.network.field.required %}required{% endif %}" for="id_applier">{{ appform.network.label }}</label>
-                                        <div class="controls">{{ appform.network }}
-                                        {% if appform.network.errors %}
-                                        <span class="help-inline" style="clear:both;">
-                                            {{ appform.network.errors|join:", " }}
-                                        </span>
-                                        {% endif %}
-                                        </div>
-                                    </div>
-                                    <p>{% for cl in fast_clusters %}<a href="#" onclick="set_network('{{ cl.get_default_network.pk }}');">{{ cl.description }} ({{ cl.slug }})</a> {% if not forloop.last %}| {% endif %}{% endfor %}</p>
-                                    {% endcomment %}
                                     <div class="control-group {% if appform.cluster.errors %}error{% endif %}">
                                         <label class="control-label {% if appform.cluster.field.required %}required{% endif %}" for="id_applier">{{ appform.cluster.label }}</label>
                                         <div class="controls">{{ appform.cluster }}

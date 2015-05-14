@@ -144,8 +144,7 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 var needsrebootset = false;
 
 $(document).ready( function(){
-
-
+	$('.content').addClass('loading');
 	var oTable = $('#vm_instance_table').dataTable({
 		"bPaginate": true,
 		"bFilter": true,
@@ -167,6 +166,7 @@ $(document).ready( function(){
 				oTable.fnFilter('');
 			});
 			$('div.dataTables_filter input').focus();
+			$('.content').removeClass('loading');
 			if(json.hasOwnProperty('messages')){
 				$('#jsonmessages').show();
 				$('#jsonmessage').html(json.messages);

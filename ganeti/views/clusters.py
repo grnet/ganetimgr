@@ -321,7 +321,8 @@ def clusterdetails(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         return render(
             request,
-            'clusters/clusters.html'
+            'clusters/clusters.html',
+            {'clusters': Cluster.objects.all()}
         )
     else:
         return HttpResponseRedirect(reverse('user-instances'))

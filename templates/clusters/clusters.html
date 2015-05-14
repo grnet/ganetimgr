@@ -39,7 +39,13 @@
 	<div class="span4 main-content">
 	    <div class="row-fluid">
     	    <div class="row-fluid">
-        		<h2>{% trans "Cluster Info" %} <select id="pick_cluster"></select></h2>
+        		<h2>{% trans "Cluster Info" %}
+    				<select id="pick_cluster">
+    					{% for cluster in clusters %}
+    						<option value="{{ cluster.slug }}">{{ cluster.slug }}</option>
+    					{% endfor %}
+    				</select>
+        		</h2>
             	<table class="table visoverflow  small-font-table">
 	                <thead>
 	                	<tr>
@@ -106,6 +112,7 @@
 	var selected_cluster;
 	var ipolll;
 	$(document).ready( function(){
+		$('.content').addClass('loading');
 		var url = "{% url clusterdetails_json %}";
 		$.ajax({
 			type: 'GET',
@@ -113,11 +120,9 @@
 			dataType: 'json',
 			success: function(data) {
 				all_cluster_data = data;
-				for (var i=0; i<data.length; i++) {
-					$("#pick_cluster").append('<option value="'+data[i].slug+'">'+data[i].slug+'</option>');
-				}
 				$("#pick_cluster").select2();
 				$("#pick_cluster").trigger("change");
+				$('.content').removeClass('loading');
 			}
 		});
 		$('body').on('change', '#pick_cluster', function(){
