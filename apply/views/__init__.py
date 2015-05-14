@@ -268,9 +268,12 @@ def review_application(request, application_id=None):
                     settings.SERVER_EMAIL,
                     [application.applicant.email]
                 )
-                messages.add_message(request, messages.INFO,
-                                     "Application #%d rejected, user %s has"
-                                     " been notified" % (app.pk, request.user))
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    "Application #%d rejected, user %s has"
+                    " been notified" % (app.pk, application.applicant)
+                )
             else:
                 application.status = STATUS_APPROVED
                 application.instance_params = {
