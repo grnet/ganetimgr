@@ -278,7 +278,7 @@
                         </fieldset>
                         <div class="control-group">
                             <div class="controls">
-                                <input type="submit" value={% if application.status == 100 %}"Accept"{% else %}"Re-submit"{% endif %} class="btn btn-success" name="accept"/> <input type="submit" value="Reject" class="btn btn-danger" name="reject"/>
+                                <input type="submit" value={% if application.status == 100 %}"Accept"{% else %}"Re-submit"{% endif %} class="btn btn-success accept" name="accept"/> <input type="submit" value="Reject" class="btn btn-danger" name="reject"/>
                             </div>
                         </div>
                     </div>
@@ -430,6 +430,10 @@
         return this.charAt(0).toUpperCase() + this.slice(1);
     };
     $(document).ready( function(){
+
+        $('input.accept').on('click', function () {
+            $(this).hide();
+        });
         $("#id_cluster").change(function () {
             var selng = $("#id_node_group");
             var dtng = $("#id_disk_template");
