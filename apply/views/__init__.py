@@ -91,9 +91,14 @@ def apply(request):
             org = request.user.get_profile().organization
             if org and settings.BRANDING['SHOW_ORGANIZATION_FORM']:
                 form.fields['organization'].initial = org
-            telephone = request.user.get_profile().telephone
-            if telephone and settings.BRANDING['SHOW_ADMINISTRATIVE_FORM']:
-                form.fields['admin_contact_phone'].initial = telephone
+            if settings.BRANDING['SHOW_ADMINISTRATIVE_FORM']:
+                telephone = request.user.get_profile().telephone
+                if telephone:
+                    form.fields['admin_contact_phone'].initial = telephone
+                full_name = '%s %s' % (request.user.first_name, request.user.last_name)
+                if full_name:
+                    form.fields['admin_contact_name'].initial = full_name
+                form.fields['admin_contact_email'].initial = request.user.email
             return render(
                 request,
                 'apply/apply.html',
