@@ -1,0 +1,445 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans "Create new Virtual Machine" %}{% endblock %}
+
+{% block crumbs %}
+	<li>
+		<a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span>
+	</li>
+	<li class="active">{% trans "Create Instance" %}</li>
+{% endblock %}
+
+{% block createtop%}class="active"{% endblock %}
+
+{% block extraticketinfo %} about instance creation{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/select2.css' %}">
+<style type="text/css">
+	th {
+		text-align: right;
+		padding-right: 0.5em;
+		vertical-align: top;
+	}
+
+	.help {
+		font-style: italic;
+	}
+
+	label.required { font-weight: bold; }
+
+	legend + .control-group {
+		margin: 0;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="span6 main-content">
+	<div class="row-fluid">
+		<div class="row-fluid span12">
+			<h2>{% trans "Create a new instance" %}</h2>
+			 <form method="POST" action="{% url application-save %}" id="form" class="form-inline">
+                    {% csrf_token %}
+                    <div class="row-fluid"><div class="span6">
+                        <fieldset>
+                            <legend>
+                                {% trans "Instance information" %}
+                            </legend>
+                            <div class="control-group {% if form.hostname.errors %}error{% endif %}">
+                                <label class="control-label {% if form.hostname.field.required %}required{% endif %}" for="id_applier">
+                                    {{ form.hostname.label }}
+                                </label>
+                                <div class="controls">{{ form.hostname }}
+                                {% if form.hostname.errors %}
+                                    <span class="help-inline" style="clear:both;">
+                                        {{ form.hostname.errors|join:", " }}
+                                    </span>
+                                {% endif %}
+                                </div>
+                            </div>
+                            <div class="control-group {% if form.memory.errors %}error{% endif %}">
+                                <label class="control-label {% if form.memory.field.required %}required{% endif %}" for="id_applier">{{ form.memory.label }}</label>
+                                    <div class="controls">{{ form.memory }}
+                                        {% if form.memory.errors %}
+                                        <span class="help-inline" style="clear:both;">
+                                            {{ form.memory.errors|join:", " }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="control-group {% if form.vcpus.errors %}error{% endif %}">
+                                    <label class="control-label {% if form.vcpus.field.required %}required{% endif %}" for="id_applier">{{ form.vcpus.label }}</label>
+                                    <div class="controls">
+                                        {{ form.vcpus }}
+                                        {% if form.vcpus.errors %}
+                                            <span class="help-inline" style="clear:both;">
+                                                {{ form.vcpus.errors|join:", " }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="control-group {% if form.disk_size.errors %}error{% endif %}">
+                                    <label class="control-label {% if form.disk_size.field.required %}required{% endif %}" for="id_applier">{{ form.disk_size.label }}</label>
+                                    <div class="controls">{{ form.disk_size }}
+                                    {% if form.disk_size.errors %}
+                                        <span class="help-inline" style="clear:both;">
+                                            {{ form.disk_size.errors|join:", " }}
+                                        </span>
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="control-group {% if form.hosts_mail_server.errors %}error{% endif %}">
+                                    <label class="control-label {% if form.hosts_mail_server.field.required %}required{% endif %}" for="id_applier">{{ form.hosts_mail_server.label }}</label>
+                                    <div class="controls">{{ form.hosts_mail_server }}
+                                    {% if form.hosts_mail_server.errors %}
+                                        <span class="help-inline" style="clear:both;">
+                                            {{ form.hosts_mail_server.errors|join:", " }}
+                                        </span>
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="control-group {% if form.operating_system.errors %}error{% endif %}">
+                                    <label class="control-label {% if form.operating_system.field.required %}required{% endif %}" for="id_applier">{{ form.operating_system.label }}</label>
+                                    <div class="controls" data-value="{{ form.operating_system.value }}" data-url="{% url operating_systems_json %}">{{ form.operating_system }}
+                                        {% if form.operating_system.errors %}
+                                        <span class="help-inline" style="clear:both;">
+                                            {{ form.operating_system.errors|join:", " }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </fieldset>
+                            {% if application.admin_contact_name %}
+                            <fieldset>
+                                <legend>{% trans "Administrative contact" %}</legend>
+                                <address>
+                                    <i class="fa fa-user"></i> <strong>{{ application.admin_contact_name }}</strong><br>
+                                    <i class="fa fa-envelope-alt"></i> <a href="mailto:{{ application.admin_contact_email }}">{{ application.admin_contact_email }}</a><br>
+                                    <i class="fa fa-phone"></i> {{ application.admin_contact_phone }}
+                                </address>
+                            </fieldset>
+                            {% endif %}
+                        </div>
+                        <div class="span6">
+                            <fieldset>
+                                <legend>{% trans "Placement" %}</legend>
+                                {% if application.network %}
+                                    <div class="notice">
+                                        {% trans "The user has requested explicit network placement on" %} {{ application.network }} ({{ application.network.cluster.description }})
+                                    </div>
+                                    {% endif %}
+                                    <div class="control-group {% if form.cluster.errors %}error{% endif %}">
+                                        <label class="control-label {% if form.cluster.field.required %}required{% endif %}" for="id_applier">{{ form.cluster.label }}</label>
+                                        <div class="controls">{{ form.cluster }}
+                                        {% if form.cluster.errors %}
+                                            <span class="help-inline" style="clear:both;">
+                                                {{ form.cluster.errors|join:", " }}
+                                            </span>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="control-group {% if form.disk_template.errors %}error{% endif %}">
+                                        <label class="control-label {% if form.disk_template.field.required %}required{% endif %}" for="id_applier">{{ form.disk_template.label }}</label>
+                                        <div class="controls">{{ form.disk_template }}
+                                        {% if form.disk_template.errors %}
+                                            <span class="help-inline" style="clear:both;">
+                                                {{ form.disk_template.errors|join:", " }}
+                                            </span>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="control-group {% if form.node_group.errors %}error{% endif %}">
+                                        <label class="control-label {% if form.node_group.field.required %}required{% endif %}" for="id_applier">{{ form.node_group.label }}</label>
+                                        <div class="controls">{{ form.node_group }}
+                                        {% if form.node_group.errors %}
+                                            <span class="help-inline" style="clear:both;">
+                                                {{ form.node_group.errors|join:", " }}
+                                            </span>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="control-group {% if form.netw.errors %}error{% endif %}">
+                                        <label class="control-label {% if form.netw.field.required %}required{% endif %}" for="id_applier">{{ form.netw.label }}</label>
+                                        <div class="controls">{{ form.netw }}
+                                        {% if form.netw.errors %}
+                                            <span class="help-inline" style="clear:both;">
+                                                {{ form.netw.errors|join:", " }}
+                                            </span>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="control-group {% if form.vgs.errors %}error{% endif %}">
+                                        <label class="control-label {% if form.vgs.field.required %}required{% endif %}" for="id_applier">{{ form.vgs.label }}</label>
+                                        <div class="controls">{{ form.vgs }}
+                                        {% if form.vgs.errors %}
+                                        <span class="help-inline" style="clear:both;">
+                                            {{ form.vgs.errors|join:", " }}
+                                        </span>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if application.job_id %}
+                                    <div class="control-group">
+                                        <label class="control-label required" for="id_applier">{% trans "Job ID" %}</label>
+                                        <div class="controls padcontrol">
+                                            <a class="btn" href="#" onclick="javascript:showDetails('{{ application.cluster.slug }}','{{ application.job_id }}'); return false;">
+                                                {{ application.job_id }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {%endif%}
+                                    {%if application.backend_message %}
+                                    <div class="control-group">
+                                        <label class="control-label required" for="id_applier">{% trans "Error" %}</label>
+                                        <div class="controls padcontrol">
+                                            {{ application.backend_message }}
+                                        </div>
+                                    </div>
+                                {%endif%}
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group">
+						<div class="controls span12">
+							<input type="submit" value="{% trans "Apply" %}" class="btn btn-primary" />
+						</div>
+					</div>
+                </form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block bottomblock %}
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.sparkline.min.js' %}"></script>
+<script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
+<script type="text/javascript">
+    var selected_cluster;
+    var selected_ng;
+    var single_ng;
+    var clust_tot_inst;
+    String.prototype.capitalize = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+    };
+    $(document).ready( function(){
+        $("#id_cluster").change(function () {
+            var selng = $("#id_node_group");
+            var dtng = $("#id_disk_template");
+            var optionSelected = $(this).find("option:selected");
+            cluster_id = this.value;
+            var clusturl = "{% url cluster_ng_stack %}"+"?cluster_id="+cluster_id;
+            $.ajax({
+                type: 'GET',
+                url: clusturl,
+                dataType: 'json',
+                success: function(data) {
+                    selected_cluster = data;
+                    cleanfields();
+                    for (var i=0; i<data.node_groups.length; i++) {
+                        unallocable = '';
+                        if (data.node_groups[i].alloc_policy == 'unallocable'){
+                            unallocable = 'disabled';
+                        }
+                        selecttext = '';
+                        if ("{{application.instance_params.node_group}}" == data.node_groups[i].name && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+                            selecttext = "selected='selected'";
+                        }
+                        selng.append('<option value="'+data.node_groups[i].name+'" '+unallocable+' '+selecttext+'>'+data.node_groups[i].name+'</option>');
+
+                    }
+
+                    $("#id_node_group").trigger('change');
+                    for (var i=0; i<data.disk_templates.length; i++) {
+                        def = false;
+                        if (i === 0){
+                            def = true;
+                        }
+                        selecttext = '';
+                        if ("{{application.instance_params.disk_template}}" == data.disk_templates[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+                            selecttext = "selected='selected'";
+                        }
+                        dtng.append('<option data-defdt="'+def+'" value="'+data.disk_templates[i]+'" '+selecttext+'>'+data.disk_templates[i]+'</option>');
+
+                    }
+                    dtng.select2('destroy');
+                    dtng.select2({dropdownAutoWidth : true, formatResult: formatdt});
+
+            }
+            });
+        });
+
+        $("#id_node_group").change(function () {
+            var optionSelected = $(this).find("option:selected");
+            var vgng = $("#id_vgs");
+            ng_name = this.value;
+            vgng.empty();
+            var selnet = $("#id_netw");
+            for (var i=0; i<selected_cluster.node_groups.length; i++) {
+                if (selected_cluster.node_groups[i].name === ng_name){
+                    selected_ng = selected_cluster.node_groups[i];
+                }
+            }
+            selnet.empty();
+            var parsed_groups = [];
+            for (var i=0; i<selected_ng.networks.length; i++) {
+                if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1) {
+                    selgroup = $('#gr_'+selected_ng.networks[i].type+'');
+                } else {
+                    parsed_groups.push(selected_ng.networks[i].type);
+                    selnet.append($('<optgroup id="gr_'+selected_ng.networks[i].type+'" label="'+selected_ng.networks[i].type.capitalize()+'"></optgroup>'));
+                    selgroup = $('#gr_'+selected_ng.networks[i].type+'');
+                }
+                selecttext = '';
+                if (selgroup.attr('id') === 'gr_routed') {
+                    if (selecttext === '') {
+                        selecttext = "selected='selected'";
+                    }
+                }
+                selgroup.append('<option \
+                                data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
+                                data-free="'+selected_ng.networks[i].free_count+'" \
+                                data-reserved="'+selected_ng.networks[i].reserved_count+'" \
+                                data-type="'+selected_ng.networks[i].type+'" \
+                                value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>');
+
+            }
+            if (('routed', parsed_groups) != -1){
+                topgroup = $('#gr_routed');
+                topgroup.parent().prepend(topgroup);
+            }
+            $("#id_netw").trigger("change");
+            selnet.select2('destroy');
+            selnet.select2({dropdownAutoWidth : true, formatResult: formatnet});
+            selnet.on('select2-open', function(){
+                $.sparkline_display_visible();
+            });
+            vgng.append('<option value="default">default</option>');
+            for (var i=0; i<selected_ng.vgs.length; i++) {
+                selecttext = '';
+                        if ("{{application.instance_params.vgs}}" == selected_ng.vgs[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+                            selecttext = "selected='selected'";
+                        }
+                        vgng.append('<option value="'+selected_ng.vgs[i]+'" '+selecttext+'>'+selected_ng.vgs[i]+'</option>');
+            }
+            vgng.select2('destroy');
+            vgng.select2();
+
+        });
+
+       function getOperatingSystems() {
+			var operatingSystemsInput = $('#id_operating_system');
+			$.ajax({
+				url: operatingSystemsInput.parent().data('url'),
+				success: function (data) {
+					response = $.parseJSON(data);
+					options = '';
+					var selected = $('#operating_system_hidden').val();
+					if (response.status === 'success') {
+						for (var i=0; i < response.operating_systems.length; i++) {
+							if (response.operating_systems[i][1].osparams.img_id) {
+								options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '"';
+								if (selected === response.operating_systems[i][1].osparams.img_id) {
+									options += ' selected="selected" ';
+								}
+								 options += '>' + response.operating_systems[i][1].description + '</option>';
+
+							} else {
+								options += '<option value="' +  response.operating_systems[i][1].provider + '"';
+								if (selected === response.operating_systems[i][1].provider) {
+									options += ' selected="selected" ';
+								}
+								options += '>' + response.operating_systems[i][1].description + '</option>';
+							}
+						}
+					}
+					operatingSystemsInput.html(options);
+					operatingSystemsInput.select2({dropdownAutoWidth : true});
+				}
+			});
+		}
+
+        getOperatingSystems();
+
+
+        $("#id_organization").select2({dropdownAutoWidth : true});
+
+        $("#id_cluster").select2();
+        $("#id_node_group").select2({dropdownAutoWidth : true, formatResult: formatng});
+        $("#id_disk_template").select2({dropdownAutoWidth : true, formatResult: formatdt});
+        $('#id_disk_template').on('change', function () {
+            if ($(this).val() === 'sharedfile') {
+                $("#id_vgs").select2('readonly', true);
+            } else {
+                $("#id_vgs").select2('readonly', false);
+            }
+        })
+        $("#id_vgs").select2();
+        $("#id_netw").select2({dropdownAutoWidth : true, formatResult: formatnet});
+        $("#id_cluster").trigger("change");
+
+
+    });
+
+    function cleanfields(){
+        $("#networkinfo").empty();
+        $("#id_node_group").empty();
+        $("#id_disk_template").empty();
+        $("#id_vgs").empty();
+        $("#id_netw").empty();
+    }
+
+    function formatng(selection) {
+        if (selection.disabled){
+            return "<font style='color:red;'>"+selection.text+"</font>"
+        }
+        return selection.text;
+    }
+
+    function formatdt(selection) {
+        def = $(selection.element).data('defdt');
+        if (def){
+            return "<font style='color:#38D64A; font-weight: bold;'>"+selection.text+"</font>";
+        }
+        return selection.text;
+    }
+
+    function formatnet(selection) {
+        element = selection.element;
+        free = $(element).data('free');
+        reserved = $(element).data('reserved');
+        if (free && reserved){
+            var piechart = $("<span style='float:right'>&nbsp;</span>");
+            piechart.sparkline([reserved, free], {type: 'pie',sliceColors : ["#f89406", "#468847"], disableHiddenCheck: true });
+        }
+
+
+       if ($(element).data('defaultnet')){
+       var res=$("<font style='color:#38D64A; font-weight: bold;'>"+selection.text+"</font>");
+            if (free && reserved){
+                res.append(piechart);
+            }
+       }
+       else {
+            var res = $("<font>"+selection.text+"</font>");
+            if (free && reserved){
+                res.append(piechart);
+            }
+       }
+
+        return res;
+    }
+
+        function showDetails(cluster, jobid){
+            $( "#instDetsbody" ).html( "" );
+            $( "#myModalLabelservdets" ).text('Job Details: '+jobid);
+            $( "#instDetsbody" ).load("{% url jobdets-popup %}/?cluster="+cluster+"&jobid="+jobid+"");
+            $( "#instDets" ).modal('show');
+            return false;
+        }
+
+</script>
+{% endblock %}

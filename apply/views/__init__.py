@@ -25,6 +25,7 @@ from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.core.mail import send_mail, mail_managers
 from django.shortcuts import render, get_object_or_404
+from django.http import Http404
 from django.template.loader import render_to_string, get_template
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
@@ -72,20 +73,32 @@ def apply(request):
             del InstanceApplicationForm.base_fields["network"]
         except KeyError:
             pass
-
     if request.method == "GET":
-        form = InstanceApplicationForm()
-        org = request.user.get_profile().organization
-        if org and settings.BRANDING['SHOW_ORGANIZATION_FORM']:
-            form.fields['organization'].initial = org
-        telephone = request.user.get_profile().telephone
-        if telephone and settings.BRANDING['SHOW_ADMINISTRATIVE_FORM']:
-            form.fields['admin_contact_phone'].initial = telephone
-        return render(
-            request,
-            'apply/apply.html',
-            {'form': form},
-        )
+        # If the user is a superuser, then he does not need to fill the form
+        # and review it again, so we can load a template for administrators
+        # only which sends the data to the review_application form
+        if request.user.is_superuser:
+            form = InstanceApplicationReviewForm()
+            return render(
+                request,
+                'apply/admin_apply.html',
+                {
+                    'form': form
+                }
+            )
+        else:
+            form = InstanceApplicationForm()
+            org = request.user.get_profile().organization
+            if org and settings.BRANDING['SHOW_ORGANIZATION_FORM']:
+                form.fields['organization'].initial = org
+            telephone = request.user.get_profile().telephone
+            if telephone and settings.BRANDING['SHOW_ADMINISTRATIVE_FORM']:
+                form.fields['admin_contact_phone'].initial = telephone
+            return render(
+                request,
+                'apply/apply.html',
+                {'form': form},
+            )
     else:
         form = InstanceApplicationForm(request.POST)
         if form.is_valid():
@@ -142,11 +155,6 @@ def apply(request):
                     " will be processed shortly."
                 ) % application.id
             )
-            if request.user.is_superuser:
-                return HttpResponseRedirect(reverse(
-                    'application-review',
-                    kwargs={'application_id': application.id}
-                ))
             return HttpResponseRedirect(reverse("user-instances"))
         else:
             return render(
@@ -177,14 +185,19 @@ def application_list(request):
 
 
 @permission_required("apply.change_instanceapplication")
-def review_application(request, application_id):
+def review_application(request, application_id=None):
     applications = InstanceApplication.objects.filter(status__in=PENDING_CODES)
-    app = get_object_or_404(InstanceApplication, pk=application_id)
     fast_clusters = Cluster.objects.filter(fast_create=True).exclude(
         disable_instance_creation=True
     ).order_by('description')
-
-    if request.method == "GET":
+    # There is a chance that the administrator has just filled a form
+    # by himself, so the application does not actually exist (yet)
+    if application_id:
+        app = get_object_or_404(InstanceApplication, pk=application_id)
+    else:
+        # We set app to None because there is application instance yet
+        app = None
+    if request.method == "GET" and app:
         form = InstanceApplicationReviewForm(
             instance=app,
             initial={
@@ -210,7 +223,7 @@ def review_application(request, application_id):
                 'fast_clusters': fast_clusters
             }
         )
-    else:
+    elif request.method == "POST":
         nodegroup = request.POST.get('node_group', '')
         form_ngs = (('', ''),)
         if nodegroup:
@@ -237,6 +250,10 @@ def review_application(request, application_id):
         form.fields['disk_template'] = forms.ChoiceField(choices=form_dt)
         if form.is_valid():
             application = form.save(commit=False)
+            # if the instance does not exist yet
+            if not app:
+                # we have to connect the user with this form
+                application.applicant = request.user
             application.operating_system = form.cleaned_data['operating_system']
             if "reject" in request.POST:
                 application.status = STATUS_REFUSED
@@ -270,20 +287,33 @@ def review_application(request, application_id):
                 application.submit()
                 messages.add_message(request, messages.INFO,
                                      "Application #%d accepted and submitted"
-                                     " to %s" % (app.pk, application.cluster))
+                                     " to %s" % (application.pk, application.cluster))
             cache.delete('pendingapplications')
             return HttpResponseRedirect(reverse("application-list"))
         else:
-            return render(
-                request,
-                'apply/review.html',
-                {
-                    'application': app,
-                    'applications': applications,
-                    'appform': form,
-                    'fast_clusters': fast_clusters
-                }
-            )
+            if app:
+                return render(
+                    request,
+                    'apply/review.html',
+                    {
+                        'application': app,
+                        'applications': applications,
+                        'appform': form,
+                        'fast_clusters': fast_clusters
+                    }
+                )
+            else:
+                return render(
+                    request,
+                    'apply/admin_apply.html',
+                    {
+                        'form': form
+                    }
+                )
+    else:
+        # If the request method is GET, but there is no application given,
+        # then someone is trying to do stuff.
+        raise Http404
 
 
 def instance_ssh_keys(request, application_id, cookie):

@@ -22,6 +22,9 @@ urlpatterns = patterns(
     '',
     url(r'^apply/?$', views.apply, name="apply"),
     url(r'^list/?$', views.application_list, name="application-list"),
+    # this url is accessible only if a superuser tries to create
+    # an instance by himself
+    url(r'^save/', views.review_application, name="application-save"),
     url(r'^(?P<application_id>\d+)/review', views.review_application, name="application-review"),
     url(r'^(?P<application_id>\d+)/(?P<cookie>\w+)/ssh_keys', views.instance_ssh_keys, name="instance-ssh-keys"),
 )
