@@ -161,6 +161,11 @@ $(document).ready( function(){
 		"sAjaxSource": "{% url user-instances-json %}",
 		"bDeferRender": true,
 		"fnInitComplete": function(oSettings, json) {
+			// add clear button in search input
+			$('div.dataTables_filter label').append('<i class="fa fa-times clear"></i>');
+			$('div.dataTables_filter label').on('click', '.clear', function () {
+				oTable.fnFilter('');
+			});
 			$('div.dataTables_filter input').focus();
 			if(json.hasOwnProperty('messages')){
 				$('#jsonmessages').show();

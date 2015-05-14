@@ -1862,3 +1862,14 @@ label.required { font-weight: bold; }
   height: 70px;
 }
 
+
+.dataTables_filter {
+  position: relative;
+}
+
+.dataTables_filter .clear {
+  position: absolute;
+  right: 5px;
+  top: 12px;
+  color: gray;
+}
