@@ -127,7 +127,7 @@ def user_index_json(request):
     if res is None:
         if not request.user.is_anonymous():
             if cluster_slug:
-                clusters = clusters.filter(slug=cluster_slug)
+                clusters = Cluster.objects.filter(slug=cluster_slug)
             else:
                 clusters = Cluster.objects.all()
             p.imap(_get_instances, clusters)
