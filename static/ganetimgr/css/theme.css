@@ -9,6 +9,12 @@ html {
   height: 100%;
 }
 
+footer #banners {
+  position: absolute;
+  left: 1%;
+  top: 10px;
+}
+
 .wrapper {
   min-height: 100%;
   height: auto !important;
@@ -1609,6 +1615,12 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 @media (min-width: 1200px) {
 
 }
+
+@media (max-width: 1400px) {
+ footer #banners {
+    position: relative;
+  }
+}
 @media (max-width: 1020px) {
   .content {
     margin-left: 50px;
@@ -1658,6 +1670,7 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
   body {
     background: #fff;
   }
+
 }
 /* Portrait tablet to landscape and desktop */
 @media (min-width: 768px) and (max-width: 979px) {
@@ -1849,8 +1862,3 @@ label.required { font-weight: bold; }
   height: 70px;
 }
 
-footer #banners {
-  position: absolute;
-  left: 1%;
-  top: 10px;
-}
