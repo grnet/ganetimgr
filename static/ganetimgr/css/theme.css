@@ -258,6 +258,7 @@ footer {
   text-align: center;
   padding: 20px 0;
   margin-top: 20px;
+  position: relative;
 }
 
 footer hr {
@@ -1846,4 +1847,10 @@ label.required { font-weight: bold; }
 
 .pull {
   height: 70px;
+}
+
+footer #banners {
+  position: absolute;
+  left: 1%;
+  top: 10px;
 }
