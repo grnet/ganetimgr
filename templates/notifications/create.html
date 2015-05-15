@@ -3,14 +3,14 @@
 
 {% block notify %}class="active"{% endblock %}
 
-{% block title %}{% trans "Send Mail" %}{% endblock %}
+{% block title %}{% trans "Notifications" %}{% endblock %}
 
 {% block crumbs %}
 <li>
 	<a href="{% url user-instances %}">{% trans "Home" %}</a>
 	<span class="divider">/</span>
 </li>
-<li class="active">{% trans "Send Mail" %}</li>
+<li class="active">{% trans "Notifications" %}</li>
 {% endblock %}
 
 {% block extrahead %}
@@ -19,5 +19,15 @@
 
 {% block content %}
 	{% include "notifications/create_body.html" %}
+	{% if archive %}
+	<h3>Archive</h3>
+	<ul class="nav nav-tabs nav-stacked">
+		{% for notification in archive %}
+		<li>
+			<a href="{{ notification.get_absolute_url }}">{{ notification.subject }}, {{ notification.date }}</a>
+		</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
 {% endblock %}
 

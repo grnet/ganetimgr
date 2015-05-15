@@ -32,7 +32,7 @@
 			escapeMarkup: function(m) { return m; }
 		});
 		{% if users %}
-		$("#id_recipient_list").select2("data", [{% for u in users %}{id: "{{u.id}}", text: formatDjangoObject("{{u.type}}")+ '{{u.text}}'},{% endfor %}]);
+		$("#id_recipient_list").select2("data", [{% for u in users %}{id: "{{u.id}}", text: formatDjangoObject("{{u.type}}") + '{{u.text}}'},{% endfor %}]);
 		{% endif %}
 	});
 

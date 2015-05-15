@@ -16,23 +16,22 @@
 #
 
 from django.conf import settings
-from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
-from django.template.context import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import get_object_or_404, render
 from notifications.forms import *
 from ganeti.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import json
-from django.core.mail.message import EmailMessage
 
 from gevent.pool import Pool
 
 from util.client import GanetiApiError
 from django.db import close_connection
 from notifications.utils import get_mails, send_emails
+from notifications.models import NotificationArchive
 
 
 @csrf_exempt
@@ -69,6 +68,7 @@ def notify(request, instance=None):
                     messages.SUCCESS,
                     "Mail sent to %s" % ','.join(mail_list)
                 )
+                form.add_to_archive()
                 return HttpResponseRedirect(reverse('user-instances'))
         else:
             if instance:
@@ -86,24 +86,37 @@ def notify(request, instance=None):
                     users.append(groupd)
             form = MessageForm()
         if request.is_ajax():
-            return render_to_response(
+            return render(
+                request,
                 'notifications/create_ajax.html',
                 {
                     'form': form, 'users': users, 'ajax': 'true',
-                },
-                context_instance=RequestContext(request)
+                }
             )
-        return render_to_response(
+        return render(
+            request,
             'notifications/create.html',
             {
                 'form': form,
-                'users': users
-            },
-            context_instance=RequestContext(request)
+                'users': users,
+                'archive': NotificationArchive.objects.all()
+            }
         )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
 
+
+@login_required
+def archive(request, notification):
+    if request.user.is_superuser:
+        notification = get_object_or_404(NotificationArchive, pk=notification)
+        return render(
+            request,
+            'notifications/detail.html',
+            {'notification': notification}
+        )
+    else:
+        return HttpResponseRedirect(reverse('user-instances'))
 
 @login_required
 def get_user_group_list(request):
@@ -194,7 +207,3 @@ def get_user_group_list(request):
             'error': "Permissions' violation. This action has been logged and our admins will be notified about it"
         }
         return HttpResponse(json.dumps(action), mimetype='application/json')
-
-
-
-
