@@ -68,7 +68,7 @@ def notify(request, instance=None):
                     messages.SUCCESS,
                     "Mail sent to %s" % ','.join(mail_list)
                 )
-                form.add_to_archive()
+                form.add_to_archive(request.user)
                 return HttpResponseRedirect(reverse('user-instances'))
         else:
             if instance:

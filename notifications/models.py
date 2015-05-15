@@ -8,6 +8,7 @@ class NotificationArchive(models.Model):
     subject = models.CharField(max_length=255)
     message = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
+    sender = models.ForeignKey(User, blank=True, null=True)
 
     def __unicode__(self):
         return self.subject

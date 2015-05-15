@@ -16,6 +16,10 @@
 {% block content %}
 	<h2>{{ notification.subject }}</h2>
 	<h6>{{ notification.date }}</h6>
+	{% if notification.sender %}
+	<h3>Sender</h3>
+	{{ notification.sender }}
+	{% endif %}
 	<h3>Message</h3>
 	<p>{{ notification.message }}</p>
 	<h3>Recipients</h3>

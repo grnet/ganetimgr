@@ -43,11 +43,12 @@ class MessageForm(forms.Form):
     )
     recipient_list = forms.CharField(label=ugettext_lazy("Recipients"))
 
-    def add_to_archive(self):
+    def add_to_archive(self, user):
         if self.is_valid():
             notification = NotificationArchive(
                 subject=self.cleaned_data['subject'],
-                message=self.cleaned_data['message']
+                message=self.cleaned_data['message'],
+                sender=user
             )
             notification.save()
             recipients = self.cleaned_data['recipient_list'].split(',')
