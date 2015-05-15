@@ -286,7 +286,7 @@ class InstanceApplicationReviewForm(InstanceForm):
     disk_size = forms.IntegerField(min_value=2, initial=5,
                                    label=ugettext_lazy("Disk size (GB)"))
     cluster = forms.ChoiceField(
-        choices=[
+        choices=[('','Select')] + [
             (
                 c.pk,
                 "%s (%s)" % (c.description, c.slug)

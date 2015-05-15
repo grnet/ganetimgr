@@ -225,51 +225,65 @@
     String.prototype.capitalize = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
     };
+
+
     $(document).ready( function(){
+        function cleanfields(){
+            $("#networkinfo").select2('data', null);
+            $("#id_node_group").select2('data', null);
+            $("#id_disk_template").select2('data', null);
+            $("#id_vgs").select2('data', null);
+            $("#id_netw").select2('data', null);
+        }
+
         $("#id_cluster").change(function () {
             var selng = $("#id_node_group");
             var dtng = $("#id_disk_template");
             var optionSelected = $(this).find("option:selected");
             cluster_id = this.value;
-            var clusturl = "{% url cluster_ng_stack %}"+"?cluster_id="+cluster_id;
-            $.ajax({
-                type: 'GET',
-                url: clusturl,
-                dataType: 'json',
-                success: function(data) {
-                    selected_cluster = data;
-                    cleanfields();
-                    for (var i=0; i<data.node_groups.length; i++) {
-                        unallocable = '';
-                        if (data.node_groups[i].alloc_policy == 'unallocable'){
-                            unallocable = 'disabled';
+            if (cluster_id === '') {
+                cleanfields();
+            } else {
+                var clusturl = "{% url cluster_ng_stack %}"+"?cluster_id="+cluster_id;
+                $.ajax({
+                    type: 'GET',
+                    url: clusturl,
+                    dataType: 'json',
+                    success: function(data) {
+                        selected_cluster = data;
+                        cleanfields();
+                        for (var i=0; i<data.node_groups.length; i++) {
+                            unallocable = '';
+                            if (data.node_groups[i].alloc_policy == 'unallocable'){
+                                unallocable = 'disabled';
+                            }
+                            selecttext = '';
+                            if ("{{application.instance_params.node_group}}" == data.node_groups[i].name && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+                                selecttext = "selected='selected'";
+                            }
+                            selng.append('<option value="'+data.node_groups[i].name+'" '+unallocable+' '+selecttext+'>'+data.node_groups[i].name+'</option>');
+
                         }
-                        selecttext = '';
-                        if ("{{application.instance_params.node_group}}" == data.node_groups[i].name && "{{application.instance_params.cluster}}" == selected_cluster.slug){
-                            selecttext = "selected='selected'";
+
+                        $("#id_node_group").trigger('change');
+                        for (var i=0; i<data.disk_templates.length; i++) {
+                            def = false;
+                            if (i === 0){
+                                def = true;
+                            }
+                            selecttext = '';
+                            if ("{{application.instance_params.disk_template}}" == data.disk_templates[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+                                selecttext = "selected='selected'";
+                            }
+                            dtng.append('<option data-defdt="'+def+'" value="'+data.disk_templates[i]+'" '+selecttext+'>'+data.disk_templates[i]+'</option>');
+
                         }
-                        selng.append('<option value="'+data.node_groups[i].name+'" '+unallocable+' '+selecttext+'>'+data.node_groups[i].name+'</option>');
+                        dtng.select2('destroy');
+                        dtng.select2({dropdownAutoWidth : true, formatResult: formatdt});
 
                     }
-
-                    $("#id_node_group").trigger('change');
-                    for (var i=0; i<data.disk_templates.length; i++) {
-                        def = false;
-                        if (i === 0){
-                            def = true;
-                        }
-                        selecttext = '';
-                        if ("{{application.instance_params.disk_template}}" == data.disk_templates[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
-                            selecttext = "selected='selected'";
-                        }
-                        dtng.append('<option data-defdt="'+def+'" value="'+data.disk_templates[i]+'" '+selecttext+'>'+data.disk_templates[i]+'</option>');
-
-                    }
-                    dtng.select2('destroy');
-                    dtng.select2({dropdownAutoWidth : true, formatResult: formatdt});
-
+                });
             }
-            });
         });
 
         $("#id_node_group").change(function () {
