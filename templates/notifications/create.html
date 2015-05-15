@@ -20,7 +20,7 @@
 {% block content %}
 	{% include "notifications/create_body.html" %}
 	{% if archive %}
-	<h3>Archive</h3>
+	<h3 class="archive">Archive <i class="fa fa-plus-square closed"></i><i class="fa fa-minus-square opened"></i></h3>
 	<ul class="nav nav-tabs nav-stacked">
 		{% for notification in archive %}
 		<li>

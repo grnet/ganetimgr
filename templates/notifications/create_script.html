@@ -5,6 +5,10 @@
 <link href="{% static 'ganetimgr/css/includes/font-awesome.min.css' %}" rel="stylesheet">
 <script>
 	$(document).ready(function() {
+		$('h3.archive').on('click', function() {
+			$(this).toggleClass('open');
+		});
+
 		$('#id_search_for').select2({'width': 100});
 		$("#id_recipient_list").select2({
 			placeholder : "{% trans 'Type name(s) from user, group, instance, cluster' %}",

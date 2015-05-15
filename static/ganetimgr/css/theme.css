@@ -2002,3 +2002,28 @@ label.required { font-weight: bold; }
     margin-top: -50px;
   }
 }
+
+.archive {
+  cursor: pointer;
+}
+
+.archive .opened {
+  display: none;
+}
+.archive + ul {
+  overflow: hidden;
+  max-height: 0;
+   -webkit-transition: all 2s; /* Safari */
+    transition: all 2s;
+}
+.archive.open .opened {
+  display: inline;
+}
+
+.archive.open .closed {
+  display: none;
+}
+
+.archive.open + ul {
+  max-height: 1000px;
+}
