@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-09 16:11+0300\n"
+"POT-Creation-Date: 2015-05-18 12:32+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -18,15 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: accounts/forms.py:56
+#: accounts/forms.py:55
 msgid "Invalid captcha"
 msgstr "Λανθασμένη αντιστοίχιση"
 
-#: accounts/forms.py:82
+#: accounts/forms.py:85 apply/forms.py:179
+msgid "Organization"
+msgstr "Φορέας"
+
+#: accounts/forms.py:87
 msgid "Verify"
 msgstr "Επαλήθευση"
 
-#: accounts/forms.py:87
+#: accounts/forms.py:92
 msgid ""
 "That e-mail address doesn't have an associated user account or the account "
 "has not been activated yet. Are you sure you've registered?"
@@ -34,7 +38,7 @@ msgstr ""
 "Αυτή η διεύθυνση e-mail δεν μπορεί να συσχετιστεί με κάποιο λογαριασμό ή ο "
 "λογαριασμός δεν έχει ενεργοποιηθεί ακόμη. Είστε σίγουροι πως έχετε εγγραφεί;"
 
-#: accounts/forms.py:89
+#: accounts/forms.py:94
 msgid ""
 "The user account associated with this e-mail address cannot reset the "
 "password."
@@ -52,61 +56,57 @@ msgstr "%sΟ λογαριασμός σας ενεργοποιήθηκε"
 msgid "%sIdle Account Notification"
 msgstr "%sΕιδοποίηση Αδρανών Λογαριασμών"
 
-#: apply/forms.py:147 ganeti/forms.py:51
+#: apply/forms.py:149 ganeti/forms.py:51
 msgid "A fully qualified domain name, e.g. host.domain.com"
 msgstr "Ένα κανονικό όνομα DNS, π.χ. host.domain.com"
 
-#: apply/forms.py:149 ganeti/forms.py:53
-#: templates/apply/application_list.html:98
-#: templates/apply/application_list.html:128
-#: templates/clusters/clusters.html:51
+#: apply/forms.py:151 ganeti/forms.py:53
+#: templates/apply/application_list.html:39
+#: templates/apply/application_list.html:67
+#: templates/clusters/clusters.html:58
 msgid "Hostname"
 msgstr "Όνομα"
 
-#: apply/forms.py:152 templates/apply/application_list.html:100
-#: templates/apply/application_list.html:130
-#: templates/clusters/cluster_nodes.html:33
-#: templates/instances/instance.html:145
-#: templates/instances/user_instances_json.html:47
-#: templates/stats/statistics.html:314 templates/stats/statistics.html:315
-#: templates/users/user_info.html:373
+#: apply/forms.py:154 templates/apply/application_list.html:41
+#: templates/apply/application_list.html:69
+#: templates/clusters/cluster_nodes.html:39
+#: templates/instances/instance.html:122
+#: templates/instances/user_instances_json.html:53
+#: templates/stats/statistics.html:294 templates/stats/statistics.html:295
+#: templates/users/user_info.html:367
 msgid "Memory"
 msgstr "Μνήμη"
 
-#: apply/forms.py:164 apply/forms.py:285
+#: apply/forms.py:166 apply/forms.py:287
 msgid "Disk size (GB)"
 msgstr "Μέγεθος δίσκου (GB)"
 
-#: apply/forms.py:165
+#: apply/forms.py:167
 #, fuzzy
 msgid "Specify a size from 2 to 50 GB"
 msgstr "Καθορίστε μέγεθος μεταξύ 2 και 100 GB"
 
-#: apply/forms.py:170
+#: apply/forms.py:172
 #, fuzzy
 msgid "Check this option if  the virtual machine will be sending e-mail"
 msgstr ""
 "Ενεργοποιήστε αυτή την επιλογή εάν η εικονική μηχανή πρόκειται να στέλνει e-"
 "mails"
 
-#: apply/forms.py:172
+#: apply/forms.py:174
 msgid "Hosts mail server"
 msgstr "Φιλοξενία mail server"
 
-#: apply/forms.py:177
-msgid "Organization"
-msgstr "Φορέας"
-
-#: apply/forms.py:180
+#: apply/forms.py:182
 msgid "Operating System"
 msgstr "Λειτουργικό Σύστημα"
 
-#: apply/forms.py:199 apply/forms.py:342 ganeti/forms.py:67
+#: apply/forms.py:201 apply/forms.py:344 ganeti/forms.py:67
 #, python-format
 msgid "Invalid hostname %s"
 msgstr "Εσφαλμένο όνομα %s"
 
-#: apply/forms.py:203 apply/forms.py:346 ganeti/forms.py:71
+#: apply/forms.py:205 apply/forms.py:348 ganeti/forms.py:71
 msgid ""
 "Hostname should be fully qualified, e.g. <em>host.domain.com</em>, not "
 "<em>host</em>"
@@ -114,87 +114,87 @@ msgstr ""
 "Το όνομα πρέπει να περιλαμβάνει domain, π.χ. <em>host.domain.com</em>, όχι "
 "σκέτο <em>host</em>"
 
-#: apply/forms.py:213 apply/forms.py:353 ganeti/forms.py:78
+#: apply/forms.py:215 apply/forms.py:355 ganeti/forms.py:78
 msgid "Hostname already exists."
 msgstr "Το όνομα χρησιμοποιείται ήδη."
 
-#: apply/forms.py:222
+#: apply/forms.py:224
 msgid "Additional comments you would like the service administrators to see"
 msgstr ""
 "Πρόσθετα σχόλια ή παρατηρήσεις που θα θέλατε να λάβουν υπόψιν τους οι "
 "διαχειριστές της υπηρεσίας"
 
-#: apply/forms.py:225 templates/apply/review.html:178
-#: templates/apply/review.html.py:398
+#: apply/forms.py:227 templates/apply/review.html:167
+#: templates/apply/review.html.py:353
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: apply/forms.py:253
+#: apply/forms.py:255
 msgid "Choose either an organization or fill in the contact information"
 msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:265
+#: apply/forms.py:267
 #, fuzzy
 msgid "Choose an organization"
 msgstr "φορέας"
 
-#: apply/forms.py:276
+#: apply/forms.py:278
 #, fuzzy
 msgid "Please fill in the contact information"
 msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:326
+#: apply/forms.py:328
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/forms.py:358
+#: apply/forms.py:360
 msgid "Application already handled"
 msgstr "Η αίτηση έχει ήδη εκκαθαριστεί"
 
-#: apply/forms.py:378
+#: apply/forms.py:380
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSK κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/forms.py:391
+#: apply/forms.py:393
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/forms.py:397
+#: apply/forms.py:399
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/forms.py:402
+#: apply/forms.py:404
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/forms.py:404
+#: apply/forms.py:406
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/forms.py:412
+#: apply/forms.py:414
 msgid "Email"
 msgstr "Email"
 
-#: apply/forms.py:413
+#: apply/forms.py:415
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/forms.py:421
+#: apply/forms.py:423
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
-#: apply/forms.py:427 templates/clusters/cluster_nodes.html:31
-#: templates/instances/user_instances_json.html:42
-#: templates/users/user_info.html:371
+#: apply/forms.py:429 templates/clusters/cluster_nodes.html:37
+#: templates/instances/user_instances_json.html:48
+#: templates/users/user_info.html:365
 msgid "Name"
 msgstr "Όνομα"
 
-#: apply/forms.py:433
+#: apply/forms.py:435
 msgid "Surname"
 msgstr "Επώνυμο"
 
@@ -210,14 +210,14 @@ msgstr "φορείς"
 msgid "operating system"
 msgstr "λειτουργικό σύστημα"
 
-#: apply/views/__init__.py:66 templates/apply/application_list.html:102
-#: templates/apply/application_list.html:132
-#: templates/instances/user_instances_json.html:56
-#: templates/users/user_info.html:382
+#: apply/views/__init__.py:65 templates/apply/application_list.html:43
+#: templates/apply/application_list.html:71
+#: templates/instances/user_instances_json.html:62
+#: templates/users/user_info.html:376
 msgid "Network"
 msgstr "Δίκτυο"
 
-#: apply/views/__init__.py:68
+#: apply/views/__init__.py:67
 #, fuzzy
 msgid ""
 "Optionally, select a network to connect the virtualmachine to if you have a "
@@ -226,14 +226,14 @@ msgstr ""
 "Προαιρετικά, επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής.\n"
 "Διαφορετικά, θα χρησιμοποιηθεί το κανονικό δίκτυο της υπηρεσίας."
 
-#: apply/views/__init__.py:127
+#: apply/views/__init__.py:159
 #, python-format
 msgid "Your request has been filed with id #%d and will be processed shortly."
 msgstr ""
 "Το αίτημά σας έχει καταχωρηθεί με αναγνωριστικό #%d και η επεξεργασία του θα "
 "ξεκινήσει σύντομα."
 
-#: apply/views/user.py:195
+#: apply/views/user.py:216
 #, python-format
 msgid "The following keys were skipped because they already exist:<br />%s"
 msgstr "Τα ακόλουθα κλειδιά υπήρχαν ήδη και δεν αντικαταστάθηκαν:<br />%s"
@@ -297,36 +297,36 @@ msgstr "%(address)s δεν είναι αποδεκτή μορφή διεύθυν
 msgid "modifying"
 msgstr "γίνεται τροποποίηση των παραμέτρων της μηχανής"
 
-#: ganeti/models.py:1043
+#: ganeti/models.py:1038
 msgid "creating"
 msgstr "η μηχανή δημιουργείται"
 
-#: ganeti/utils.py:269
+#: ganeti/utils.py:270
 msgid "Not allowed action"
 msgstr "Η ενέργεια δεν επιτρέπεται"
 
-#: ganeti/utils.py:305
+#: ganeti/utils.py:306
 msgid "re-installation"
 msgstr "επανεγκατάσταση"
 
-#: ganeti/utils.py:307
+#: ganeti/utils.py:308
 msgid "destruction"
 msgstr "καταστροφή"
 
-#: ganeti/utils.py:309
+#: ganeti/utils.py:310
 msgid "rename"
 msgstr "μετονομασία"
 
-#: ganeti/utils.py:312
+#: ganeti/utils.py:313
 #, python-format
 msgid "%(pref)sInstance %(action)s requested: %(instance)s"
 msgstr "%(pref)sΑίτηση για %(action)s στην εικονική μηχανή: %(instance)s"
 
-#: ganeti/utils.py:325
+#: ganeti/utils.py:326
 msgid "Could not send email"
 msgstr ""
 
-#: ganeti/utils.py:327
+#: ganeti/utils.py:328
 msgid "Mail sent"
 msgstr "Το email στάλθηκε"
 
@@ -335,7 +335,7 @@ msgstr "Το email στάλθηκε"
 msgid "Enter valid JSON"
 msgstr "Εισάγετε valid JSON"
 
-#: ganeti/views/instances.py:77 ganeti/views/instances.py:170
+#: ganeti/views/instances.py:78 ganeti/views/instances.py:171
 msgid ""
 "Permissions' violation. This action has been logged and our admins will be "
 "notified about it"
@@ -343,19 +343,19 @@ msgstr ""
 "Παραβίαση δικαιωμάτων χρήστη. Η ενέργειά σας έχει καταγραφεί και οι "
 "διαχειριστές της υπηρεσίας έχουν ειδοποιηθεί "
 
-#: ganeti/views/instances.py:354
+#: ganeti/views/instances.py:355
 msgid "Please wait... shutting-down"
 msgstr "Παρακαλώ περιμένετε... απενεργοποίηση"
 
-#: ganeti/views/instances.py:369
+#: ganeti/views/instances.py:370
 msgid "Please wait... starting-up"
 msgstr "Παρακαλώ περιμένετε... εκκίνηση"
 
-#: ganeti/views/instances.py:386
+#: ganeti/views/instances.py:387
 msgid "Please wait... rebooting"
 msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
 
-#: ganetimgr/settings.py:51
+#: ganetimgr/settings.py:50
 msgid "English"
 msgstr "English"
 
@@ -368,15 +368,19 @@ msgstr ""
 "Καλωσήρθατε! Αν θέλετε, αφιερώστε λίγο χρόνο για να ενημερώσετε το <a href="
 "\"%s\">προφίλ σας</a> και να ανεβάσετε τα δημόσια SSH κλειδιά σας."
 
-#: notifications/forms.py:22
+#: notifications/forms.py:35
+msgid "Search for"
+msgstr ""
+
+#: notifications/forms.py:38
 msgid "Subject"
 msgstr "Θέμα"
 
-#: notifications/forms.py:23
+#: notifications/forms.py:41
 msgid "Body"
 msgstr "Κείμενο"
 
-#: notifications/forms.py:24
+#: notifications/forms.py:44
 msgid "Recipients"
 msgstr "Παραλήπτες"
 
@@ -395,224 +399,250 @@ msgstr ""
 msgid "Yeap this is a nice <strong>500</strong>!"
 msgstr ""
 
-#: templates/base.html:81
+#: templates/base.html:40
 msgid "From user"
 msgstr "Από το χρήστη"
 
-#: templates/base.html:149 templates/base.html.py:182 templates/base.html:212
-#: templates/base.html.py:268
+#: templates/base.html:108 templates/base.html.py:144 templates/base.html:176
 msgid "My Profile"
 msgstr "Το προφίλ μου"
 
-#: templates/base.html:153 templates/base.html.py:273
+#: templates/base.html:112
 msgid "FAQ"
 msgstr "Συχνές ερωτήσεις"
 
-#: templates/base.html:159
-msgid "Language"
-msgstr "Γλώσσα"
-
-#: templates/base.html:184 templates/base.html.py:213
-msgid "Logout"
-msgstr "Έξοδος"
-
-#: templates/base.html:204 templates/base.html.py:217 templates/base.html:233
-#: templates/base.html.py:288 templates/apply/application_list.html:76
-#: templates/apply/apply.html:5 templates/apply/review.html:11
-#: templates/auditlog/auditlog.html:33
-#: templates/clusters/cluster_nodes.html:16 templates/clusters/clusters.html:6
-#: templates/flatpages/faq.html:25 templates/graphs/nodes-graphs.html:17
-#: templates/instances/instance.html:117 templates/instances/novnc.html:192
-#: templates/instances/vnc.html:8 templates/jobs/jobs.html:32
-#: templates/news/news.html:28 templates/notifications/create.html:7
-#: templates/stats/instance_owners.html:29 templates/stats/statistics.html:280
-#: templates/users/idle_accounts.html:55 templates/users/profile.html:29
-#: templates/users/user_info.html:291
-msgid "Home"
-msgstr "Αρχική"
-
-#: templates/base.html:205 templates/base.html.py:218
-#: templates/apply/apply.html:7
-msgid "Create Instance"
-msgstr "Δημιουργία εικονικής μηχανής"
-
-#: templates/base.html:207 templates/base.html.py:221 templates/base.html:257
-#: templates/stats/statistics.html:349
-msgid "Applications"
-msgstr "Αιτήσεις"
-
-#: templates/base.html:210 templates/base.html.py:226 templates/base.html:276
+#: templates/base.html:116 templates/base.html.py:174
 msgid "Admin"
 msgstr "Διαχειριστής"
 
-#: templates/base.html:227
-msgid "Clear Cache"
-msgstr "Εκκαθάριση μνήμης"
+#: templates/base.html:121
+msgid "Language"
+msgstr "Γλώσσα"
 
-#: templates/base.html:235 templates/notifications/create.html:4
-#: templates/notifications/create.html:10
-#: templates/notifications/create_body.html:5
-msgid "Send Mail"
-msgstr "Αποστολή Mail"
+#: templates/base.html:146 templates/base.html.py:177
+msgid "Logout"
+msgstr "Έξοδος"
 
-#: templates/base.html:236 templates/clusters/clusters.html:7
-#: templates/clusters/clusters.html:43
+#: templates/base.html:169 templates/base.html.py:202
+#: templates/apply/admin_apply.html:11 templates/apply/apply.html:11
+msgid "Create Instance"
+msgstr "Δημιουργία εικονικής μηχανής"
+
+#: templates/base.html:171 templates/base.html.py:208
+#: templates/stats/statistics.html:326
+msgid "Applications"
+msgstr "Αιτήσεις"
+
+#: templates/base.html:183 templates/base.html.py:234
+#: templates/apply/admin_apply.html:9 templates/apply/application_list.html:22
+#: templates/apply/apply.html:9 templates/apply/review.html:14
+#: templates/auditlog/auditlog.html:31
+#: templates/clusters/cluster_nodes.html:23 templates/clusters/clusters.html:7
+#: templates/flatpages/faq.html:28 templates/graphs/nodes-graphs.html:18
+#: templates/instances/instance.html:61 templates/instances/novnc.html:193
+#: templates/instances/vnc.html:12 templates/jobs/jobs.html:35
+#: templates/news/news.html:30 templates/notifications/create.html:10
+#: templates/notifications/detail.html:10 templates/stats/statistics.html:264
+#: templates/users/idle_accounts.html:59 templates/users/profile.html:38
+#: templates/users/user_info.html:285
+msgid "Home"
+msgstr "Αρχική"
+
+#: templates/base.html:185
+#, fuzzy
+msgid "Nofications"
+msgstr "Αιτήσεις"
+
+#: templates/base.html:186 templates/clusters/clusters.html:8
+#: templates/clusters/clusters.html:42
 msgid "Cluster Info"
 msgstr "Λεπτομέριες συμπλέγματος"
 
-#: templates/base.html:237 templates/clusters/cluster_nodes.html:13
-#: templates/clusters/cluster_nodes.html:17
-#: templates/clusters/cluster_nodes.html:25
-#: templates/graphs/nodes-graphs.html:4
+#: templates/base.html:187 templates/clusters/cluster_nodes.html:18
+#: templates/clusters/cluster_nodes.html:24
+#: templates/clusters/cluster_nodes.html:32
+#: templates/graphs/nodes-graphs.html:5
 msgid "Nodes"
 msgstr "Κόμβοι"
 
-#: templates/base.html:238 templates/jobs/jobs.html:29
-#: templates/jobs/jobs.html.py:33
+#: templates/base.html:188 templates/jobs/jobs.html:30
+#: templates/jobs/jobs.html.py:36
 msgid "Jobs"
 msgstr "Εργασίες"
 
-#: templates/base.html:239 templates/graphs/nodes-graphs.html:18
+#: templates/base.html:189 templates/graphs/nodes-graphs.html:19
 msgid "Graphs"
 msgstr ""
 
-#: templates/base.html:246 templates/auditlog/auditlog.html:30
-#: templates/auditlog/auditlog.html:34 templates/auditlog/auditlog.html:41
+#: templates/base.html:196 templates/auditlog/auditlog.html:28
+#: templates/auditlog/auditlog.html:32 templates/auditlog/auditlog.html:39
 msgid "Audit Log"
 msgstr "Αρχείο καταγραφής ελέγχου"
 
-#: templates/base.html:246 templates/auditlog/auditlog.html:30
-#: templates/auditlog/auditlog.html:34 templates/auditlog/auditlog.html:41
+#: templates/base.html:196 templates/auditlog/auditlog.html:28
+#: templates/auditlog/auditlog.html:32 templates/auditlog/auditlog.html:39
 msgid "History"
 msgstr "Ιστορικό"
 
-#: templates/base.html:251 templates/stats/statistics.html:276
+#: templates/base.html:201 templates/stats/statistics.html:257
 msgid "Statistics"
 msgstr "Στατιστικά"
 
-#: templates/base.html:265
-msgid "Instance Owners"
-msgstr "Κάτοχοι εικονικών μηχανών"
-
-#: templates/base.html:266 templates/users/idle_accounts.html:50
-#: templates/users/idle_accounts.html:56
+#: templates/base.html:216 templates/users/idle_accounts.html:54
+#: templates/users/idle_accounts.html:60
 msgid "Idle Accounts"
 msgstr "Αδρανείς Λογαριασμοί"
 
-#: templates/base.html:270 templates/news/news.html:23
-#: templates/news/news.html.py:29 templates/news/news.html:38
-#: templates/users/login.html:55
+#: templates/base.html:219 templates/news/news.html:24
+#: templates/news/news.html.py:31 templates/news/news.html:38
+#: templates/users/login.html:60
 msgid "Latest News"
 msgstr "Τελευταία Νέα"
 
-#: templates/base.html:322
+#: templates/base.html:222
+msgid "Clear Cache"
+msgstr "Εκκαθάριση μνήμης"
+
+#: templates/base.html:268
 msgid "This is a service provided by"
 msgstr "Αυτή η υπηρεσία παρέχεται από το"
 
-#: templates/base.html:347
+#: templates/base.html:291
 msgid "Info"
 msgstr "Περί"
 
-#: templates/base.html:355
+#: templates/base.html:298
 msgid "Service Terms"
 msgstr "Όροι Χρήσης"
 
-#: templates/apply/application_list.html:4
+#: templates/apply/admin_apply.html:5 templates/apply/apply.html:5
+msgid "Create new Virtual Machine"
+msgstr "Δημιουργία νέας εικονικής μηχανής"
+
+#: templates/apply/admin_apply.html:43
+#, fuzzy
+msgid "Create a new instance"
+msgstr "Δημιουργία εικονικής μηχανής"
+
+#: templates/apply/admin_apply.html:49 templates/apply/apply.html:48
+#: templates/apply/review.html:73 templates/apply/review.html.py:278
+msgid "Instance information"
+msgstr "Στοιχεία εικονικής μηχανής"
+
+#: templates/apply/admin_apply.html:117 templates/apply/apply.html:153
+#: templates/apply/review.html:156 templates/apply/review.html.py:344
+msgid "Administrative contact"
+msgstr "Διαχειριστικός υπεύθυνος"
+
+#: templates/apply/admin_apply.html:128 templates/apply/review.html:173
+#: templates/apply/review.html.py:359
+msgid "Placement"
+msgstr "Τοποθέτηση"
+
+#: templates/apply/admin_apply.html:131 templates/apply/review.html:176
+msgid "The user has requested explicit network placement on"
+msgstr "Ο χρήστης έχει αιτηθεί ρητή δικτυακή τοποθέτηση στο"
+
+#: templates/apply/admin_apply.html:186 templates/apply/review.html:232
+#: templates/apply/review.html.py:365
+msgid "Job ID"
+msgstr ""
+
+#: templates/apply/admin_apply.html:196 templates/apply/review.html:242
+#: templates/apply/review.html.py:375
+msgid "Error"
+msgstr "Σφάλμα"
+
+#: templates/apply/admin_apply.html:207 templates/apply/apply.html:254
+#: templates/instances/instance_actions.html:354
+msgid "Apply"
+msgstr "Υποβολή"
+
+#: templates/apply/application_list.html:6
 msgid "Application list"
 msgstr "Λίστα Αιτήσεων"
 
-#: templates/apply/application_list.html:22
-#: templates/apply/application_list.html:41
-#: templates/auditlog/auditlog.html:102
-#: templates/clusters/cluster_nodes.html:125
-#: templates/instances/user_instances_json.html:155
-#: templates/jobs/jobs.html:165 templates/stats/instance_owners.html:17
-#: templates/stats/statistics.html:200 templates/users/idle_accounts.html:32
-#: templates/users/user_info.html:35
-msgid "Display"
-msgstr "Προβολή"
-
-#: templates/apply/application_list.html:22
-#: templates/apply/application_list.html:41
-#: templates/auditlog/auditlog.html:102
-#: templates/clusters/cluster_nodes.html:125
-#: templates/instances/user_instances_json.html:155
-#: templates/jobs/jobs.html:165 templates/stats/instance_owners.html:17
-#: templates/stats/statistics.html:200 templates/users/idle_accounts.html:32
-#: templates/users/user_info.html:35
-msgid "All"
-msgstr "Όλων"
-
-#: templates/apply/application_list.html:22
-#: templates/apply/application_list.html:41
-msgid "applications"
-msgstr "αιτήσεις"
-
-#: templates/apply/application_list.html:77 templates/apply/review.html:12
-#: templates/stats/statistics.html:104
+#: templates/apply/application_list.html:23 templates/apply/review.html:15
+#: templates/stats/statistics.html:103
 msgid "Instance Applications"
 msgstr "Αιτήσεις μηχανών"
 
-#: templates/apply/application_list.html:88
+#: templates/apply/application_list.html:31
 msgid "Pending applications"
 msgstr "Αιτήσεις που εκκρεμούν"
 
-#: templates/apply/application_list.html:91
+#: templates/apply/application_list.html:33
 msgid "Show Active"
 msgstr ""
 
-#: templates/apply/application_list.html:92
+#: templates/apply/application_list.html:34
 #, fuzzy
 msgid "Show Failed"
 msgstr "Καταχωρήθηκε"
 
-#: templates/apply/application_list.html:99
-#: templates/apply/application_list.html:129
-#: templates/auditlog/auditlog.html:54 templates/stats/instance_owners.html:42
+#: templates/apply/application_list.html:40
+#: templates/apply/application_list.html:68
+#: templates/auditlog/auditlog.html:50
 msgid "User"
 msgstr "Χρήστης"
 
-#: templates/apply/application_list.html:101
-#: templates/apply/application_list.html:131
+#: templates/apply/application_list.html:42
+#: templates/apply/application_list.html:70
 msgid "vCPUs"
 msgstr ""
 
-#: templates/apply/application_list.html:103
-#: templates/apply/application_list.html:133 templates/apply/review.html:79
-#: templates/clusters/cluster_nodes.html:37
-#: templates/instances/instance.html:139
-#: templates/instances/user_instances_json.html:50 templates/jobs/jobs.html:48
-#: templates/users/user_info.html:376
+#: templates/apply/application_list.html:44
+#: templates/apply/application_list.html:72 templates/apply/review.html:76
+#: templates/clusters/cluster_nodes.html:43
+#: templates/instances/instance.html:98
+#: templates/instances/user_instances_json.html:56 templates/jobs/jobs.html:50
+#: templates/users/user_info.html:370
 msgid "Status"
 msgstr "Κατάσταση"
 
-#: templates/apply/application_list.html:104
-#: templates/apply/application_list.html:134
+#: templates/apply/application_list.html:45
+#: templates/apply/application_list.html:73
 msgid "Filed"
 msgstr "Καταχωρήθηκε"
 
-#: templates/apply/application_list.html:124
+#: templates/apply/application_list.html:63
 msgid "Completed applications"
 msgstr "Περατωθείσες Αιτήσεις"
 
-#: templates/apply/apply.html:2
-msgid "Create new Virtual Machine"
-msgstr "Δημιουργία νέας εικονικής μηχανής"
+#: templates/apply/application_list.html:116
+#: templates/apply/application_list.html:135
+#: templates/auditlog/auditlog.html:91
+#: templates/clusters/cluster_nodes.html:151
+#: templates/instances/user_instances_json.html:154
+#: templates/jobs/jobs.html:160 templates/stats/statistics.html:194
+#: templates/users/idle_accounts.html:35 templates/users/user_info.html:34
+msgid "Display"
+msgstr "Προβολή"
 
-#: templates/apply/apply.html:37
+#: templates/apply/application_list.html:116
+#: templates/apply/application_list.html:135
+#: templates/auditlog/auditlog.html:91
+#: templates/clusters/cluster_nodes.html:151
+#: templates/instances/user_instances_json.html:154
+#: templates/jobs/jobs.html:160 templates/stats/statistics.html:194
+#: templates/users/idle_accounts.html:35 templates/users/user_info.html:34
+msgid "All"
+msgstr "Όλων"
+
+#: templates/apply/application_list.html:116
+#: templates/apply/application_list.html:135
+msgid "applications"
+msgstr "αιτήσεις"
+
+#: templates/apply/apply.html:43
 msgid "Apply for a new instance"
 msgstr "Αίτηση για νέα εικονική μηχανή"
 
-#: templates/apply/apply.html:43 templates/apply/review.html:76
-#: templates/apply/review.html.py:319
-msgid "Instance information"
-msgstr "Στοιχεία εικονικής μηχανής"
-
-#: templates/apply/apply.html:130
+#: templates/apply/apply.html:136
 msgid "Use/Comments"
 msgstr "Χρήση/Σχόλια"
 
-#: templates/apply/apply.html:131
+#: templates/apply/apply.html:137
 msgid ""
 "Give a short description of the intended use of this virtual machine, that "
 "justifies the parameter selection above. Feel free to include any additional "
@@ -622,12 +652,7 @@ msgstr ""
 "δικαιολογεί την επιλογή παραμέτρων που κάνατε. Μπορείτε επίσης να περιλάβετε "
 "τυχόν σχόλια προς τους διαχειριστές της εφαρμογής."
 
-#: templates/apply/apply.html:147 templates/apply/review.html:164
-#: templates/apply/review.html.py:387
-msgid "Administrative contact"
-msgstr "Διαχειριστικός υπεύθυνος"
-
-#: templates/apply/apply.html:149
+#: templates/apply/apply.html:155
 msgid ""
 "If you are applying on behalf of a NOC under GRNET's\n"
 "\t\t\t\t\t\tconstituency, please select the appropriate organization.\n"
@@ -638,15 +663,15 @@ msgstr ""
 "περίπτωση, παρακαλούμε συμπληρώστε τα στοιχεία επικοινωνίας του "
 "διαχειριστικού υπεύθυνου."
 
-#: templates/apply/apply.html:218
+#: templates/apply/apply.html:224
 msgid "Miscellaneous"
 msgstr "Λοιπά"
 
-#: templates/apply/apply.html:219
+#: templates/apply/apply.html:225
 msgid "We kindly remind you of the following:"
 msgstr "Σας υπευθυμίζουμε τα εξής:"
 
-#: templates/apply/apply.html:221
+#: templates/apply/apply.html:227
 #, fuzzy
 msgid ""
 "\n"
@@ -670,326 +695,310 @@ msgstr ""
 "υποδομή μας.</li>\n"
 "\t\t\t\t\t\t\t"
 
-#: templates/apply/apply.html:238
+#: templates/apply/apply.html:244
 msgid "You must accept the terms of service before continuing."
 msgstr "Πρέπει να αποδεχθείτε τους Όρους Χρήσης πρoτού συνεχίσετε."
 
-#: templates/apply/apply.html:242
+#: templates/apply/apply.html:248
 msgid "I have read the above and accept them, along with the"
 msgstr "Διάβασα τα παραπάνω και τα αποδέχομαι μαζί με τους"
 
-#: templates/apply/apply.html:242
+#: templates/apply/apply.html:248
 msgid "Terms of Service"
 msgstr "Όρους Χρήσης της Υπηρεσίας"
 
-#: templates/apply/apply.html:248
-#: templates/instances/instance_actions.html:320
-msgid "Apply"
-msgstr "Υποβολή"
-
-#: templates/apply/review.html:8 templates/apply/review.html.py:66
+#: templates/apply/review.html:11 templates/apply/review.html.py:65
 msgid "Review application"
 msgstr "Ανασκόπηση αίτησης"
 
-#: templates/apply/review.html:52 templates/auditlog/auditlog.html:73
-#: templates/jobs/jobs.html:67
+#: templates/apply/review.html:54 templates/auditlog/auditlog.html:67
+#: templates/jobs/jobs.html:64
 msgid "Job Details"
 msgstr "Λεπτομέρειες"
 
-#: templates/apply/review.html:58 templates/auditlog/auditlog.html:79
-#: templates/instances/instance.html:387
-#: templates/instances/instance_actions.html:283
-#: templates/instances/instance_actions.html:307
-#: templates/instances/instance_actions.html:324
+#: templates/apply/review.html:59 templates/auditlog/auditlog.html:72
+#: templates/instances/instance.html:410
+#: templates/instances/instance_actions.html:318
 #: templates/instances/instance_actions.html:343
-#: templates/instances/user_instances_json.html:85 templates/jobs/jobs.html:73
-#: templates/users/user_info.html:404
+#: templates/instances/instance_actions.html:358
+#: templates/instances/instance_actions.html:378
+#: templates/instances/user_instances_json.html:85 templates/jobs/jobs.html:69
+#: templates/users/user_info.html:394
 msgid "Close"
 msgstr "Κλείσιμο"
 
-#: templates/apply/review.html:66
+#: templates/apply/review.html:65
 msgid "by"
 msgstr "από"
 
-#: templates/apply/review.html:69
+#: templates/apply/review.html:66
 msgid "Submitted"
 msgstr "Έχει υποβληθεί στις"
 
-#: templates/apply/review.html:186 templates/apply/review.html.py:406
-msgid "Placement"
-msgstr "Τοποθέτηση"
-
-#: templates/apply/review.html:189
-msgid "The user has requested explicit network placement on"
-msgstr "Ο χρήστης έχει αιτηθεί ρητή δικτυακή τοποθέτηση στο"
-
-#: templates/apply/review.html:274 templates/apply/review.html.py:412
-msgid "Job ID"
-msgstr ""
-
-#: templates/apply/review.html:281 templates/apply/review.html.py:419
-msgid "Error"
-msgstr "Σφάλμα"
-
-#: templates/apply/review.html:290
+#: templates/apply/review.html:253
 msgid "Decision"
 msgstr "Απόφαση"
 
-#: templates/apply/review.html:293
+#: templates/apply/review.html:255
 msgid "Comments to the user"
 msgstr "Σχόλια προς το χρήστη"
 
-#: templates/apply/review.html:408
+#: templates/apply/review.html:361
 msgid "The instance has been placed on"
 msgstr "Η εικονική μηχανή έχει τοποθετηθεί στο"
 
-#: templates/apply/review.html:436
+#: templates/apply/review.html:392
 msgid "Pending Instance Applications"
 msgstr "Αιτήσεις που εκκρεμούν"
 
-#: templates/auditlog/auditlog.html:48 templates/jobs/jobs.html:46
+#: templates/apply/review.html:573
+msgid "Requested os not found"
+msgstr "Δεν βρέθηκε το λειτουργικό που ζήτηθηκε"
+
+#: templates/auditlog/auditlog.html:44 templates/jobs/jobs.html:48
 msgid "Job Id"
 msgstr "Id εργασίας"
 
-#: templates/auditlog/auditlog.html:49 templates/instances/instance.html:140
-#: templates/instances/user_instances_json.html:43 templates/jobs/jobs.html:47
-#: templates/users/user_info.html:372
+#: templates/auditlog/auditlog.html:45 templates/instances/instance.html:102
+#: templates/instances/user_instances_json.html:49 templates/jobs/jobs.html:49
+#: templates/users/user_info.html:366
 msgid "Cluster"
 msgstr "Σύμπλεγμα"
 
-#: templates/auditlog/auditlog.html:51
+#: templates/auditlog/auditlog.html:47
 msgid "Instance"
 msgstr "Εικονική μηχανή"
 
-#: templates/auditlog/auditlog.html:52
+#: templates/auditlog/auditlog.html:48
 msgid "Action"
 msgstr "Ενέργεια"
 
-#: templates/auditlog/auditlog.html:56
+#: templates/auditlog/auditlog.html:52
 msgid "Time"
 msgstr "Ωρα"
 
-#: templates/auditlog/auditlog.html:102
+#: templates/auditlog/auditlog.html:91
 msgid "logs"
 msgstr "Αρχείο καταγραφής"
 
-#: templates/clusters/cluster_nodes.html:32
+#: templates/clusters/cluster_nodes.html:38
 #, fuzzy
 msgid "Nodegroup"
 msgstr "Κόμβος"
 
-#: templates/clusters/cluster_nodes.html:34
-#: templates/instances/user_instances_json.html:48
-#: templates/users/user_info.html:374
+#: templates/clusters/cluster_nodes.html:40
+#: templates/instances/user_instances_json.html:54
+#: templates/users/user_info.html:368
 msgid "Disk"
 msgstr "Δίσκος"
 
-#: templates/clusters/clusters.html:52
+#: templates/clusters/clusters.html:59
 msgid "Disk Templates"
 msgstr "Πρότυπα δίσκων"
 
-#: templates/clusters/clusters.html:53
+#: templates/clusters/clusters.html:60
 msgid "Hypervisor"
 msgstr ""
 
-#: templates/clusters/clusters.html:54
+#: templates/clusters/clusters.html:61
 msgid "Version"
 msgstr "Έκδοση"
 
-#: templates/clusters/clusters.html:55 templates/stats/instance_owners.html:43
-#: templates/users/user_info.html:365
+#: templates/clusters/clusters.html:62 templates/users/user_info.html:359
 msgid "Instances"
 msgstr "Οι εικονικές μηχανές μου"
 
-#: templates/clusters/clusters.html:57
+#: templates/clusters/clusters.html:64
 msgid "Ipolicy"
 msgstr ""
 
-#: templates/clusters/clusters.html:74
+#: templates/clusters/clusters.html:79
 msgid "Nodegroups"
 msgstr "Κόμβοι"
 
-#: templates/clusters/clusters.html:88
+#: templates/clusters/clusters.html:90
 msgid "Networks"
 msgstr "Δίκτυα"
 
-#: templates/graphs/nodes-graphs.html:36
+#: templates/graphs/nodes-graphs.html:37
 msgid "Get Graphs"
 msgstr ""
 
-#: templates/instances/instance.html:4
+#: templates/instances/instance.html:8
 msgid "about"
 msgstr "σχετικά με την εικονική μηχανή"
 
-#: templates/instances/instance.html:4
+#: templates/instances/instance.html:8
 msgid "on cluster"
 msgstr "στο σύμπλεγμα"
 
-#: templates/instances/instance.html:135 templates/instances/instance.html:187
-#: templates/instances/user_instances_json.html:406
-#: templates/users/user_info.html:214
+#: templates/instances/instance.html:93 templates/instances/instance.html:215
+#: templates/instances/user_instances_json.html:412
+#: templates/users/user_info.html:207
 msgid "Details"
 msgstr "Λεπτομέρειες"
 
-#: templates/instances/instance.html:142
-#: templates/instances/user_instances_json.html:45
+#: templates/instances/instance.html:113
+#: templates/instances/user_instances_json.html:51
 msgid "Node"
 msgstr "Κόμβος"
 
-#: templates/instances/instance.html:144
+#: templates/instances/instance.html:118
 msgid "OS"
 msgstr "Λειτουργικό σύστημα"
 
-#: templates/instances/instance.html:146
+#: templates/instances/instance.html:126
 msgid "CPUs"
 msgstr "Επεξεργαστές"
 
-#: templates/instances/instance.html:148
+#: templates/instances/instance.html:134
 msgid "Network cards"
 msgstr "Κάρτες δικτύου"
 
-#: templates/instances/instance.html:160
+#: templates/instances/instance.html:174
 msgid "Created on"
 msgstr "Δημιουργήθηκε"
 
-#: templates/instances/instance.html:161
+#: templates/instances/instance.html:178
 msgid "Last modified"
 msgstr "Τελευταία τροποποίηση"
 
-#: templates/instances/instance.html:163 templates/instances/instance.html:188
-#: templates/instances/user_instances_json.html:407
+#: templates/instances/instance.html:182 templates/instances/instance.html:216
+#: templates/instances/user_instances_json.html:413
 msgid "Owners"
 msgstr "Ιδιοκτήτες"
 
-#: templates/instances/instance.html:178
+#: templates/instances/instance.html:199
 msgid "Manage Owners"
 msgstr "Διαχείριση Ιδιοκτητών"
 
-#: templates/instances/instance.html:182
+#: templates/instances/instance.html:206
 msgid "Admin Options"
 msgstr "Επιλογές Διαχειριστή"
 
-#: templates/instances/instance.html:184
-#: templates/instances/user_instances_json.html:58
-#: templates/instances/user_instances_json.html:404
-#: templates/users/user_info.html:212 templates/users/user_info.html.py:384
+#: templates/instances/instance.html:211
+#: templates/instances/user_instances_json.html:64
+#: templates/instances/user_instances_json.html:410
+#: templates/users/user_info.html:205 templates/users/user_info.html.py:378
 msgid "Options"
 msgstr "Επιλογές"
 
-#: templates/instances/instance.html:189
-#: templates/instances/user_instances_json.html:408
-#: templates/users/user_info.html:216
+#: templates/instances/instance.html:217
+#: templates/instances/user_instances_json.html:414
+#: templates/users/user_info.html:209
 msgid "Notify"
 msgstr "Ειδοποίηση"
 
-#: templates/instances/instance.html:191
-#: templates/instances/user_instances_json.html:391
-#: templates/users/user_info.html:205
+#: templates/instances/instance.html:219
+#: templates/instances/user_instances_json.html:397
+#: templates/users/user_info.html:198
 msgid "Unlock"
 msgstr "Ξεκλείδωμα"
 
-#: templates/instances/instance.html:193
-#: templates/instances/user_instances_json.html:394
-#: templates/users/user_info.html:208
+#: templates/instances/instance.html:221
+#: templates/instances/user_instances_json.html:400
+#: templates/users/user_info.html:201
 msgid "Lock"
 msgstr "Κλείδωμα"
 
-#: templates/instances/instance.html:196
-#: templates/instances/user_instances_json.html:397
+#: templates/instances/instance.html:225
+#: templates/instances/user_instances_json.html:403
 msgid "De-Isolate"
 msgstr "Άρση απομόνωσης"
 
-#: templates/instances/instance.html:198
-#: templates/instances/user_instances_json.html:400
+#: templates/instances/instance.html:229
+#: templates/instances/user_instances_json.html:406
 msgid "Isolate"
 msgstr "Απομόνωση"
 
-#: templates/instances/instance.html:204
+#: templates/instances/instance.html:238
 msgid "Application"
 msgstr "Αίτηση"
 
-#: templates/instances/instance.html:221 templates/instances/instance.html:224
+#: templates/instances/instance.html:258 templates/instances/instance.html:261
 msgid "No data available yet..."
 msgstr "Μη διαθέσιμα δεδομένα..."
 
-#: templates/instances/instance.html:234
+#: templates/instances/instance.html:270
 msgid "Configuration Options"
 msgstr "Επιλογές Διαμόρφωσης"
 
-#: templates/instances/instance.html:241
+#: templates/instances/instance.html:276
 msgid "Configuration"
 msgstr "Διαμόρφωση"
 
-#: templates/instances/instance.html:334
+#: templates/instances/instance.html:367
 msgid "!"
 msgstr ""
 
-#: templates/instances/instance.html:344
+#: templates/instances/instance.html:375
 msgid "Update"
 msgstr "Ενημέρωση"
 
-#: templates/instances/instance.html:363
+#: templates/instances/instance.html:390
 msgid "Actions"
 msgstr "Ενέργειες"
 
-#: templates/instances/instance.html:381
+#: templates/instances/instance.html:405
 msgid "Instance Tags"
 msgstr "Τags εικονικών μηχανών"
 
-#: templates/instances/instance_actions.html:207
+#: templates/instances/instance_actions.html:208
 msgid "Shutdown"
 msgstr "Απενεργοποίηση"
 
-#: templates/instances/instance_actions.html:208
-#: templates/instances/instance_actions.html:231
+#: templates/instances/instance_actions.html:209
+#: templates/instances/instance_actions.html:238
 msgid "Reboot"
 msgstr "Επανεκκίνηση"
 
-#: templates/instances/instance_actions.html:212
-#: templates/instances/instance_actions.html:234
+#: templates/instances/instance_actions.html:213
+#: templates/instances/instance_actions.html:248
 msgid "Rename..."
 msgstr "Μετονομασία..."
 
-#: templates/instances/instance_actions.html:213
-#: templates/instances/instance_actions.html:235
+#: templates/instances/instance_actions.html:214
+#: templates/instances/instance_actions.html:256
 msgid "Reinstall..."
 msgstr "Επανεγκατάσταση..."
 
-#: templates/instances/instance_actions.html:214
-#: templates/instances/instance_actions.html:236
+#: templates/instances/instance_actions.html:215
+#: templates/instances/instance_actions.html:264
 msgid "Destroy..."
 msgstr "Διαγραφή..."
 
-#: templates/instances/instance_actions.html:230 templates/jobs/jobs.html:50
+#: templates/instances/instance_actions.html:231 templates/jobs/jobs.html:52
 msgid "Start"
 msgstr "Εκκίνηση"
 
-#: templates/instances/instance_actions.html:252
+#: templates/instances/instance_actions.html:284
 msgid "Instance actions are disabled by the administrator"
 msgstr ""
 "Οι ενέργειες της εικονικής μηχανήες έιναι απενεργοποιημένες απο τον "
 "διαχειριστή."
 
-#: templates/instances/instance_actions.html:263
+#: templates/instances/instance_actions.html:295
 msgid "Reinstall Instance"
 msgstr "Επανεγκατάσταση"
 
-#: templates/instances/instance_actions.html:267
-#: templates/instances/instance_actions.html:294
-#: templates/instances/instance_actions.html:335
+#: templates/instances/instance_actions.html:299
+#: templates/instances/instance_actions.html:328
+#: templates/instances/instance_actions.html:368
 msgid "Warning!"
 msgstr "Προσοχή!"
 
-#: templates/instances/instance_actions.html:268
-#, python-format
+#: templates/instances/instance_actions.html:301
+#, fuzzy, python-format
 msgid ""
-"You are about to initiate the process of your instance <strong>%(instance)s</"
-"strong> re-installation.\n"
-"<br>This process <strong>wipes all your data</strong> and re-installs your "
-"instance from scratch. You will lose all your data.\n"
-"<br>Your instance will not be reinstalled yet, though.<br>\n"
-"You will receive an email with an activation link. Only when you visit the "
-"activation link, your instance will be reinstalled.\n"
+"\n"
+"\t\t\t\tYou are about to initiate the process of your instance <strong>"
+"%(instance)s</strong> re-installation.\n"
+"\t\t\t\t<br>This process <strong>wipes all your data</strong> and re-"
+"installs your instance from scratch. You will lose all your data.\n"
+"\t\t\t\t<br>Your instance will not be reinstalled yet, though.<br>\n"
+"\t\t\t\tYou will receive an email with an activation link. Only when you "
+"visit the activation link, your instance will be reinstalled.\n"
+"\t\t\t\t"
 msgstr ""
 "Πρόκειται να εκκινήσετε τη διαδικασία επανεγκατάστασης της εικονικής μηχανής "
 "<strong>%(instance)s</strong>\n"
@@ -1000,26 +1009,27 @@ msgstr ""
 "Θα λάβετε ένα email με ένα link ενεργοποίησης. Μόνο όταν επισκεφθείτε το "
 "link θα ξεκινήσει η διαδικασία επανεγκατάστασης.\n"
 
-#: templates/instances/instance_actions.html:279
-#: templates/instances/instance_actions.html:303
-#: templates/instances/rename_instance.html:62
+#: templates/instances/instance_actions.html:314
+#: templates/instances/instance_actions.html:339
+#: templates/instances/rename_instance.html:55
 msgid "Email link"
 msgstr "Αποστολή link"
 
-#: templates/instances/instance_actions.html:290
+#: templates/instances/instance_actions.html:324
 msgid "Destroy Instance"
 msgstr "Διαγραφή εικονικής μηχανής"
 
-#: templates/instances/instance_actions.html:295
-#, python-format
+#: templates/instances/instance_actions.html:330
+#, fuzzy, python-format
 msgid ""
 "You are about to initiate the process of your instance <strong>%(instance)s</"
 "strong> removal.\n"
-"This process will <strong>destroy your instance</strong>. You will lose all "
-"your data.\n"
-"<br>Your instance will not be destroyed yet, though.<br>\n"
-"You will receive an email with an activation link. Only when you visit the "
-"activation link, your instance will be destroyed.\n"
+"\t\t\t\tThis process will <strong>destroy your instance</strong>. You will "
+"lose all your data.\n"
+"\t\t\t\t<br>Your instance will not be destroyed yet, though.<br>\n"
+"\t\t\t\tYou will receive an email with an activation link. Only when you "
+"visit the activation link, your instance will be destroyed.\n"
+"\t\t\t\t"
 msgstr ""
 "Πρόκειται να εκκινήσετε τη διαδικασία διαγραφής της εικονικής μηχανής "
 "<strong>%(instance)s</strong>\n"
@@ -1029,52 +1039,54 @@ msgstr ""
 "Θα λάβετε ένα email με ένα link ενεργοποίησης. Μόνο όταν επισκεφθείτε το "
 "link θα ξεκινήσει η διαδικασία διαγραφής.\n"
 
-#: templates/instances/instance_actions.html:314
-#: templates/instances/instance_actions.html:331
+#: templates/instances/instance_actions.html:349
+#: templates/instances/instance_actions.html:364
 msgid "Rename Instance"
 msgstr "Μετονομασία εικονικής μηχανής"
 
-#: templates/instances/instance_actions.html:336
+#: templates/instances/instance_actions.html:370
 #, fuzzy, python-format
 msgid ""
 "You cannot rename instance <strong>%(instance)s</strong>.\n"
-"To rename an instance make sure it is turned off.\n"
-"To turn it off select shutdown from this panel.\n"
+"\t\t\t\tTo rename an instance make sure it is turned off.\n"
+"\t\t\t\tTo turn it off select shutdown from this panel.\n"
+"\t\t\t\t"
 msgstr ""
 "Δεν μπορείτε να μετονομάσετε τη μηχανή <strong>%(instance)s</strong>.\n"
 "Η μετονομασία απαιτεί το κλείσιμο της μηχανής.\n"
 
-#: templates/instances/novnc.html:5 templates/instances/novnc.html.py:198
-#: templates/instances/vnc.html:5 templates/instances/vnc.html.py:10
+#: templates/instances/novnc.html:9 templates/instances/novnc.html.py:199
+#: templates/instances/vnc.html:9 templates/instances/vnc.html.py:14
 #: templates/instances/includes/console-module.html:4
 #: templates/instances/includes/console-module.html:6
 msgid "Console"
 msgstr "Κονσόλα"
 
-#: templates/instances/novnc.html:208 templates/instances/vnc.html:18
+#: templates/instances/novnc.html:208 templates/instances/vnc.html:21
 msgid "VNC session on"
 msgstr "VNC σύνδεση στο"
 
-#: templates/instances/novnc.html:223
+#: templates/instances/novnc.html:222
 msgid ""
 "Canvas is not supported in your browser. Please use new versions\n"
-"\t\t\t\t\tof Chrome or Firefox."
+"\t\t\t\t\t\tof Chrome or Firefox."
 msgstr ""
 
-#: templates/instances/rename_instance.html:39
+#: templates/instances/rename_instance.html:32
 msgid "Instance Rename"
 msgstr "Μετονομασία"
 
-#: templates/instances/rename_instance.html:40
-#, python-format
+#: templates/instances/rename_instance.html:33
+#, fuzzy, python-format
 msgid ""
 "You are about to initiate the process of your instance <strong>%(instance)s</"
 "strong> rename.<br>\n"
-"Once you select a new hostname and click Apply you will receive an email "
+"\tOnce you select a new hostname and click Apply you will receive an email "
 "with an activation link. Only when you visit the activation link, your "
 "instance will be renamed.\n"
-"<div class=\"alert alert-warning\"><strong>Important</strong>: To rename an "
-"instance make sure that it is turned off</div>\n"
+"\t<div class=\"alert alert-warning\"><strong>Important</strong>: To rename "
+"an instance make sure that it is turned off</div>\n"
+"\t"
 msgstr ""
 "Πρόκειται να ξεκινήσετε τη διαδικασία μετονομασίας της εικονικής μηχανής "
 "<strong>%(instance)s</strong><br>\n"
@@ -1084,85 +1096,84 @@ msgstr ""
 "<div class=\"alert alert-warning\"><strong>Προσοχή</strong>: Για να "
 "μετονομάσετε μια εικονική μηχανή θα πρέπει να είναι απενεργοποιημένη</div>\n"
 
-#: templates/instances/user_instances_json.html:28
-#: templates/instances/user_instances_json.html:36
+#: templates/instances/user_instances_json.html:29
 msgid "My instances"
 msgstr "Οι εικονικές μηχανές μου"
 
-#: templates/instances/user_instances_json.html:54
-#: templates/users/user_info.html:380
+#: templates/instances/user_instances_json.html:60
+#: templates/users/user_info.html:374
 msgid "MAC"
 msgstr ""
 
-#: templates/instances/user_instances_json.html:57
-#: templates/users/user_info.html:383
+#: templates/instances/user_instances_json.html:63
+#: templates/users/user_info.html:377
 msgid "Owner"
 msgstr "Ιδιοκτήτης"
 
-#: templates/instances/user_instances_json.html:59
-#: templates/users/user_info.html:385
+#: templates/instances/user_instances_json.html:65
+#: templates/users/user_info.html:379
 msgid "HiddenContactDetails"
 msgstr ""
 
-#: templates/instances/user_instances_json.html:61
+#: templates/instances/user_instances_json.html:67
 msgid "Shortcuts"
 msgstr "Συντομεύσεις"
 
-#: templates/instances/user_instances_json.html:79
-#: templates/users/user_info.html:398
+#: templates/instances/user_instances_json.html:80
+#: templates/users/user_info.html:389
 msgid "Instance Details"
 msgstr "Λεπτομέρειες εικονικών μηχανών"
 
-#: templates/instances/user_instances_json.html:155
+#: templates/instances/user_instances_json.html:154
 msgid "instances"
 msgstr "εικονικών μηχανών"
 
-#: templates/instances/verify_action.html:37
+#: templates/instances/verify_action.html:42
 msgid "All your data will be lost!"
 msgstr "Όλα τα δεδομένα σας θα χαθούν"
 
-#: templates/instances/verify_action.html:38
+#: templates/instances/verify_action.html:43
 msgid "Your instance will be deleted!"
 msgstr "Η εικονική σας μηχανή θα διαγραφεί"
 
-#: templates/instances/verify_action.html:39
+#: templates/instances/verify_action.html:44
 msgid "Make sure you have a recent backup of your data!"
 msgstr ""
 "Βεβαιωθείτε ότι έχετε ένα πρόσφατο αντίγραφο ασφαλείας όσων δεδομένων "
 "χρειάζεσθε"
 
-#: templates/instances/verify_action.html:40
+#: templates/instances/verify_action.html:45
 msgid "Once initiated, this process cannot be undone or stop!"
 msgstr ""
 "Εφόσον ξεκινήσει, αυτή η διαδικασία δεν μπορεί να αναιρεθεί ή να σταματήσει"
 
-#: templates/instances/verify_action.html:44
-#: templates/users/pass_change.html:61
+#: templates/instances/verify_action.html:49
+#: templates/users/pass_change.html:59
 msgid "Important"
 msgstr "Σημαντικό"
 
-#: templates/instances/verify_action.html:44
+#: templates/instances/verify_action.html:49
 msgid "To rename an instance make sure that it is turned off"
 msgstr ""
 "Για να μετονομάσετε μια εικονική μηχανή, βεβαιωθείτε ότι είναι "
 "απενεργοποιημένη"
 
-#: templates/instances/verify_action.html:49
 #: templates/instances/verify_action.html:55
+#: templates/instances/verify_action.html:61
 msgid "Re-install"
 msgstr "Επανεγκατάσταση"
 
-#: templates/instances/verify_action.html:49
-#: templates/instances/verify_action.html:55
+#: templates/instances/verify_action.html:56
+#: templates/instances/verify_action.html:62
 msgid "Destroy"
 msgstr "Διαγραφή"
 
-#: templates/instances/verify_action.html:51
+#: templates/instances/verify_action.html:57
 msgid "Rename"
 msgstr "Μετονομασία"
 
 # python-format
-#: templates/instances/verify_action.html:55
+#: templates/instances/verify_action.html:63
 #, python-format
 msgid ""
 "on instance <strong>%(instance)s</strong> is no longer available. It has "
@@ -1171,35 +1182,48 @@ msgstr ""
 "στη μηχανή <strong>%(instance)s</strong> δεν είναι πλέον διαθέσιμο. Έχει "
 "είτε λήξει ή έχει ήδη πραγματοποιηθεί."
 
-#: templates/instances/verify_action.html:56
+#: templates/instances/verify_action.html:65
 msgid "Apply for a new request via the instance details page."
 msgstr "Υποβάλλετε νέο αίτημα από τη σελίδα λεπτομερειών της εικονικής μηχανής"
 
-#: templates/instances/verify_action.html:62
+#: templates/instances/verify_action.html:71
 msgid "You are about to change your email to"
 msgstr "Πρόκειται να αλλάξετε το email σας σε"
 
-#: templates/instances/verify_action.html:67 templates/users/profile.html:59
+#: templates/instances/verify_action.html:75 templates/users/profile.html:67
 msgid "Change Email"
 msgstr "Αλλαγή e-mail"
 
-#: templates/jobs/jobs.html:40
+#: templates/jobs/jobs.html:43
 msgid "Clusters Jobs"
 msgstr "Εργασίες συμπλέγματος"
 
-#: templates/jobs/jobs.html:49
+#: templates/jobs/jobs.html:51
 msgid "Opcode Id"
 msgstr ""
 
-#: templates/jobs/jobs.html:165
+#: templates/jobs/jobs.html:160
 msgid "jobs"
 msgstr "εργασίες"
 
-#: templates/notifications/create_body.html:74
+#: templates/notifications/create.html:6
+#: templates/notifications/create.html:13
+#: templates/notifications/detail.html:6
+#: templates/notifications/detail.html:13
+#, fuzzy
+msgid "Notifications"
+msgstr "Αιτήσεις"
+
+#: templates/notifications/create_body.html:5
+#, fuzzy
+msgid "Send Email Notifications"
+msgstr "Αιτήσεις που εκκρεμούν"
+
+#: templates/notifications/create_body.html:76
 msgid "Send"
 msgstr "Αποστολή"
 
-#: templates/notifications/create_script.html:8
+#: templates/notifications/create_script.html:14
 msgid "Type name(s) from user, group, instance, cluster"
 msgstr "Επιλέξτε ονόματα από χρήστες, ομάδες, μηχανές, clusters"
 
@@ -1239,7 +1263,7 @@ msgid "You may login to ganetimgr using the following URL:"
 msgstr ""
 
 #: templates/registration/password_change_form.html:5
-#: templates/users/profile.html:51
+#: templates/users/profile.html:59
 msgid "Change Password"
 msgstr "Αλλαγή κωδικού"
 
@@ -1296,8 +1320,8 @@ msgstr ""
 "κωδικού σας"
 
 #: templates/registration/registration_complete.html:3
-#: templates/registration/registration_form.html:3
-#: templates/registration/registration_form.html:48
+#: templates/registration/registration_form.html:4
+#: templates/registration/registration_form.html:52
 msgid "Register"
 msgstr "Εγγραφή"
 
@@ -1325,193 +1349,188 @@ msgstr "είσοδο"
 msgid "page"
 msgstr "σελίδα"
 
-#: templates/registration/registration_form.html:23
+#: templates/registration/registration_form.html:27
 msgid "Register new user"
 msgstr "Εγγραφή νέου χρήστη"
 
-#: templates/stats/instance_owners.html:26
-#: templates/stats/instance_owners.html:30
-#: templates/stats/instance_owners.html:37
-msgid "Instance owners"
-msgstr "Κάτοχοι εικονικών μηχανών"
-
-#: templates/stats/statistics.html:29
+#: templates/stats/statistics.html:28
 msgid "Instance Creation History"
 msgstr "Ιστορικό Δημιουργίας Εικονικών Μηχανών"
 
-#: templates/stats/statistics.html:33 templates/stats/statistics.html.py:86
+#: templates/stats/statistics.html:32 templates/stats/statistics.html.py:85
 msgid "Click and drag in the plot area to zoom in"
 msgstr "Κάντε click και σύρετε μέσα στο γράφημα για μεγέθυνση"
 
-#: templates/stats/statistics.html:34 templates/stats/statistics.html.py:87
+#: templates/stats/statistics.html:33 templates/stats/statistics.html.py:86
 msgid "Drag your finger over the plot to zoom in"
 msgstr "Σύρτε το δείκτη σας πάνω στο γράφημα για μεγέθυνση"
 
-#: templates/stats/statistics.html:40
+#: templates/stats/statistics.html:39
 msgid "Instance Creation Dates"
 msgstr "Ημερομηνίες Δημιουργίας Εικονικών Μηχανών"
 
-#: templates/stats/statistics.html:46
+#: templates/stats/statistics.html:45
 msgid "Number of Instances"
 msgstr "Αριθμός Εικονικών Μηχανών"
 
-#: templates/stats/statistics.html:54
+#: templates/stats/statistics.html:53
 msgid "Created"
 msgstr "Δημιουργήθηκε"
 
-#: templates/stats/statistics.html:54 templates/stats/statistics.html:110
+#: templates/stats/statistics.html:53 templates/stats/statistics.html:109
 msgid "So far"
 msgstr "Μέχρι στιγμής"
 
-#: templates/stats/statistics.html:82
+#: templates/stats/statistics.html:81
 msgid "Instance Applications History"
 msgstr "Ιστορικό Αιτήσεων"
 
-#: templates/stats/statistics.html:93
+#: templates/stats/statistics.html:92
 msgid "Instance Application Dates"
 msgstr "Ημερομηνίες Αιτήσεων"
 
-#: templates/stats/statistics.html:99
+#: templates/stats/statistics.html:98
 msgid "Number of Applications"
 msgstr "Αριθμός Αιτήσεων"
 
-#: templates/stats/statistics.html:110
+#: templates/stats/statistics.html:109
 msgid "Submitted:"
 msgstr "Έχουν υποβληθεί"
 
-#: templates/stats/statistics.html:281
+#: templates/stats/statistics.html:265
 msgid "Service Statistics"
 msgstr "Στατιστικά Υπηρεσίας"
 
-#: templates/stats/statistics.html:288
+#: templates/stats/statistics.html:272
 #, fuzzy
 msgid "ganetimgr Statistics"
 msgstr "Στατιστικά Πλατφόρμας"
 
-#: templates/stats/statistics.html:312 templates/users/idle_accounts.html:69
-#: templates/users/user_info.html:317 templates/users/user_info.html.py:325
+#: templates/stats/statistics.html:292 templates/users/idle_accounts.html:71
+#: templates/users/user_info.html:308 templates/users/user_info.html.py:316
 msgid "Username"
 msgstr "Όνομα Χρήστη"
 
-#: templates/stats/statistics.html:313
+#: templates/stats/statistics.html:293
 msgid "VMs"
 msgstr "Εικονικές μηχανές"
 
-#: templates/stats/statistics.html:336
+#: templates/stats/statistics.html:313
 msgid "Platform Statistics"
 msgstr "Στατιστικά Πλατφόρμας"
 
-#: templates/stats/statistics.html:341 templates/stats/statistics.html:380
+#: templates/stats/statistics.html:318 templates/stats/statistics.html:356
 #, fuzzy
 msgid "Managed by ganetimgr"
 msgstr "Διαχειριζόμενες από τη ViMa"
 
-#: templates/stats/statistics.html:344
+#: templates/stats/statistics.html:321
 msgid "Instances "
 msgstr "Εικονικές Μηχανές"
 
-#: templates/stats/statistics.html:346
+#: templates/stats/statistics.html:323
 msgid "Created "
 msgstr "Έχουν δημιουργηθεί"
 
-#: templates/stats/statistics.html:351
+#: templates/stats/statistics.html:328
 msgid "Submitted "
 msgstr "Έχουν υποβληθεί"
 
-#: templates/stats/statistics.html:354
+#: templates/stats/statistics.html:331
 msgid "Users"
 msgstr "Χρήστες"
 
-#: templates/stats/statistics.html:356
+#: templates/stats/statistics.html:333
 msgid "Registered"
 msgstr "Εγγεγραμμένοι"
 
-#: templates/stats/statistics.html:359 templates/users/user_info.html:321
+#: templates/stats/statistics.html:336 templates/users/user_info.html:312
 msgid "Groups"
 msgstr "Ομάδες"
 
-#: templates/stats/statistics.html:361
+#: templates/stats/statistics.html:338
 msgid "of users"
 msgstr "χρηστών"
 
-#: templates/stats/statistics.html:364
+#: templates/stats/statistics.html:341
 msgid "Organizations"
 msgstr "Φορείς"
 
-#: templates/stats/statistics.html:366
+#: templates/stats/statistics.html:343
 msgid "Participating"
 msgstr "Συμμετέχουν"
 
-#: templates/stats/statistics.html:375
+#: templates/stats/statistics.html:351
 msgid "Your Statistics"
 msgstr "Τα στατιστικά σας"
 
-#: templates/stats/statistics.html:378
+#: templates/stats/statistics.html:354
 msgid "My Instances"
 msgstr "Οι εικονικές μηχανές μου"
 
-#: templates/stats/statistics.html:385 templates/stats/statistics.html:390
-#: templates/stats/statistics.html:395
+#: templates/stats/statistics.html:361 templates/stats/statistics.html:366
+#: templates/stats/statistics.html:371
 msgid "Total"
 msgstr "Σύνολο"
 
-#: templates/stats/statistics.html:400 templates/stats/statistics.html:405
-#: templates/stats/statistics.html:410
+#: templates/stats/statistics.html:376 templates/stats/statistics.html:381
+#: templates/stats/statistics.html:386
 msgid "Avg."
 msgstr "ΜΟ."
 
-#: templates/tagging/itags.html:105
+#: templates/tagging/itags.html:106
 msgid "Warning"
 msgstr "Προσοχή"
 
-#: templates/tagging/itags.html:105
+#: templates/tagging/itags.html:106
 msgid "Adding or removing users and groups is done on your own responsibility"
 msgstr "Η προσθήκη και η αφαίρεση χρηστών πραγματοποιείται με δική σας ευθύνη"
 
-#: templates/users/idle_accounts.html:65
+#: templates/users/idle_accounts.html:67
 msgid "User Idle Accounts"
 msgstr "Αδρανείς Λογαριασμοί"
 
-#: templates/users/idle_accounts.html:70 templates/users/user_info.html:318
-#: templates/users/user_info.html.py:326
+#: templates/users/idle_accounts.html:72 templates/users/user_info.html:309
+#: templates/users/user_info.html.py:317
 msgid "First Name"
 msgstr "Όνομα"
 
-#: templates/users/idle_accounts.html:71 templates/users/user_info.html:319
-#: templates/users/user_info.html.py:327
+#: templates/users/idle_accounts.html:73 templates/users/user_info.html:310
+#: templates/users/user_info.html.py:318
 msgid "Last Name"
 msgstr "Επώνυμο"
 
-#: templates/users/idle_accounts.html:72 templates/users/user_info.html:320
-#: templates/users/user_info.html.py:328
+#: templates/users/idle_accounts.html:74 templates/users/user_info.html:311
+#: templates/users/user_info.html.py:319
 msgid "E-mail"
 msgstr "E-mail"
 
-#: templates/users/idle_accounts.html:73
+#: templates/users/idle_accounts.html:75
 msgid "Last Login"
 msgstr "Τελευταία Είσοδος"
 
-#: templates/users/login.html:5 templates/users/login.html.py:63
-#: templates/users/login.html:94
+#: templates/users/login.html:8 templates/users/login.html.py:69
+#: templates/users/login.html:98
 msgid "Login"
 msgstr "Είσοδος"
 
-#: templates/users/login.html:40
+#: templates/users/login.html:44
 msgid "Welcome"
 msgstr "Καλωσήλθατε"
 
-#: templates/users/login.html:42
+#: templates/users/login.html:46
+#, fuzzy
 msgid ""
 "\n"
-"\t\t\t\t<p>Welcome to GRNET's ViMa service.</p>\n"
-"\t\t\t\t<p>If you are new to the service, take some time to read the service "
-"description supplied at the hyperlink at the end of this page and then "
-"register for a new account.</p>\n"
-"\t\t\t\t<p>If you already have an account, you can log in using the form on "
-"the right.</p>\n"
-"\t\t\t\t<p>For troubleshooting info and remarks do not hesitate to contact "
-"GRNET's Helpdesk.</p>\n"
-"\t\t\t\t"
+"\t\t\t\t\t\t\t\t\t\t\t<p>Welcome to GRNET's ViMa service.</p>\n"
+"\t\t\t\t\t\t\t\t\t\t\t<p>If you are new to the service, take some time to "
+"read the service description supplied at the hyperlink at the end of this "
+"page and then register for a new account.</p>\n"
+"\t\t\t\t\t\t\t\t\t\t\t<p>If you already have an account, you can log in "
+"using the form on the right.</p>\n"
+"\t\t\t\t\t\t\t\t\t\t\t<p>For troubleshooting info and remarks do not "
+"hesitate to contact GRNET's Helpdesk.</p>\n"
+"\t\t\t\t\t\t\t\t\t\t"
 msgstr ""
 "\n"
 "<p>Καλωσήλθατε στην υπηρεσία ViMa του ΕΔΕΤ.</p>\n"
@@ -1522,15 +1541,15 @@ msgstr ""
 "χρησιμοποιώντας τη φόρμα στο δεξί μέρος της σελίδας.</p>\n"
 "<p>Για τυχόν προβλήματα ή απορίες, επικοινωνήστε με το Helpdesk του ΕΔΕΤ.</p>"
 
-#: templates/users/login.html:66
+#: templates/users/login.html:72
 msgid "Your username and password didn't match. Please try again."
 msgstr "Ο συνδυασμός ονόματος χρήστη και κωδικού δεν είναι έγκυρος"
 
-#: templates/users/login.html:99
+#: templates/users/login.html:103
 msgid "Forgot password?"
 msgstr "Ξεχάσατε τον κωδικό σας;"
 
-#: templates/users/login.html:100
+#: templates/users/login.html:104
 msgid "Register a new account"
 msgstr "Εγγραφή νέου χρήστη"
 
@@ -1542,13 +1561,13 @@ msgstr ""
 "Εκκρεμεί η αλλαγή email από την πλευρά σας. Ελέγξτε τα email σας και "
 "επισκεφθείτε το link ενεργοποίησης."
 
-#: templates/users/mail_change.html:68
+#: templates/users/mail_change.html:65
 msgid ""
 "enter your new mail address twice so we can verify you typed it in correctly."
 msgstr ""
 "εισάγετε το e-mail σας δύο φορές ώστε να βεβαιωθούμε ότι έχει αποτυπωθεί ορθά"
 
-#: templates/users/mail_change.html:69
+#: templates/users/mail_change.html:67
 msgid ""
 "Once you submit this form you will receive an activation email with "
 "instructions on how to proceed"
@@ -1556,43 +1575,53 @@ msgstr ""
 "Όταν υποβάλλετε τη φόρμα θα λάβετε ένα email με ένα link ενεργοποίσης και "
 "οδηγίες σχετικά με το πώς θα προχωρήσετε"
 
-#: templates/users/mail_change.html:70
+#: templates/users/mail_change.html:69
 msgid "Your e-mail"
 msgstr "Το e-mail σας"
 
-#: templates/users/mail_change.html:70
+#: templates/users/mail_change.html:71
 msgid "has successfully changed to"
 msgstr "έχει αλλάξει με επιτυχία σε"
 
-#: templates/users/mail_change.html:70
+#: templates/users/mail_change.html:75
 msgid "you have not registered an address yet"
 msgstr "δεν έχετε καταχωρήσει κάποια διεύθυνση e-mail"
 
-#: templates/users/mail_change.html:85
+#: templates/users/mail_change.html:95
 msgid "Change email"
 msgstr "Αλλαγή e-mail"
 
-#: templates/users/name_change.html:59
+#: templates/users/name_change.html:60
 msgid "enter your first and last name"
 msgstr "εισάγετε το ονοματεπώνυμό σας"
 
-#: templates/users/name_change.html:60
+#: templates/users/name_change.html:62
 msgid "Your name"
 msgstr "To ονοματεπώνυμό σας"
 
-#: templates/users/name_change.html:60
+#: templates/users/name_change.html:64
 msgid "was successfully changed"
 msgstr "έχει αλλάξει με επιτυχία σε"
 
-#: templates/users/name_change.html:60
+#: templates/users/name_change.html:68
 msgid "we don't know your name yet"
 msgstr "δε γνωρίζουμε το όνομά σας ακομα"
 
-#: templates/users/name_change.html:75 templates/users/pass_change.html:76
+#: templates/users/name_change.html:88 templates/users/other_change.html:80
+#: templates/users/pass_change.html:74
 msgid "Change"
 msgstr "Αλλαγή"
 
-#: templates/users/pass_change.html:60
+#: templates/users/other_change.html:59
+msgid "chnage organization and your phone"
+msgstr ""
+
+#: templates/users/other_change.html:63
+#, fuzzy
+msgid "Changed successfully"
+msgstr "επιτυχώς"
+
+#: templates/users/pass_change.html:58
 msgid ""
 "please enter your old password, for security's sake, and then enter your new "
 "password twice so we can verify you typed it in correctly."
@@ -1601,7 +1630,7 @@ msgstr ""
 "συνέχεια εισάγετε το νέο σας κωδικό δύο φορές ώστε να βεβαιωθούμε ότι έχει "
 "αποτυπωθεί ορθά"
 
-#: templates/users/pass_change.html:61
+#: templates/users/pass_change.html:59
 msgid "Changing your password will log you out"
 msgstr "Η αλλαγή του κωδικού θα προκαλέσει την έξοδο σας από την πλατφόρμα"
 
@@ -1613,50 +1642,54 @@ msgstr "Ο κωδικός άλλαξε"
 msgid "successfully"
 msgstr "επιτυχώς"
 
-#: templates/users/profile.html:3
+#: templates/users/profile.html:5
 msgid "about my profile"
 msgstr "σχετικά με το προφίλ μου"
 
-#: templates/users/profile.html:30
+#: templates/users/profile.html:39
 msgid "profile"
 msgstr "προφίλ"
 
-#: templates/users/profile.html:33 templates/users/profile.html.py:35
+#: templates/users/profile.html:42 templates/users/profile.html.py:45
 msgid "My profile"
 msgstr "Το προφίλ μου"
 
-#: templates/users/profile.html:43
+#: templates/users/profile.html:51
 msgid "Change Name"
 msgstr "Αλλαγή Ονοματεπώνυμου"
 
-#: templates/users/profile.html:68
+#: templates/users/profile.html:77
 msgid "Manage SSH Keys"
 msgstr "Διαχείριση SSH κλειδιών"
 
-#: templates/users/user_info.html:215
+#: templates/users/profile.html:85
+msgid "Other"
+msgstr ""
+
+#: templates/users/user_info.html:208
 msgid "Tags"
 msgstr ""
 
-#: templates/users/user_info.html:283 templates/users/user_info.html.py:293
-#: templates/users/user_info.html:307
+#: templates/users/user_info.html:277 templates/users/user_info.html.py:287
+#: templates/users/user_info.html:299
 msgid "User Information"
 msgstr "Στοιχεία χρήστη"
 
-#: templates/users/user_info.html:286 templates/users/user_info.html.py:295
-#: templates/users/user_info.html:311
+#: templates/users/user_info.html:280 templates/users/user_info.html.py:289
+#: templates/users/user_info.html:302
 msgid "Group Information"
 msgstr "Στοιχεία ομάδας"
 
-#: templates/users/user_info.html:324
+#: templates/users/user_info.html:315
 msgid "Group Name"
 msgstr "Ομάδα"
 
-#: templates/users/user_info.html:366
+#: templates/users/user_info.html:360
 #, python-format
 msgid "Displaying %(usergroup)s instances"
 msgstr "Προβολή μηχανών %(usergroup)s"
 
-#: templates/users/user_keys.html:86
+#: templates/users/user_keys.html:88
 msgid ""
 "Upload your SSH public keys and have them automatically installed on all "
 "newly-created instances. Keys must be in OpenSSH format, either RSA, or DSA, "
@@ -1670,11 +1703,11 @@ msgstr ""
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: templates/users/user_keys.html:107
+#: templates/users/user_keys.html:106
 msgid "Add new key"
 msgstr "Προσθήκη νέου κλειδιού"
 
-#: templates/users/user_keys.html:117
+#: templates/users/user_keys.html:116
 msgid "Add key"
 msgstr "Προσθήκη κλειδιού"
 
@@ -1738,6 +1771,15 @@ msgid ""
 "If the password change was not made by you, please inform\n"
 "the GRNET Helpdesk.\n"
 msgstr ""
+
+#~ msgid "Send Mail"
+#~ msgstr "Αποστολή Mail"
+
+#~ msgid "Instance Owners"
+#~ msgstr "Κάτοχοι εικονικών μηχανών"
+
+#~ msgid "Instance owners"
+#~ msgstr "Κάτοχοι εικονικών μηχανών"
 
 #~ msgid ""
 #~ "If you have any questions or need help, contact GRNET Helpdesk at <a "
