@@ -59,18 +59,17 @@ Pre-Setup
 
 Get the source and checkout to latest stable::
 
-    mkdir /srv/www/
+    mkdir /srv/
     mkdir /var/log/ganetimgr
-    cd /srv/www/
+    cd /srv/
     git clone https://code.grnet.gr/git/ganetimgr
     cd ganetimgr
     git checkout stable
 
-Create the required ``settings.py`` and ``urls.py`` files for the example files::
+Create the required ``settings.py`` files for the example files::
 
     cd ganetimgr
     cp settings.py.dist settings.py
-    cp urls.py.dist urls.py
 
 Settings.py
 -----------
@@ -79,11 +78,9 @@ There are a lot of parts of ganetimgr that are customizable. Most of them are ch
 Below are explanations for most of the settings:
 
 - Fill the default ``DATABASES`` dictionary with the credentials and info about the database you created before.
-- Set ``CACHE_BACKEND`` to "redis_cache.cache://127.0.0.1:6379/?timeout=1500".
+- Set ``CACHES`` to the backend you want to use, take a look at: https://docs.djangoproject.com/en/1.4/topics/cache/
 - Set ``STATIC_URL`` to the relative URL where Django expects the static resources (e.g. '/static/')
-- Set ``STATIC_ROOT`` to the file path of the collected static resources (e.g. '/srv/www/ganetimgr/static/')
-- ``TEMPLATE_DIRS`` should contain the project's template folder (e.g. '/srv/www/ganetimgr/static/' )
-- The ``BRANDING`` dictionary allows you to customize the logo, moto and footer.
+- The ``BRANDING`` dictionary allows you to customize stuff like logos and social profiles.
   You can create your own logo starting with the static/branding/logo.* files.
 - ``FEED_URL`` is an RSS feed that is displayed in the user login page.
 - ``SHOW_ADMINISTRATIVE_FORM`` toggles the admin info panel for the instance application form.
@@ -113,6 +110,9 @@ collection plugin that can be setup via::
 If you want to embed collectd statistics in ganetimgr instance view fill the::
 
     COLLECTD_URL
+
+If COLLECTD_URL is not null, then the graphs section can be used in order to show graphs for each instance. One can define
+a NODATA_IMAGE if the default is not good enough.
 
 There is a vm isolation feature for vms that are suspect of having been compromised. The admin or the user can
 define a subnet from which the vm will remain accessible for further investigation. The next settings limit the
@@ -219,7 +219,7 @@ Create the gunicorn configuration file (/etc/gunicorn.d/ganetimgr)::
 
     CONFIG = {
         'mode': 'django',
-        'working_dir': '/srv/www/ganetimgr',
+        'working_dir': '/srv/ganetimgr',
         'user': 'www-data',
         'group': 'www-data',
         'args': (
