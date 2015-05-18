@@ -347,6 +347,7 @@ MARKDOWN_EDITOR_SKIN = 'simple'
 
 
 LOCALE_PATHS = (
-    '/srv/ganetimgr/ganeti/locale',
+    '/srv/ganetimgr/locale',
 )
+
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-18 12:32+0300\n"
+"POT-Creation-Date: 2015-05-18 13:14+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -545,8 +545,9 @@ msgstr "Ο χρήστης έχει αιτηθεί ρητή δικτυακή το
 
 #: templates/apply/admin_apply.html:186 templates/apply/review.html:232
 #: templates/apply/review.html.py:365
+#, fuzzy
 msgid "Job ID"
-msgstr ""
+msgstr "Id εργασίας"
 
 #: templates/apply/admin_apply.html:196 templates/apply/review.html:242
 #: templates/apply/review.html.py:375
@@ -572,13 +573,12 @@ msgid "Pending applications"
 msgstr "Αιτήσεις που εκκρεμούν"
 
 #: templates/apply/application_list.html:33
-msgid "Show Active"
+msgid "Show Approved"
 msgstr ""
 
 #: templates/apply/application_list.html:34
-#, fuzzy
 msgid "Show Failed"
-msgstr "Καταχωρήθηκε"
+msgstr ""
 
 #: templates/apply/application_list.html:40
 #: templates/apply/application_list.html:68
@@ -589,7 +589,7 @@ msgstr "Χρήστης"
 #: templates/apply/application_list.html:42
 #: templates/apply/application_list.html:70
 msgid "vCPUs"
-msgstr ""
+msgstr "Επεξεργαστές"
 
 #: templates/apply/application_list.html:44
 #: templates/apply/application_list.html:72 templates/apply/review.html:76
@@ -1112,8 +1112,9 @@ msgstr "Ιδιοκτήτης"
 
 #: templates/instances/user_instances_json.html:65
 #: templates/users/user_info.html:379
+#, fuzzy
 msgid "HiddenContactDetails"
-msgstr ""
+msgstr "Λεπτομέρειες εικονικών μηχανών"
 
 #: templates/instances/user_instances_json.html:67
 msgid "Shortcuts"
@@ -1752,10 +1753,11 @@ msgid ""
 msgstr ""
 
 #: templates/users/emails/pass_change_notify_mail.txt:2
+#, fuzzy
 msgid ""
 "\n"
 "Dear user,\n"
-msgstr ""
+msgstr "Από το χρήστη"
 
 #: templates/users/emails/pass_change_notify_mail.txt:5
 #, python-format
