@@ -82,12 +82,10 @@ msgid "Disk size (GB)"
 msgstr "Μέγεθος δίσκου (GB)"
 
 #: apply/forms.py:167
-#, fuzzy
 msgid "Specify a size from 2 to 50 GB"
-msgstr "Καθορίστε μέγεθος μεταξύ 2 και 100 GB"
+msgstr "Καθορίστε μέγεθος μεταξύ 2 και 50 GB"
 
 #: apply/forms.py:172
-#, fuzzy
 msgid "Check this option if  the virtual machine will be sending e-mail"
 msgstr ""
 "Ενεργοποιήστε αυτή την επιλογή εάν η εικονική μηχανή πρόκειται να στέλνει e-"
@@ -136,12 +134,10 @@ msgstr ""
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
 #: apply/forms.py:267
-#, fuzzy
 msgid "Choose an organization"
-msgstr "φορέας"
+msgstr "Επιλέξτε φορέα"
 
 #: apply/forms.py:278
-#, fuzzy
 msgid "Please fill in the contact information"
 msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
@@ -218,7 +214,6 @@ msgid "Network"
 msgstr "Δίκτυο"
 
 #: apply/views/__init__.py:67
-#, fuzzy
 msgid ""
 "Optionally, select a network to connect the virtualmachine to if you have a "
 "special requirement"
@@ -385,9 +380,8 @@ msgid "Recipients"
 msgstr "Παραλήπτες"
 
 #: templates/500.html:15
-#, fuzzy
 msgid "Internal error"
-msgstr "Όροι Χρήσης"
+msgstr "Εσωτερικό σφάλμα"
 
 #: templates/500.html:19
 msgid ""
@@ -449,9 +443,8 @@ msgid "Home"
 msgstr "Αρχική"
 
 #: templates/base.html:185
-#, fuzzy
 msgid "Nofications"
-msgstr "Αιτήσεις"
+msgstr "Ειδοποιήσεις"
 
 #: templates/base.html:186 templates/clusters/clusters.html:8
 #: templates/clusters/clusters.html:42
@@ -520,9 +513,8 @@ msgid "Create new Virtual Machine"
 msgstr "Δημιουργία νέας εικονικής μηχανής"
 
 #: templates/apply/admin_apply.html:43
-#, fuzzy
 msgid "Create a new instance"
-msgstr "Δημιουργία εικονικής μηχανής"
+msgstr "Δημιουργία VM"
 
 #: templates/apply/admin_apply.html:49 templates/apply/apply.html:48
 #: templates/apply/review.html:73 templates/apply/review.html.py:278
@@ -545,7 +537,6 @@ msgstr "Ο χρήστης έχει αιτηθεί ρητή δικτυακή το
 
 #: templates/apply/admin_apply.html:186 templates/apply/review.html:232
 #: templates/apply/review.html.py:365
-#, fuzzy
 msgid "Job ID"
 msgstr "Id εργασίας"
 
@@ -672,7 +663,6 @@ msgid "We kindly remind you of the following:"
 msgstr "Σας υπευθυμίζουμε τα εξής:"
 
 #: templates/apply/apply.html:227
-#, fuzzy
 msgid ""
 "\n"
 "\t\t\t\t\t\t<li>\n"
@@ -782,7 +772,6 @@ msgid "logs"
 msgstr "Αρχείο καταγραφής"
 
 #: templates/clusters/cluster_nodes.html:38
-#, fuzzy
 msgid "Nodegroup"
 msgstr "Κόμβος"
 
@@ -1211,14 +1200,12 @@ msgstr "εργασίες"
 #: templates/notifications/create.html:13
 #: templates/notifications/detail.html:6
 #: templates/notifications/detail.html:13
-#, fuzzy
 msgid "Notifications"
-msgstr "Αιτήσεις"
+msgstr "Ειδοποιήσεις"
 
 #: templates/notifications/create_body.html:5
-#, fuzzy
 msgid "Send Email Notifications"
-msgstr "Αιτήσεις που εκκρεμούν"
+msgstr "Αποστολή ειδοποιήσεων"
 
 #: templates/notifications/create_body.html:76
 msgid "Send"
@@ -1255,9 +1242,9 @@ msgid "Your account with username  "
 msgstr ""
 
 #: templates/registration/activation_complete.txt:3
-#, fuzzy
+
 msgid "has been activated."
-msgstr "%sΟ λογαριασμός σας ενεργοποιήθηκε"
+msgstr "ενεργοποιήθηκε"
 
 #: templates/registration/activation_complete.txt:4
 msgid "You may login to ganetimgr using the following URL:"
@@ -1403,7 +1390,6 @@ msgid "Service Statistics"
 msgstr "Στατιστικά Υπηρεσίας"
 
 #: templates/stats/statistics.html:272
-#, fuzzy
 msgid "ganetimgr Statistics"
 msgstr "Στατιστικά Πλατφόρμας"
 
@@ -1421,9 +1407,8 @@ msgid "Platform Statistics"
 msgstr "Στατιστικά Πλατφόρμας"
 
 #: templates/stats/statistics.html:318 templates/stats/statistics.html:356
-#, fuzzy
 msgid "Managed by ganetimgr"
-msgstr "Διαχειριζόμενες από τη ViMa"
+msgstr "Διαχειριζόμενες από την πλατφόρμα"
 
 #: templates/stats/statistics.html:321
 msgid "Instances "
@@ -1520,7 +1505,6 @@ msgid "Welcome"
 msgstr "Καλωσήλθατε"
 
 #: templates/users/login.html:46
-#, fuzzy
 msgid ""
 "\n"
 "\t\t\t\t\t\t\t\t\t\t\t<p>Welcome to GRNET's ViMa service.</p>\n"
@@ -1618,9 +1602,8 @@ msgid "chnage organization and your phone"
 msgstr ""
 
 #: templates/users/other_change.html:63
-#, fuzzy
 msgid "Changed successfully"
-msgstr "επιτυχώς"
+msgstr "Άλλαξε επιτυχώς"
 
 #: templates/users/pass_change.html:58
 msgid ""
@@ -1713,9 +1696,8 @@ msgid "Add key"
 msgstr "Προσθήκη κλειδιού"
 
 #: templates/users/emails/idle_account.txt:2
-#, fuzzy
 msgid "Dear user,"
-msgstr "Από το χρήστη"
+msgstr "Αγαπητέ χρήστη,"
 
 #: templates/users/emails/idle_account.txt:3
 msgid ""
@@ -1753,11 +1735,10 @@ msgid ""
 msgstr ""
 
 #: templates/users/emails/pass_change_notify_mail.txt:2
-#, fuzzy
 msgid ""
 "\n"
 "Dear user,\n"
-msgstr "Από το χρήστη"
+msgstr "Αγαπητέ χρήστη"
 
 #: templates/users/emails/pass_change_notify_mail.txt:5
 #, python-format
@@ -1796,39 +1777,30 @@ msgstr ""
 #~ msgid "Cluster view"
 #~ msgstr "Προβολή συμπλέγματος"
 
-#, fuzzy
 #~ msgid "Clusters"
-#~ msgstr "Σύμπλεγμα"
+#~ msgstr ""
 
-#, fuzzy
 #~ msgid " of users"
-#~ msgstr "χρηστών"
+#~ msgstr "των χρηστών"
 
-#, fuzzy
 #~ msgid "Change password"
 #~ msgstr "Αλλαγή κωδικού"
 
-#, fuzzy
 #~ msgid "Administration"
-#~ msgstr "Διαχειριστικός υπεύθυνος"
+#~ msgstr "Διαχείριση"
 
-#, fuzzy
 #~ msgid "Recent Actions"
-#~ msgstr "Ενέργειες"
+#~ msgstr "Πρόσφατες Ενέργειες"
 
-#, fuzzy
 #~ msgid "Latest Django News"
 #~ msgstr "Τελευταία Νέα"
 
-#, fuzzy
 #~ msgid "Links"
-#~ msgstr "Σύνδεσμος"
+#~ msgstr "Σύνδεσμοι"
 
-#, fuzzy
 #~ msgid "Add"
-#~ msgstr "Προσθήκη κλειδιού"
+#~ msgstr "Προσθήκη"
 
-#, fuzzy
 #~ msgid "Please correct the error below."
 #~ msgid_plural "Please correct the errors below."
 #~ msgstr[0] ""
@@ -1842,62 +1814,48 @@ msgstr ""
 #~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
 #~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
 
-#, fuzzy
 #~ msgid "Back"
-#~ msgstr "Πίσω στην"
+#~ msgstr "Πίσω"
 
-#, fuzzy
 #~ msgid "My Actions"
 #~ msgstr "Ενέργειες"
 
-#, fuzzy
 #~ msgid "None available"
 #~ msgstr "Μη διαθέσιμα δεδομένα..."
 
-#, fuzzy
 #~ msgid "Password:"
-#~ msgstr "Κωδικός"
+#~ msgstr "Κωδικός:"
 
-#, fuzzy
 #~ msgid "Forgotten your password or username?"
 #~ msgstr "Ξεχάσατε τον κωδικό σας;"
 
-#, fuzzy
 #~ msgid "Created object"
 #~ msgstr "Δημιουργήθηκε"
 
-#, fuzzy
 #~ msgid "Password change"
 #~ msgstr "Ο κωδικός άλλαξε"
 
-#, fuzzy
 #~ msgid "New password"
 #~ msgstr "Κωδικός"
 
 #~ msgid "Password (again)"
 #~ msgstr "Κωδικός (ξανά)"
 
-#, fuzzy
 #~ msgid "Is modified"
 #~ msgstr "Τελευταία τροποποίηση"
 
-#, fuzzy
 #~ msgid "Add Item"
 #~ msgstr "Προσθήκη κλειδιού"
 
-#, fuzzy
 #~ msgid "Delete Item"
 #~ msgstr "Διαγραφή"
 
-#, fuzzy
 #~ msgid "Password change successful"
 #~ msgstr "Ο κωδικός άλλαξε"
 
-#, fuzzy
 #~ msgid "Your password was changed."
 #~ msgstr "Ο κωδικός άλλαξε"
 
-#, fuzzy
 #~ msgid ""
 #~ "Please enter your old password, for security's sake, and then enter your "
 #~ "new password twice so we can verify you typed it in correctly."
@@ -1906,59 +1864,48 @@ msgstr ""
 #~ "συνέχεια εισάγετε το νέο σας κωδικό δύο φορές ώστε να βεβαιωθούμε ότι "
 #~ "έχει αποτυπωθεί ορθά"
 
-#, fuzzy
 #~ msgid "Old password"
 #~ msgstr "Κωδικός"
 
-#, fuzzy
 #~ msgid "Change my password"
 #~ msgstr "Αλλαγή κωδικού"
 
-#, fuzzy
 #~ msgid "Password reset complete"
 #~ msgstr "Η αλλαγή του κωδικού ολοκληρώθηκε"
 
-#, fuzzy
 #~ msgid "Your password has been set.  You may go ahead and log in now."
-#~ msgstr "Ο κωδικός σας έχει αλλάξει επιτυχώς. Μπορείτε να εισέρθετε"
+#~ msgstr "Ο κωδικός σας έχει αλλάξει επιτυχώς. Μπορείτε να εισέλθετε"
 
-#, fuzzy
 #~ msgid "Enter new password"
-#~ msgstr "Αλλαγή κωδικού"
+#~ msgstr "Εισαγωγή νέου κωδικού"
 
-#, fuzzy
 #~ msgid "Password reset unsuccessful"
-#~ msgstr "Ο κωδικός άλλαξε"
+#~ msgstr "Ο κωδικός δεν άλλαξε"
 
-#, fuzzy
 #~ msgid ""
 #~ "Please enter your new password twice so we can verify you typed it in "
 #~ "correctly."
 #~ msgstr ""
-#~ "εισάγετε το e-mail σας δύο φορές ώστε να βεβαιωθούμε ότι έχει αποτυπωθεί "
+#~ "εισάγετε τον κωδικό σας δύο φορές ώστε να βεβαιωθούμε ότι έχει αποτυπωθεί "
 #~ "ορθά"
 
-#, fuzzy
 #~ msgid "Reset my password"
 #~ msgstr "Αλλαγή κωδικού"
 
-#, fuzzy
 #~ msgid "Password reset successful"
 #~ msgstr "Ο κωδικός άλλαξε"
 
 #~ msgid "Password reset"
-#~ msgstr "Ο κωδικός άλλαξε"
+#~ msgstr "Αλλαγή κωδικού"
 
-#, fuzzy
 #~ msgid "E-mail address"
 #~ msgstr "Διεύθυνση email"
 
 #~ msgid "Comment"
 #~ msgstr "Σχόλιο"
 
-#, fuzzy
 #~ msgid "File name"
-#~ msgstr "μετονομασία"
+#~ msgstr "όνομα αρχείου"
 
 #~ msgid "ViMa Statistics"
 #~ msgstr "Στατιστικά ViMa"
@@ -1996,9 +1943,8 @@ msgstr ""
 #~ msgid "Application submitted"
 #~ msgstr "Η αίτηση υποβλήθηκε"
 
-#, fuzzy
 #~ msgid "%sUser password change"
-#~ msgstr "Ο κωδικός άλλαξε"
+#~ msgstr "Ο κωδικός άλλαξε για τον %s"
 
 #~ msgid "OR"
 #~ msgstr "Ή"
