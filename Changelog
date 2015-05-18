@@ -3,13 +3,18 @@ Features/Bugfixing release
 
 Requirements:
 	- South migration: python manage.py migrate
+	- Update settings.py to settings.py.dist
 
 New Features:
 	- Search by column on the home table
-	- If superuser fills application then he has a full form (like the review form)
+	- Clear button in search input on the home table
+	- Admins can now create instances without having to review their own applications
+	- Email Notifications archive
 
 Fixes/Improvements:
+	- Improved settings file
 	- Fancier Frontend
+	- Add default value in cluster dropdown
 	- User has a default organization and phone which are the default in an application. Also, this data is automatically filled if the user fills an application and has no default organization and phone.
 	- Remove instance owners section, since it provides the same data with the home page
 	- Easier branding
@@ -17,6 +22,8 @@ Fixes/Improvements:
 	- Code refactoring
 	- Junk files removal
 	- If application form is invalid, os selection is set to noop, fixed
+	- Proper message in 'user has been notified' after application rejection
+	- Organization and contact information now exists in user model
 
 Notes:
 	- There is a datamigration (accounts/migrations/0004_organizations.py) in this version that fills user's organization field (new), based on his last application.

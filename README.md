@@ -1,4 +1,4 @@
-# ganetimgr
+# Ganetimgr
 
 `ganetimgr` is a web platform that eases the provisioning of virtual machines over multiple `ganeti` clusters.
 It leverages Ganeti's RAPI functionality to administer the clusters, and is stateless from the VM perspective.
@@ -9,7 +9,19 @@ In essence, ganetimgr aims to be the frontend of a VPS service.
 
 - 2010-2012 Apollon Oikonomopoulos (@apoikos)
 - 2011-2014 Leonidas Poulopoulos (@leopoul)
-- 2014 Stavros Kroustouris
+- 2014 Stavros Kroustouris (@kroustou)
+
+## Contribution
+
+### Code
+  - Brian Candler (@candlerb)
+  - Mike Gabriel (@sunweaver)
+  - Dimitris Bliablias (@dblia)
+
+### Documentation
+ - 2014 Alex Kiousis (@alexkiousis)
+ - 2014 Nikos Kokkalis (@fubvr)
+ - 2013 George Kargiotakis (@kargig)
 
 ## Instructions
 
