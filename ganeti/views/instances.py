@@ -61,7 +61,8 @@ from ganeti.decorators import (
 def user_index(request):
     if request.user.is_anonymous():
         return HttpResponseRedirect(reverse('login'))
-    return render(request,
+    return render(
+        request,
         'instances/user_instances_json.html',
         {}
     )
@@ -88,7 +89,7 @@ def user_index_json(request):
     def _get_instances(cluster):
         locked = cluster.has_locked_nodes()
         if locked:
-            locked_clusters.append(str(cluster))
+            locked_clusters.append(str(cluster.description))
         try:
             instances.extend(cluster.get_user_instances(request.user))
         except (GanetiApiError, Exception):
