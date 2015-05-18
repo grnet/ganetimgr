@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-18 13:14+0300\n"
+"POT-Creation-Date: 2015-05-18 15:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -288,40 +288,40 @@ msgstr "Δεν επιτρέπεται prefix με μήκος < %s"
 msgid "%(address)s is not a valid address"
 msgstr "%(address)s δεν είναι αποδεκτή μορφή διεύθυνσης"
 
-#: ganeti/models.py:300
+#: ganeti/models.py:299
 msgid "modifying"
 msgstr "γίνεται τροποποίηση των παραμέτρων της μηχανής"
 
-#: ganeti/models.py:1038
+#: ganeti/models.py:1037
 msgid "creating"
 msgstr "η μηχανή δημιουργείται"
 
-#: ganeti/utils.py:270
+#: ganeti/utils.py:269
 msgid "Not allowed action"
 msgstr "Η ενέργεια δεν επιτρέπεται"
 
-#: ganeti/utils.py:306
+#: ganeti/utils.py:305
 msgid "re-installation"
 msgstr "επανεγκατάσταση"
 
-#: ganeti/utils.py:308
+#: ganeti/utils.py:307
 msgid "destruction"
 msgstr "καταστροφή"
 
-#: ganeti/utils.py:310
+#: ganeti/utils.py:309
 msgid "rename"
 msgstr "μετονομασία"
 
-#: ganeti/utils.py:313
+#: ganeti/utils.py:312
 #, python-format
 msgid "%(pref)sInstance %(action)s requested: %(instance)s"
 msgstr "%(pref)sΑίτηση για %(action)s στην εικονική μηχανή: %(instance)s"
 
-#: ganeti/utils.py:326
+#: ganeti/utils.py:325
 msgid "Could not send email"
 msgstr ""
 
-#: ganeti/utils.py:328
+#: ganeti/utils.py:327
 msgid "Mail sent"
 msgstr "Το email στάλθηκε"
 
@@ -330,7 +330,7 @@ msgstr "Το email στάλθηκε"
 msgid "Enter valid JSON"
 msgstr "Εισάγετε valid JSON"
 
-#: ganeti/views/instances.py:78 ganeti/views/instances.py:171
+#: ganeti/views/instances.py:78 ganeti/views/instances.py:169
 msgid ""
 "Permissions' violation. This action has been logged and our admins will be "
 "notified about it"
@@ -338,15 +338,15 @@ msgstr ""
 "Παραβίαση δικαιωμάτων χρήστη. Η ενέργειά σας έχει καταγραφεί και οι "
 "διαχειριστές της υπηρεσίας έχουν ειδοποιηθεί "
 
-#: ganeti/views/instances.py:355
+#: ganeti/views/instances.py:351
 msgid "Please wait... shutting-down"
 msgstr "Παρακαλώ περιμένετε... απενεργοποίηση"
 
-#: ganeti/views/instances.py:370
+#: ganeti/views/instances.py:366
 msgid "Please wait... starting-up"
 msgstr "Παρακαλώ περιμένετε... εκκίνηση"
 
-#: ganeti/views/instances.py:387
+#: ganeti/views/instances.py:383
 msgid "Please wait... rebooting"
 msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
 
@@ -465,7 +465,7 @@ msgstr "Εργασίες"
 
 #: templates/base.html:189 templates/graphs/nodes-graphs.html:19
 msgid "Graphs"
-msgstr ""
+msgstr "Γραφήματα"
 
 #: templates/base.html:196 templates/auditlog/auditlog.html:28
 #: templates/auditlog/auditlog.html:32 templates/auditlog/auditlog.html:39
@@ -1242,7 +1242,6 @@ msgid "Your account with username  "
 msgstr ""
 
 #: templates/registration/activation_complete.txt:3
-
 msgid "has been activated."
 msgstr "ενεργοποιήθηκε"
 
@@ -1735,6 +1734,7 @@ msgid ""
 msgstr ""
 
 #: templates/users/emails/pass_change_notify_mail.txt:2
+#, fuzzy
 msgid ""
 "\n"
 "Dear user,\n"
@@ -1776,9 +1776,6 @@ msgstr ""
 
 #~ msgid "Cluster view"
 #~ msgstr "Προβολή συμπλέγματος"
-
-#~ msgid "Clusters"
-#~ msgstr ""
 
 #~ msgid " of users"
 #~ msgstr "των χρηστών"
