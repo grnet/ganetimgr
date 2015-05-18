@@ -186,7 +186,7 @@
                     <li {% block clusterinfo %}{% endblock %}><a href="{% url clusterdetails %}"><i class="fa fa-puzzle-piece"></i> <span>{% trans "Cluster Info" %}</span></a></li>
                     <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="fa fa-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
                     <li {% block clusterjobs %}{% endblock %}><a href="{% url jobs %}"><i class="fa fa-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>
-                    <li {% block nodegraphs %}{% endblock %}><a href="{% url cluster-get-nodes-graphs %}"><i class="fa fa-area-chart"></i> <span>{% trans "Graphs" %}</span></a></li>
+                    {% if COLLECTD_URL %}<li {% block nodegraphs %}{% endblock %}><a href="{% url cluster-get-nodes-graphs %}"><i class="fa fa-area-chart"></i> <span>{% trans "Graphs" %}</span></a></li>{% endif %}
                 {% endif %}
                 <li {% block auditlog %}{% endblock %}>
                     <a href="{% url auditlog %}">
