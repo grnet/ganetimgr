@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-18 15:06+0300\n"
+"POT-Creation-Date: 2015-05-19 10:23+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -350,7 +350,7 @@ msgstr "Παρακαλώ περιμένετε... εκκίνηση"
 msgid "Please wait... rebooting"
 msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
 
-#: ganetimgr/settings.py:50
+#: ganetimgr/settings.py:34
 msgid "English"
 msgstr "English"
 
@@ -1597,8 +1597,9 @@ msgid "Change"
 msgstr "Αλλαγή"
 
 #: templates/users/other_change.html:59
-msgid "chnage organization and your phone"
-msgstr ""
+#, fuzzy
+msgid "change organization and phone"
+msgstr "Επιλέξτε φορέα"
 
 #: templates/users/other_change.html:63
 msgid "Changed successfully"
