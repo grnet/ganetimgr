@@ -187,7 +187,7 @@ $(document).ready( function(){
 				last_element = my.parent();
 				var cluster = $(this).data("cluster");
 				var instance = $(this).data("instance");
-				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="stopbutton btn btn-small btn-danger"><i class="fa fa-off"></i> Shutdown</a>';
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="stopbutton btn btn-small btn-danger"><i class="fa fa-power-off"></i>Shutdown</a>';
 				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="fa fa-chevron-circle-left"></i></a>';
 				my.parent().html(back+" "+btn);
 				return false;
@@ -451,7 +451,7 @@ $(document).ready( function(){
 								}
 
 								if (full.status == 'Running'){
-								 lock = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="stopbuttonpre btn btn-small btn-danger"><i class="fa fa-off"></i></a> ';
+								 lock = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="stopbuttonpre btn btn-small btn-danger"><i class="fa fa-power-off"></i></a> ';
 								 lock += '<a href="#" data-toggle="tooltip" title="Reboot" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="rebootbuttonpre btn btn-small btn-warning"><i class="fa fa-refresh"></i></a> ';
 
 								 consoleurl = "{% if WEBSOCK_VNC_ENABLED %}{% url instance-novnc 'cluster_placeholder' 'instance_placeholder' %}{% else %}{% url instance-vnc 'cluster_placeholder' 'instance_placeholder' %}{% endif %}".replace('cluster_placeholder', full.clusterslug.toString()).replace('instance_placeholder', full.name.toString());
