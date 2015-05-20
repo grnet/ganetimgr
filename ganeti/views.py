@@ -23,7 +23,6 @@ from gevent.pool import Pool
 from gevent.timeout import Timeout
 
 from time import mktime
-import datetime
 
 from ipaddr import *
 from django import forms
@@ -61,7 +60,8 @@ from ganeti.forms import *
 from apply.utils import get_os_details
 from util.client import GanetiApiError
 
-
+# ganeti.models.* break this 
+import datetime
 import pprint
 try:
     import json
