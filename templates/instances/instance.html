@@ -481,18 +481,22 @@
 				url: '{% url instance-poll cluster.slug instance.name %}'+"?_="+new Date().getTime(),
 				dataType: 'html',
 				success: function(data) {
-					$('#actions_container').html(data);
-					if ($('#show_no_actions').size()==1){
-						$('#conf_form').hide();
-						state = "hide";
-					}else if ($('#show_no_actions').size()==0){
-						$('#conf_form').show();
-						if (state == "hide"){
-							window.setTimeout('location.reload()', 800);
+					if ($(data).find('#instdestbody').length) {
+						$('#actions_container').html(data);
+						if ($('#show_no_actions').size()==1){
+							$('#conf_form').hide();
+							state = "hide";
+						}else if ($('#show_no_actions').size()==0){
+							$('#conf_form').show();
+							if (state == "hide"){
+								window.setTimeout('location.reload()', 800);
+							}
 						}
+						$("#status").html($("#instance_status").html());
+						polltimer = setTimeout(load_data, timer);
+					} else {
+						$('#actions_container').html('<h2><a href="/">Session Expired. Please login again.</a></h2>');
 					}
-					$("#status").html($("#instance_status").html());
-					polltimer = setTimeout(load_data, timer);
 				}
 			});
 		}
