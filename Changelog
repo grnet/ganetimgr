@@ -10,6 +10,7 @@ New Features:
 	- Clear button in search input on the home table
 	- Admins can now create instances without having to review their own applications
 	- Email Notifications archive
+	- Disable choice for full networks in applications review
 
 Fixes/Improvements:
 	- Improved settings file

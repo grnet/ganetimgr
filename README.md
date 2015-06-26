@@ -9,7 +9,7 @@ In essence, ganetimgr aims to be the frontend of a VPS service.
 
 - 2010-2012 Apollon Oikonomopoulos (@apoikos)
 - 2011-2014 Leonidas Poulopoulos (@leopoul)
-- 2014 Stavros Kroustouris (@kroustou)
+- 2014-2015 Stavros Kroustouris (@kroustou)
 
 ## Contribution
 
