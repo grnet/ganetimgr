@@ -1,0 +1,17 @@
+gevent==0.13.6
+django==1.4.5
+redis==2.4.13
+south==0.7.5
+django-registration==0.8
+paramiko==1.12.1
+simplejson==2.5.2
+python-daemon==1.5.5
+setproctitle==1.0.1
+pycurl==7.19.0
+recaptcha-client==1.0.6
+ipaddr==2.1.10
+beautifulsoup4==4.1.0
+requests==2.7.0
+requests-oauthlib==0.5.0
+requests-toolbelt==0.4.0
+Markdown==2.6.2
