@@ -40,7 +40,8 @@ def send_emails(subject, body, emails):
 def notify_instance_owners(instances, subject, message):
     # the vms that are facing the problem
     users = []
-    for c in Cluster.objects.all():
+    # get only enabled clusters
+    for c in Cluster.objects.filter(disabled=False):
         for i in c.get_all_instances():
             if i.name in instances:
                 for u in i.users:

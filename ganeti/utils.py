@@ -74,7 +74,8 @@ def get_nodes_with_graphs(cluster_slug, nodes=None):
 
 def prepare_clusternodes(cluster=None):
     if not cluster:
-        clusters = Cluster.objects.all()
+        # get only enabled clusters
+        clusters = Cluster.objects.filter(disabled=False)
     else:
         clusters = Cluster.objects.filter(slug=cluster)
     p = Pool(15)

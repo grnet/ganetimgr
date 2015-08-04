@@ -75,7 +75,8 @@ def jobs_index_json(request):
             finally:
                 close_connection()
         if not request.user.is_anonymous():
-            clusters = Cluster.objects.all()
+            # get only enabled clusters
+            clusters = Cluster.objects.filter(disabled=False)
             if cluster_slug:
                 clusters = clusters.filter(slug=cluster_slug)
             p.map(_get_jobs, clusters)

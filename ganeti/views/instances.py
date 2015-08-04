@@ -129,7 +129,8 @@ def user_index_json(request):
             if cluster_slug:
                 clusters = Cluster.objects.filter(slug=cluster_slug)
             else:
-                clusters = Cluster.objects.all()
+                # get only enabled clusters
+                clusters = Cluster.objects.filter(disabled=False)
             p.map(_get_instances, clusters)
         cache_timeout = 90
         if bad_clusters:
@@ -183,7 +184,8 @@ def user_sum_stats(request):
         finally:
             close_connection()
     if not request.user.is_anonymous():
-        p.map(_get_instances, Cluster.objects.all())
+        # get only enabled clusters
+        p.map(_get_instances, Cluster.objects.filter(disabled=False))
 
     if bad_clusters:
         msgs.add_message(

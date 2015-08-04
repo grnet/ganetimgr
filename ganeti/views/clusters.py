@@ -322,7 +322,8 @@ def clusterdetails(request):
         return render(
             request,
             'clusters/clusters.html',
-            {'clusters': Cluster.objects.all()}
+            # get only enabled clusters
+            {'clusters': Cluster.objects.filter(disabled=False)}
         )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
@@ -344,7 +345,8 @@ def clusterdetails_json(request):
                     errors.append(Exception)
                 finally:
                     close_connection()
-            p.map(_get_cluster_details, Cluster.objects.all())
+            # get only enabled clusters
+            p.map(_get_cluster_details, Cluster.objects.filter(disabled=False))
             cache.set("clusters:allclusterdetails", clusterlist, 180)
         return HttpResponse(json.dumps(clusterlist), mimetype='application/json')
     else:

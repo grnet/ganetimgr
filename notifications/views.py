@@ -137,7 +137,8 @@ def get_user_group_list(request):
             finally:
                 close_connection()
         if not request.user.is_anonymous():
-            p.map(_get_instances, Cluster.objects.all())
+            # get only enabled clusters
+            p.map(_get_instances, Cluster.objects.filter(disabled=False))
         if q_params and type_of_search:
             ret_list = []
             if type_of_search == 'cluster':
@@ -175,7 +176,8 @@ def get_user_group_list(request):
                     instd['type'] = "vm"
                     ret_list.append(instd)
             elif type_of_search == 'nodes':
-                for cluster in Cluster.objects.all():
+                # get only enabled clusters
+                for cluster in Cluster.objects.filter(disabled=False):
                     for node in cluster.get_cluster_nodes():
                         if q_params in node.get('name'):
                             noded = {
@@ -186,7 +188,8 @@ def get_user_group_list(request):
                             ret_list.append(noded)
             elif type_of_search == 'nodegroups':
                 nodegroups = []
-                for cluster in Cluster.objects.all():
+                # get only enabled clusters
+                for cluster in Cluster.objects.filter(disabled=False):
                     nodegroups.append({cluster: cluster.get_node_groups()})
                 for nodegroup_list in nodegroups:
                     for cluster, nodegroup in nodegroup_list.items():

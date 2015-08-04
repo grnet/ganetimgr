@@ -64,7 +64,8 @@ def stats_ajax_instances(request):
     username = request.user.username
     cluster_list = cache.get('%s:ajaxinstances' % username)
     if cluster_list is None:
-        clusters = Cluster.objects.all()
+        # get only enabled clusters
+        clusters = Cluster.objects.filter(disabled=False)
         i = 0
         cluster_list = []
         for cluster in clusters:
@@ -135,7 +136,8 @@ def stats_ajax_vms_per_cluster(request, cluster_slug):
 
 @login_required
 def stats(request):
-    clusters = Cluster.objects.all()
+    # get only enabled clusters
+    clusters = Cluster.objects.filter(disabled=False)
     exclude_pks = []
     if (request.user.is_superuser or request.user.has_perm('ganeti.view_instances')):
         instances = cache.get('leninstances')
