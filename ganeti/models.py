@@ -25,8 +25,9 @@ from datetime import datetime, timedelta
 from gevent.pool import Pool
 from socket import gethostbyname
 from time import sleep
-
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.http import Http404
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
@@ -1232,4 +1233,12 @@ def parseQuerysimple(response):
         reslist.append(res_list)
     return reslist
 
+
+@receiver(pre_save, sender=Cluster)
+def check_if_cluster_is_disabled(sender, **kwargs):
+    instance = kwargs.get('instance')
+    # if instance is disabled
+    # we need to clear cache
+    if instance.disabled:
+        cache.delete("cluster:%s:instances" % instance.slug)
 
