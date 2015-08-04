@@ -371,6 +371,7 @@ class Cluster(models.Model):
         verbose_name="Disable Instance Creation",
         help_text="True disables setting a network at the application review form and blocks instance creation"
     )
+    disabled = models.BooleanField(default=False)
 
     class Meta:
         permissions = (
