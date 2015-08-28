@@ -17,4 +17,4 @@ class NotificationArchive(models.Model):
         return reverse('notification-details', kwargs={'notification': self.pk})
 
     class Meta():
-        ordering = ['date']
+        ordering = ['-date']

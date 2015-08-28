@@ -18,6 +18,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy
 from django.contrib.auth.models import User
 from notifications.models import NotificationArchive
+from notifications.utils import get_mails
 
 
 TYPE_CHOICES = (
@@ -51,10 +52,7 @@ class MessageForm(forms.Form):
                 sender=user
             )
             notification.save()
-            recipients = self.cleaned_data['recipient_list'].split(',')
-            recipient_list = []
-            for recipient in recipients:
-                recipient_list.append(recipient.replace('u_', ''))
-            for user in User.objects.filter(pk__in=recipient_list):
+            mail_list = get_mails(self.cleaned_data['recipient_list'].split(','))
+            for user in User.objects.filter(email__in=mail_list):
                 notification.recipients.add(user)
             notification.save()

@@ -20,7 +20,6 @@ from django.template import Context, Template
 from django.conf import settings
 from django.core.mail.message import EmailMessage
 from django.contrib.auth.models import User, Group
-from django.conf import settings
 from gevent.pool import Pool
 
 
