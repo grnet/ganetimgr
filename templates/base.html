@@ -1,104 +1,313 @@
 {% load i18n %}
-<html>
-<head>
-<title>{% block title %}{% endblock %} </title>
-<script src="/static/js/jquery-1.7.1.min.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/base.css">
-<link rel="stylesheet" type="text/css" href="/static/css/smoothness/jquery-ui-1.8.13.custom.css">
-<script type="text/javascript" src="/static/js/jquery-ui-1.8.12.custom.min.js"></script>
-<script type="text/javascript">
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  	function setlang(lang){
-		$("#langsel").val(lang);
-		$("#langform").submit();
-	}
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Ganetimgr .:: {% block title %}{% endblock %} </title>
+        <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap-responsive.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/font-awesome.min.css' %}">
+        <link rel="icon" type="image/png" href="{{ BRANDING.FAVICON }}">
+        <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/theme.css' %}">
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <script src="{% static 'ganetimgr/js/includes/jquery-1.10.1.min.js' %}"></script>
+        <script src="{% static 'ganetimgr/js/includes/jquery.cookie.js' %}"></script>
+        <script src="{% static 'ganetimgr/js/includes/bootstrap.min.js' %}"></script>
+        {% if user.is_authenticated and HELPDESK_INTEGRATION_JAVASCRIPT_URL %}
+        <script type="text/javascript" src="{{HELPDESK_INTEGRATION_JAVASCRIPT_URL}}"></script>
+        <script type="text/javascript">
+            $(function(){
+                window.ATL_JQ_PAGE_PROPS = $.extend(window.ATL_JQ_PAGE_PROPS, {
 
-//function highlight(elemId){
-//    var elem = $(elemId);
-//    elem.css("background-color", "#ffffbb");
-//    setTimeout(function() { $(elemId).animate({ backgroundColor: "white" }, 2000)}, 1500);
-//}
-//
-//
-//$(document).ready( function(){
-//	if (document.location.hash) {
-//	    highlight(document.location.hash);
-//	}
-//	$('a[href*=#]').click(function(){
-//	    var elemId = '#' + $(this).attr('href').split('#')[1];
-//	    highlight(elemId);
-//	});
-//});
+                    // ==== custom trigger function ====
+                    triggerFunction : function( showCollectorDialog ) {
+                        $('#atlwdg-trigger').on( 'click', function(e) {
+                            e.preventDefault();
+                            showCollectorDialog();
+                        });
+                    },
+                    // ==== we add the code below to set the field values ====
+                    fieldValues: {
+                        summary : '',
+                        description : '{% trans "From user" %} {{user}}{% block extraticketinfo %}{% endblock %}:\n',
+                        fullname : '{{user.get_full_name}}',
+                        email : '{{user.email}}',
+                        {% if HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS %}
+                        {% for key, value in HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS.items %}
+                        '{{key}}':'{{value}}',
+                        {% endfor %}
+                        {% endif %}
+                    }
+                });
+            });
+            </script>
+        {% endif %}
+        <script type="text/javascript">
 
-</script>
-{% block extrahead %}{% endblock %}
-</head>
+            function setlang(lang){
+                $("#langsel").val(lang);
+                $("#langform").submit();
+            }
+            $(function(){
+                {% if session_remaining %}
+                    remaining = parseInt("{{session_remaining}}") * 1000;
+                    setTimeout(
+                        function(){
+                            window.location = "{% url logout %}"
+                        },
+                    remaining);
+                {% endif %}
+                $('#phone-navigation #phone-menu').change(function(){
+                    var url = $(this).val();
+                    if(url) {
+                        window.location = url;
+                    }
+                });
+                {% if user.is_superuser %}
+                $("#clearcache").click(function(){
+                    $.ajax({
+                        type: 'GET',
+                        url: "{% url clearcache %}",
+                        dataType: 'json',
+                        success: function(data) {
+                            window.setTimeout('location.reload()', 100);
+                        }
+                    });
+                    return false;
+                });
+                {% endif %}
+            });
 
+        </script>
 
+        {% block extrahead %}{% endblock %}
+        {% block bottomblock %}{% endblock %}
+    </head>
 
-<body>
-	<div id="main">
-			<div id="header">
-				<a class="grnetlogo" href="/">
-					<img class="logoimg" src="/static/grnet_logo.png">
-				</a>
-				<div id="title">
-					<a href="/">virtual private servers</a>
-				</div>
-				<div class="loginform">
-					<div id="formcontent">
-						{% if user.is_authenticated %}
-						<span class="topmenuuser">{% trans "Welcome" %} <strong>{{user}}</strong></span>
-						{% endif %}
-						<span {% if user.is_authenticated %}class="topmenuaction"{% else %}class="topmenuuser"{% endif %} >
-							<form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform">
-								{% csrf_token %}
-								<input name="next" type="hidden" value="{{ next }}" />
-								<input id="langsel" name="language" type="hidden" value="" />
-								{% for lang in LANGUAGES %}<a class="select_lang" href="#" onclick="setlang('{{ lang.0 }}'); return false;" title="{{lang.1}}">{% ifnotequal LANGUAGE_CODE lang.0 %}<font style="font-weight:normal;">{% endifnotequal %}{% trans lang.1 %}{% ifnotequal LANGUAGE_CODE lang.0 %}</font>{% endifnotequal %}</a>{% if not forloop.last %} -{% endif %}
-								{% endfor %}
-							</form>
-						</span>
-						{% if user.is_authenticated %}
-						<span class="topmenuaction"><a href="{% url apply %}">{% trans "Create Instance" %}</a></span>
-						<span class="topmenuaction"><a href="{% url profile %}">{% trans "My profile" %}</a></span>
-{% if user.is_superuser %}
-						<span class="topmenuaction"><a href="{% url admin:index %}">{% trans "Admin" %}</a></span>
-{% endif %}
-{% if can_handle_applications %}
-						<span class="topmenuaction"><a href="{% url application-list %}">{% trans "Applications" %}{% if pending_count %} ({{ pending_count }}){% endif %}</a></span>
-{% endif %}
-						<span class="topmenuaction"><a href="{% url logout %}">{% trans "Logout" %}</a></span>
-						{% else %}
-						<span class="topmenuaction"><a href="{% url login %}">{% trans "Login" %}</a></span>
-						{% endif %}
-					</div>
+    <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
+    <!--[if IE 7 ]> <body class="ie ie7 "> <![endif]-->
+    <!--[if IE 8 ]> <body class="ie ie8 "> <![endif]-->
+    <!--[if IE 9 ]> <body class="ie ie9 "> <![endif]-->
+    <!--[if (gt IE 9)|!(IE)]><!-->
+    <body class="">
+        <div class="wrapper">
+         <!--<![endif]-->
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <ul class="nav pull-right">
+                    {% if user.is_authenticated %}
+                        <li class="hidden-phone">
+                            <a href="{% url profile %}" role="button">{% trans "My Profile" %}</a>
+                        </li>
+                        {% if FLATPAGES.FAQ %}
+                        <li class="hidden-phone">
+                            <a href="/about/faq/{{ LANGUAGE_CODE }}">{% trans "FAQ" %}</a>
+                        </li>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                            <li ><a href="{% url admin:index %}" ><i class="fa fa-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
+                        {% endif %}
+                    {% endif %}
+                        <li class="dropdown pull-right hidden-phone">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                {% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu ">
+                            <form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform" >
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ next }}" />
+                                <input id="langsel" name="language" type="hidden" value="" />
+                            </form>
+                            {% for lang in LANGUAGES %}
+                            <li>
+                                <a class="select_lang" href="#" onclick="setlang('{{ lang.0 }}'); return false;" title="{{lang.1}}">{% trans lang.1 %}{% ifequal LANGUAGE_CODE lang.0 %}  <i class="fa fa-check-square-o"></i>{% endifequal %}</a>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li id="fat-menu" class="dropdown">
+                        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-user"></i> {{user}}
+                            <i class="fa fa-caret-down"></i>
+                        </a>
 
-				</div>
-			</div>
-			<div id="content">
-				{% block brcrmb_container %}
-				<div class="info_content_title">{% if user.is_authenticated %}<a href="/">{% trans "My instances" %}</a>{% endif %}
-				{% block breadcrumbs %}{% endblock %}
-				</div>
-				{% if messages %}
-				<div id="messages">
-				{% for message in messages %}
-					<span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span><br />
-				{% endfor %}
-				</div>
-				{% endif %}
-				{% endblock %}
-				{% block content %}
-				{% endblock %}
-
-			</div>
-			<div id="footer">
-			{% if user.is_authenticated %}
-			{% trans "If you have any questions or need help, contact GRNET Helpdesk at <a href='mailto:helpdesk@grnet.gr'>helpdesk@grnet.gr</a> or 800-11-47638." %}<br />
-			{% endif %}
-			<a href="http://www.grnet.gr">{% trans "GRNET" %} NOC</a> | <a href="/about/info/{{ LANGUAGE_CODE }}">{% trans "Info" %}</a> | <a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">{% trans "Service Terms" %}</a>
-			</div>
-	</div>
-</body>
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="{% url profile %}">{% trans "My Profile" %}</a></li>
+                            <li class="divider visible-phone"></li>
+                            <li><a tabindex="-1" href="{% url logout %}">{% trans "Logout" %}</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+                <a  href="{% url user-instances %}">
+                    {% if BRANDING.LOGO %}
+                        <img class="logoimg brand brandimg" src="{{BRANDING.LOGO}}">
+                    {% endif %}
+                    {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
+                        <span class="brand service-provider">{{ BRANDING.SERVICE_PROVIDED_BY.NAME }}</span>
+                    {% endif %}
+                    {% if BRANDING.MOTTO %}
+                        <span class="brand brandtext">{{BRANDING.MOTTO}}</span>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+        {% block navbars %}
+        {% if user.is_authenticated %}
+        <div id="main-menu">
+            <div id="phone-navigation">
+                <select class="selectnav" id="phone-menu">
+                    <option value="{% url apply %}" >{% trans "Create Instance" %}</option>
+                    {% if can_handle_applications or can_view_applications %}
+                    <option value="{% url application-list %}">{% trans "Applications" %}{% if pending_count %}({{ pending_count }}){% endif %}</option>
+                    {% endif %}
+                    {% if user.is_superuser %}
+                    <option value="{% url admin:index %}" >{% trans "Admin" %}</option>
+                    {% endif %}
+                    <option value="{% url profile %}" >{% trans "My Profile" %}</option>
+                    <option value="{% url logout %}" >{% trans "Logout" %}</option>
+                </select>
+            </div>
+        </div>
+        <div id="sidebar-nav">
+            <ul id="dashboard-menu" class="nav nav-list">
+                <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="fa fa-home"></i> <span>{% trans "Home" %}</span></a></li>
+                {% if user.is_superuser or perms.ganeti.view_instances %}
+                    <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="fa fa-envelope"></i> <span>{% trans "Nofications" %}</span></a></li>
+                    <li {% block clusterinfo %}{% endblock %}><a href="{% url clusterdetails %}"><i class="fa fa-puzzle-piece"></i> <span>{% trans "Cluster Info" %}</span></a></li>
+                    <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="fa fa-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
+                    <li {% block clusterjobs %}{% endblock %}><a href="{% url jobs %}"><i class="fa fa-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>
+                    {% if COLLECTD_URL %}<li {% block nodegraphs %}{% endblock %}><a href="{% url cluster-get-nodes-graphs %}"><i class="fa fa-area-chart"></i> <span>{% trans "Graphs" %}</span></a></li>{% endif %}
+                {% endif %}
+                <li {% block auditlog %}{% endblock %}>
+                    <a href="{% url auditlog %}">
+                        <i class="fa fa-book"></i>
+                        <span>
+                            {% if user.is_superuser or perms.ganeti.view_instances %}
+                                {% trans "Audit Log" %}{% else %}{% trans "History" %}
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+                <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="fa fa-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
+                <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="fa fa-plus"></i> <span>{% trans "Create Instance" %}</span></a></li>
+                {% if user.is_superuser or perms.ganeti.view_instances %}
+                    {% if can_handle_applications or can_view_applications %}
+                    <li {% block applications %}{% endblock %}>
+                        <a href="{% url application-list %}">
+                            <i class="fa fa-inbox"></i>
+                            <span>{% trans "Applications" %}
+                            {% if pending_count %}
+                                <span class="label label-important">{{ pending_count }}</span>
+                            {% endif %}
+                            </span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="fa fa-moon-o"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
+                {% endif %}
+                {% if FEED_URL %}
+                <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="fa fa-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
+                {% endif %}
+                {% if request.user.is_superuser %}
+                 <li ><a href="#" id="clearcache"> <i class="fa fa-adjust"></i> {% trans "Clear Cache" %}</a></li>
+                 {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+        {% endblock %}
+        {% block blockcontainer %}
+        <div class="content">
+            <div class="container-fluid">
+            {% block brcrmb_container %}
+                <ul class="breadcrumb">
+                    {% block crumbs %}
+                    <li class="active">{% trans "Home" %}</li>
+                    {% endblock %}
+                </ul>
+                <div id="jsonmessages" style="display:none">
+                    <div class="alert alert-warning">
+                    <button class="close" data-dismiss="alert" type="button"> × </button>
+                        <span id="jsonmessage"></span>
+                    </div>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                    <div {% if message.tags %} class="alert alert-{{ message.tags|cut:'safe ' }}"{% endif %}>
+                        <button class="close" data-dismiss="alert" type="button"> × </button>
+                        {% if 'safe' in message.tags %}
+                            {{ message|safe }}
+                        {% else %}
+                            {{ message }}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endblock %}
+            <div class="row-fluid">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    <div class="pull"></div>
+    </div>
+    <footer>
+        <div class="container" id="footcontainer">
+        {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
+            {% trans "This is a service provided by" %}
+                {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
+                    <a target="_blank" href="//noc.grnet.gr">
+                {% endif %}
+                {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
+                    {{ BRANDING.SERVICE_PROVIDED_BY.NAME}}
+                {% endif %}
+                {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
+                    </a>
+                {% endif %}
+        {% endif %}|
+        {% if BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
+            {% for sn in BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
+            <a target="_blank" href="{{sn.URL}}">
+                <font style="color:{{sn.FONT_COLOR|safe}};">
+                    <i class="fa {{ sn.FONT_AWSOME_NAME }}"></i>
+                </font>
+            </a>
+            {% endfor %}
+        {% endif %}|
+        {% if FLATPAGES.INFO or FLATPAGES.TOS %}
+        {% if FLATPAGES.INFO %}
+            <a href="/about/info/{{ LANGUAGE_CODE }}">
+                {% trans "Info" %}
+            </a>
+        {% endif %}|
+        {% if FLATPAGES.INFO and FLATPAGES.TOS %}
+        {% endif %}
+        {% if FLATPAGES.TOS %}
+        <a href="/about/terms-of-service/{{ LANGUAGE_CODE }}">
+            {% trans "Service Terms" %}
+        </a>
+        {% endif %}
+        {% endif %}
+        </div>
+        {% if BRANDING.FOOTER_ICONS_IFRAME %}
+            {% include "includes/banners.html" %}
+        {% endif %}
+        <div>Powered by <a href="https://code.grnet.gr/projects/ganetimgr/">ganetimgr</a> v{{VERSION}}</div>
+    </footer>
+    {% include "includes/analytics.html" %}
+    {% block postfooter %}{% endblock %}
+  </body>
 </html>
+
+

@@ -76,7 +76,7 @@ class InstanceRenameForm(forms.Form):
 
 class GraphForm(forms.Form):
     cluster = forms.ModelChoiceField(
-        queryset=Cluster.objects.all(),
+        queryset=Cluster.objects.filter(disabled=False),
         empty_label=None
     )
     nodes = forms.CharField(required=False, widget=forms.widgets.HiddenInput())

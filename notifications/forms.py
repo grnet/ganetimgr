@@ -16,9 +16,45 @@
 #
 from django import forms
 from django.utils.translation import ugettext_lazy
+from django.contrib.auth.models import User
+from notifications.models import NotificationArchive
+
+
+TYPE_CHOICES = (
+    ('cluster', 'clusters'),
+    ('nodes', 'nodes'),
+    ('nodegroups', 'nodegroups'),
+    ('users', 'users'),
+    ('groups', 'groups'),
+    ('instances', 'instances')
+)
 
 
 class MessageForm(forms.Form):
+    search_for = forms.ChoiceField(
+        label=ugettext_lazy("Search for"),
+        choices=TYPE_CHOICES
+    )
     subject = forms.CharField(max_length=100, label=ugettext_lazy("Subject"))
-    message = forms.CharField(widget=forms.Textarea, label=ugettext_lazy("Body"))
+    message = forms.CharField(
+        widget=forms.Textarea,
+        label=ugettext_lazy("Body"),
+        help_text='You can use {% for i in instances %} {{ i }} {% endfor %} if you want to use the body as a mail template.'
+    )
     recipient_list = forms.CharField(label=ugettext_lazy("Recipients"))
+
+    def add_to_archive(self, user):
+        if self.is_valid():
+            notification = NotificationArchive(
+                subject=self.cleaned_data['subject'],
+                message=self.cleaned_data['message'],
+                sender=user
+            )
+            notification.save()
+            recipients = self.cleaned_data['recipient_list'].split(',')
+            recipient_list = []
+            for recipient in recipients:
+                recipient_list.append(recipient.replace('u_', ''))
+            for user in User.objects.filter(pk__in=recipient_list):
+                notification.recipients.add(user)
+            notification.save()

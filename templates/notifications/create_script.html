@@ -1,39 +1,69 @@
 {% load i18n %}
-
-<link rel="stylesheet" href="/static/select2/select2.css">
-<script src="/static/select2/select2.js"></script>
-<link href="/static/awesome/css/font-awesome.min.css" rel="stylesheet">
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'ganetimgr/css/indludes/select2.css' %}">
+<script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
+<link href="{% static 'ganetimgr/css/indludes/font-awesome.min.css' %}" rel="stylesheet">
 <script>
-$(document).ready(function() {
-	$("#id_recipient_list")
-								.select2(
-										{
-											placeholder : "{% trans 'Type name(s) from user, group, instance, cluster' %}",
-											minimumInputLength : 2,
-											multiple: true,
-											ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
-												url : "{% url usergroups %}",
-												dataType : 'json',
-												data : function(term, page) {
-													return {
-														q : term,
-													};
-												},
-												results : function(data, page) { // parse the results into the format expected by Select2.
-													// since we are using custom formatting functions we do not need to alter remote JSON data
-													return {
-														results : data
-													};
-												}
-											},
-											formatResult : format, // omitted for brevity, see the source of this page
-											formatSelection : format, // omitted for brevity, see the source of this page
-											escapeMarkup: function(m) { return m; }
-										});
-	{% if users %}
-	$("#id_recipient_list").select2(
-			"data", [{% for u in users %}{id: "{{u.id}}", text: formatDjangoObject("{{u.type}}")+ '{{u.text}}'},{% endfor %}]);
-	{% endif %}
+	$(document).ready(function() {
+		$('h3.archive').on('click', function() {
+			$(this).toggleClass('open');
+		});
+
+		$('#id_search_for').select2({'width': 100});
+		$("#id_recipient_list").select2({
+			placeholder : "{% trans 'Type name(s) from user, group, instance, cluster' %}",
+			minimumInputLength : 2,
+			multiple: true,
+			ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
+				url : "{% url usergroups %}",
+				dataType : 'json',
+
+				data : function(term, page) {
+					return {
+						q : term,
+						type: $('#id_search_for').val()
+					};
+				},
+				results : function(data, page) { // parse the results into the format expected by Select2.
+					// since we are using custom formatting functions we do not need to alter remote JSON data
+					return {
+						results : data
+					};
+				}
+			},
+			formatResult : format, // omitted for brevity, see the source of this page
+			formatSelection : format, // omitted for brevity, see the source of this page
+			escapeMarkup: function(m) { return m; }
+		});
+		{% if users %}
+		$("#id_recipient_list").select2("data", [{% for u in users %}{id: "{{u.id}}", text: formatDjangoObject("{{u.type}}") + '{{u.text}}'},{% endfor %}]);
+		{% endif %}
+	});
+
+
+	function format(item) {
+		if (item.type=="user"){
+			return '<i class="fa fa-user"></i> ' + item.text;
+		}
+		else if (item.type=="group"){
+			return '<i class="fa fa-group"></i> ' + item.text;
+		}
+		else if (item.type=="vm"){
+			return '<i class="fa fa-laptop"></i> ' + item.text;
+		}
+		else if (item.type=="cluster"){
+			return '<i class="fa fa-puzzle-piece"></i> ' + item.text;
+		}
+		else if (item.type=="nodegroup"){
+			return '<i class="fa fa-tasks"></i> ' + item.text;
+		}
+		else if (item.type=="node"){
+			return '<i class="fa fa-archive"></i> ' + item.text;
+		}
+		else{
+			return item.text;
+		}
+	};
 
 					});
 function format(item) {
@@ -53,7 +83,7 @@ function format(item) {
 		return item.text;
 	}
 	};
-	
+
 function formatDjangoObject(type){
 	if (type=="user"){
 		return '<i class="icon-user"></i> ';

@@ -36,7 +36,6 @@ An explanation about some of the settings:
 - ``Port`` is the port the RAPI daemon listens to on the master node. Unless you manually changed it this should be 5080
 - ``Username/Password`` are the credentials created earlier for the cluster
 - ``Fast instance creation`` is an option to submit instance creation requests through the admin insterface instead of going through the normal application procedure.
-- ``Default disk template`` is the disk template used by default for the specific cluster
 - ``Cluster uses gnt-network`` is a soon to be deprecated option about network options for new instances. If you use routed networks (though gnt-network) this should be on.
 
 Network Setup

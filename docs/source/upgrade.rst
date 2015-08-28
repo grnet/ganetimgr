@@ -4,6 +4,17 @@ Upgrading
 
 This article describes the actions that are needed when upgrading from a previous version of Gametimgr.
 
+Migrating to v.1.6
+------------------
+
+- Perform south migration::
+    python manage.py migrate
+    
+- Collect static files::
+    python manage.py collectstatic
+    
+- Update settings.py to settings.py.dist
+
 Migrating to v.1.5.3
 --------------------
 

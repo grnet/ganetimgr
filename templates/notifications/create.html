@@ -1,11 +1,16 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
 {% block notify %}class="active"{% endblock %}
-{% block title %}{% trans "Send Mail" %}{% endblock %}
+{% block title %}{% trans "Notifications" %}{% endblock %}
+
 {% block crumbs %}
-	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Send Mail" %}</li>
-	    		{% endblock %}
+<li>
+	<a href="{% url user-instances %}">{% trans "Home" %}</a>
+	<span class="divider">/</span>
+</li>
+<li class="active">{% trans "Notifications" %}</li>
+{% endblock %}
+
 {% block extrahead %}
 
 {% include "notifications/create_script.html" %}
@@ -13,8 +18,16 @@
 {% endblock %}
 
 {% block content %}
-
-{% include "notifications/create_body.html" %}
-
+	{% include "notifications/create_body.html" %}
+	{% if archive %}
+	<h3 class="archive">Archive <i class="fa fa-plus-square closed"></i><i class="fa fa-minus-square opened"></i></h3>
+	<ul class="nav nav-tabs nav-stacked">
+		{% for notification in archive %}
+		<li>
+			<a href="{{ notification.get_absolute_url }}">{{ notification.subject }}, {{ notification.date }}</a>
+		</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
 {% endblock %}
 

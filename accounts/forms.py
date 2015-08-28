@@ -14,17 +14,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_unicode
 
+from django.contrib.auth.forms import PasswordResetForm
 from recaptcha.client import captcha
 from registration.forms import RegistrationFormUniqueEmail as _RegistrationForm
-from django.contrib.auth.forms import PasswordResetForm
+from apply.models import Organization
 
 # Add the new google service URLs, as the old ones to recaptcha.net are
 # redirects and break HTTPs due to the certificate belonging to www.google.com
@@ -79,6 +78,12 @@ class ReCaptchaField(forms.CharField):
 class RegistrationForm(_RegistrationForm):
     name = forms.CharField()
     surname = forms.CharField()
+    phone = forms.CharField(required=False)
+    organization = forms.ModelChoiceField(
+        queryset=Organization.objects.all(),
+        required=False,
+        label=_("Organization")
+    )
     recaptcha = ReCaptchaField(label=_("Verify"), required=False)
 
 

@@ -1,7 +1,11 @@
 {% extends "theme/base.html" %}
 {% load i18n %}
+{% load staticfiles %}
 {% block title %}{% trans "Register" %}{% endblock %}
 {% block brcrmb_container %}{% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/select2.css' %}">
+{% endblock %}
 {% block blockcontainer %}
 <!-- change recaptcha theme -->
 <script type="text/javascript">
@@ -59,4 +63,11 @@ var RecaptchaOptions = {
 
 
 
-                  
+{% block bottomblock %}
+<script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
+<script>
+	$(document).ready( function(){
+		$("#id_organization").select2({dropdownAutoWidth : true});
+	});
+</script>
+{% endblock %}

@@ -32,6 +32,48 @@ Notes:
 ===========
 
 
+1.5.5 RELEASE
+Bugfixing release
+   	- [fixed] If application form is invalid, OS selection is set to noop
+	- [fixed] If a cluster's slug contains the dash character it would generate a 404 response
+
+===========
+
+
+1.5.4 RELEASE
+Features/Bugfixing release
+
+Requirements:
+	- South migration: python manage.py migrate
+	- Update settings.py to settings.py.dist
+
+New Features:
+	- Search by column on the home table
+	- Clear button in search input on the home table
+	- Admins can now create instances without having to review their own applications
+	- Email Notifications archive
+	- Disable choice for full networks in applications review
+
+Fixes/Improvements:
+	- Improved settings file
+	- Fancier Frontend
+	- Add default value in cluster dropdown
+	- User has a default organization and phone which are the default in an application. Also, this data is automatically filled if the user fills an application and has no default organization and phone.
+	- Remove instance owners section, since it provides the same data with the home page
+	- Easier branding
+	- Autofocus on inputs (search and username)
+	- Code refactoring
+	- Junk files removal
+	- If application form is invalid, os selection is set to noop, fixed
+	- Proper message in 'user has been notified' after application rejection
+	- Organization and contact information now exists in user model
+
+Notes:
+	- There is a datamigration (accounts/migrations/0004_organizations.py) in this version that fills user's organization field (new), based on his last application.
+
+===========
+
+
 1.5.5 RELEASE (stable)
 Bugfixing release
 	- [fixed] If a cluster's slug contains the dash character it would generate a 404 response
@@ -51,6 +93,8 @@ Features/Bugfixing release
 	- Toggle the visibiliti of approved and failed applications
 	- Pending applications notification does not count failed and approved applications
 	- Fix bug that causes mail to crash
+
+===========
 
 
 1.5.3 RELEASE

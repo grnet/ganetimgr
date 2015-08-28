@@ -25,8 +25,9 @@ from datetime import datetime, timedelta
 from gevent.pool import Pool
 from socket import gethostbyname
 from time import sleep
-
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.http import Http404
 from django.core.cache import cache
 from django.contrib.auth.models import User, Group
@@ -84,9 +85,9 @@ class InstanceManager(object):
                 pass
             finally:
                 close_connection()
-        clusters = Cluster.objects.all()
-        p.imap(_get_instances, clusters)
-        p.join()
+        # get only enabled clusters
+        clusters = Cluster.objects.filter(disabled=False)
+        p.map(_get_instances, clusters)
         return instances
 
     def filter(self, **kwargs):
@@ -364,7 +365,6 @@ class Cluster(models.Model):
         help_text="Allow fast instance creations on this cluster using the"
         " admin interface"
     )
-    default_disk_template = models.CharField(max_length=255, default="plain")
     use_gnt_network = models.BooleanField(
         default=True,
         verbose_name="Cluster uses gnt-network",
@@ -375,6 +375,7 @@ class Cluster(models.Model):
         verbose_name="Disable Instance Creation",
         help_text="True disables setting a network at the application review form and blocks instance creation"
     )
+    disabled = models.BooleanField(default=False)
 
     class Meta:
         permissions = (
@@ -623,10 +624,6 @@ class Cluster(models.Model):
                     none, thus it is 0'''
                     info['disk_used'] = 0
                 info['shared_storage'] = False
-                if self.default_disk_template in ['drbd', 'plain']:
-                    info['shared_storage'] = False
-                if self.default_disk_template in ['sharedfile', 'blockdev']:
-                    info['shared_storage'] = True
                 cachenodes.append(info)
             nodes = cachenodes
             cache.set("cluster:%s:nodes" % self.slug, nodes, 180)
@@ -1236,4 +1233,12 @@ def parseQuerysimple(response):
         reslist.append(res_list)
     return reslist
 
+
+@receiver(pre_save, sender=Cluster)
+def check_if_cluster_is_disabled(sender, **kwargs):
+    instance = kwargs.get('instance')
+    # if instance is disabled
+    # we need to clear cache
+    if instance.disabled:
+        cache.delete("cluster:%s:instances" % instance.slug)
 

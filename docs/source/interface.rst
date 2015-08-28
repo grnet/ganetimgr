@@ -114,6 +114,8 @@ The statistics page shows data from all the clusters that ganetimgr knows about.
 Notifications
 -------------
 An administrator can direclty send mail to vm owners. The Recipient field is dynamic. It can lookup a usernames email address dynamically and also fetch all the emails associated with a vm or even all the vms the reside on a cluster.
+We have added the variable `instances` in the context of the message (where applicable, eg clusters) in order to show the names of a users affected instances.
+In this section there is also the archive where one can see all the previous notifications sent by the admins.
 
 .. image:: _static/images/ss_15_admin_mail.png
 	:scale: 50 %

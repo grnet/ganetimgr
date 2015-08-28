@@ -33,6 +33,8 @@ from itertools import groupby
 from django.forms.widgets import Select
 from django.utils.encoding import force_unicode
 from django.utils.html import escape, conditional_escape
+from accounts.models import UserProfile
+
 from ganetimgr.settings import BRANDING
 
 # Taken from ganeti and patched to avoid non-bind9 friendly VM names
@@ -237,7 +239,7 @@ class InstanceApplicationForm(InstanceForm):
         super(InstanceApplicationForm, self).clean()
 
         if (
-            BRANDING.get('SHOW_ORGANIZATION_FORM', False)and
+            BRANDING.get('SHOW_ORGANIZATION_FORM', False) and
             BRANDING.get('SHOW_ADMINISTRATIVE_FORM', False)
         ):
             # if both forms are shown
@@ -284,7 +286,7 @@ class InstanceApplicationReviewForm(InstanceForm):
     disk_size = forms.IntegerField(min_value=2, initial=5,
                                    label=ugettext_lazy("Disk size (GB)"))
     cluster = forms.ChoiceField(
-        choices=[
+        choices=[('','Select')] + [
             (
                 c.pk,
                 "%s (%s)" % (c.description, c.slug)
@@ -435,3 +437,11 @@ class NameChangeForm(forms.Form):
         min_length=2,
         required=True
     )
+
+
+class OrganizationPhoneChangeForm(forms.ModelForm):
+    user = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = UserProfile
+        fields = ['organization', 'telephone', 'user']
