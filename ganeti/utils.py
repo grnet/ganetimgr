@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import filesizeformat
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from ganeti.models import Cluster, Instance
+from ganeti.models import Cluster, Instance, InstanceAction
 
 from util.client import GanetiApiError
 
@@ -126,7 +126,7 @@ def generate_json(instance, user):
     inst_dict['ipaddress'] = [ip for ip in i.nic_ips if ip]
     if not user.is_superuser and not user.has_perm('ganeti.view_instances'):
         inst_dict['ipv6address'] = [ip for ip in i.ipv6s if ip]
-    #inst_dict['status'] = i.nic_ips[0] if i.nic_ips[0] else "-"
+    # inst_dict['status'] = i.nic_ips[0] if i.nic_ips[0] else "-"
     if i.admin_state == i.oper_state:
         if i.admin_state:
             inst_dict['status'] = "Running"
@@ -427,11 +427,9 @@ def get_operating_systems_dict():
 def operating_systems():
     # check if results exist in cache
     response = cache.get('operating_systems')
-    print 'in cache'
     # if no items in cache
     if not response:
         discovery = discover_available_operating_systems()
-        print discovery
         dictionary = get_operating_systems_dict()
         operating_systems = sorted(dict(discovery.items() + dictionary.items()).items())
         # move 'none' on the top of the list for ui purposes.

@@ -37,7 +37,6 @@ from paramiko import RSAKey, DSSKey
 from paramiko.util import hexlify
 
 from ganeti.fields.jsonfield import JSONField
-from apply.utils import *
 
 
 (STATUS_PENDING,

@@ -26,7 +26,6 @@ from django.conf import settings
 from django.db import close_connection
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.template.context import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -43,6 +42,7 @@ from ganeti.utils import (
     notifyuseradvancedactions,
     get_os_details,
 )
+
 from ganeti.forms import (
     InstanceRenameForm,
     InstanceConfigForm,

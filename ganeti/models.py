@@ -42,7 +42,6 @@ from util.client import GanetiRapiClient, GanetiApiError, GenericCurlConfig
 from ganetimgr.settings import GANETI_TAG_PREFIX
 
 from apply.models import Organization, InstanceApplication
-from apply.utils import get_os_details
 
 REQUEST_ACTIONS = (
     (1, 'reinstall'),
@@ -843,6 +842,7 @@ class Cluster(models.Model):
         return job_id
 
     def reinstall_instance(self, instance, action):
+        from apply.utils import get_os_details
 
         def map_ssh_user(user, group=None, path=None):
             if group is None:

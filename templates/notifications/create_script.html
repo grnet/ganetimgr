@@ -1,8 +1,8 @@
 {% load i18n %}
 {% load staticfiles %}
-<link rel="stylesheet" href="{% static 'ganetimgr/css/indludes/select2.css' %}">
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/select2.css' %}">
 <script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
-<link href="{% static 'ganetimgr/css/indludes/font-awesome.min.css' %}" rel="stylesheet">
+<link href="{% static 'ganetimgr/css/includes/font-awesome.min.css' %}" rel="stylesheet">
 <script>
 	$(document).ready(function() {
 		$('h3.archive').on('click', function() {
@@ -63,25 +63,6 @@
 		else{
 			return item.text;
 		}
-	};
-
-					});
-function format(item) {
-	if (item.type=="user"){
-		return '<i class="icon-user"></i> ' + item.text;
-	}
-	else if (item.type=="group"){
-		return '<i class="icon-group"></i> ' + item.text;
-	}
-	else if (item.type=="vm"){
-		return '<i class="icon-laptop"></i> ' + item.text;
-	}
-	else if (item.type=="cluster"){
-		return '<i class="icon-puzzle-piece"></i> ' + item.text;
-	}
-	else{
-		return item.text;
-	}
 	};
 
 function formatDjangoObject(type){
