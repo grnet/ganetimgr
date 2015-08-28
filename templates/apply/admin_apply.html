@@ -5,10 +5,10 @@
 {% block title %}{% trans "Create new Virtual Machine" %}{% endblock %}
 
 {% block crumbs %}
-	<li>
-		<a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span>
-	</li>
-	<li class="active">{% trans "Create Instance" %}</li>
+    <li>
+        <a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span>
+    </li>
+    <li class="active">{% trans "Create Instance" %}</li>
 {% endblock %}
 
 {% block createtop%}class="active"{% endblock %}
@@ -18,30 +18,30 @@
 {% block extrahead %}
 <link rel="stylesheet" href="{% static 'ganetimgr/css/includes/select2.css' %}">
 <style type="text/css">
-	th {
-		text-align: right;
-		padding-right: 0.5em;
-		vertical-align: top;
-	}
+    th {
+        text-align: right;
+        padding-right: 0.5em;
+        vertical-align: top;
+    }
 
-	.help {
-		font-style: italic;
-	}
+    .help {
+        font-style: italic;
+    }
 
-	label.required { font-weight: bold; }
+    label.required { font-weight: bold; }
 
-	legend + .control-group {
-		margin: 0;
-	}
+    legend + .control-group {
+        margin: 0;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="span6 main-content">
-	<div class="row-fluid">
-		<div class="row-fluid span12">
-			<h2>{% trans "Create a new instance" %}</h2>
-			 <form method="POST" action="{% url application-save %}" id="form" class="form-inline">
+    <div class="row-fluid">
+        <div class="row-fluid span12">
+            <h2>{% trans "Create a new instance" %}</h2>
+             <form method="POST" action="{% url application-save %}" id="form" class="form-inline">
                     {% csrf_token %}
                     <div class="row-fluid"><div class="span6">
                         <fieldset>
@@ -103,7 +103,9 @@
                                 </div>
                                 <div class="control-group {% if form.operating_system.errors %}error{% endif %}">
                                     <label class="control-label {% if form.operating_system.field.required %}required{% endif %}" for="id_applier">{{ form.operating_system.label }}</label>
-                                    <div class="controls" data-value="{{ form.operating_system.value }}" data-url="{% url operating_systems_json %}">{{ form.operating_system }}
+                                    <div class="controls" data-value="{{ form.operating_system.value }}" data-url="{% url operating_systems_json %}">
+                                        <input type="hidden" name="" id="operating_system_hidden" value="{{ form.data.operating_system }}">
+                                        {{ form.operating_system }}
                                         {% if form.operating_system.errors %}
                                         <span class="help-inline" style="clear:both;">
                                             {{ form.operating_system.errors|join:", " }}
@@ -203,13 +205,13 @@
                         </div>
                     </div>
                     <div class="control-group">
-						<div class="controls span12">
-							<input type="submit" value="{% trans "Apply" %}" class="btn btn-primary" />
-						</div>
-					</div>
+                        <div class="controls span12">
+                            <input type="submit" value="{% trans "Apply" %}" class="btn btn-primary" />
+                        </div>
+                    </div>
                 </form>
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -299,87 +301,88 @@
             }
             selnet.empty();
             var parsed_groups = [];
-            for (var i=0; i<selected_ng.networks.length; i++) {
-                if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1) {
-                    selgroup = $('#gr_'+selected_ng.networks[i].type+'');
-                } else {
-                    parsed_groups.push(selected_ng.networks[i].type);
-                    selnet.append($('<optgroup id="gr_'+selected_ng.networks[i].type+'" label="'+selected_ng.networks[i].type.capitalize()+'"></optgroup>'));
-                    selgroup = $('#gr_'+selected_ng.networks[i].type+'');
-                }
-                selecttext = '';
-                if (selgroup.attr('id') === 'gr_routed') {
-                    if (selecttext === '') {
-                        selecttext = "selected='selected'";
+            if (selected_ng) {
+                for (var i=0; i<selected_ng.networks.length; i++) {
+                    if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1) {
+                        selgroup = $('#gr_'+selected_ng.networks[i].type+'');
+                    } else {
+                        parsed_groups.push(selected_ng.networks[i].type);
+                        selnet.append($('<optgroup id="gr_'+selected_ng.networks[i].type+'" label="'+selected_ng.networks[i].type.capitalize()+'"></optgroup>'));
+                        selgroup = $('#gr_'+selected_ng.networks[i].type+'');
                     }
-                }
-                var option = '<option ';
-                    if (selected_ng.networks[i].free_count < 1) {
-                        option += 'disabled=disabled';
-                    }
-                    option += 'data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
-                    data-free="'+selected_ng.networks[i].free_count+'" \
-                    data-reserved="'+selected_ng.networks[i].reserved_count+'" \
-                    data-type="'+selected_ng.networks[i].type+'" \
-                    value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>'
-                selgroup.append(option);
-
-            }
-            if (('routed', parsed_groups) != -1){
-                topgroup = $('#gr_routed');
-                topgroup.parent().prepend(topgroup);
-            }
-            $("#id_netw").trigger("change");
-            selnet.select2('destroy');
-            selnet.select2({dropdownAutoWidth : true, formatResult: formatnet});
-            selnet.on('select2-open', function(){
-                $.sparkline_display_visible();
-            });
-            vgng.append('<option value="default">default</option>');
-            for (var i=0; i<selected_ng.vgs.length; i++) {
-                selecttext = '';
-                        if ("{{application.instance_params.vgs}}" == selected_ng.vgs[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+                    selecttext = '';
+                    if (selgroup.attr('id') === 'gr_routed') {
+                        if (selecttext === '') {
                             selecttext = "selected='selected'";
                         }
-                        vgng.append('<option value="'+selected_ng.vgs[i]+'" '+selecttext+'>'+selected_ng.vgs[i]+'</option>');
+                    }
+                    var option = '<option ';
+                        if (selected_ng.networks[i].free_count < 1) {
+                            option += 'disabled=disabled';
+                        }
+                        option += 'data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
+                        data-free="'+selected_ng.networks[i].free_count+'" \
+                        data-reserved="'+selected_ng.networks[i].reserved_count+'" \
+                        data-type="'+selected_ng.networks[i].type+'" \
+                        value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>'
+                    selgroup.append(option);
+
+                }
+                if (('routed', parsed_groups) != -1){
+                    topgroup = $('#gr_routed');
+                    topgroup.parent().prepend(topgroup);
+                }
+                $("#id_netw").trigger("change");
+                selnet.select2('destroy');
+                selnet.select2({dropdownAutoWidth : true, formatResult: formatnet});
+                selnet.on('select2-open', function(){
+                    $.sparkline_display_visible();
+                });
+                vgng.append('<option value="default">default</option>');
+                for (var i=0; i<selected_ng.vgs.length; i++) {
+                    selecttext = '';
+                            if ("{{application.instance_params.vgs}}" == selected_ng.vgs[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+                                selecttext = "selected='selected'";
+                            }
+                            vgng.append('<option value="'+selected_ng.vgs[i]+'" '+selecttext+'>'+selected_ng.vgs[i]+'</option>');
+                }
+                vgng.select2('destroy');
+                vgng.select2();
             }
-            vgng.select2('destroy');
-            vgng.select2();
 
         });
 
-       function getOperatingSystems() {
-			var operatingSystemsInput = $('#id_operating_system');
-			$.ajax({
-				url: operatingSystemsInput.parent().data('url'),
-				success: function (data) {
-					response = $.parseJSON(data);
-					options = '';
-					var selected = $('#operating_system_hidden').val();
-					if (response.status === 'success') {
-						for (var i=0; i < response.operating_systems.length; i++) {
-							if (response.operating_systems[i][1].osparams.img_id) {
-								options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '"';
-								if (selected === response.operating_systems[i][1].osparams.img_id) {
-									options += ' selected="selected" ';
-								}
-								 options += '>' + response.operating_systems[i][1].description + '</option>';
+        function getOperatingSystems() {
+            var operatingSystemsInput = $('#id_operating_system');
+            $.ajax({
+                url: operatingSystemsInput.parent().data('url'),
+                success: function (data) {
+                    response = $.parseJSON(data);
+                    options = '';
+                    var selected = $('#operating_system_hidden').val();
+                    if (response.status === 'success') {
+                        for (var i=0; i < response.operating_systems.length; i++) {
+                            if (response.operating_systems[i][1].osparams.img_id) {
+                                options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '"';
+                                if (selected === response.operating_systems[i][1].osparams.img_id) {
+                                    options += ' selected="selected" ';
+                                }
+                                 options += '>' + response.operating_systems[i][1].description + '</option>';
 
-							} else {
-								options += '<option value="' +  response.operating_systems[i][1].provider + '"';
-								if (selected === response.operating_systems[i][1].provider) {
-									options += ' selected="selected" ';
-								}
-								options += '>' + response.operating_systems[i][1].description + '</option>';
-							}
-						}
-					}
-					operatingSystemsInput.html(options);
-					operatingSystemsInput.select2({dropdownAutoWidth : true});
-				}
-			});
-		}
-
+                            } else {
+                                options += '<option value="' +  response.operating_systems[i][1].provider + '"';
+                                if (selected === response.operating_systems[i][1].provider) {
+                                    options += ' selected="selected" ';
+                                }
+                                options += '>' + response.operating_systems[i][1].description + '</option>';
+                            }
+                        }
+                    }
+                    operatingSystemsInput.html(options);
+                    operatingSystemsInput.select2({dropdownAutoWidth : true});
+                }
+            });
+        }
         getOperatingSystems();
 
 
