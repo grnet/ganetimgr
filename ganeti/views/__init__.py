@@ -77,14 +77,23 @@ def clear_cache(request):
 @csrf_exempt
 @login_required
 def tagInstance(request, instance):
+    '''
+    Set a new instance tag, or delete a tag.
+    '''
+    # get instance
     instance = Instance.objects.get(name=instance)
+    # get cluster
     cluster = instance.cluster
+    # get cache key
     cache_key = "cluster:%s:instance:%s:user:%s" % (
         cluster.slug, instance.name,
         request.user.username
     )
+    # check if the object has been cached
     res = cache.get(cache_key)
     if res is None:
+        # if not, we must see if the user requested
+        # the change, has permissions to do so.
         res = False
         if (
             request.user.is_superuser or
@@ -96,9 +105,9 @@ def tagInstance(request, instance):
         ):
             res = True
         cache.set(cache_key, res, 60)
-    if not res:
-        t = get_template("403.html")
-        return HttpResponseForbidden(content=t.render(RequestContext(request)))
+        if not res:
+            t = get_template("403.html")
+            return HttpResponseForbidden(content=t.render(RequestContext(request)))
 
     if request.method == 'POST':
         users = []
@@ -116,9 +125,19 @@ def tagInstance(request, instance):
             deltags = list(set(existingugtags) - set(common))
 
             if len(deltags) > 0:
-                #we have tags to delete
+                # we have tags to delete
                 oldtodelete = prepare_tags(deltags)
-                instance.cluster.untag_instance(instance.name, oldtodelete)
+                jobid = instance.cluster.untag_instance(instance.name, oldtodelete)
+                if not jobid:
+                    return HttpResponse(
+                        json.dumps(
+                            {
+                                'result': 'failure',
+                                'reason': jobid
+                            }
+                        ),
+                        mimetype='application/json'
+                    )
             newtagstoapply = prepare_tags(newtags)
 
             if len(newtagstoapply) > 0:

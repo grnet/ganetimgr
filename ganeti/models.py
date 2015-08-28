@@ -973,9 +973,13 @@ class Cluster(models.Model):
     def tag_instance(self, instance, tags):
         cache_key = self._instance_cache_key(instance)
         cache.delete(cache_key)
-        job_id = self._client.AddInstanceTags(instance, tags)
-        self._lock_instance(instance, reason="tagging", job_id=job_id)
-        return job_id
+        try:
+            job_id = self._client.AddInstanceTags(instance, tags)
+        except Exception as e:
+            return e
+        else:
+            self._lock_instance(instance, reason="tagging", job_id=job_id)
+            return job_id
 
     def untag_instance(self, instance, tags):
         cache_key = self._instance_cache_key(instance)
