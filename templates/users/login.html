@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block navbars %}{% endblock %}
+
+{% block title %}{% trans "Login" %}{% endblock %}
+
+{% block brcrmb_container %}{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/feedek.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/moment.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/feedek.css' %}">
+<script>
+	$(document).ready(function () {
+		$('#divRss').FeedEk({
+			FeedUrl: '{{FEED_URL}}',
+			MaxCount: 5,
+			DateFormat: 'DD MMMM YYYY',
+			DateFormatLang: 'en'
+		});
+
+		$('#id_username').focus();
+	});
+</script>
+{% endblock %}
+
+{% block blockcontainer %}
+    <div class="logincontent">
+        <div class="container-fluid">
+        	<div class="row-fluid">
+				<div class="span12">
+					<div class="row-fluid">
+					{% if FEED_URL %}
+						<div class="span1"></div>
+					{% else %}
+						<div class="span2"></div>
+					{% endif %}
+						<div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
+							<div class="widget">
+								<div class="row-fluid">
+									<h2><i class="fa fa-cloud"></i> {% trans "Welcome" %}</h2>
+									<div id="change_name_placeholder" class="padwidget">
+										{% blocktrans %}
+											<p>Welcome to GRNET's ViMa service.</p>
+											<p>If you are new to the service, take some time to read the service description supplied at the hyperlink at the end of this page and then register for a new account.</p>
+											<p>If you already have an account, you can log in using the form on the right.</p>
+											<p>For troubleshooting info and remarks do not hesitate to contact GRNET's Helpdesk.</p>
+										{% endblocktrans %}
+									</div>
+								</div>
+							</div>
+						</div>
+					{% if FEED_URL %}
+						<div class="span3 sidebar">
+							<div class="widget">
+								<div class="row-fluid">
+									<h2><i class="fa fa-bullhorn"></i> {% trans "Latest News" %}</h2>
+									<div id="divRss"></div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+						<div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
+							<div class="widget">
+								<div class="row-fluid">
+									<h2><i class="fa fa-sign-in"></i> {% trans "Login" %}</h2>
+									<div id="pass_change_placeholder" class="padwidget">
+									{% if form.errors %}
+										<p  class="error" style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>
+									{% endif %}
+									<form method="POST" class="form" action="{% url login %}">
+									{% csrf_token %}
+					                	<div class="control-group {% if form.username.errors %}error{% endif %}">
+					                   		<div class="controls">
+						                   	{% render_field form.username class+="input-xlarge" style+="width:95%;" placeholder=form.username.label|capfirst  %}
+						                    {% if form.username.errors %}
+							                    <span class="help-inline" style="clear:both;">
+							                        {{ form.username.errors|join:", " }}
+							                    </span>
+						                    {% endif %}
+						                    </div>
+					                	</div>
+					                	<div class="control-group {% if form.password.errors %}error{% endif %}">
+					                   	<div class="controls">
+						                   	{% render_field form.password class+="input-xlarge" style+="width:95%;" placeholder=form.password.label|capfirst  %}
+						                    {% if form.password.errors %}
+						                    <span class="help-inline" style="clear:both;">
+						                        {{ form.password.errors|join:", " }}
+						                    </span>
+						                    {% endif %}
+						                    </div>
+						                </div>
+					                	<div class="control-group">
+											<div class="controls">
+												<input type="submit" class="btn" value="{% trans "Login" %}" />
+												<input type="hidden" name="next" value="{{next}}" />
+											</div>
+										</div>
+									</form>
+								    <p><a href="{% url password_reset %}">{% trans "Forgot password?" %}</a></p>
+								    <p><a href="{% url registration_register %}">{% trans "Register a new account" %}</a></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% if FEED_URL %}
+					<div class="span1"></div>
+				{% else %}
+					<div class="span2"></div>
+				{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

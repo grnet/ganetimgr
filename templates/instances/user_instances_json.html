@@ -1,0 +1,557 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% block extrahead %}
+<style>
+	.dropdown-menu.instanceopt{
+		right: 0px;
+		left: auto;
+		text-align: left !important;
+	}
+
+	.alignCenter{
+		text-align: center !important;
+	}
+	.alignLeft{
+		text-align: left !important;
+	}
+	.alignRight{
+		text-align: right !important;
+	}
+	.visoverflow{
+		overflow: visible;
+	}
+</style>
+
+<link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap-switch.css' %}">
+{% endblock %}
+
+{% block title %}{% trans "My instances" %}{% endblock %}
+
+{% block homepage %}class="active"{% endblock %}
+
+{% block homepagetop %}class="active"{% endblock %}
+
+{% block content %}
+	<div class="span12 main-content">
+		<div class="row-fluid">
+			<div class="row-fluid">
+				<div class="row-fluid">
+					<div id="custom_search" class="span8 pull-right">
+						<h5><span>Search By Column <i class="fa fa-plus-square closed"></i><i class="fa fa-minus-square open"></i></span></h5>
+						<div class="form-horizontal"></div>
+					</div>
+				</div>
+				<table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
+					<thead>
+						<tr>
+							<th style="text-align: center;">{% trans "Name" %} <span class="sort-icon"></span></th>
+							<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
+							{% if user.is_superuser or perms.ganeti.view_instances %}
+							<th style="text-align: center;">{% trans "Node" %} <span class="sort-icon"></span></th>
+							{% endif %}
+							<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"></span></th>
+							<th style="text-align: center;">{% trans "Disk" %} <span class="sort-icon"></span></th>
+							<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
+							<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
+							{% if not user.is_superuser and not perms.ganeti.view_instances %}
+							<th style="text-align: center;">IP <span class="sort-icon"></span></th>
+							{% endif %}
+							<th style="display:none">{% trans "MAC" %}</th>
+							{% if user.is_superuser or perms.ganeti.view_instances %}
+							<th style="text-align: center;">{% trans "Network" %} <span class="sort-icon"></span></th>
+							<th style="text-align: center;">{% trans "Owner" %} <span class="sort-icon"></span></th>
+							<th style="text-align: center;">{% trans "Options" %}</th>
+							<th style="display:none">{% trans "HiddenContactDetails" %}</th>
+							{% else %}
+							<th style="text-align: center;">{% trans "Shortcuts" %}</th>
+							{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabelservdets">{% trans "Instance Details" %}</h3>
+		</div>
+		<div class="modal-body" id="instDetsbody">
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+		</div>
+	</div>
+{% endblock %}
+
+{% block postfooter %}
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.bootstrap.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
+<script type="text/javascript">
+var status;
+var oldhtml;
+var last_element = false;
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+	"file-size-pre": function ( a ) {
+		//Let's see if instance has many disks
+		xm = a.split(", ");
+		if (xm.length > 1){
+			// Found many disks, let's sum
+			var total = 0;
+			for (var i = 0;i < xm.length; i++){
+
+				var x = xm[i].substring(0,xm[i].length - 3);
+				var x_unit = (
+					xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ? 1000 : (
+						xm[i].substring(xm[i].length - 2, xm[i].length) == "GB" ? 1000000 : (
+							xm[i].substring(xm[i].length - 2, xm[i].length) == "TB" ? 1000000000 : 1
+							)
+						)
+					);
+				total += parseInt( x * x_unit, 10 );
+
+
+			}
+			return total;
+
+		}
+		else{
+		var x = a.substring(0,a.length - 3);
+
+		var x_unit = (
+					a.substring(a.length - 2, a.length) == "MB" ? 1000 : (
+						a.substring(a.length - 2, a.length) == "GB" ? 1000000 : (
+							a.substring(a.length - 2, a.length) == "TB" ? 1000000000 : 1
+							)
+						)
+					);
+		return parseInt( x * x_unit, 10 );
+	   }
+	},
+
+	"file-size-asc": function ( a, b ) {
+		return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+	},
+
+	"file-size-desc": function ( a, b ) {
+		return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+	}
+} );
+var needsrebootset = false;
+
+$(document).ready( function(){
+	$('.content').addClass('loading');
+	var oTable = $('#vm_instance_table').dataTable({
+		"bPaginate": true,
+		"bFilter": true,
+		"bAutoWidth": true,
+		"bStateSave": true,
+		"oLanguage": {
+			"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "instances" %}'
+		},
+		"sPaginationType": "bootstrap",
+		"sDom": "<'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
+		"iDisplayLength": 20,
+		"bProcessing": true,
+		"sAjaxSource": "{% url user-instances-json %}",
+		"bDeferRender": true,
+		"fnInitComplete": function(oSettings, json) {
+			// add clear button in search input
+			$('div.dataTables_filter label').append('<i class="fa fa-times clear"></i>');
+			$('div.dataTables_filter label').on('click', '.clear', function () {
+				oTable.fnFilter('');
+			});
+			$('div.dataTables_filter input').focus();
+			$('.content').removeClass('loading');
+			if(json.hasOwnProperty('messages')){
+				$('#jsonmessages').show();
+				$('#jsonmessage').html(json.messages);
+			}
+			{% if not user.is_superuser and not perms.ganeti.view_instances %}
+			$('body').on('click', '.revertbutton', function () {
+				var my = $(this);
+				my.parent().html(oldhtml);
+				last_element = false;
+				return false;
+			});
+			$('body').on('click', ".stopbuttonpre", function(){
+				var my = $(this);
+				if (last_element != false){
+					last_element.html(oldhtml);
+				}
+				oldhtml = my.parent().html();
+				last_element = my.parent();
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="stopbutton btn btn-small btn-danger"><i class="fa fa-power-off"></i>Shutdown</a>';
+				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="fa fa-chevron-circle-left"></i></a>';
+				my.parent().html(back+" "+btn);
+				return false;
+			});
+			$('body').on('click', ".startbuttonpre", function(){
+				var my = $(this);
+				if (last_element != false){
+					last_element.html(oldhtml);
+				}
+				oldhtml = my.parent().html();
+				last_element = my.parent();
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="startbutton btn btn-small btn-success"><i class="fa fa-play"></i> Start</a>';
+				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="fa fa-chevron-cirlce-left"></i></a>';
+				my.parent().html(back+" "+btn);
+				return false;
+			});
+			$('body').on('click', ".rebootbuttonpre", function(){
+				var my = $(this);
+				if (last_element != false){
+					last_element.html(oldhtml);
+				}
+				oldhtml = my.parent().html();
+				last_element = my.parent();
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var btn = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+cluster+'" data-instance="'+instance+'" class="rebootbutton btn btn-small btn-warning"><i class="fa fa-refresh"></i> Reboot</a>';
+				var back = '<a href="#" class="revertbutton btn btn-small btn-info"><i class="fa fa-chevron-sign-left"></i></a>';
+				my.parent().html(back+" "+btn);
+				return false;
+			});
+
+			$('body').on('click', ".stopbutton", function(){
+				last_element = false;
+				var my = $(this);
+				$(this).html("<img src='/static/ganetimgr/img/gifs/ajax-loader.gif'>");
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var stopurl = "{% url instance-shutdown 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
+				$.ajax({
+					type: 'POST',
+					url: stopurl,
+					dataType: 'json',
+					success: function(data) {
+					my.parent().html("<span class='label label-inverse'>"+data.action + " (requires refresh)</span>");
+					}
+				});
+				return false;
+			});
+			$('body').on('click', ".rebootbutton", function(){
+				last_element = false;
+				var my = $(this);
+				$(this).html("<img src='/static/ganetimgr/img/gifs/ajax-loader.gif'>");
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var rebooturl = "{% url instance-reboot 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
+				$.ajax({
+					type: 'POST',
+					url: rebooturl,
+					dataType: 'json',
+					success: function(data) {
+					my.parent().html("<span class='label label-inverse'>"+data.action + " (requires refresh)</span>");
+				}
+			});
+				return false;
+			});
+			$('body').on('click', ".startbutton", function(){
+				last_element = false;
+				var my = $(this);
+				$(this).html("<img src='/static/ganetimgr/img/gifs/ajax-loader.gif'>");
+				var cluster = $(this).data("cluster");
+				var instance = $(this).data("instance");
+				var starturl = "{% url instance-startup 'cluster_placeholder' 'instance_placeholder' %}".replace('cluster_placeholder', cluster.toString()).replace('instance_placeholder', instance.toString());
+				$.ajax({
+					type: 'POST',
+					url: starturl,
+					dataType: 'json',
+					success: function(data) {
+					my.parent().html("<span class='label label-inverse'>"+data.action + " (requires refresh)</span>");
+				}
+			});
+				return false;
+			});
+			{% endif %}
+		  },
+		"aoColumns":[
+					 {"mData": "name" ,
+						 "mRender": function (data, type, full) {
+							 if (full.hasOwnProperty("name_href")){
+								 name = '<a href="'+full.name_href+'">'+data+'</a>';
+							 }
+							 else{
+								 name = data;
+							 }
+							 return name;
+						 },
+						 "sClass" : "alignLeft","bSearchable": true,"bSortable": true
+					 },
+					 {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+					 {% if user.is_superuser or perms.ganeti.view_instances %}
+					 {"mData":"pnode", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+					 {% endif %}
+					 {"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true, "sType": "file-size"},
+					 {"mData":"disk", "sClass" : "alignCenter","bSearchable": true,"bSortable": true, "sType": "file-size"},
+					 {"mData":"vcpus", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+					 {"mData":"status",
+						 "mRender": function (data, type, full) {
+							 status = '<span class="label label-'+full.status_style+'">'+data+'</span>';
+						 if (full.hasOwnProperty("cdrom")){
+						  status = status + ' <span class="label label-warning">CDROM</span>';
+						 }
+						 if (full.node_group_locked){
+						  status = status + ' <span class="label label-important"><i class="fa fa-lock"></i>Locked</span>';
+						 }
+						 if (full.hasOwnProperty("adminlock")){
+							  status = status + ' <span class="label label-important"><i class="fa fa-lock"></i> Admin Lock</span>';
+							}
+						 if (full.hasOwnProperty("isolate")){
+							  status = status + ' <span class="label label-inverse"><i class="fa fa-shield"></i> Isolated</span>';
+							}
+						 if (full.hasOwnProperty("locked_reason")){
+							  status = status + ' <span class="label label-inverse">'+full.locked_reason+'</span>';
+							}
+						 if (full.hasOwnProperty("needsreboot")){
+							  status = status + ' <span class="label label-important">Needs Reboot</span>';
+							  if (needsrebootset === false){
+							  {% if not user.is_superuser and not perms.ganeti.view_instances %}
+								msg = "One or more instances' core configuration components (any of network adapter, hard disk type, boot device, cdrom) have changed.<br/> " +
+								 " In order for these changes to take effect, you need to <strong>Reboot</strong> the instance(s). Tip: Search for 'Needs Reboot'";
+								  $('#jsonmessage').html(msg);
+								  $('#jsonmessages').show();
+								  needsrebootset = true;
+								{% endif %}
+								}
+							}
+						 return status;
+						 },
+					  "sClass" : "alignCenter",
+					  "bSearchable": true,"bSortable": true
+						},
+						{% if not user.is_superuser and not perms.ganeti.view_instances %}
+					 {"mData":"ipaddress","bSearchable": true,"bSortable": true, "sClass" : "alignCenter",
+						 "mRender": function (data, type, full) {
+						 status = "";
+						 for(var i = 0; i < data.length; i++) {
+							status = '<span class="label label-info">'+data[i]+'</span> ' + status;
+						 }
+						 if (data.length == 0){
+							status = '<span class="label label-warning">-</span> ';
+						 }
+						 ipv6s = full.ipv6address;
+						 status6 = "";
+						 for(var i = 0; i < ipv6s.length; i++) {
+							status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;
+						 }
+						 if (ipv6s.length >= 0){
+							status = status+"<br>"+status6;
+						 }
+
+						 return status;
+						 }
+					 },
+					 {% endif %}
+					 {"mData":"nic_macs","bVisible":false},
+					 {% if user.is_superuser or perms.ganeti.view_instances %}
+					 {"mData":"network","bSearchable": true,"bSortable": true,"sClass" : "alignCenter",
+						 "mRender": function (data, type, full) {
+							 status = "";
+							 for(var i = 0; i < data.length; i++) {
+								status = '<span class="label label-info">'+data[i]+'</span> ' + status;
+							 }
+							 if (data.length == 0){
+								status = '<span class="label label-warning">-</span> ';
+							 }
+							 /*ipv6s = full.ipv6address;
+							 status6 = ""
+							 for(var i = 0; i < ipv6s.length; i++) {
+								status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;
+							 }
+							 if (ipv6s.length >= 0){
+								status = status+"<br>"+status6
+							 }
+							 */
+							 return status;
+							 }
+					 },
+					 {"mData":"users","bSearchable": true,"bSortable": true, "sClass" : "alignCenter",
+						 "mRender": function (data, type, full) {
+							 var users = '';
+							 for(var i = 0; i < data.length; i++) {
+								 if (data[i].hasOwnProperty("user")){
+									users = '<a class="btn" href="'+data[i].user_href+'"><i class="fa fa-user"></i> '+data[i].user+'</a>' + ' '+ users;
+								 }
+							 }
+							 for(var j = 0; j < full.groups.length; j++) {
+								 if (full.groups[j].hasOwnProperty("group")){
+									users = '<a class="btn" href="'+full.groups[j].group_href+'"><i class="fa fa-group"></i> '+full.groups[j].group+'</a>' + ' '+ users;
+								 }
+							 }
+						return users;
+						 }
+					 },
+					 {"mData": "name", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
+						 "mRender":  function (data, type, full) {
+							 if (full.hasOwnProperty("adminlock")){
+								 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'unlock\'); return false;">{% trans "Unlock" %}</a></li>';
+							 }
+							 else{
+								 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'lock\'); return false;">{% trans "Lock" %}</a></li>';
+							 }
+							 if (full.hasOwnProperty("isolate")){
+								 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'connect\'); return false;">{% trans "De-Isolate" %}</a></li>';
+							 }
+							 else{
+								 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'isolate\'); return false;">{% trans "Isolate" %}</a></li>';
+							 }
+							 var ret = ''+
+							 '<div class="btn-group">'+
+							 '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="fa fa-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
+							 '<ul class="dropdown-menu instanceopt">'+
+							   '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a></li>'+
+							   '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Owners" %}</a></li>'+
+							   '<li><a href="#" onclick="javascript:showNotify(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Notify" %}</a></li>'+
+							   lock + isolate +
+							 '</ul>'+
+						   '</div>';
+					 return ret;
+					 }
+					 },
+					 {"mData":"users","bVisible":false,
+						 "mRender": function (data, type, full) {
+							 var users = '';
+							 for(var i = 0; i < data.length; i++) {
+								 if (data[i].hasOwnProperty("user")){
+									users = data[i].user+','+data[i].email + ','+users;
+								 }
+							 }
+							 for(var j = 0; j < full.groups.length; j++) {
+								 if (full.groups[j].hasOwnProperty("groupusers")){
+									users = full.groups[j].groupusers+','+users;
+								 }
+							 }
+						return users;
+						 }
+					 },
+					 {% else %}
+					  {"mData": "status", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
+						 "mRender":  function (data, type, full) {
+								var lock = "-";
+								if (full.hasOwnProperty('adminlock')){
+									return '<div class="shortcuts"><span class="label label-important">Actions Disabled</span></div>';
+								}
+								if (full.hasOwnProperty('locked')){
+									return '<div class="shortcuts"><span class="label label-inverse">Action Pending</span></div>';
+								}
+								if (full.hasOwnProperty('node_group_locked')){
+									if (full.node_group_locked == true){
+										return '<div class="shortcuts"><span class="label label-inverse">Actions disabled due to maintainance</span></div>';
+									}
+								}
+
+								if (full.status == 'Running'){
+								 lock = '<a href="#" data-toggle="tooltip" title="Shutdown"  data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="stopbuttonpre btn btn-small btn-danger"><i class="fa fa-power-off"></i></a> ';
+								 lock += '<a href="#" data-toggle="tooltip" title="Reboot" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="rebootbuttonpre btn btn-small btn-warning"><i class="fa fa-refresh"></i></a> ';
+
+								 consoleurl = "{% if WEBSOCK_VNC_ENABLED %}{% url instance-novnc 'cluster_placeholder' 'instance_placeholder' %}{% else %}{% url instance-vnc 'cluster_placeholder' 'instance_placeholder' %}{% endif %}".replace('cluster_placeholder', full.clusterslug.toString()).replace('instance_placeholder', full.name.toString());
+								 lock += '<a href="'+consoleurl+'" data-toggle="tooltip" title="Console" class="consolebutton btn btn-small btn-inverse"><i class="fa fa-terminal"></i></a> ';
+								}
+								if (full.status == 'Stopped'){
+								 lock = '<a href="#" data-toggle="tooltip" title="Start" data-cluster="'+full.clusterslug+'" data-instance="'+full.name+'" class="startbuttonpre btn btn-small btn-success"><i class="fa fa-play"></i></a> ';
+								}
+							ret = '<div class="shortcuts">' + lock + '</div>';
+							return ret;
+						}
+					 },
+					 {% endif %}
+
+		 ]
+	});
+
+	$(window).resize(function() {
+		clearTimeout(window.refresh_size);
+		window.refresh_size = setTimeout(function() { update_size(); }, 250);
+	});
+
+	var update_size = function() {
+		$(oTable).css({ width: $(oTable).parent().width() });
+		oTable.fnAdjustColumnSizing();
+	};
+
+
+$('#custom_search h5 span').on('click', function () {
+	$(this).closest('div').toggleClass('open');
+});
+
+$.fn.dataTableExt.afnFiltering.push(
+	function( oSettings, aData, iDataIndex ) {
+		var customSearch = $('#custom_search');
+		var matched = true;
+		customSearch.find('input').each(function (index) {
+		 	if ($(this).val().length && (aData[index].indexOf($(this).val()) === -1)) {
+		 		matched = false;
+		 	}
+		});
+		return matched;
+    }
+);
+	var customSearch = $('#custom_search');
+	var table = $('#vm_instance_table');
+	table.find('th').each(function (index) {
+		// be able to search all the fields exept
+		// from the two last
+		if (index < table.find('th').length - 2) {
+			customSearch.find('div').append('<input name="' + $(this).text() + '" type="text" placeholder="' + $(this).text() + '" class="form-control">');
+		}
+	});
+	customSearch.on('change keyup', 'input', function (ev) {
+		oTable.fnFilter('');
+	});
+});
+
+
+
+
+	function showDetails(cluster, instance){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Instance Details: '+instance);
+		$( "#instDetsbody" ).load("{% url instance-popup %}/?cluster="+cluster+"&instance="+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+
+	function showTags(cluster, instance){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Instance Owners: '+instance);
+		$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+
+	function showNotify(cluster, instance){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text('Notify: '+instance);
+		$( "#instDetsbody" ).load("{% url notify %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+
+	function showLock(cluster, instance, action){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text(action + ': '+instance);
+		$( "#instDetsbody" ).load("{% url lock %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+
+	function showIsolate(cluster, instance, action){
+		$( "#instDetsbody" ).html( "" );
+		$( "#myModalLabelservdets" ).text(action + ': '+instance);
+		$( "#instDetsbody" ).load("{% url isolate %}"+instance+"");
+		$( "#instDets" ).modal('show');
+		return false;
+	}
+
+</script>
+{% endblock %}

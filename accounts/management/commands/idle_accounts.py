@@ -48,7 +48,7 @@ class Command(BaseCommand):
 
         if idle_users:
             email = render_to_string(
-                "idle_account.txt",
+                "users/emails/idle_account.txt",
                 {
                     "site": Site.objects.get_current(),
                     "days": settings.IDLE_ACCOUNT_NOTIFICATION_DAYS

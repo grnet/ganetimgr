@@ -1,4 +1,4 @@
-# ganetimgr
+# Ganetimgr
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/grnet/ganetimgr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 `ganetimgr` is a web platform that eases the provisioning of virtual machines over multiple `ganeti` clusters.

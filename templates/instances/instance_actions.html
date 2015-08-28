@@ -1,0 +1,382 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<script type="text/javascript">
+	var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
+	$(function(){
+		$( "#start" )
+		.button({
+			icons: {
+				secondary: "ui-icon-play"
+			}
+		});
+
+		$( "#shutdown" )
+		.button({
+			icons: {
+				secondary: "ui-icon-power"
+			}
+		});
+
+		$( "#reboot" )
+		.button({
+			icons: {
+				secondary: "ui-icon-arrowrefresh-1-s"
+			}
+		});
+
+
+		$( "#console" )
+		.button({
+			icons: {
+				secondary: "ui-icon-image"
+			}
+		});
+		$( "#update" )
+		.button({
+			icons: {
+				secondary: "ui-icon-check"
+			}
+		});
+
+	$( "#start" )
+	.click(function() {
+		clearTimeout(polltimer);
+		$(this).html("<img src='{% static 'ganetimgr/img/gifs/ajax-loader.gif' %}'>");
+		$.ajax({
+        type: 'POST',
+        url: "{% url instance-startup cluster.slug instance.name %}",
+        dataType: 'json',
+        success: function(data) {
+			$("#actions_container_inner").empty();
+			$("#actions_container_inner").html("<div class='span4'>"+data.action+"</div>");
+			setTimeout(load_data, 0);
+
+        }
+    });
+		return false; });
+
+	$( "#shutdown" )
+	.click(function() {
+		clearTimeout(polltimer);
+		$(this).html("<img src='{% static 'ganetimgr/img/gifs/ajax-loader.gif' %}'>");
+		$.ajax({
+        type: 'POST',
+        url: "{% url instance-shutdown cluster.slug instance.name %}",
+        dataType: 'json',
+        success: function(data) {
+			$("#actions_container_inner").empty();
+			$("#actions_container_inner").html("<div class='span4'>"+data.action+"</div>");
+			setTimeout(load_data, 0);
+
+        }
+    });
+		return false; });
+
+	{% if not instance.pending_reinstall %}
+		$( "#reinstall" )
+		.click(function() {
+			clearTimeout(polltimer);
+			$( "#instreinst" ).modal('show');
+
+			return false; });
+
+
+		$( "#reinstallapplybutton" )
+		.click(function() {
+			$(this).html('Sending Email...');
+			clearTimeout(polltimer);
+			$.ajax({
+		        type: 'POST',
+		        url: "{% url instance-reinstall-destroy cluster.slug instance.name 1 %}",
+		        data: {
+		        	operating_system: $('#operating_system select').val()
+		        },
+		        dataType: 'json',
+		        success: function(data) {
+		        	$( "#instreinstbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>");
+		        }
+	    });
+			return false; });
+	{% endif %}
+
+	{% if not instance.pending_destroy %}
+	$( "#destroy" )
+	.click(function() {
+		clearTimeout(polltimer);
+		$( "#instdest" ).modal('show');
+		return false; });
+
+
+	$( "#destroyapplybutton" )
+	.click(function() {
+		$(this).html('Sending Email...');
+		clearTimeout(polltimer);
+		$.ajax({
+        type: 'POST',
+        url: "{% url instance-reinstall-destroy cluster.slug instance.name 2 %}",
+        dataType: 'json',
+        success: function(data) {
+        	$( "#instdestbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>");
+        }
+    });
+		return false; });
+
+
+	{% endif %}
+
+
+	{% if not instance.pending_rename %}
+	$( "#rename" )
+	.click(function() {
+		clearTimeout(polltimer);
+		{% if instance.oper_state %}
+		$( "#instrenerr" ).modal('show');
+		{% else %}
+		$( "#instrenbody" ).html( "" );
+		$( "#instrenbody" ).load("{% url instance-rename cluster.slug instance.name 3 %}");
+		$( "#instren" ).modal('show');
+		{% endif %}
+		return false; });
+
+	{% endif %}
+
+	$( "#reboot" ).click(function() {
+		clearTimeout(polltimer);
+		$(this).html("<img src='{% static 'ganetimgr/img/gifs/ajax-loader.gif' %}'>");
+		$.ajax({
+        type: 'POST',
+        url: "{% url instance-reboot cluster.slug instance.name %}",
+        dataType: 'json',
+        success: function(data) {
+			$("#actions_container_inner").empty();
+			$("#actions_container_inner").html("<div class='span4'>"+data.action+"</div>");
+			setTimeout(load_data, 0);
+	        }
+	    });
+		return false;
+	});
+
+	function getOperatingSystems() {
+		var operatingSystemsInput = $('#operating_system select');
+		$.ajax({
+			url: operatingSystemsInput.parent().data('url'),
+			success: function (data) {
+				response = $.parseJSON(data);
+				var found = false;
+				var os = operatingSystemsInput.parent().data('os');
+				options = '';
+
+				if (response.status === 'success') {
+					oldos = true;
+
+					if (os === 'noop') {
+							options += '<option value="" selected>Keep it as it is - No operating system</option>';
+							oldos = false;
+						}
+					for (var i=0; i < response.operating_systems.length; i++) {
+						if (response.operating_systems[i][1].osparams.img_id === os) {
+							options += '<option value="' + response.operating_systems[i][1].osparams.img_id + '" selected>Keep the same os (' + os + ')</option>';
+							oldos = false;
+						}
+						if (response.operating_systems[i][1].osparams.img_id) {
+							options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '" >' + response.operating_systems[i][1].description + '</option>';
+						} else {
+							options += '<option value="' +  response.operating_systems[i][1].provider + '" >' + response.operating_systems[i][1].description + '</option>';
+						}
+					}
+
+				}
+				operatingSystemsInput.html(options);
+				if (oldos === true){
+					$('#operating_system').before("<div class='alert alert-warning'>Your installed OS ("+os+") is not supported any more. Please choose a new OS from the list</div>")
+				}
+			}
+		});
+	}
+	getOperatingSystems();
+});
+
+</script>
+{% if not instance.adminlock or  user.is_superuser or perms.ganeti.view_instances %}
+	{% if not instance.is_locked %}
+		{% if instance.oper_state %}
+			<div id="actions_container_inner" class="row-fluid" style="text-align:center;">
+				<div class="span12">
+				{% if not instance.node_group_locked or user.is_superuser or perms.ganeti.view_instances %}
+				<div class="span6">
+				<div class="row-fluid"><div class="span12"><a class="btn btn-danger btn-small btn-fixed" id="shutdown" href="#"><i class="fa fa-power-off"></i> {% trans "Shutdown" %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn btn-warning  btn-small btn-fixed" id="reboot" href="#"><i class='fa fa-refresh'></i> {% trans "Reboot" %}</a></div></div>
+				{% include "instances/includes/console-module.html" %}
+			</div>
+			<div class="span6">
+				<div class="row-fluid"><div class="span12"><a class="btn btn-small btn-fixed btn-info {% if instance.pending_rename %}disabled{% endif %}" id="rename" href="#"><i class="fa fa-font"></i> {% trans "Rename..." %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#"><i class='fa fa-cloud-download'></i> {% trans "Reinstall..." %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='fa fa-trash'></i> {% trans "Destroy..." %}</a></div></div>
+				</div>
+				{% else %}
+				<div class="span12">Due to maintenance, actions have been disabled on a group of instances that includes this instance.
+					{% include "instances/includes/console-module.html" %}
+				</div>
+				{% endif %}
+				</div>
+			</div>
+		{% else %}
+			<div id="actions_container_inner" class="row-fluid" style="text-align:center;">
+				<div class="span12">
+					{% if not instance.node_group_locked %}
+						<div class="span6">
+							<div class="row-fluid">
+								<div class="span12">
+									<a class="btn btn btn-success btn-small btn-fixed " id="start" href="#"><i class="fa fa-play"></i> {% trans "Start" %}</a>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<a class="btn btn-warning btn-small btn-fixed " id="reboot" href="#">
+										<i class='fa fa-refresh'></i>
+										{% trans "Reboot" %}
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="span6">
+							<div class="row-fluid">
+								<div class="span12">
+									<a class="btn btn-fixed btn-info btn-small {% if instance.pending_rename %}disabled{% endif %}" id="rename" href="#">
+										<i class="fa fa-font"></i>
+										{% trans "Rename..." %}
+									</a>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<a class="btn btn-fixed btn-small btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#">
+										<i class='fa fa-cloud-download'></i>
+										{% trans "Reinstall..." %}
+									</a>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<a class="btn btn-fixed btn-small btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#">
+										<i class='fa fa-trash'></i>
+										{% trans "Destroy..." %}
+									</a>
+								</div>
+							</div>
+						</div>
+					{% else %}
+						<div class="span12">
+							Due to maintenance, actions have been disabled on a group of instances that includes this instance.
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		{% endif %}
+	{% else %}
+		<div id="actions_container_inner" class="row-fluid">
+			<div class="span4" id="show_no_actions"><em>{{ instance.is_locked|capfirst }}</em></div>
+		</div>
+	{% endif %}
+{% else %}
+	<div id="actions_container_inner" class="row-fluid">
+		<div class="span4" id="show_no_actions"><em>{% trans "Instance actions are disabled by the administrator" %}</em></div>
+	</div>
+{% endif %}
+
+<div id="instance_status" style="display:none;">
+	{{ instance.oper_state|yesno:"Running,Stopped" }}
+</div>
+
+<div class="modal hide fade" id="instreinst" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>{% trans "Reinstall Instance" %}: {{instance}}</h3>
+	</div>
+	<div class="modal-body" id="instreinstbody">
+		<div class="alert alert-error">
+			<h4>{% trans "Warning!" %}</h4>
+			<p>
+				{% blocktrans %}
+				You are about to initiate the process of your instance <strong>{{instance}}</strong> re-installation.
+				<br>This process <strong>wipes all your data</strong> and re-installs your instance from scratch. You will lose all your data.
+				<br>Your instance will not be reinstalled yet, though.<br>
+				You will receive an email with an activation link. Only when you visit the activation link, your instance will be reinstalled.
+				{% endblocktrans %}
+			</p>
+			<div id="operating_system" data-os="{{ instance.osname }}" data-url="{% url operating_systems_json %}">
+				<select name="operating_systems"></select>
+			</div>
+		</div>
+		<br>
+		<div>
+			<a href="#" id="reinstallapplybutton" value="Save" class="btn btn-danger">{% trans "Email link" %}</a>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+	</div>
+</div>
+<div class="modal hide fade" id="instdest" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>{% trans "Destroy Instance" %}: {{instance}}</h3>
+	</div>
+	<div class="modal-body" id="instdestbody">
+		<div class="alert alert-error">
+			<h4>{% trans "Warning!" %}</h4>
+			<p>
+				{% blocktrans %}You are about to initiate the process of your instance <strong>{{instance}}</strong> removal.
+				This process will <strong>destroy your instance</strong>. You will lose all your data.
+				<br>Your instance will not be destroyed yet, though.<br>
+				You will receive an email with an activation link. Only when you visit the activation link, your instance will be destroyed.
+				{% endblocktrans %}
+			</p>
+		</div>
+		<br>
+		<div>
+			<a href="#" id="destroyapplybutton" value="Save" class="btn btn-danger">{% trans "Email link" %}</a>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+	</div>
+</div>
+<div class="modal hide fade" id="instren" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>{% trans "Rename Instance" %}: {{instance}}</h3>
+	</div>
+	<div class="modal-body" id="instrenbody">
+		<br>
+		<div>
+			<a href="#" id="renameapplybutton" value="Save" class="btn btn-danger">{% trans "Apply" %}</a>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+	</div>
+</div>
+<div class="modal hide fade" id="instrenerr" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>{% trans "Rename Instance" %}: {{instance}}</h3>
+	</div>
+	<div class="modal-body" id="instrenerrbody">
+		<div class="alert alert-error">
+			<h4>{% trans "Warning!" %}</h4>
+			<p>
+				{% blocktrans %}You cannot rename instance <strong>{{instance}}</strong>.
+				To rename an instance make sure it is turned off.
+				To turn it off select shutdown from this panel.
+				{% endblocktrans %}
+			</p>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+	</div>
+</div>
+
+

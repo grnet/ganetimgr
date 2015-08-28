@@ -3,16 +3,16 @@
 
 {% include "notifications/create_script.html" %}
 <script>
-$(document).ready(function() {
-	$("#mailapplybutton").click(function(){
-		$(this).html('Sending...')
-		$.ajax({
-			
-			url:"{% url notify %}",
-			data:$("#notifyform").serialize(),
-			type: "POST",
-			cache: false,
-			success:function(data){
+	$(document).ready(function() {
+		$("#mailapplybutton").click(function(){
+			$(this).html('Sending...')
+			$.ajax({
+
+				url:"{% url notify %}",
+				data:$("#notifyform").serialize(),
+				type: "POST",
+				cache: false,
+				success:function(data){
 					try {
 						result = data.result;
 						if (typeof result === 'undefined'){
@@ -25,18 +25,15 @@ $(document).ready(function() {
 					}
 					catch (exception) {
 						$('#instDetsbody').html(data);
-					}			
+					}
 				}
-				});
-		return false;
+			});
+			return false;
+		});
 	});
-	
-});
 </script>
 {% endblock %}
 
 {% block content %}
-
-{% include "notifications/create_body.html" %}
-
+	{% include "notifications/create_body.html" %}
 {% endblock %}

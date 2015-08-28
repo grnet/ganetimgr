@@ -1,0 +1,60 @@
+{% load i18n %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js '%}"></script>
+<script>
+	$(document).ready(function() {
+		$("#renamebutton").click(function(){
+			$(this).html('Sending Email...');
+			var instance = $("#instancetagsform").data('instance');
+			var cluster = $("#instancetagsform").data('cluster');
+			$.ajax({
+
+				url:"{% url instance-rename cluster_slug instance 3 %}",
+				data:$("#renameform").serialize(),
+				type: "POST",
+				cache: false,
+				success:function(data){
+						try {
+							result = $.parseJSON(data);
+							$('#instrenbody').html("<div class='span4 alert alert-success'>"+result.action+"</div>");
+							window.setTimeout('location.reload()', 1500);
+						}
+						catch (exception) {
+							$('#instrenbody').html(data);
+						}
+					}
+				});
+			return false;
+		});
+	});
+</script>
+<div class="alert alert-info">
+	<h4>{% trans "Instance Rename" %}</h4>
+	{% blocktrans %}You are about to initiate the process of your instance <strong>{{instance}}</strong> rename.<br>
+	Once you select a new hostname and click Apply you will receive an email with an activation link. Only when you visit the activation link, your instance will be renamed.
+	<div class="alert alert-warning"><strong>Important</strong>: To rename an instance make sure that it is turned off</div>
+	{% endblocktrans %}
+	<form method="POST" class="form-inline" id="renameform" data-instance="{{instance}}" data-cluster="{{cluster_slug}}">
+		<fieldset>
+			{% csrf_token %}
+			{% if form.non_field_errors %}
+			<p class="error">
+				{{ form.non_field_errors}}
+			</p>
+			{% endif %}
+			<div class="control-group {% if form.hostname.errors %} error {% endif %}">
+				<label class="control-label">{% if form.hostname.field.required %}<b>{% endif %}{{form.hostname.label}}{% if form.hostname.field.required %}</b>{% endif %}</label>
+				<div class="controls">
+				    {{ form.hostname }}
+				    {% if form.hostname.errors %} <span class="help-inline"> {{ form.hostname.errors|join:", " }} </span>
+				    {% endif %} <span class="help-block"> {{ form.hostname.help_text }}</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+				    <a href="#" id="renamebutton" value="Apply" class="btn btn-primary">{% trans "Email link" %}</a>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>

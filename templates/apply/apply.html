@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans "Create new Virtual Machine" %}{% endblock %}
+
+{% block crumbs %}
+	<li>
+		<a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span>
+	</li>
+	<li class="active">{% trans "Create Instance" %}</li>
+{% endblock %}
+
+{% block createtop%}class="active"{% endblock %}
+
+{% block extraticketinfo %} about instance creation{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/select2.css' %}">
+<style type="text/css">
+	th {
+		text-align: right;
+		padding-right: 0.5em;
+		vertical-align: top;
+	}
+
+	.help {
+		font-style: italic;
+	}
+
+	label.required { font-weight: bold; }
+
+	legend + .control-group {
+		margin: 0;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="span6 main-content">
+	<div class="row-fluid">
+		<div class="row-fluid span12">
+			<h2>{% trans "Apply for a new instance" %}</h2>
+			<form method="POST" class="form-inline">
+				{% csrf_token %}
+				<fieldset>
+					<legend>
+						{% trans "Instance information" %}
+					</legend>
+					  <div class="control-group span6 {% if form.hostname.errors %}error{% endif %}">
+						<label class="control-label {% if form.hostname.field.required %}required{% endif %}" for="id_applier">
+							{{ form.hostname.label }}
+						</label>
+					   <div class="controls">{{ form.hostname }}
+						{% if form.hostname.errors %}
+						<span class="help-inline" style="clear:both;">
+							{{ form.hostname.errors|join:", " }}
+						</span>
+						{% endif %}
+						</div>
+						<span class="help-block"> {{ form.hostname.help_text }}</span>
+					</div>
+					<div class="control-group span5{% if form.memory.errors %}error{% endif %}">
+						<label class="control-label {% if form.memory.field.required %}required{% endif %}" for="id_applier">{{ form.memory.label }}</label>
+					   <div class="controls">{{ form.memory }}
+						{% if form.memory.errors %}
+						<span class="help-inline" style="clear:both;">
+							{{ form.memory.errors|join:", " }}
+						</span>
+						{% endif %}
+						</div>
+						<span class="help-block"> {{ form.memory.help_text }}</span>
+					</div>
+					<div class="control-group span6{% if form.vcpus.errors %}error{% endif %}">
+						<label class="control-label {% if form.vcpus.field.required %}required{% endif %}" for="id_applier">{{ form.vcpus.label }}</label>
+					   <div class="controls">{{ form.vcpus }}
+						{% if form.vcpus.errors %}
+						<span class="help-inline" style="clear:both;">
+							{{ form.vcpus.errors|join:", " }}
+						</span>
+						{% endif %}
+						</div>
+						<span class="help-block"> {{ form.vcpus.help_text }}</span>
+					</div>
+					<div class="control-group span5 {% if form.disk_size.errors %}error{% endif %}">
+						<label class="control-label {% if form.disk_size.field.required %}required{% endif %}" for="id_applier">{{ form.disk_size.label }}</label>
+					   <div class="controls">{{ form.disk_size }}
+						{% if form.disk_size.errors %}
+						<span class="help-inline" style="clear:both;">
+							{{ form.disk_size.errors|join:", " }}
+						</span>
+						{% endif %}
+						</div>
+						<span class="help-block"> {{ form.disk_size.help_text }}</span>
+					</div>
+					<div class="control-group span6{% if form.hosts_mail_server.errors %}error{% endif %}">
+						<label class="control-label {% if form.hosts_mail_server.field.required %}required{% endif %}" for="id_applier">{{ form.hosts_mail_server.label }}</label>
+					   <div class="controls">{{ form.hosts_mail_server }}
+						{% if form.hosts_mail_server.errors %}
+						<span class="help-inline" style="clear:both;">
+							{{ form.hosts_mail_server.errors|join:", " }}
+						</span>
+						{% endif %}
+						</div>
+						<span class="help-block"> {{ form.hosts_mail_server.help_text }}</span>
+					</div>
+					<div class="control-group span5{% if form.operating_system.errors %}error{% endif %}">
+						<label class="control-label {% if form.operating_system.field.required %}required{% endif %}" for="id_applier">{{ form.operating_system.label }}</label>
+					   <div class="controls" data-url="{% url operating_systems_json %}">
+						<input type="hidden" name="" id="operating_system_hidden" value="{{ form.data.operating_system }}">
+						{{ form.operating_system }}
+						{% if form.operating_system.errors %}
+						<span class="help-inline" style="clear:both;">
+							{{ form.operating_system.errors|join:", " }}
+						</span>
+						{% endif %}
+						</div>
+						<span class="help-block"> {{ form.operating_system.help_text }}</span>
+					</div>
+					{% if form.network %}
+					<div class="control-group span6{% if form.network.errors %}error{% endif %}">
+						<label class="control-label {% if form.network.field.required %}required{% endif %}" for="id_applier">{{ form.network.label }}</label>
+					   <div class="controls">{{ form.network }}
+						{% if form.network.errors %}
+						<span class="help-inline" style="clear:both;">
+							{{ form.network.errors|join:", " }}
+						</span>
+						{% endif %}
+						</div>
+						<span class="help-block"> {{ form.network.help_text }}</span>
+					</div>
+					{% endif %}
+				</fieldset>
+
+				<fieldset class="span6">
+					<legend>{% trans "Use/Comments" %}</legend>
+					<p>{% blocktrans %}Give a short description of the intended use of this virtual machine, that justifies the parameter selection above. Feel free to include any additional comments.{% endblocktrans %}</p>
+					<div class="control-group {% if form.comments.errors %}error{% endif %}">
+						<label class="control-label {% if form.comments.field.required %}required{% endif %}" for="id_applier">{{ form.comments.label }}</label>
+				   		<div class="controls">{{ form.comments }}
+						{% if form.comments.errors %}
+							<span class="help-inline" style="clear:both;">
+								{{ form.comments.errors|join:", " }}
+							</span>
+							{% endif %}
+						</div>
+						<span class="help-block"> {{ form.comments.help_text }}</span>
+					</div>
+				</fieldset>
+
+				{% if BRANDING.SHOW_ORGANIZATION_FORM or BRANDING.SHOW_ADMINISTRATIVE_FORM %}
+				<fieldset class="span5">
+					<legend>{% trans "Administrative contact" %}</legend>
+					{% if BRANDING.SHOW_ORGANIZATION_FORM and BRANDING.SHOW_ADMINISTRATIVE_FORM %}
+						<p>{% blocktrans %}If you are applying on behalf of a NOC under GRNET's
+						constituency, please select the appropriate organization.
+						Otherwise, fill-in the admin contact information below.{% endblocktrans %}</p>
+					{% endif %}
+					{% if form.non_field_errors %}
+					<div class="control-group error">
+						<div class="help-block">
+							{{ form.non_field_errors|join:", "}}
+						</div>
+					</div>
+					{% endif %}
+					{% if BRANDING.SHOW_ORGANIZATION_FORM %}
+					<div class="control-group {% if form.organization.errors %}error{% endif %}">
+						<label class="control-label {% if form.organization.field.required %}required{% endif %}" for="id_applier">{{ form.organization.label }}</label>
+						<div class="controls">{{ form.organization }}
+							{% if form.organization.errors %}
+							<span class="help-inline" style="clear:both;">
+								{{ form.organization.errors|join:", " }}
+							</span>
+							{% endif %}
+						</div>
+						<span class="help-block"> {{ form.organization.help_text }}</span>
+					</div>
+					{% endif %}
+					{% if BRANDING.SHOW_ADMINISTRATIVE_FORM %}
+						{% if BRANDING.SHOW_ORGANIZATION_FORM %}
+							<div class="text-center"> <b>-OR-</b> </div>
+						{% endif %}
+							<div class="text-center"><b><u>Administrative Contact</u></b></div>
+							<div><br></div>
+							<div class="control-group {% if form.admin_contact_name.errors %}error{% endif %}">
+								<label class="control-label {% if form.admin_contact_name.field.required %}required{% endif %}" for="id_applier">{{ form.admin_contact_name.label }}</label>
+					   			<div class="controls">{{ form.admin_contact_name }}
+								{% if form.admin_contact_name.errors %}
+									<span class="help-inline" style="clear:both;">
+										{{ form.admin_contact_name.errors|join:", " }}
+									</span>
+								{% endif %}
+								</div>
+								<span class="help-block"> {{ form.admin_contact_name.help_text }}</span>
+							</div>
+							<div class="control-group {% if form.admin_contact_email.errors %}error{% endif %}">
+								<label class="control-label {% if form.admin_contact_email.field.required %}required{% endif %}" for="id_applier">{{ form.admin_contact_email.label }}</label>
+							   	<div class="controls">{{ form.admin_contact_email }}
+								{% if form.admin_contact_email.errors %}
+									<span class="help-inline" style="clear:both;">
+										{{ form.admin_contact_email.errors|join:", " }}
+									</span>
+								{% endif %}
+								</div>
+								<span class="help-block"> {{ form.admin_contact_email.help_text }}</span>
+							</div>
+
+							<div class="control-group {% if form.admin_contact_phone.errors %}error{% endif %}">
+								<label class="control-label {% if form.admin_contact_phone.field.required %}required{% endif %}" for="id_applier">{{ form.admin_contact_phone.label }}</label>
+								<div class="controls">{{ form.admin_contact_phone }}
+								{% if form.admin_contact_phone.errors %}
+									<span class="help-inline" style="clear:both;">
+										{{ form.admin_contact_phone.errors|join:", " }}
+									</span>
+								{% endif %}
+								</div>
+								<span class="help-block"> {{ form.admin_contact_phone.help_text }}</span>
+							</div>
+					{% endif %}
+				</fieldset>
+				{% endif %}
+
+				<fieldset class="span12">
+					<legend>{% trans "Miscellaneous" %}</legend>
+					<p>{% trans "We kindly remind you of the following:" %}</p>
+					<ul align="left">
+						{% blocktrans %}
+						<li>
+							You are solely responsible for the data on your VM. You
+							have to take care of back-ups etc.
+						</li>
+						<li>
+							We reserve the right to temporarily suspend the operation
+							of your VM in case it causes malfunctions to our infrastructure
+						</li>
+						{% endblocktrans %}
+					</ul>
+
+					<div class="control-group {% if form.accept_tos.errors %}error{% endif %}">
+						<label class="control-label" for="id_applier"><b>I Agree</b></label>
+						<div class="controls">{{ form.accept_tos }}
+						{% if form.accept_tos.errors %}
+							<span class="help-inline" style="clear:both;">
+								{% trans "You must accept the terms of service before continuing." %}
+							</span>
+						{% endif %}
+						</div>
+						<span class="help-block">{% trans "I have read the above and accept them, along with the" %} {% trans "Terms of Service" %}</span>
+					</div>
+				</fieldset>
+
+				<div class="control-group">
+					<div class="controls span12">
+						<input type="submit" value="{% trans "Apply" %}" class="btn btn-primary" />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block bottomblock %}
+<script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
+<script>
+	$(document).ready( function(){
+		$("#id_disk_size").tooltip({
+			placement: "right",
+			trigger: "focus",
+			html: true,
+			title: "<div style='text-align: left;'><p class='label label-success'> &le; 20Gb:  Faster  I/O Speed</p><p class='label label-warning'>&le; 30Gb:  Average I/O Speed</p><p class='label label-important'>&gt; 40Gb:  Slower  I/O Speed</p></div>"
+		});
+
+		$("#id_organization").select2({dropdownAutoWidth : true});
+		$("#id_vcpus").select2({dropdownAutoWidth : true});
+		$("#id_memory").select2({dropdownAutoWidth : true});
+
+		function getOperatingSystems() {
+			var operatingSystemsInput = $('#id_operating_system');
+			$.ajax({
+				url: operatingSystemsInput.parent().data('url'),
+				success: function (data) {
+					response = $.parseJSON(data);
+					options = '';
+					var selected = $('#operating_system_hidden').val();
+					if (response.status === 'success') {
+						for (var i=0; i < response.operating_systems.length; i++) {
+							if (response.operating_systems[i][1].osparams.img_id) {
+								options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '"';
+								if (selected === response.operating_systems[i][1].osparams.img_id) {
+									options += ' selected="selected" ';
+								}
+								 options += '>' + response.operating_systems[i][1].description + '</option>';
+
+							} else {
+								options += '<option value="' +  response.operating_systems[i][1].provider + '"';
+								if (selected === response.operating_systems[i][1].provider) {
+									options += ' selected="selected" ';
+								}
+								options += '>' + response.operating_systems[i][1].description + '</option>';
+							}
+						}
+					}
+					operatingSystemsInput.html(options);
+					operatingSystemsInput.select2({dropdownAutoWidth : true});
+				}
+			});
+		}
+		getOperatingSystems();
+	});
+</script>
+{% endblock %}

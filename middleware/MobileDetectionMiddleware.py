@@ -25,23 +25,22 @@ class MobileDetectionMiddleware(object):
     """
 
     def process_request(self, request):
-        is_mobile = False;
+        is_mobile = False
 
-        if request.META.has_key('HTTP_USER_AGENT'):
+        if request.META.get('HTTP_USER_AGENT', False):
             user_agent = request.META['HTTP_USER_AGENT']
 
             # Test common mobile values.
             pattern = "(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|windows ce|pda|mobile|mini|palm|netfront)"
             prog = re.compile(pattern, re.IGNORECASE)
             match = prog.search(user_agent)
-
             if match:
-                is_mobile = True;
+                is_mobile = True
             else:
                 # Nokia like test for WAP browsers.
                 # http://www.developershome.com/wap/xhtmlmp/xhtml_mp_tutorial.asp?page=mimeTypesFileExtension
 
-                if request.META.has_key('HTTP_ACCEPT'):
+                if request.META.get('HTTP_ACCEPT', False):
                     http_accept = request.META['HTTP_ACCEPT']
 
                     pattern = "application/vnd\.wap\.xhtml\+xml"
@@ -61,7 +60,7 @@ class MobileDetectionMiddleware(object):
                                     "keji", "leno", "lg-c", "lg-d", "lg-g", "lge-",
                                     "maui", "maxo", "midp", "mits", "mmef", "mobi",
                                     "mot-", "moto", "mwbp", "nec-", "newt", "noki",
-                                    "xda",  "palm", "pana", "pant", "phil", "play",
+                                    "xda", "palm", "pana", "pant", "phil", "play",
                                     "port", "prox", "qwap", "sage", "sams", "sany",
                                     "sch-", "sec-", "send", "seri", "sgh-", "shar",
                                     "sie-", "siem", "smal", "smar", "sony", "sph-",

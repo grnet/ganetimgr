@@ -1,0 +1,81 @@
+{% load i18n %}
+{% load disksizes %}
+Instance: {{ instance.name }}<br>
+Cluster:{{ instance.cluster.description }}<br>
+Status:
+{% ifequal instance.admin_state instance.oper_state %}
+	{{ instance.admin_state|yesno:"Running,Stopped" }}
+{% else %}
+	{{ instance.oper_state|yesno:"Running,Stopped" }}, should be {{ instance.admin_state|yesno:"running,stopped" }}
+{% endifequal %}
+{% if instance.is_locked %}
+	(<em>{{ instance.is_locked }}</em>)
+{% endif %}<br>
+{% if instance.services %}
+	Services:
+	<ul>
+		{% for serv in instance.services %}
+			<li>{{serv}}</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+
+Organization:
+<ul>
+	{% if instance.organization.title %}
+		<li>Organization Name: {{ instance.organization.title|default:"&mdash;" }}</li>
+	{% endif %}
+	{% if instance.organization.phone %}
+		<li>Phone: {{ instance.organization.phone }}</li>
+	{% endif %}
+	{% if instance.organization.email %}
+		<li>Email: <a href="mailto:{{ instance.organization.email }}">{{ instance.organization.email }}</a></li>
+	{% endif %}
+</ul>
+Admin Contact:
+<ul>
+{% if instance.application.admin_contact_name %}
+	<li>Contact Name: {{ instance.application.admin_contact_name }}</li>
+{% endif %}
+{% if instance.application.admin_contact_phone %}
+	<li>Phone: {{ instance.application.admin_contact_phone }}</li>
+{% endif %}
+{% if instance.application.admin_contact_email %}
+	<li>Email: <a href="mailto:{{ instance.application.admin_contact_email }}">{{ instance.application.admin_contact_email }}</a></li>
+{% endif %}
+</ul>
+{% if instance.users %}
+	Users:
+		<br>
+		{% for user in instance.users %}
+		<ul>
+			<li>Username: {{ user }}
+				<ul>
+					<li>Name: {{user.first_name}} {{user.last_name}}</li>
+					<li>E-mail: <a href="mailto:{{ user.email }}">{{user.email}}</a></li>
+				</ul>
+			</li>
+		</ul>
+		{% endfor %}
+{% endif %}
+{% if instance.groups %}
+	Groups: <br>
+	{% for group in instance.groups %}
+		<ul>
+			<li>
+				Groupname:{{ group }}
+				{% for user in group.user_set.all %}
+					<ul>
+						<li>Username: {{ user }}
+							<ul>
+								<li>Name: {{user.first_name}} {{user.last_name}}</li>
+								<li>E-mail: <a href="mailto:{{ user.email }}">{{user.email}}</a></li>
+							</ul>
+						</li>
+					</ul>
+				{% endfor %}
+			</li>
+		</ul>
+	{% endfor %}
+{% endif %}
+

@@ -1,7 +1,8 @@
 ganetimgr/settings.py
-ganetimgr/urls.py
 ganeti.db
 grappelli/
 *.pyc
 apache/django.wsgi
-/static/
+docs/build/
+admin/
+django_markdown/

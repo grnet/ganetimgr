@@ -23,6 +23,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from accounts.models import UserProfile
 
+
 class UserMessageMiddleware(object):
     """
     Middleware to display various messages to the users.
@@ -44,12 +45,17 @@ class UserMessageMiddleware(object):
                 request.session["first_login"] = first_login
 
             if first_login:
-                messages.add_message(request, messages.INFO,
-                                     mark_safe(
-                                     _("Welcome! Please take some time to"
-                                       " update <a href=\"%s\">your profile</a>"
-                                       " and upload your SSH keys.") %
-                                       reverse("profile")))
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    mark_safe(
+                        _(
+                            "Welcome! Please take some time to"
+                            " update <a href=\"%s\">your profile</a>"
+                            " and upload your SSH keys."
+                        ) % reverse("profile")
+                    )
+                )
                 profile = request.user.get_profile()
                 profile.first_login = False
                 profile.save()

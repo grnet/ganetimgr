@@ -1,47 +1,45 @@
-{% extends "theme/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
-	{% block extrahead %}
+{% block extrahead %}
 <script type="text/javascript">
-function setlang(lang) {
-	$("#langsel").val(lang);
-	var form = $("#langform");
-	$.ajax({
-		url: form.attr('action'),
-		data: form.serialize(),
-		type: "POST",
-		cache: false,
-		success:function(data){
-				window.location.href=location.href + "../" + lang + "/";
+	function setlang(lang) {
+		$("#langsel").val(lang);
+		var form = $("#langform");
+		$.ajax({
+			url: form.attr('action'),
+			data: form.serialize(),
+			type: "POST",
+			cache: false,
+			success:function(data){
+					window.location.href=location.href + "../" + lang + "/";
 			}
-	});
-}
+		});
+	}
 </script>
 {% endblock %}
+
 {% block title %}
-	
-		{{ flatpage.title }}
-	
+	{{ flatpage.title }}
 {% endblock %}
 
 {% block faq %}class="active"{% endblock %}
-				{% block crumbs %}
-	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans flatpage.title %}</li>
-	    		{% endblock %}
+
+{% block crumbs %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li class="active">{% trans flatpage.title %}</li>
+{% endblock %}
 
 {% block content %}
-
 <div class="span9 main-content">
-
     <div class="row-fluid">
         <div class="row-fluid">
 			<h2>{% trans flatpage.title %}</h2>
 			{{ flatpage.content }}
-</div>
-</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
 
-	
-	
+
+
 

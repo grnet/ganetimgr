@@ -1,48 +1,45 @@
 {% load i18n %}
-<link rel="stylesheet" href="/static/select2/select2.css">
-<script src="/static/select2/select2.js"></script>
-<script type="text/javascript" src="/static/js/jquery_csrf_protect.js"></script>
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/select2.css' %}">
+<script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
 
 <script>
-$(document).ready(function() {
-	$("#id_tags")
-								.select2(
-										{
-											placeholder : "Tags from user, group",
-											minimumInputLength : 2,
-											multiple: true,
-											ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
-												url : "{% url tagusergroups %}",
-												dataType : 'json',
-												data : function(term, page) {
-													return {
-														q : term,
-													};
-												},
-												results : function(data, page) { // parse the results into the format expected by Select2.
-													// since we are using custom formatting functions we do not need to alter remote JSON data
-													return {
-														results : data
-													};
-												}
-											},
-											formatResult : format, // omitted for brevity, see the source of this page
-											formatSelection : format, // omitted for brevity, see the source of this page
-											escapeMarkup: function(m) { return m; }
-										});
-	$("#id_tags").select2(
-			"data", [{% for u in users %}{id: "{{u.id}}", text: formatDjangoObject("{{u.type}}")+ '{{u.text}}'},{% endfor %}]);
-	
-	$("#tagsapplybutton").click(function(){
-		$(this).html('Saving...');
-		var instance = $("#instancetagsform").data('instance');
-		$.ajax({
-			
-			url:"{% url instance-tags %}"+instance,
-			data:$("#instancetagsform").serialize(),
-			type: "POST",
-			cache: false,
-			success:function(data){
+	$(document).ready(function() {
+		$("#id_tags").select2({
+			placeholder : "Tags from user, group",
+			minimumInputLength : 2,
+			multiple: true,
+			ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
+				url : "{% url tagusergroups %}",
+				dataType : 'json',
+				data : function(term, page) {
+					return {
+						q : term,
+					};
+				},
+				results : function(data, page) { // parse the results into the format expected by Select2.
+					// since we are using custom formatting functions we do not need to alter remote JSON data
+					return {
+						results : data
+					};
+				}
+			},
+			formatResult : format, // omitted for brevity, see the source of this page
+			formatSelection : format, // omitted for brevity, see the source of this page
+			escapeMarkup: function(m) { return m; }
+		});
+		$("#id_tags").select2("data", [{% for u in users %}{id: "{{u.id}}", text: formatDjangoObject("{{u.type}}")+ '{{u.text}}'},{% endfor %}]);
+
+		$("#tagsapplybutton").click(function(){
+			$(this).html('Saving...');
+			var instance = $("#instancetagsform").data('instance');
+			$.ajax({
+				url:"{% url instance-tags %}"+instance,
+				data:$("#instancetagsform").serialize(),
+				type: "POST",
+				cache: false,
+				success:function(data){
 					try {
 						result = data.result;
 						if (typeof result === 'undefined'){
@@ -55,85 +52,84 @@ $(document).ready(function() {
 					}
 					catch (exception) {
 						$('#instDetsbody').html(data);
-					}			
+					}
 				}
-				});
-		return false;
+			});
+			return false;
+		});
 	});
-	
-	
-	
-});
 
-function format(item) {
-	if (item.type=="user"){
-		return '<i class="icon-user"></i> ' + item.text;
-	}
-	else if (item.type=="group"){
-		return '<i class="icon-group"></i> ' + item.text;
-	}
-	else if (item.type=="vm"){
-		return '<i class="icon-laptop"></i> ' + item.text;
-	}
-	else if (item.type=="cluster"){
-		return '<i class="icon-puzzle-piece"></i> ' + item.text;
-	}
-	else{
-		return item.text;
-	}
-	}
-	
-function formatDjangoObject(type){
-	if (type=="user"){
-		return '<i class="icon-user"></i> ';
-	}
-	else if (type=="group"){
-		return '<i class="icon-group"></i> ';
-	}
-	else return ''
 
-}
+	function format(item) {
+		if (item.type=="user"){
+			return '<i class="fa fa-user"></i> ' + item.text;
+		}
+		else if (item.type=="group"){
+			return '<i class="fa fa-group"></i> ' + item.text;
+		}
+		else if (item.type=="vm"){
+			return '<i class="fa fa-laptop"></i> ' + item.text;
+		}
+		else if (item.type=="cluster"){
+			return '<i class="fa fa-puzzle-piece"></i> ' + item.text;
+		}
+		else{
+			return item.text;
+		}
+	}
 
+	function formatDjangoObject(type){
+		if (type=="user"){
+			return '<i class="fa fa-user"></i> ';
+		}
+		else if (type=="group"){
+			return '<i class="fa fa-group"></i> ';
+		}
+		else return ''
+	}
 </script>
 
 <style type="text/css">
-th {
-	text-align: right;
-	padding-right: 0.5em;
-	vertical-align: top;
-}
+	th {
+		text-align: right;
+		padding-right: 0.5em;
+		vertical-align: top;
+	}
 
-.help {
-	font-style: italic;
+	.help {
+		font-style: italic;
 
-}
+	}
 </style>
-{% if not user.is_superuser %}
-	<p class="alert alert-danger"><span class="label label-important">{% trans "Warning" %}</span> {% trans "Adding or removing users and groups is done on your own responsibility" %}</p>
-{% endif %}
-<form method="POST" class="form-inline" id="instancetagsform" data-instance="{{instance}}">
-                                         <fieldset>
-                                        {% csrf_token %}
-                                        {% if form.non_field_errors %}
-                                        <p class="error">
-                                            {{ form.non_field_errors}}
-                                        </p>
-                                        {% endif %}
-                                    <div class="control-group {% if form.tags.errors %} error {% endif %}">
-                                            <label class="control-label">{% if form.tags.field.required %}<b>{% endif %}{{form.tags.label}}{% if form.tags.field.required %}</b>{% endif %}</label>
-                                            <div class="controls">
-                                                {{ form.tags }}
-                                                {% if form.tags.errors %} <span class="help-inline"> {{ form.tags.errors|join:", " }} </span>
-                                                {% endif %} <span class="help-block"> {{ form.tags.help_text }}</span>
-                                            </div>
-                                            </div>
-                                        <div class="control-group">
-                                            <div class="controls">
-                                                <a href="#" id="tagsapplybutton" value="Save" class="btn">Save</a>
-                                            </div>
-                                        </div>
-                                        </fieldset>
-                                    </form>
 
+{% if not user.is_superuser %}
+<p class="alert alert-danger"><span class="label label-important">{% trans "Warning" %}</span> {% trans "Adding or removing users and groups is done on your own responsibility" %}</p>
+{% endif %}
+
+<form method="POST" class="form-inline" id="instancetagsform" data-instance="{{instance}}">
+	<fieldset>
+		{% csrf_token %}
+		{% if form.non_field_errors %}
+			<p class="error">
+				{{ form.non_field_errors}}
+			</p>
+		{% endif %}
+		<div class="control-group {% if form.tags.errors %} error {% endif %}">
+			<label class="control-label">{% if form.tags.field.required %}<b>{% endif %}{{form.tags.label}}{% if form.tags.field.required %}</b>{% endif %}</label>
+			<div class="controls">
+				{{ form.tags }}
+				{% if form.tags.errors %}
+					<span class="help-inline"> {{ form.tags.errors|join:", " }} </span>
+				{% endif %}
+					<span class="help-block"> {{ form.tags.help_text }}</span>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+			<a href="#" id="tagsapplybutton" value="Save" class="btn">Save</a>
+			</div>
+		</div>
+	</fieldset>
+</form>
 <input type='hidden' id='e1' style='width:300px' />
 

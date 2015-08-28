@@ -2,11 +2,6 @@
 
 vnc_javasrc: the source used to build /static/javavnc/VncViewer.jar
 
-jquery-ui: the source of jquery-ui-1.8.12 used to build
-	   /static/js/jquery-ui-1.8.12.custom.min.js
-
-jquery-1.5.2.js: the unminified version of /static/js/jquery.min.js
-
 init.d: init script to start ganetimgr-watcher
 
 default: sample defaults file for ganetimgr-watcher (use with init script)

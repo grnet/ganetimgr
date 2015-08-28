@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% block extrahead %}
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.bootstrap.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
+<style>
+	.dropdown-menu.instanceopt{
+		right: 0px;
+		left: auto;
+		text-align: left !important;
+	}
+
+	.alignCenter{
+		text-align: center !important;
+	}
+	.alignLeft{
+		text-align: left !important;
+	}
+	.alignRight{
+		text-align: right !important;
+	}
+	.visoverflow{
+		overflow: visible;
+	}
+</style>
+<link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap-switch.css' %}">
+<script type="text/javascript">
+	$(document).ready( function(){
+		$('#usergroup_instance_table').dataTable({
+			"bJQueryUI": true,
+			"oLanguage": {
+				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select>'
+			},
+			"iDisplayLength": 25,
+		});
+	});
+
+	var status;
+	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    	"file-size-pre": function ( a ) {
+	    	//Let's see if instance has many disks
+	    	xm = a.split(", ");
+	    	if (xm.length > 1){
+	    		// Found many disks, let's sum
+	    		var total = 0;
+	    		for (var i = 0;i < xm.length; i++){
+
+	    			var x = xm[i].substring(0,xm[i].length - 3);
+	        		var x_unit = (
+	        			xm[i].substring(xm[i].length - 2, xm[i].length) == "MB" ? 1000 : (
+	        				xm[i].substring(xm[i].length - 2, xm[i].length) == "GB" ? 1000000 : (
+	        					xm[i].substring(xm[i].length - 2, xm[i].length) == "TB" ? 1000000000 : 1
+	        					)
+	        				)
+	        			);
+	            	total += parseInt( x * x_unit, 10 );
+	    		}
+	    		return total;
+    		} else {
+		        var x = a.substring(0,a.length - 3);
+
+		        var x_unit = (
+        			a.substring(a.length - 2, a.length) == "MB" ? 1000 : (
+        				a.substring(a.length - 2, a.length) == "GB" ? 1000000 : (
+        					a.substring(a.length - 2, a.length) == "TB" ? 1000000000 : 1
+        					)
+        				)
+        			);
+	        	return parseInt( x * x_unit, 10 );
+	       	}
+	    },
+	    "file-size-asc": function ( a, b ) {
+	        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+	    },
+	    "file-size-desc": function ( a, b ) {
+	        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+	    }
+	});
+	$(document).ready( function(){
+		var oTable = $('#vm_instance_table').dataTable( {
+			"bPaginate": false,
+		    "bFilter": true,
+		    "bAutoWidth": true,
+		    "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+			"bProcessing": true,
+	        "sAjaxSource": "{% url user-instances-json %}",
+	        "bDeferRender": true,
+	        "fnInitComplete": function(oSettings, json) {
+	            if(json.hasOwnProperty('messages')){
+	            	$('#jsonmessages').show();
+	            	$('#jsonmessage').html(json.messages);
+	            }
+	          },
+	        "aoColumns":[
+	                     {"mData": "name" ,
+	                    	 "mRender": function (data, type, full) {
+	                    		 if (full.hasOwnProperty("name_href")){
+	                    			 name = '<a href="'+full.name_href+'">'+data+'</a>';
+	                    		 }
+	                    		 else{
+	                    			 name = data;
+	                    		 }
+	                             return name;
+	                    	 },
+	                    	 "sClass" : "alignLeft","bSearchable": true,"bSortable": true
+	                     },
+	                     {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+	                     {"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,"sType": "file-size"},
+	                     {"mData":"disk", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,"sType": "file-size"},
+	                     {"mData":"vcpus", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+	                     {"mData":"status",
+	                         "mRender": function (data, type, full) {
+		                         status = '<span class="label label-'+full.status_style+'">'+data+'</span>';
+	                         if (full.hasOwnProperty("cdrom")){
+	                       	  status = status + ' <span class="label label-warning">CDROM</span>';
+	                         }
+	                         if (full.hasOwnProperty("locked")){
+	                       	  status = status + ' <span class="label label-inverse">Locked</span>';
+	                         }
+	                         if (full.hasOwnProperty("adminlock")){
+	                          	  status = status + ' <span class="label label-important"><i class="fa fa-lock"></i> Admin Lock</span>';
+	                            }
+	                         if (full.hasOwnProperty("locked_reason")){
+	                          	  status = status + ' <span class="label label-inverse">'+full.locked_reason+'</span>';
+	                            }
+	                         return status;
+	                         },
+	                      "sClass" : "alignCenter",
+	                      "bSearchable": true,"bSortable": true
+	                        },
+	                        {% if not user.is_superuser and not perms.ganeti.view_instances %}
+	                     {"mData":"ipaddress","bSearchable": true,"bSortable": true, "sClass" : "alignCenter",
+	                         "mRender": function (data, type, full) {
+	                       	 status = "";
+	                       	 for(var i = 0; i < data.length; i++) {
+	                       		status = '<span class="label label-info">'+data[i]+'</span> ' + status;
+	                       	 }
+	                       	 if (data.length == 0){
+	                       		status = '<span class="label label-warning">-</span> ';
+	                       	 }
+	                       	 ipv6s = full.ipv6address;
+	                       	 status6 = ""
+	                       	 for(var i = 0; i < ipv6s.length; i++) {
+	                       		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;
+	                       	 }
+	                       	 if (ipv6s.length >= 0){
+	                       		status = status+"<br>"+status6
+	                       	 }
+
+	                         return status;
+	                         }
+	                     },
+	                     {% endif %}
+	                     {"mData":"nic_macs","bVisible":false},
+	                     {% if user.is_superuser or perms.ganeti.view_instances %}
+	                     {"mData":"network","bSearchable": true,"bSortable": true,"sClass" : "alignCenter",
+	                    	 "mRender": function (data, type, full) {
+	                           	 status = "";
+	                           	 for(var i = 0; i < data.length; i++) {
+	                           		status = '<span class="label label-info">'+data[i]+'</span> ' + status;
+	                           	 }
+	                           	 if (data.length == 0){
+	                           		status = '<span class="label label-warning">-</span> ';
+	                           	 }
+	                           	 /*ipv6s = full.ipv6address;
+	                           	 status6 = ""
+	                           	 for(var i = 0; i < ipv6s.length; i++) {
+	                           		status6 = '<span class="label label-inverse">'+ipv6s[i]+'</span> ' + status6;
+	                           	 }
+	                           	 if (ipv6s.length >= 0){
+	                           		status = status+"<br>"+status6
+	                           	 }
+	                           	 */
+	                             return status;
+	                             }
+	                     },
+	                     {"mData":"users","bSearchable": true,"bSortable": true, "sClass" : "alignCenter",
+	                    	 "mRender": function (data, type, full) {
+	                    		 var users = '';
+	                    		 for(var i = 0; i < data.length; i++) {
+		                    		 if (data[i].hasOwnProperty("user")){
+		                    		 	users = '<a class="btn" href="'+data[i].user_href+'"><i class="fa fa-user"></i> '+data[i].user+'</a>' + ' '+ users;
+		                    		 }
+	                    		 }
+	                    		 for(var j = 0; j < full.groups.length; j++) {
+		                    		 if (full.groups[j].hasOwnProperty("group")){
+		                    		 	users = '<a class="btn" href="'+full.groups[j].group_href+'"><i class="fa fa-group"></i> '+full.groups[j].group+'</a>' + ' '+ users;
+		                    		 }
+	                    		 }
+	                    	return users;
+	                    	 }
+	                     },
+	                     {"mData": "name", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
+	                    	 "mRender":  function (data, type, full) {
+	                    		 if (full.hasOwnProperty("adminlock")){
+	                    			 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'unlock\'); return false;">{% trans "Unlock" %}</a></li>';
+	                    		 }
+	                    		 else{
+	                    			 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'lock\'); return false;">{% trans "Lock" %}</a></li>';
+	                    		 }
+	                             var ret = ''+
+	                    		 '<div class="btn-group">'+
+	                             '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="fa fa-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
+	                             '<ul class="dropdown-menu instanceopt">'+
+	                               '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a></li>'+
+	                               '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Tags" %}</a></li>'+
+	                               '<li><a href="#" onclick="javascript:showNotify(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Notify" %}</a></li>'+
+	                               lock +
+	                             '</ul>'+
+	                           '</div>';
+	                     return ret;
+	                     }
+	                     },
+	                     {"mData":"users","bVisible":false,
+	                    	 "mRender": function (data, type, full) {
+	                    		 var users = '';
+	                    		 for(var i = 0; i < data.length; i++) {
+		                    		 if (data[i].hasOwnProperty("user")){
+		                    		 	users = data[i].user+','+data[i].email + ','+users;
+		                    		 }
+	                    		 }
+	                    		 for(var j = 0; j < full.groups.length; j++) {
+		                    		 if (full.groups[j].hasOwnProperty("groupusers")){
+		                    		 	users = full.groups[j].groupusers+','+users;
+		                    		 }
+	                    		 }
+	                    	return users;
+	                    	 }
+	                     },
+	                     {% endif %}
+
+	         ]
+	} );
+		var filter = '"{% url user-info type usergroup %}"';
+		oTable.fnFilter( filter, null, false, true, true, true);
+	});
+
+		function showDetails(cluster, instance){
+			$( "#instDetsbody" ).html( "" );
+			$( "#myModalLabelservdets" ).text('Instance Details: '+instance);
+			$( "#instDetsbody" ).load("{% url instance-popup %}/?cluster="+cluster+"&instance="+instance+"");
+			$( "#instDets" ).modal('show');
+			return false;
+		}
+
+		function showTags(cluster, instance){
+			$( "#instDetsbody" ).html( "" );
+			$( "#myModalLabelservdets" ).text('Instance Tags: '+instance);
+			$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"");
+			$( "#instDets" ).modal('show');
+			return false;
+		}
+
+		function showNotify(cluster, instance){
+			$( "#instDetsbody" ).html( "" );
+			$( "#myModalLabelservdets" ).text('Notify: '+instance);
+			$( "#instDetsbody" ).load("{% url notify %}"+instance+"");
+			$( "#instDets" ).modal('show');
+			return false;
+		}
+
+		function showLock(cluster, instance, action){
+			$( "#instDetsbody" ).html( "" );
+			$( "#myModalLabelservdets" ).text(action + ': '+instance);
+			$( "#instDetsbody" ).load("{% url lock %}"+instance+"");
+			$( "#instDets" ).modal('show');
+			return false;
+		}
+
+</script>
+{% endblock %}
+
+{% block title %}
+	{% ifequal type 'user' %}
+		{% trans "User Information" %}
+	{% endifequal %}
+	{% ifequal type 'group' %}
+		{% trans "Group Information" %}
+	{% endifequal %}
+{% endblock %}
+
+{% block crumbs %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li class="active">{% ifequal type 'user' %}
+		{% trans "User Information" %}
+	{% endifequal %}{% ifequal type 'group' %}
+		{% trans "Group Information" %}
+	{% endifequal %}
+	</li>
+{% endblock %}
+
+{% block content %}
+	<div class="span12 main-content">
+	    <div class="row-fluid">
+    	    <div class="row-fluid">
+			{% ifequal type 'user' %}
+				<h2>{% trans "User Information" %}: {{usergroup}}</h2>
+			{% endifequal %}
+			{% ifequal type 'group' %}
+				<h2>{% trans "Group Information" %}: {{usergroup}}</h2>
+			{% endifequal %}
+			<table width="100%" id="usergroup_instance_table" class="table table-first-column-number data-table display full">
+				<thead>
+					<tr>
+						{% ifequal type 'user' %}
+						<th style="text-align: center;">{% trans "Username" %}</th>
+						<th>{% trans "First Name" %}</th>
+						<th>{% trans "Last Name" %}</th>
+						<th>{% trans "E-mail" %}</th>
+						<th style="text-align: center;">{% trans "Groups" %}</th>
+						{% endifequal %}
+						{% ifequal type 'group' %}
+						<th style="text-align: center;">{% trans "Group Name" %}</th>
+						<th>{% trans "Username" %}</th>
+						<th>{% trans "First Name" %}</th>
+						<th>{% trans "Last Name" %}</th>
+						<th>{% trans "E-mail" %}</th>
+						{% endifequal %}
+					</tr>
+				</thead>
+				<tbody>
+				{% ifequal type 'user' %}
+					<tr class="GradeA">
+						<td style="text-align: center;">{{usergroup.username}}</td>
+						<td>{{usergroup.first_name}}</td>
+						<td>{{usergroup.last_name}}</td>
+						<td><a href="mailto:{{usergroup.email}}">{{usergroup.email}}</a></td>
+						<td>
+							{% for group in usergroup.groups.all %}
+								<a class="btn" href="{% url user-info 'group' group %}"><i class="fa fa-group"></i> {{ group }}</a>
+							{% endfor %}
+						</td>
+						<td>
+						{% for group in instance.groups %}
+							<a class="btn" href="{% url user-info 'group' group %}"><i class="fa fa-group"></i>  {{ group }}</a>{% if not forloop.last %}, {% endif %}
+						{% endfor %}
+						</td>
+					</tr>
+				{% endifequal %}
+				{% ifequal type 'group' %}
+					{% for user in usergroup.user_set.all %}
+					<tr class="GradeA">
+						<td style="text-align: center;">{{usergroup.name}}</td>
+						<td><a href="{% url user-info 'user' user.username %}" class="btn"><i class="fa fa-user"></i> {{user.username}}</a></td>
+						<td>{{user.first_name}}</td>
+						<td>{{user.last_name}}</td>
+						<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
+					</tr>
+					{% endfor %}
+				{% endifequal %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+    <div class="row-fluid">
+        <div class="row-fluid">
+        	<h2>{% trans "Instances" %}
+                <span class="info">{% blocktrans %}Displaying {{usergroup}} instances{% endblocktrans %}</span>
+            </h2>
+			<table class="table table-first-column-number data-table display full visoverflow" id="vm_instance_table">
+				<thead>
+					<tr>
+						<th style="text-align: center;">{% trans "Name" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Cluster" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Memory" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Disk" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Status" %} <span class="sort-icon"></span></th>
+						{% if not user.is_superuser and not perms.ganeti.view_instances %}
+						<th style="text-align: center;">IP <span class="sort-icon"></span></th>
+						{% endif %}
+						<th style="display:none">{% trans "MAC" %}</th>
+						{% if user.is_superuser or perms.ganeti.view_instances %}
+						<th style="text-align: center;">{% trans "Network" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Owner" %} <span class="sort-icon"></span></th>
+						<th style="text-align: center;">{% trans "Options" %}</th>
+						<th style="display:none">{% trans "HiddenContactDetails" %}</th>
+						{% endif %}
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<div class="modal hide fade" id="instDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 id="myModalLabelservdets">{% trans "Instance Details" %}</h3>
+				</div>
+				<div class="modal-body" id="instDetsbody">
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

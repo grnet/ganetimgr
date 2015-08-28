@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load days_since %}
+
+{% block extrahead %}
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.bootstrap.js' %}"></script>
+<script type="text/javascript">
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "daysago-string-pre": function ( a ) {
+        var x = a.split(" ")[0];
+        return parseInt( x );
+    },
+
+    "daysago-string-asc": function ( a, b ) {
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    },
+
+    "daysago-string-desc": function ( a, b ) {
+        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    }
+} );
+
+	$(document).ready( function(){
+			$('#usergroup_instance_table').dataTable( {
+			"bPaginate": true,
+            "bLengthChange": true,
+            "bFilter": true,
+            "bSort": true,
+            "bDeferRender": true,
+            "bInfo": true,
+            "bAutoWidth": true,
+			"oLanguage": {
+				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select>'
+			},
+			"sPaginationType": "bootstrap",
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+			"iDisplayLength": 25,
+			"aoColumns": [
+                {"bSearchable": true,"bSortable": true},
+                {"bSearchable": true,"bSortable": true},
+                {"bSearchable": true,"bSortable": true},
+                {"bSearchable": true,"bSortable": true},
+                {"bSearchable": true,"bSortable": true, "sType":"daysago-string"},
+            ]
+	} );
+		});
+</script>
+{% endblock %}
+
+{% block title %}
+
+		{% trans "Idle Accounts" %}
+
+{% endblock %}
+{% block idle %}class="active"{% endblock %}
+				{% block crumbs %}
+	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% trans "Idle Accounts" %}</li>
+	    		{% endblock %}
+
+{% block content %}
+<div class="span9 main-content">
+    <div class="row-fluid">
+        <div class="row-fluid">
+			<h2>{% trans "User Idle Accounts" %}</h2>
+			<table width="100%" id="usergroup_instance_table" class="table table-first-column-number data-table display full">
+				<thead>
+					<tr>
+						<th style="text-align: center;">{% trans "Username" %}<span class="sort-icon"><span></th>
+						<th>{% trans "First Name" %}<span class="sort-icon"><span></th>
+						<th>{% trans "Last Name" %}<span class="sort-icon"><span></th>
+						<th>{% trans "E-mail" %}<span class="sort-icon"><span></th>
+						<th>{% trans "Last Login" %}<span class="sort-icon"><span></th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for user in users %}
+					<tr class="GradeA">
+						<td style="text-align: center;"><a href="{% url user-info 'user' user.username %}">{{user.username}}</a></td>
+						<td>{{user.first_name}}</td>
+						<td>{{user.last_name}}</td>
+						<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>
+						<td>{{user.last_login|days_since}} days ago ({{user.last_login|date:"d M y"}})</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

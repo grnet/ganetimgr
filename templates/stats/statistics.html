@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block extrahead %}
+<style>
+	.alignCenter{
+		text-align: center !important;
+	}
+	.alignLeft{
+		text-align: left !important;
+	}
+	.alignRight{
+		text-align: right !important;
+	}
+</style>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/highcharts.js' %}"></script>
+<script type="text/javascript">
+	$(function () {
+		jQuery.cssProps.opacity = 'opacity';
+
+		var options = {
+			chart: {
+				zoomType: 'x',
+				renderTo: 'container'
+			},
+			title: {
+				text: '{% trans "Instance Creation History" %}'
+			},
+			subtitle: {
+				text: document.ontouchstart === undefined ?
+					'{% trans "Click and drag in the plot area to zoom in" %}' :
+					'{% trans "Drag your finger over the plot to zoom in" %}'
+			},
+			xAxis: {
+				type:'datetime',
+				maxZoom: 14 * 24 * 3600000, // fourteen days
+				title: {
+					text: "{% trans 'Instance Creation Dates' %}"
+				}
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: "{% trans 'Number of Instances' %}"
+				}
+			},
+			series: [],
+			tooltip: {
+				shared: false,
+				formatter: function() {
+					var s = this.point.vm;
+					return '<b>'+s + '</b><hr/><br/><b>{% trans "Created" %}: </b>' + new Date(this.point.x).toDateString() + '<br/>{% trans "So far" %}: ' + this.y;
+				}
+			}
+		};
+
+		$.getJSON('{% url stats_ajax_instances %}', function(dt) {
+			var items = [];
+			$.each(dt, function(i, item) {
+				options.series.push({
+					data: [],
+					name: item.name
+				});
+				for (var j=0;j<item.instances.length;j++)
+				{
+					options.series[i].data.push({x:item.instances[j].time, y:j+1, vm:item.instances[j].name});
+				}
+
+			});
+			var chart = new Highcharts.Chart(options);
+		});
+
+
+	var options2 = {
+		chart: {
+			zoomType: 'x',
+			renderTo: 'container2'
+		},
+		title: {
+			text: '{% trans "Instance Applications History" %}'
+		},
+		subtitle: {
+			text: document.ontouchstart === undefined ?
+				'{% trans "Click and drag in the plot area to zoom in" %}' :
+				'{% trans "Drag your finger over the plot to zoom in" %}'
+		},
+		xAxis: {
+			type:'datetime',
+			maxZoom: 14 * 24 * 3600000, // fourteen days
+			title: {
+				text: '{% trans "Instance Application Dates" %}'
+			}
+		},
+		yAxis: {
+			min: 0,
+			title: {
+				text: '{% trans "Number of Applications" %}'
+			}
+		},
+		series: [{
+			data: [],
+			name: "{% trans 'Instance Applications' %}"
+		}],
+		tooltip: {
+			shared: false,
+			formatter: function() {
+				var s = this.point.vm;
+				return '<b>'+s + '</b><hr/><br/><b>{% trans "Submitted:" %} </b>' + new Date(this.point.x).toDateString() + '<br/>{% trans "So far" %}: ' + this.y;
+			}
+		}
+	};
+
+	$.getJSON('{% url stats_ajax_apps %}', function(dt) {
+		var items2 = [];
+		$.each(dt, function(i, item) {
+				options2.series[0].data.push({x:item.time, y:item.count, vm:item.instance, user:item.user});
+
+
+		});
+		var chart2 = new Highcharts.Chart(options2);
+	});
+
+	{% if user.is_superuser or perms.ganeti.view_instances %}
+		{% for cluster in clusters %}
+		var options_{{cluster.pk}} = {
+			chart: {
+				plotBackgroundColor: null,
+				plotBorderWidth: null,
+				plotShadow: false,
+				renderTo: 'inst_vms_pie_{{cluster.pk}}'
+			},
+			title: {
+				text: '{{cluster.slug}} instances'
+			},
+			tooltip: {
+				pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+				percentageDecimals: 1,
+				formatter: function() {
+					return '<b>'+ this.point.name +'</b>: '+ this.y + ' (' + Highcharts.numberFormat(this.percentage, 2) +' %)';
+				}
+			},
+			plotOptions: {
+				pie: {
+					allowPointSelect: true,
+					cursor: 'pointer',
+					size: '100%',
+					dataLabels: {
+						enabled: false
+					},
+					showInLegend: true
+					/*dataLabels: {
+						enabled: true,
+						color: '#000000',
+						connectorColor: '#000000',
+						formatter: function() {
+							return '<b>'+ this.point.name +'</b>: '+ this.y + ' (' + Math.round(this.percentage) +' %)';
+						}
+
+					}*/
+				}
+			},
+
+			series: [{
+				type: 'pie',
+				name: '{{cluster.slug}}',
+				data: [
+
+				]
+			}]
+
+		};
+		$.getJSON('{% url stats_ajax_vms_pc cluster.slug %}', function(dt) {
+
+			options_{{cluster.pk}}.series[0].data.push({name:'Running', y:dt.instances.up, color: '#51A351'})
+			options_{{cluster.pk}}.series[0].data.push({name:'Stopped', y:dt.instances.down, color: '#BD362F'})
+
+			var chart_cluster_vms_{{cluster.pk}} = new Highcharts.Chart(options_{{cluster.pk}});
+		});
+		{% endfor %}
+	{% endif %}
+});
+</script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.bootstrap.js' %}"></script>
+<script type="text/javascript">
+	$(document).ready( function(){
+	{% if user.is_superuser or perms.ganeti.view_instances %}
+		$('#vm_instance_table').dataTable( {
+			"bPaginate": true,
+			"bFilter": true,
+			"bAutoWidth": true,
+			"oLanguage": {
+				"sLengthMenu": '{% trans "Display" %} <select><option value="20">20</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> users'
+			},
+			"sPaginationType": "bootstrap",
+			"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+			"iDisplayLength": 20,
+			"bProcessing": true,
+			"sAjaxSource": "{% url user-stats-json %}",
+			"bDeferRender": true,
+			"aoColumns":[
+				{
+					"mData": "user" ,
+					"bSearchable": true,"bSortable": true,
+					"mRender": function (data, type, full) {
+				 		if (full.hasOwnProperty("user_href")){
+					 		name = '<a href="'+full.user_href+'">'+data+'</a>';
+				 		} else {
+					 		name = data;
+				 		}
+						return name;
+			 		},
+			 	},
+				{"mData":"instances", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+				{"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+				{"mData":"memory", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
+					"mRender": function (data, type, full) {
+					return (data/full.instances).toFixed(2);
+				}
+			 },
+			 {"mData":"cpu", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+			 {"mData":"cpu", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
+				"mRender": function (data, type, full) {
+					return (data/full.instances).toFixed(2);
+				}
+			 },
+			 {"mData":"disk", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
+			 {"mData":"disk", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
+				"mRender": function (data, type, full) {
+					return (data/full.instances).toFixed(2);
+				}
+			},
+		],
+		"fnInitComplete": function(oSettings, json) {
+		}
+	});
+ 	{% else %}
+ 	$.getJSON('{% url user-stats-json %}', function(dt) {
+		var instances = dt.aaData[0].instances;
+		var mem = dt.aaData[0].memory;
+		var disk = dt.aaData[0].disk;
+		var cpu = dt.aaData[0].cpu;
+		$('#instance_no').text(instances);
+		$('#cpu_no').text(cpu);
+		$('#mem_no').text(mem);
+		$('#disk_no').text(disk);
+		$('#cpu_avg').text((cpu/instances).toFixed(2));
+		$('#mem_avg').text((mem/instances).toFixed(2));
+		$('#disk_avg').text((disk/instances).toFixed(2));
+	 });
+	{% endif %}
+});
+</script>
+{% endblock %}
+
+{% block title %}{% trans "Statistics" %}{% endblock %}
+
+{% block statistics %}class="active"{% endblock %}
+
+{% block statstop %}class="active"{% endblock %}
+
+{% block crumbs %}
+	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li class="active">{% trans "Service Statistics" %}</li>
+{% endblock %}
+
+{% block content %}
+<div class="span8">
+	<div class="row-fluid">
+		<div class="row-fluid">
+			<h2>{% trans "ganetimgr Statistics" %}</h2>
+			{% if user.is_superuser or perms.ganeti.view_instances %}
+			<div class="row-fluid">
+				{% for cluster in clusters %}
+					<div class="span3" id="inst_vms_pie_{{cluster.pk}}" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
+				{% endfor %}
+			</div>
+			{% endif %}
+			<div class="row-fluid">
+				<div id="container" style="width:100%; height:300px; float: none; margin: 0 auto;"></div>
+			</div>
+			<div class="row-fluid">
+				<div id="container2" style="width:100%; height:300px; float: none; margin: 0 auto;"></div>
+			</div>
+			{% if user.is_superuser or perms.ganeti.view_instances %}
+			<div class="row-fluid">
+				<h3>User Instance Statistics</h3>
+				<table class="table table-first-column-number data-table display full visoverflow highchart" data-graph-container=".. .. .highchart-container" data-graph-type="column" id="vm_instance_table">
+					<thead>
+						<tr>
+							<th style="text-align: center;">{% trans "Username" %} <span class="sort-icon"></span></th>
+							<th style="text-align: center;">{% trans "VMs" %} <span class="sort-icon"></span></th>
+							<th style="text-align: center;">{% trans "Memory" %}(MB) <span class="sort-icon"></span></th>
+							<th style="text-align: center;">{% trans "Memory" %}(MB)/VM <span class="sort-icon"></span></th>
+							<th style="text-align: center;">CPUs <span class="sort-icon"></span></th>
+							<th style="text-align: center;">CPUs/VM <span class="sort-icon"></span></th>
+							<th style="text-align: center;">Disk (MB)<span class="sort-icon"></span></th>
+							<th style="text-align: center;">Disk (MB)/VM<span class="sort-icon"></span></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% if user.is_superuser or perms.ganeti.view_instances %}
+	<div class="span4 sidebar">
+		<div class="widget">
+			<h2>{% trans "Platform Statistics" %}</h2>
+			<ul class="cards">
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">Clusters</p>
+					<p class="pull-right text-success strong">{{clusters|length}}</p>
+					<p class="info">{% trans "Managed by ganetimgr" %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Instances " %}</p>
+					<p class="pull-right text-success strong">{{instances}}</p>
+					<p class="info">{% trans "Created " %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Applications" %}</p>
+					<p class="pull-right text-info strong">{{instance_apps}}</p>
+					<p class="info">{% trans "Submitted " %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Users" %}</p>
+					<p class="pull-right text-info strong">{{users}}</p>
+					<p class="info">{% trans "Registered" %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Groups" %}</p>
+					<p class="pull-right text-info strong">{{groups}}</p>
+					<p class="info">{% trans "of users" %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "Organizations" %}</p>
+					<p class="pull-right text-info strong">{{orgs}}</p>
+					<p class="info">{% trans "Participating" %}</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+{% else %}
+	<div class="span4 sidebar">
+		<div class="widget">
+			<h2>{% trans "Your Statistics" %}</h2>
+			<ul class="cards">
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">{% trans "My Instances" %}</p>
+					<p class="pull-right text-success strong" id="instance_no"></p>
+					<p class="info">{% trans "Managed by ganetimgr" %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">CPUs</p>
+					<p class="pull-right text-info strong" id="cpu_no"></p>
+					<p class="info">{% trans "Total" %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">Mem (MB)</p>
+					<p class="pull-right text-warning strong" id="mem_no"></p>
+					<p class="info">{% trans "Total" %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">Disk (MB)</p>
+					<p class="pull-right text-error strong" id="disk_no"></p>
+					<p class="info">{% trans "Total" %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">CPUs/VM</p>
+					<p class="pull-right text-info strong" id="cpu_avg"></p>
+					<p class="info">{% trans "Avg." %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">Mem (MB)/VM</p>
+					<p class="pull-right text-warning strong" id="mem_avg"></p>
+					<p class="info">{% trans "Avg." %}</p>
+				</li>
+				<li>
+					<p style=" line-height: 1em; margin-top: 0em" class="title">Disk (MB)/VM</p>
+					<p class="pull-right text-error strong" id="disk_avg"></p>
+					<p class="info">{% trans "Avg." %}</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+{% endif %}
+{% endblock %}

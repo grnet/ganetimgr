@@ -60,6 +60,7 @@ DEFAULT_PID_FILE = "/var/run/ganetimgr-watcher.pid"
 DEFAULT_LOG_FILE = "/var/log/ganetimgr/watcher.log"
 RESERVE_ERROR_THRESHOLD = 30
 
+
 def next_poll_interval():
     for t in POLL_INTERVALS:
         yield t
@@ -241,7 +242,7 @@ def handle_creation(job):
                                (fqdn, urlresolvers.reverse("instance-detail",
                                                 args=(application.cluster.slug,
                                                       application.hostname)))
-                mail_body = render_to_string("instance_created_mail.txt",
+                mail_body = render_to_string("instances/emails/instance_created_mail.txt",
                                              {"application": application,
                                               "instance_url": instance_url})
                 try_log(send_mail, settings.EMAIL_SUBJECT_PREFIX +

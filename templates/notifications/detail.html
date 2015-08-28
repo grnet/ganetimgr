@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block notify %}class="active"{% endblock %}
+
+{% block title %}{% trans "Notifications" %}{% endblock %}
+
+{% block crumbs %}
+<li>
+	<a href="{% url user-instances %}">{% trans "Home" %}</a>
+	<span class="divider">/</span>
+</li>
+<li class="active">{% trans "Notifications" %}</li>
+{% endblock %}
+
+{% block content %}
+	<h2>{{ notification.subject }}</h2>
+	<h6>{{ notification.date }}</h6>
+	{% if notification.sender %}
+	<h3>Sender</h3>
+	{{ notification.sender }}
+	{% endif %}
+	<h3>Message</h3>
+	<p>{{ notification.message }}</p>
+	<h3>Recipients</h3>
+	<div>
+	{% for user in notification.recipients.all %}
+		{{ user }} {% if not forloop.last %}, {% endif %}
+	{% endfor %}
+    </div>
+{% endblock %}
+
