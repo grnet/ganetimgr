@@ -294,60 +294,62 @@
             ng_name = this.value;
             vgng.empty();
             var selnet = $("#id_netw");
-            for (var i=0; i<selected_cluster.node_groups.length; i++) {
-                if (selected_cluster.node_groups[i].name === ng_name){
-                    selected_ng = selected_cluster.node_groups[i];
-                }
-            }
-            selnet.empty();
-            var parsed_groups = [];
-            if (selected_ng) {
-                for (var i=0; i<selected_ng.networks.length; i++) {
-                    if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1) {
-                        selgroup = $('#gr_'+selected_ng.networks[i].type+'');
-                    } else {
-                        parsed_groups.push(selected_ng.networks[i].type);
-                        selnet.append($('<optgroup id="gr_'+selected_ng.networks[i].type+'" label="'+selected_ng.networks[i].type.capitalize()+'"></optgroup>'));
-                        selgroup = $('#gr_'+selected_ng.networks[i].type+'');
+            if (selected_cluster) {
+                for (var i=0; i<selected_cluster.node_groups.length; i++) {
+                    if (selected_cluster.node_groups[i].name === ng_name){
+                        selected_ng = selected_cluster.node_groups[i];
                     }
-                    selecttext = '';
-                    if (selgroup.attr('id') === 'gr_routed') {
-                        if (selecttext === '') {
-                            selecttext = "selected='selected'";
-                        }
-                    }
-                    var option = '<option ';
-                        if (selected_ng.networks[i].free_count < 1) {
-                            option += 'disabled=disabled';
-                        }
-                        option += 'data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
-                        data-free="'+selected_ng.networks[i].free_count+'" \
-                        data-reserved="'+selected_ng.networks[i].reserved_count+'" \
-                        data-type="'+selected_ng.networks[i].type+'" \
-                        value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>'
-                    selgroup.append(option);
-
                 }
-                if (('routed', parsed_groups) != -1){
-                    topgroup = $('#gr_routed');
-                    topgroup.parent().prepend(topgroup);
-                }
-                $("#id_netw").trigger("change");
-                selnet.select2('destroy');
-                selnet.select2({dropdownAutoWidth : true, formatResult: formatnet});
-                selnet.on('select2-open', function(){
-                    $.sparkline_display_visible();
-                });
-                vgng.append('<option value="default">default</option>');
-                for (var i=0; i<selected_ng.vgs.length; i++) {
-                    selecttext = '';
-                            if ("{{application.instance_params.vgs}}" == selected_ng.vgs[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+                selnet.empty();
+                var parsed_groups = [];
+                if (selected_ng) {
+                    for (var i=0; i<selected_ng.networks.length; i++) {
+                        if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1) {
+                            selgroup = $('#gr_'+selected_ng.networks[i].type+'');
+                        } else {
+                            parsed_groups.push(selected_ng.networks[i].type);
+                            selnet.append($('<optgroup id="gr_'+selected_ng.networks[i].type+'" label="'+selected_ng.networks[i].type.capitalize()+'"></optgroup>'));
+                            selgroup = $('#gr_'+selected_ng.networks[i].type+'');
+                        }
+                        selecttext = '';
+                        if (selgroup.attr('id') === 'gr_routed') {
+                            if (selecttext === '') {
                                 selecttext = "selected='selected'";
                             }
-                            vgng.append('<option value="'+selected_ng.vgs[i]+'" '+selecttext+'>'+selected_ng.vgs[i]+'</option>');
+                        }
+                        var option = '<option ';
+                            if (selected_ng.networks[i].free_count < 1) {
+                                option += 'disabled=disabled';
+                            }
+                            option += 'data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
+                            data-free="'+selected_ng.networks[i].free_count+'" \
+                            data-reserved="'+selected_ng.networks[i].reserved_count+'" \
+                            data-type="'+selected_ng.networks[i].type+'" \
+                            value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>'
+                        selgroup.append(option);
+
+                    }
+                    if (('routed', parsed_groups) != -1){
+                        topgroup = $('#gr_routed');
+                        topgroup.parent().prepend(topgroup);
+                    }
+                    $("#id_netw").trigger("change");
+                    selnet.select2('destroy');
+                    selnet.select2({dropdownAutoWidth : true, formatResult: formatnet});
+                    selnet.on('select2-open', function(){
+                        $.sparkline_display_visible();
+                    });
+                    vgng.append('<option value="default">default</option>');
+                    for (var i=0; i<selected_ng.vgs.length; i++) {
+                        selecttext = '';
+                                if ("{{application.instance_params.vgs}}" == selected_ng.vgs[i] && "{{application.instance_params.cluster}}" == selected_cluster.slug){
+                                    selecttext = "selected='selected'";
+                                }
+                                vgng.append('<option value="'+selected_ng.vgs[i]+'" '+selecttext+'>'+selected_ng.vgs[i]+'</option>');
+                    }
+                    vgng.select2('destroy');
+                    vgng.select2();
                 }
-                vgng.select2('destroy');
-                vgng.select2();
             }
 
         });
