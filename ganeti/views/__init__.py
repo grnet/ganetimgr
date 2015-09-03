@@ -58,15 +58,20 @@ def clear_cache(request):
             "user:%s:index:*" % username,
             "cluster:*",
             "pendingapplications",
+            "%s:ajax*" % username,
+            "user:%s:index:instances" % username,
+            "user:%s:index:instance:light" % username,
+            "user:%s:index:users:instance:stats" % username,
+            '%s:ajaxapplist' % username,
+            '%s:ajaxinstances' % username,
             "allclusternodes",
             "bad*",
             "len*",
-            "%s:ajax*" % username,
             "locked_instances",
             "*list",
         ]
         for key in keys_pattern:
-            if cache.has_key(key):
+            if key in cache:
                 cache.delete(key)
         result = {'result': "Success"}
     else:
