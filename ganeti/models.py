@@ -919,20 +919,21 @@ class Cluster(models.Model):
         else:
             return False
 
-    def check_node_group_lock_by_node(self, node):
-        n = self.get_node_info(node)
-        ng = self.get_node_group_info(n['group'])
-        for t in ng['tags']:
-            if t == 'locked':
-                return True
-        return False
-
-    def has_locked_nodes(self):
+    def locked_nodes_from_nodegroup(self):
+        '''
+         gets all locked nodegroups and finds all their nodes.
+        '''
+        locked = cache.get('cluster:%s:lockednodegroups:nodes')
+        if locked:
+            return locked
+        locked = []
         groups = self.get_node_groups()
         for group in groups:
             if 'locked' in group.get('tags'):
-                return True
-        return False
+                locked.extend(group.get('node_list'))
+        cache.set('cluster:%s:lockednodegroups:nodes' % self.slug, locked)
+        return locked
+
 
     def destroy_instance(self, instance):
         cache_key = self._instance_cache_key(instance)

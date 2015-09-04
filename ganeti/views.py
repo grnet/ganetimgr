@@ -404,10 +404,12 @@ def user_index_json(request):
     bad_clusters = []
     bad_instances = []
     locked_clusters = []
+    locked_nodes = []
 
     def _get_instances(cluster):
-        locked = cluster.has_locked_nodes()
-        if locked:
+        cluster_locked_nodes = cluster.locked_nodes_from_nodegroup()
+        if cluster_locked_nodes:
+            locked_nodes.extend(cluster_locked_node_groups)
             locked_clusters.append(str(cluster))
         try:
             instances.extend(cluster.get_user_instances(request.user))
@@ -437,8 +439,9 @@ def user_index_json(request):
                 instance.joblock = locked_instances['%s' % instance.name]
             else:
                 instance.joblock = False
-            instancedetails.extend(generate_json(instance, user))
-        except (GanetiApiError, Exception):
+            instancedetails.extend(generate_json(instance, user, locked_nodes))
+        except (GanetiApiError, Exception) as e:
+            raise Exception(e)
             bad_instances.append(instance)
         finally:
             close_connection()
@@ -584,7 +587,7 @@ def user_sum_stats(request):
     )
 
 
-def generate_json(instance, user):
+def generate_json(instance, user, locked_nodes=[]):
     jresp_list = []
     i = instance
     inst_dict = {}
@@ -604,9 +607,7 @@ def generate_json(instance, user):
     else:
         inst_dict['cluster'] = i.cluster.description
         inst_dict['clusterslug'] = i.cluster.slug
-    inst_dict['node_group_locked'] = i.cluster.check_node_group_lock_by_node(
-        i.pnode
-    )
+    inst_dict['node_group_locked'] = i.pnode in locked_nodes
     inst_dict['memory'] = memsize(i.beparams['maxmem'])
     inst_dict['disk'] = ", ".join(disksizes(i.disk_sizes))
     inst_dict['vcpus'] = i.beparams['vcpus']
@@ -1446,8 +1447,8 @@ def instance(request, cluster_slug, instance):
             instance.osname = instance.osparams['img_id']
         except Exception:
             instance.osname = instance.os
-    instance.node_group_locked = instance.\
-        cluster.check_node_group_lock_by_node(instance.pnode)
+    print instance.cluster.locked_nodes_from_nodegroup()
+    instance.node_group_locked = instance.pnode in instance.cluster.locked_nodes_from_nodegroup()
     for (nic_i, link) in enumerate(instance.nic_links):
         if instance.nic_ips[nic_i] is None:
             instance.netw.append("%s" % (instance.nic_links[nic_i]))
@@ -1520,9 +1521,7 @@ def poll(request, cluster_slug, instance):
             instance.osname = instance.osparams['img_id']
         except Exception:
             instance.osname = instance.os
-        instance.node_group_locked = instance.cluster.check_node_group_lock_by_node(
-            instance.pnode
-        )
+        instance.node_group_locked = instance.pnode in instance.cluster.locked_nodes_from_nodegroup()
         return render_to_response(
             "instance_actions.html",
             {
