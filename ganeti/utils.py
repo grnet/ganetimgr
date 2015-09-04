@@ -97,7 +97,7 @@ def prepare_clusternodes(cluster=None):
     return nodes, bad_clusters, bad_nodes
 
 
-def generate_json(instance, user):
+def generate_json(instance, user, locked_nodes):
     jresp_list = []
     i = instance
     inst_dict = {}
@@ -117,9 +117,7 @@ def generate_json(instance, user):
     else:
         inst_dict['cluster'] = i.cluster.description
         inst_dict['clusterslug'] = i.cluster.slug
-    inst_dict['node_group_locked'] = i.cluster.check_node_group_lock_by_node(
-        i.pnode
-    )
+    inst_dict['node_group_locked'] = i.pnode in locked_nodes
     inst_dict['memory'] = memsize(i.beparams['maxmem'])
     inst_dict['disk'] = ", ".join(disksizes(i.disk_sizes))
     inst_dict['vcpus'] = i.beparams['vcpus']

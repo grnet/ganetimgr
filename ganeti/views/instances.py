@@ -35,7 +35,6 @@ from auditlog.utils import auditlog_entry
 
 from util.client import GanetiApiError
 
-
 from ganeti.utils import (
     generate_json,
     generate_json_light,
@@ -86,11 +85,13 @@ def user_index_json(request):
     bad_clusters = []
     bad_instances = []
     locked_clusters = []
+    locked_nodes = []
 
     def _get_instances(cluster):
-        locked = cluster.has_locked_nodes()
-        if locked:
+        cluster_locked_nodes = cluster.locked_nodes_from_nodegroup()
+        if cluster_locked_nodes:
             locked_clusters.append(str(cluster.description))
+            locked_nodes.extend(cluster_locked_node_groups)
         try:
             instances.extend(cluster.get_user_instances(request.user))
         except (GanetiApiError, Exception):
@@ -118,7 +119,7 @@ def user_index_json(request):
                 instance.joblock = locked_instances['%s' % instance.name]
             else:
                 instance.joblock = False
-            instancedetails.extend(generate_json(instance, request.user))
+            instancedetails.extend(generate_json(instance, request.user, locked_nodes))
         except (GanetiApiError, Exception):
             bad_instances.append(instance)
         finally:
