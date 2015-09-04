@@ -281,9 +281,7 @@ def poll(request, cluster_slug, instance):
             instance.osname = instance.osparams['img_id']
         except Exception:
             instance.osname = instance.os
-        instance.node_group_locked = instance.cluster.check_node_group_lock_by_node(
-            instance.pnode
-        )
+        instance.node_group_locked = instance.pnode in instance.cluster.locked_nodes_from_nodegroup()
         return render(
             request,
             'instances/instance_actions.html',
@@ -600,8 +598,7 @@ def instance(request, cluster_slug, instance):
             instance.osname = instance.osparams['img_id']
         except Exception:
             instance.osname = instance.os
-    instance.node_group_locked = instance.\
-        cluster.check_node_group_lock_by_node(instance.pnode)
+    instance.node_group_locked = instance.pnode in instance.cluster.locked_nodes_from_nodegroup()
     for (nic_i, link) in enumerate(instance.nic_links):
         if instance.nic_ips[nic_i] is None:
             instance.netw.append("%s" % (instance.nic_links[nic_i]))
