@@ -1447,7 +1447,6 @@ def instance(request, cluster_slug, instance):
             instance.osname = instance.osparams['img_id']
         except Exception:
             instance.osname = instance.os
-    print instance.cluster.locked_nodes_from_nodegroup()
     instance.node_group_locked = instance.pnode in instance.cluster.locked_nodes_from_nodegroup()
     for (nic_i, link) in enumerate(instance.nic_links):
         if instance.nic_ips[nic_i] is None:
