@@ -23,7 +23,7 @@ from gevent.pool import Pool
 from gevent.timeout import Timeout
 
 from time import mktime
-import datetime
+
 
 from ipaddr import *
 from django import forms
@@ -57,6 +57,7 @@ from ganeti.models import *
 from ganeti.utils import prepare_clusternodes, get_nodes_with_graphs
 from ganeti.forms import *
 
+import datetime
 
 from apply.utils import get_os_details
 from util.client import GanetiApiError
