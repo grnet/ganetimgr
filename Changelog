@@ -1,6 +1,8 @@
 1.5.6 RELEASE (stable)
 Bugfixing release
 	- [workaround] Checking for locked node groups was creating a big delay causing timeouts
+	- [fixed] Auditlog shows last ten days activity
+	- [fixed] import * datetime bug in /user/idle
 
 ===========
 
