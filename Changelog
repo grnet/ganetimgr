@@ -20,7 +20,7 @@ Features/Bugfixing release
 	- [Workaround] When reinstalling instance with a new os, os params are changed as they should
 	- Minor fix on user resolution in auditlog
 	- Code cleanup
-	- Toggle the visibiliti of approved and failed applications
+	- Toggle the visibility of approved and failed applications
 	- Pending applications notification does not count failed and approved applications
 	- Fix bug that causes mail to crash
 
