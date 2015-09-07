@@ -22,6 +22,7 @@ from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
 from auditlog.models import AuditEntry
 import json
+import datetime
 
 
 @login_required
@@ -36,7 +37,7 @@ def auditlog_json(request):
         request.user.is_superuser or
         request.user.has_perm('ganeti.view_instances')
     ):
-        al = AuditEntry.objects.all()
+        al = AuditEntry.objects.filter(last_updated__gte=datetime.datetime.now() - datetime.timedelta(days=10))
     else:
         al = AuditEntry.objects.filter(requester=request.user)
     entries = []
