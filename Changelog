@@ -1,6 +1,14 @@
-1.5.5 RELEASE (stable)
+1.5.6 RELEASE (stable)
+Bugfixing release
+	- [workaround] Checking for locked node groups was creating a big delay causing timeouts
+
+===========
+
+1.5.5 RELEASE
 Bugfixing release
 	- [fixed] If a cluster's slug contains the dash character it would generate a 404 response
+
+===========
 
 1.5.4 RELEASE
 Features/Bugfixing release
@@ -14,6 +22,7 @@ Features/Bugfixing release
 	- Pending applications notification does not count failed and approved applications
 	- Fix bug that causes mail to crash
 
+===========
 
 1.5.3 RELEASE
 Features/Bugfixing release
