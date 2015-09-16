@@ -1,3 +1,11 @@
+1.5.7 RELEASE (stable)
+Bugfixing release
+	- [fixed] trailing slash in discovery url
+	- [fixed] nomount images in discovery
+
+
+============
+
 1.5.6 RELEASE (stable)
 Bugfixing release
 	- [workaround] Checking for locked node groups was creating a big delay causing timeouts
