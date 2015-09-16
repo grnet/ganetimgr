@@ -51,27 +51,22 @@ def discover_available_operating_systems():
                         '.img': 'qemu',
                         '-root.dump': 'dump',
                     }
-                    architectures = ['-x86_', '-amd', '-i386']
+                    architectures = ['-x86_', '-amd' '-i386']
                     for link in soup.findAll('a'):
                         try:
-                            extension = '.' + '.'.join(link.attrs.get('href').split('.')[-2:])
-                            if extension not in extensions.keys():
+                            if '.' + '.'.join(link.attrs.get('href').split('.')[-2:]) == '.tar.gz':
+                                extension = '.tar.gz'
+                            elif '.' + '.'.join(link.attrs.get('href').split('.')[-1:]) == '.img':
+                                extension = '.img'
+                            else:
                                 extension = '.' + '.'.join(link.attrs.get('href').split('.')[-1:])
                         # in case of false link
                         except IndexError:
                             pass
                         else:
                             # if the file is tarball, qemu or dump then it is valid
-                            if (
-                                extension in extensions.keys()
-                                or '-root.dump' in link.attrs.get('href')
-                                or (
-                                    'nomount' in link.attrs.get('href')
-                                    and extension in extensions.keys()
-                                )
-                            ):
-                                images_url = url if url[-1] == '/' else url + '/'
-                                re = requests.get(images_url + link.attrs.get('href') + '.dsc')
+                            if extension in extensions.keys() or '-root.dump' in link.attrs.get('href'):
+                                re = requests.get(url + link.attrs.get('href') + '.dsc')
                                 if re.ok:
                                     name = re.text
                                 else:
@@ -83,18 +78,33 @@ def discover_available_operating_systems():
                                         break
                                 description = name
                                 img_format = extensions[extension]
-                                operating_systems.update({
-                                    img_id: {
-                                        'description': description,
-                                        'provider': OPERATING_SYSTEMS_PROVIDER,
-                                        'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
-                                        'arch': architecture,
-                                        'osparams': {
-                                            'img_id': img_id,
-                                            'img_format': img_format,
+                                if link.attrs.get('href').split('-')[0] == 'nomount':
+                                    operating_systems.update({
+                                        img_id: {
+                                            'description': description,
+                                            'provider': OPERATING_SYSTEMS_PROVIDER,
+                                            'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
+                                            'arch': architecture,
+                                            'osparams': {
+                                                'img_id': img_id,
+                                                'img_format': img_format,
+                                                'img_nomount': 'yes',
+                                            }
                                         }
-                                    }
-                                })
+                                     })
+                                else:
+                                    operating_systems.update({
+                                        img_id: {
+                                            'description': description,
+                                            'provider': OPERATING_SYSTEMS_PROVIDER,
+                                            'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
+                                            'arch': architecture,
+                                            'osparams': {
+                                                'img_id': img_id,
+                                                'img_format': img_format,
+                                            }
+                                        }
+                                     })
         return operating_systems
     else:
         return {}

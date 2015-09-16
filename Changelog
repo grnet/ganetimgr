@@ -6,7 +6,7 @@ Bugfixing release
 
 ============
 
-1.5.6 RELEASE (stable)
+1.5.6 RELEASE
 Bugfixing release
 	- [workaround] Checking for locked node groups was creating a big delay causing timeouts
 	- [fixed] Auditlog shows last ten days activity
