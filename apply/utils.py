@@ -49,26 +49,36 @@ def discover_available_operating_systems():
                     extensions = {
                         '.tar.gz': 'tarball',
                         '.img': 'qemu',
-                        '-root.dump': 'dump'
+                        '-root.dump': 'dump',
                     }
-                    architectures = ['-x86_', '-amd' '-i386']
+                    architectures = ['-x86_', '-amd', '-i386']
                     for link in soup.findAll('a'):
                         try:
-                            extension = '.' + '.'.join(link.text.split('.')[-2:])
+                            extension = '.' + '.'.join(link.attrs.get('href').split('.')[-2:])
+                            if extension not in extensions.keys():
+                                extension = '.' + '.'.join(link.attrs.get('href').split('.')[-1:])
                         # in case of false link
                         except IndexError:
                             pass
                         else:
                             # if the file is tarball, qemu or dump then it is valid
-                            if extension in extensions.keys() or '-root.dump' in link.text:
-                                re = requests.get(url + link.text + '.dsc')
+                            if (
+                                extension in extensions.keys()
+                                or '-root.dump' in link.attrs.get('href')
+                                or (
+                                    'nomount' in link.attrs.get('href')
+                                    and extension in extensions.keys()
+                                )
+                            ):
+                                images_url = url if url[-1] == '/' else url + '/'
+                                re = requests.get(images_url + link.attrs.get('href') + '.dsc')
                                 if re.ok:
                                     name = re.text
                                 else:
-                                    name = link.text
+                                    name = link.attrs.get('href')
                                 for arch in architectures:
-                                    if arch in link.text:
-                                        img_id = link.text.replace(extension, '').split(arch)[0]
+                                    if arch in link.attrs.get('href'):
+                                        img_id = link.attrs.get('href').replace(extension, '').split(arch)[0]
                                         architecture = arch
                                         break
                                 description = name
