@@ -335,6 +335,7 @@ BRANDING = {
             # option when creating a new vm
             "SHOW_ADMINISTRATIVE_FORM": True,
             "SHOW_ORGANIZATION_FORM": True,
+            "TITLE": Ganetimgr
             }
 
 # Flatpages manipulation. Show or hide flatpages links in page.

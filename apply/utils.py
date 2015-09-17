@@ -51,7 +51,7 @@ def discover_available_operating_systems():
                         '.img': 'qemu',
                         '-root.dump': 'dump',
                     }
-                    architectures = ['-x86_', '-amd' '-i386']
+                    architectures = ['-x86_', '-amd', '-i386']
                     for link in soup.findAll('a'):
                         try:
                             if '.' + '.'.join(link.attrs.get('href').split('.')[-2:]) == '.tar.gz':

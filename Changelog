@@ -1,4 +1,10 @@
-1.5.7 RELEASE (stable)
+1.5.8 RELEASE (stable)
+Bugfixing release
+	- [fixed] syntax error in apply.utils
+	- [Feature] BRANDING.TITLE setting in header
+
+
+1.5.7 RELEASE
 Bugfixing release
 	- [fixed] trailing slash in discovery url
 	- [fixed] nomount images in discovery
