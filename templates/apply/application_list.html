@@ -27,6 +27,9 @@
 <div class="span9 main-content">
 	<div class="row-fluid">
 		<div class="row-fluid">
+			{% if not pending and not completed %}
+				{% trans "No applications yet." %} <i class="fa fa-meh-o"></i>
+			{% endif %}
 			{% if pending %}
 			<h2>{% trans "Pending applications" %}</h2>
 			<div class="pending-filters">

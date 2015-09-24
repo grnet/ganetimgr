@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load disksizes %}
 {% load staticfiles %}
+
+{% block title %}{% trans 'Cluster info' %}{% endblock %}
 {% block clusterinfo %}class = "active"{% endblock %}
 {% block crumbs %}
 	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
