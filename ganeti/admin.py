@@ -20,7 +20,8 @@ from models import Cluster, Network, InstanceAction
 
 
 class ClusterAdmin(admin.ModelAdmin):
-    list_display = ('hostname', 'description')
+    list_display = ('hostname', 'description', 'disabled')
+    list_editable = ('disabled',)
     prepopulated_fields = {'slug': ('hostname',)}
     exclude = ('fast_create', 'use_gnt_network')
 
