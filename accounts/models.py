@@ -40,10 +40,10 @@ class UserProfile(models.Model):
         return "%s profile" % self.user
 
 
+# Signals
 def create_user_profile(sender, instance, created, **kwargs):
     if created and not kwargs.get('raw', False):
         UserProfile.objects.create(user=instance)
-
 post_save.connect(create_user_profile, sender=User, dispatch_uid='create_UserProfile')
 
 
