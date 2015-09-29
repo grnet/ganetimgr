@@ -88,16 +88,19 @@ def user_index_json(request):
     locked_nodes = []
 
     def _get_instances(cluster):
-        cluster_locked_nodes = cluster.locked_nodes_from_nodegroup()
-        if cluster_locked_nodes:
-            locked_clusters.append(str(cluster.description))
-            locked_nodes.extend(cluster_locked_node_groups)
         try:
-            instances.extend(cluster.get_user_instances(request.user))
-        except (GanetiApiError, Exception):
+            cluster_locked_nodes = cluster.locked_nodes_from_nodegroup()
+            if cluster_locked_nodes:
+                locked_clusters.append(str(cluster.description))
+                locked_nodes.extend(cluster_locked_node_groups)
+            try:
+                instances.extend(cluster.get_user_instances(request.user))
+            except (GanetiApiError, Exception):
+                bad_clusters.append(cluster)
+            finally:
+                close_connection()
+        except GanetiApiError:
             bad_clusters.append(cluster)
-        finally:
-            close_connection()
     jresp = {}
     cache_key = "user:%s:index:instances" % request.user.username
     if cluster_slug:
@@ -136,7 +139,7 @@ def user_index_json(request):
         if bad_clusters:
             messages = "Some instances may be missing because the" \
                 " following clusters are unreachable: %s" \
-                % (", ".join([c.description for c in bad_clusters]))
+                % (", ".join([c.description or c.hostname for c in bad_clusters]))
             cache_timeout = 30
         j.map(_get_instance_details, instances)
         if locked_clusters:
@@ -193,7 +196,7 @@ def user_sum_stats(request):
             msgs.WARNING,
             'Some instances may be missing because the'
             ' following clusters are unreachable: ' +
-            ', '.join([c.description for c in bad_clusters])
+            ', '.join([c.description or c.hostname for c in bad_clusters])
         )
     jresp = {}
     cache_key = "user:%s:index:instance:light" % request.user.username
