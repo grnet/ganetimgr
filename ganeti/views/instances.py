@@ -88,19 +88,16 @@ def user_index_json(request):
     locked_nodes = []
 
     def _get_instances(cluster):
-        try:
-            cluster_locked_nodes = cluster.locked_nodes_from_nodegroup()
-            if cluster_locked_nodes:
-                locked_clusters.append(str(cluster.description))
-                locked_nodes.extend(cluster_locked_node_groups)
             try:
+                cluster_locked_nodes = cluster.locked_nodes_from_nodegroup()
+                if cluster_locked_nodes:
+                    locked_clusters.append(str(cluster.description))
+                    locked_nodes.extend(cluster_locked_node_groups)
                 instances.extend(cluster.get_user_instances(request.user))
             except (GanetiApiError, Exception):
                 bad_clusters.append(cluster)
             finally:
                 close_connection()
-        except GanetiApiError:
-            bad_clusters.append(cluster)
     jresp = {}
     cache_key = "user:%s:index:instances" % request.user.username
     if cluster_slug:
