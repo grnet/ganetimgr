@@ -22,5 +22,3 @@ def auditlog_entry(request, action, instance, cluster, save=True):
     if save:
         entry.save()
     return entry
-
-
