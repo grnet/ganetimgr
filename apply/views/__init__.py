@@ -336,6 +336,8 @@ def review_application(request, application_id=None):
 
 
 def instance_ssh_keys(request, application_id, cookie):
+    # serves the sshkey of an applicant
+    # in order to pass it to ganeti while creating the instance
     app = get_object_or_404(InstanceApplication, pk=application_id)
     if cookie != app.cookie:
         t = get_template("403.html")
@@ -345,5 +347,3 @@ def instance_ssh_keys(request, application_id, cookie):
     output.writelines([k.key_line() for k in
                        app.applicant.sshpublickey_set.all()])
     return HttpResponse(output.getvalue(), mimetype="text/plain")
-
-
