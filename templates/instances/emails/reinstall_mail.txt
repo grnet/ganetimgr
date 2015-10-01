@@ -1,4 +1,4 @@
-Ο χρήστης {{user.username}} ({{user.first_name}} {{user.last_name}}) υπέβαλε το
+Ο χρήστης {{user.username}} {% if user.first_name or user.last_name %}({{user.first_name}} {{user.last_name}}){% endif %} υπέβαλε το
 ακόλουθο αίτημα:
 ------------------------
 
@@ -13,7 +13,7 @@
 
 -----------------------------------------------------------------------------
 
-The user {{user.username}} ({{user.first_name}} {{user.last_name}}) has made
+The user {{user.username}} {% if user.first_name or user.last_name %}({{user.first_name}} {{user.last_name}}){% endif %} has made
 the following request:
 ------------------------
 
