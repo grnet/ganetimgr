@@ -69,6 +69,9 @@ def idle_accounts(request):
             'users/idle_accounts.html',
             {'users': idle_users},
         )
+    else:
+        t = get_template("403.html")
+        return HttpResponseForbidden(content=t.render(RequestContext(request)))
 
 
 @login_required
@@ -113,7 +116,7 @@ def mail_change(request):
                     )
                 )
                 email = render_to_string(
-                    "reinstall_mail.txt",
+                    "instances/emails/reinstall_mail.txt",
                     {
                         "user": request.user,
                         "action": mailchangereq.get_action_display(),
