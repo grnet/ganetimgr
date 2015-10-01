@@ -480,8 +480,7 @@ class NameChangeForm(forms.Form):
 
 
 class OrganizationPhoneChangeForm(forms.ModelForm):
-    user = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
         model = UserProfile
-        fields = ['organization', 'telephone', 'user']
+        fields = ['organization', 'telephone']
