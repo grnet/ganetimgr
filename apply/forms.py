@@ -295,15 +295,15 @@ class InstanceApplicationReviewForm(InstanceForm):
             ).order_by('description')
         ],
         label="Cluster",
-        required=True
+        required=False
     )
     node_group = forms.ChoiceField(
         label="Node Group",
-        required=True
+        required=False
     )
     netw = forms.ChoiceField(
         label="Network",
-        required=True
+        required=False
     )
     vgs = forms.ChoiceField(
         label="Volume Groups",
@@ -311,7 +311,7 @@ class InstanceApplicationReviewForm(InstanceForm):
     )
     disk_template = forms.ChoiceField(
         label="Disk Template",
-        required=True
+        required=False
     )
 
     class Meta:
@@ -328,6 +328,46 @@ class InstanceApplicationReviewForm(InstanceForm):
                 _("Please specify a reason for rejection")
             )
         return self.cleaned_data["admin_comments"]
+
+    def clean_cluster(self):
+        if self.data and "reject" in self.data:
+            return ''
+        else:
+            cluster = self.cleaned_data['cluster']
+            if not cluster:
+                raise forms.ValidationError(_("This field is required"))
+            else:
+                return cluster
+
+    def clean_netw(self):
+        if self.data and "reject" in self.data:
+            return ''
+        else:
+            netw = self.cleaned_data['netw']
+            if not netw:
+                raise forms.ValidationError(_("This field is required"))
+            else:
+                return netw
+
+    def clean_node_group(self):
+        if self.data and "reject" in self.data:
+            return ''
+        else:
+            node_group = self.cleaned_data['node_group']
+            if not node_group:
+                raise forms.ValidationError(_("This field is required"))
+            else:
+                return node_group
+
+    def clean_disk_template(self):
+        if self.data and "reject" in self.data:
+            return ''
+        else:
+            disk_template = self.cleaned_data.get('disk_template')
+            if not disk_template:
+                raise forms.ValidationError(_("This field is required"))
+            else:
+                return disk_template
 
     def clean_hostname(self):
         hostname = self.cleaned_data["hostname"].rstrip(".")

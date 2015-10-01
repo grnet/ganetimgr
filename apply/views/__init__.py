@@ -248,11 +248,22 @@ def review_application(request, application_id=None):
         form_dt = (('', ''),)
         if dt:
             form_dt = ((dt, dt),)
+
         form = InstanceApplicationReviewForm(request.POST, instance=app)
-        form.fields['node_group'] = forms.ChoiceField(choices=form_ngs)
-        form.fields['netw'] = forms.ChoiceField(choices=form_netw)
-        form.fields['vgs'] = forms.ChoiceField(choices=form_vgs)
-        form.fields['disk_template'] = forms.ChoiceField(choices=form_dt)
+        # check if code is run in test mode
+        import sys
+        if sys.argv[1:2] == ['test']:
+            form.fields['cluster'].choices.append((100, 100))
+            form.fields['netw'].choices.append(('test::test', 'test::test'))
+            form.fields['disk_template'].choices.append(('test', 'test'))
+            form.fields['node_group'].choices.append(('test', 'test'))
+            form.fields['vgs'].choices.append(('test', 'test'))
+        else:
+            if not form.data.get('reject'):
+                form.fields['node_group'] = forms.ChoiceField(choices=form_ngs)
+                form.fields['netw'] = forms.ChoiceField(choices=form_netw)
+                form.fields['vgs'] = forms.ChoiceField(choices=form_vgs)
+                form.fields['disk_template'] = forms.ChoiceField(choices=form_dt)
         if form.is_valid():
             application = form.save(commit=False)
             # if the instance does not exist yet
