@@ -9,7 +9,8 @@ from django.core.mail import send_mail
 from django.http import (
     HttpResponseRedirect,
     HttpResponseForbidden,
-    HttpResponse
+    HttpResponse,
+    HttpResponseBadRequest
 )
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string, get_template
@@ -30,15 +31,19 @@ def user_info(request, type, usergroup):
         request.user.is_superuser or
         request.user.has_perm('ganeti.view_instances')
     ):
+        usergroup_info = None
         if type == 'user':
-            usergroup_info = User.objects.get(username=usergroup)
-        if type == 'group':
-            usergroup_info = Group.objects.get(name=usergroup)
-        return render(
-            request,
-            'users/user_info.html',
-            {'usergroup': usergroup_info, 'type': type}
-        )
+            usergroup_info = get_object_or_404(User, username=usergroup)
+        elif type == 'group':
+            usergroup_info = get_object_or_404(Group, name=usergroup)
+        if usergroup_info:
+            return render(
+                request,
+                'users/user_info.html',
+                {'usergroup': usergroup_info, 'type': type}
+            )
+        else:
+            return HttpResponseBadRequest('Bad request')
     else:
         return HttpResponseRedirect(reverse('user-instances'))
 
