@@ -1026,7 +1026,7 @@ class Cluster(models.Model):
             disk_template = self.default_disk_template
 
         nodesdict = {}
-        if len(nodes) > 0:
+        if nodes is not None and len(nodes) > 0:
             nodesdict['pnode'] = nodes[0]
             if len(nodes) == 2:
                 nodesdict['snode'] = nodes[1]
