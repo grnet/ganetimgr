@@ -1,8 +1,7 @@
 import json
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import permission_required
-
 from ganeti.models import Network, Cluster
 from ganeti.utils import prepare_cluster_node_group_stack
 from util.client import GanetiApiError
@@ -39,6 +38,9 @@ def get_cluster_node_group_stack(request):
             ),
             mimetype='application/json'
         )
+    except:
+        return HttpResponseBadRequest()
+
     try:
         res = prepare_cluster_node_group_stack(cluster)
     except GanetiApiError as e:
