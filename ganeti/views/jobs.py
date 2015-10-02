@@ -27,6 +27,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import PermissionDenied
 
 from util.client import GanetiApiError
 from ganeti.models import Cluster
@@ -101,10 +102,7 @@ def jobs_index_json(request):
         res = jresp
         return HttpResponse(json.dumps(res), mimetype='application/json')
     else:
-        return HttpResponse(
-            json.dumps({'error': "Unauthorized access"}),
-            mimetype='application/json'
-        )
+        raise PermissionDenied()
 
 
 @login_required
@@ -115,4 +113,5 @@ def jobs(request):
             context_instance=RequestContext(request)
         )
     else:
-        return HttpResponseRedirect(reverse('user-instances'))
+        raise PermissionDenied()
+

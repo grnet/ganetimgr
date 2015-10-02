@@ -1,7 +1,8 @@
 import json
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import permission_required
+from django.shortcuts import get_object_or_404
 from ganeti.models import Network, Cluster
 from ganeti.utils import prepare_cluster_node_group_stack
 from util.client import GanetiApiError
@@ -9,13 +10,15 @@ from util.client import GanetiApiError
 
 @permission_required("apply.change_instanceapplication")
 def get_nodegroups_fromnet(request):
-    network_id = request.GET.get('network_id', '')
-    try:
-        cluster = Network.objects.get(pk=network_id).cluster
-    except Network.DoesNotExist:
-        cluster = None
-    if cluster:
-        nodegroups = cluster.get_node_groups()
+    network_id = request.GET.get('network_id')
+    if network_id:
+        try:
+            cluster = Network.objects.get(pk=network_id).cluster
+        except Network.DoesNotExist:
+            raise Http404
+    else:
+        return HttpResponseBadRequest()
+    nodegroups = cluster.get_node_groups()
     nodegroups_list = []
     for g in nodegroups:
         nodeg_dict = {}
@@ -26,19 +29,10 @@ def get_nodegroups_fromnet(request):
 
 @permission_required("apply.change_instanceapplication")
 def get_cluster_node_group_stack(request):
-    cluster_id = request.GET.get('cluster_id', '')
-    try:
-        cluster = Cluster.objects.get(pk=cluster_id)
-    except Cluster.DoesNotExist:
-        return HttpResponse(
-            json.dumps(
-                {
-                    'response': 'Error. Cluster does not exist!'
-                }
-            ),
-            mimetype='application/json'
-        )
-    except:
+    cluster_id = request.GET.get('cluster_id', None)
+    if cluster_id:
+        cluster = get_object_or_404(Cluster, pk=cluster_id)
+    else:
         return HttpResponseBadRequest()
 
     try:
