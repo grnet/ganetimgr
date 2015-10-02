@@ -29,7 +29,8 @@ from django.db import close_connection
 from django.http import (
     HttpResponse,
     HttpResponseRedirect,
-    HttpResponseServerError
+    HttpResponseServerError,
+    Http404
 )
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
@@ -122,10 +123,10 @@ def instance_popup(request):
         request.user.has_perm('ganeti.view_instances')
     ):
         if request.method == 'GET':
-            if 'cluster' in request.GET:
-                cluster_slug = request.GET.get('cluster')
-            if 'instance' in request.GET:
-                instance = request.GET.get('instance')
+            cluster_slug = request.GET.get('cluster')
+            instance = request.GET.get('instance')
+            if not cluster_slug or not instance:
+                raise Http404
         cluster = get_object_or_404(Cluster, slug=cluster_slug)
         instance = cluster.get_instance_or_404(instance)
 
@@ -159,7 +160,7 @@ def get_clusternodes(request):
                 msgs.WARNING,
                 "Some nodes may be missing because the" +
                 " following clusters are unreachable: " +
-                ", ".join([c.description for c in bad_clusters])
+                ", ".join([c.description or c.hostname for c in bad_clusters])
             )
             cache.set('badclusters', bad_clusters, 90)
         if bad_nodes:
