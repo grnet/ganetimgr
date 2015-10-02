@@ -30,6 +30,7 @@ from django.http import (
     HttpResponse,
     HttpResponseRedirect,
     HttpResponseServerError,
+    HttpResponseForbidden,
     Http404
 )
 from django.shortcuts import get_object_or_404, render
@@ -69,7 +70,7 @@ def clusternodes_json(request, cluster=None):
                 msgs.WARNING,
                 "Some nodes may be missing because the" +
                 " following clusters are unreachable: " +
-                ", ".join([c.description for c in bad_clusters])
+                ", ".join([c.description or c.hostname for c in bad_clusters])
             )
             cache.set('badclusters', bad_clusters, 90)
         if bad_nodes:
@@ -110,7 +111,7 @@ def clusternodes_json(request, cluster=None):
         res = jresp
         return HttpResponse(json.dumps(res), mimetype='application/json')
     else:
-        return HttpResponse(
+        return HttpResponseForbidden(
             json.dumps({'error': 'Unauthorized access'}),
             mimetype='application/json'
         )
@@ -351,7 +352,7 @@ def clusterdetails_json(request):
             cache.set("clusters:allclusterdetails", clusterlist, 180)
         return HttpResponse(json.dumps(clusterlist), mimetype='application/json')
     else:
-        return HttpResponse(
+        return HttpResponseForbidden(
             json.dumps({'error': "Unauthorized access"}),
             mimetype='application/json'
         )

@@ -27,7 +27,7 @@ urlpatterns = patterns(
     url(r'^jnodes/(?P<cluster>[^/]+)/$', views.clusternodes_json, name="cluster-nodes-json"),
     url(r'^jnodes/$', views.clusternodes_json, name="cluster-nodes-json"),
     url(r'^instance/destreinst/(?P<application_hash>\w+)/(?P<action_id>\d+)/$', views.reinstalldestreview, name='reinstall-destroy-review'),
-    url(r'^detail/?$', views.clusterdetails, name="clusterdetails"),
-    url(r'^detail/json/?$', views.clusterdetails_json, name="clusterdetails_json"),
+    url(r'^detail/$', views.clusterdetails, name="clusterdetails"),
+    url(r'^detail/json/$', views.clusterdetails_json, name="clusterdetails_json"),
 
 )
