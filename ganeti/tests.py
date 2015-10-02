@@ -135,3 +135,51 @@ class ClusterTestCase(TestCase):
         self.login_superuser()
         res = self.client.get(reverse('clusterdetails_json'))
         self.assertEqual(res.status_code, 200)
+
+
+class GraphsTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user_username = 'ganetitest'
+        self.user_password = 'ganetitest'
+        self.superuser_username = 'ganetitestadmin'
+        self.superuser_password = 'ganetitestadmin'
+        self.user = User.objects.create_user(self.user_username, 'test@test.com', self.user_password)
+        self.superuser = User.objects.create_user(self.superuser_username, 'test@test.com', self.superuser_password)
+        self.superuser.is_staff = True
+        self.superuser.is_superuser = True
+        self.superuser.save()
+        self.cluster = Cluster.objects.create(
+            hostname='test.example.com',
+            slug='test'
+        )
+
+    def login_user(self):
+        return self.client.login(username=self.user_username, password=self.user_password)
+
+    def login_superuser(self):
+        return self.client.login(username=self.superuser_username, password=self.superuser_password)
+
+    def test_graphs(self):
+        # should get a redirect to the login page
+        res = self.client.get(reverse('cluster-get-nodes-graphs'))
+        self.assertEqual(res.status_code, 302)
+
+        # should get a 403
+        self.login_user()
+        res = self.client.get(reverse('cluster-get-nodes-graphs'))
+        self.assertEqual(res.status_code, 403)
+
+        # should get a 200
+        self.login_superuser()
+        res = self.client.get(reverse('cluster-get-nodes-graphs'))
+        self.assertEqual(res.status_code, 200)
+
+        # try to give cluster slug
+        res = self.client.get(reverse('cluster-get-nodes-graphs', kwargs={'cluster_slug': self.cluster.slug}))
+        self.assertEqual(res.status_code, 200)
+
+        # try to give a non-existent cluster slug
+        res = self.client.get(reverse('cluster-get-nodes-graphs', kwargs={'cluster_slug': 'test'}))
+        self.assertEqual(res.status_code, 404)
+
