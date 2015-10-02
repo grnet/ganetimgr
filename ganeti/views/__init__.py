@@ -32,7 +32,11 @@ from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.shortcuts import render
 from ganeti.forms import tagsForm
-
+from django.http import (
+    HttpResponse,
+    Http404
+)
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.messages import constants as msgs
 
 MESSAGE_TAGS = {
@@ -85,8 +89,11 @@ def tagInstance(request, instance):
     '''
     Set a new instance tag, or delete a tag.
     '''
-    # get instance
-    instance = Instance.objects.get(name=instance)
+    try:
+        # get instance
+        instance = Instance.objects.get(name=instance)
+    except ObjectDoesNotExist:
+        raise Http404()
     # get cluster
     cluster = instance.cluster
     # get cache key

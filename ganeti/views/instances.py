@@ -25,11 +25,12 @@ from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.conf import settings
 from django.db import close_connection
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.core.exceptions import ObjectDoesNotExist
 
 from auditlog.utils import auditlog_entry
 
@@ -651,7 +652,10 @@ def lock(request, instance):
         request.user.has_perm('ganeti.view_instances')
     ):
         if instance:
-            instance = Instance.objects.get(name=instance)
+            try:
+                instance = Instance.objects.get(name=instance)
+            except ObjectDoesNotExist:
+                raise Http404()
         instance_adminlock = instance.adminlock
         if request.method == 'POST':
             form = lockForm(request.POST)
@@ -715,7 +719,10 @@ def isolate(request, instance):
         request.user.has_perm('ganeti.view_instances')
     ):
         if instance:
-            instance = Instance.objects.get(name=instance)
+            try:
+                instance = Instance.objects.get(name=instance)
+            except ObjectDoesNotExist:
+                raise Http404
         instance_isolate = instance.isolate
         if request.method == 'POST':
             form = isolateForm(request.POST)
