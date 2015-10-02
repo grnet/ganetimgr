@@ -26,6 +26,7 @@ from django.db import close_connection
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
+from django.utils.translation import ugettext_lazy as _
 
 from util.client import GanetiApiError
 from ganeti.models import Cluster
@@ -43,7 +44,14 @@ def job_details(request):
             if not cluster_slug or not jobid:
                 raise Http404
             cluster = get_object_or_404(Cluster, slug=cluster_slug)
-            job = cluster.get_job(jobid)
+            try:
+                job = cluster.get_job(jobid)
+            except Exception as e:
+                try:
+                    error = tuple(x for x in e.message[1:-1].split(","))[1]
+                except:
+                    error = _('Could not connect to api')
+                return HttpResponse(error.replace('"', ''))
         return render_to_response(
             'jobs/job_details.html',
             {
