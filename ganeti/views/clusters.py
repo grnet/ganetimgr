@@ -26,11 +26,11 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import close_connection
+from django.core.exceptions import PermissionDenied
 from django.http import (
     HttpResponse,
     HttpResponseRedirect,
     HttpResponseServerError,
-    HttpResponseForbidden,
     Http404
 )
 from django.shortcuts import get_object_or_404, render
@@ -111,10 +111,7 @@ def clusternodes_json(request, cluster=None):
         res = jresp
         return HttpResponse(json.dumps(res), mimetype='application/json')
     else:
-        return HttpResponseForbidden(
-            json.dumps({'error': 'Unauthorized access'}),
-            mimetype='application/json'
-        )
+        raise PermissionDenied
 
 
 @login_required
@@ -352,8 +349,4 @@ def clusterdetails_json(request):
             cache.set("clusters:allclusterdetails", clusterlist, 180)
         return HttpResponse(json.dumps(clusterlist), mimetype='application/json')
     else:
-        return HttpResponseForbidden(
-            json.dumps({'error': "Unauthorized access"}),
-            mimetype='application/json'
-        )
-
+        raise PermissionDenied
