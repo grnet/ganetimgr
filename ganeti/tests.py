@@ -4,7 +4,17 @@ from django.contrib.auth.models import User
 from ganeti.models import Cluster
 
 
-class ClusterTestCase(TestCase):
+class LoginTestCase(TestCase):
+    # inject these two functions
+    def login_user(self):
+        return self.client.login(username=self.user_username, password=self.user_password)
+
+    def login_superuser(self):
+        return self.client.login(username=self.superuser_username, password=self.superuser_password)
+
+
+class ClusterTestCase(LoginTestCase):
+
     def setUp(self):
         self.client = Client()
         self.user_username = 'ganetitest'
@@ -21,12 +31,6 @@ class ClusterTestCase(TestCase):
             slug='test'
         )
 
-    def login_user(self):
-        return self.client.login(username=self.user_username, password=self.user_password)
-
-    def login_superuser(self):
-        return self.client.login(username=self.superuser_username, password=self.superuser_password)
-
     def test_jobdetails(self):
         # should get a redirect to the login page
         res = self.client.get(reverse('jobdets-popup'))
@@ -35,7 +39,7 @@ class ClusterTestCase(TestCase):
         # should get a redirect to the instances page
         self.login_user()
         res = self.client.get(reverse('jobdets-popup'))
-        self.assertRedirects(res, '/')
+        self.assertEqual(res.status_code, 302)
 
         # should get a 404 because of no get params
         self.login_superuser()
@@ -65,7 +69,8 @@ class ClusterTestCase(TestCase):
         # should get a redirect to the instances page
         self.login_user()
         res = self.client.get(reverse('instance-popup'))
-        self.assertRedirects(res, '/')
+        self.assertEqual(res.status_code, 302)
+
 
         # should get a 404 because of no get params
         self.login_superuser()
@@ -84,7 +89,7 @@ class ClusterTestCase(TestCase):
         # should get a redirect to the instances page
         self.login_user()
         res = self.client.get(reverse('cluster-nodes'))
-        self.assertRedirects(res, '/')
+        self.assertEqual(res.status_code, 302)
 
         # should get a 200
         self.login_superuser()
@@ -114,7 +119,7 @@ class ClusterTestCase(TestCase):
         # should get a redirect to the instances page
         self.login_user()
         res = self.client.get(reverse('clusterdetails'))
-        self.assertRedirects(res, '/')
+        self.assertEqual(res.status_code, 302)
 
         # should get a 200
         self.login_superuser()
@@ -137,7 +142,7 @@ class ClusterTestCase(TestCase):
         self.assertEqual(res.status_code, 200)
 
 
-class GraphsTestCase(TestCase):
+class GraphsTestCase(LoginTestCase):
     def setUp(self):
         self.client = Client()
         self.user_username = 'ganetitest'
@@ -180,6 +185,103 @@ class GraphsTestCase(TestCase):
         self.assertEqual(res.status_code, 200)
 
         # try to give a non-existent cluster slug
-        res = self.client.get(reverse('cluster-get-nodes-graphs', kwargs={'cluster_slug': 'test'}))
+        res = self.client.get(reverse('cluster-get-nodes-graphs', kwargs={'cluster_slug': 'nonexistenttest'}))
         self.assertEqual(res.status_code, 404)
 
+
+class InstancesTestCase(LoginTestCase):
+    # the tests we can do here are really limited because this part
+    # of the app is heavilly dependent in the ganeti rapi. We can
+    # just make sure that we get the proper error messages
+    def setUp(self):
+        self.client = Client()
+        self.user_username = 'ganetitest'
+        self.user_password = 'ganetitest'
+        self.superuser_username = 'ganetitestadmin'
+        self.superuser_password = 'ganetitestadmin'
+        self.user = User.objects.create_user(self.user_username, 'test@test.com', self.user_password)
+        self.superuser = User.objects.create_user(self.superuser_username, 'test@test.com', self.superuser_password)
+        self.superuser.is_staff = True
+        self.superuser.is_superuser = True
+        self.superuser.save()
+        self.cluster = Cluster.objects.create(
+            hostname='test.example.com',
+            slug='test'
+        )
+
+    def test_tags(self):
+        # should get a redirect to the login page
+        res = self.client.get(reverse('instance-tags', kwargs={'instance': 'test.test.test'}))
+        self.assertEqual(res.status_code, 302)
+
+        # should get a 404
+        self.login_user()
+        res = self.client.get(reverse('instance-tags', kwargs={'instance': 'test.test.test'}))
+        self.assertEqual(res.status_code, 404)
+
+        # should get a 404
+        self.login_superuser()
+        res = self.client.get(reverse('instance-tags', kwargs={'instance': 'test.test.test'}))
+        self.assertEqual(res.status_code, 404)
+
+    def test_instances_json(self):
+        # should get a redirect to the login page
+        res = self.client.get(reverse('user-instances-json'))
+        self.assertEqual(res.status_code, 302)
+
+        # should get a redirect to the login page
+        self.login_user()
+        res = self.client.get(reverse('user-instances-json'))
+        self.assertEqual(res.status_code, 200)
+
+        # should get a redirect to the login page
+        self.login_superuser()
+        res = self.client.get(reverse('user-instances-json'))
+        self.assertEqual(res.status_code, 200)
+
+    def test_stats_json(self):
+        # should get a redirect to the login page
+        res = self.client.get(reverse('user-stats-json'))
+        self.assertEqual(res.status_code, 302)
+
+        # should get a redirect to the login page
+        self.login_user()
+        res = self.client.get(reverse('user-stats-json'))
+        self.assertEqual(res.status_code, 200)
+
+        # should get a redirect to the login page
+        self.login_superuser()
+        res = self.client.get(reverse('user-stats-json'))
+        self.assertEqual(res.status_code, 200)
+
+    def test_lock(self):
+        # should get a redirect to the login page
+        res = self.client.get(reverse('lock', kwargs={'instance': 'test'}))
+        self.assertEqual(res.status_code, 302)
+
+        # should get a redirect instances
+        self.login_user()
+        res = self.client.get(reverse('lock', kwargs={'instance': 'test'}))
+        self.assertEqual(res.status_code, 302)
+
+        # should raise 404 for superuser
+        # because instance does not exist
+        self.login_superuser()
+        res = self.client.get(reverse('lock', kwargs={'instance': 'test'}))
+        self.assertEqual(res.status_code, 404)
+
+    def test_isolate(self):
+        # should get a redirect to the login page
+        res = self.client.get(reverse('isolate', kwargs={'instance': 'test'}))
+        self.assertEqual(res.status_code, 302)
+
+        # should get a redirect instances
+        self.login_user()
+        res = self.client.get(reverse('isolate', kwargs={'instance': 'test'}))
+        self.assertEqual(res.status_code, 302)
+
+        # should raise 404 for superuser
+        # because instance does not exist
+        self.login_superuser()
+        res = self.client.get(reverse('isolate', kwargs={'instance': 'test'}))
+        self.assertEqual(res.status_code, 404)
