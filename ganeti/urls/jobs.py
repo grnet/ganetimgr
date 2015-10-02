@@ -20,6 +20,6 @@ from ganeti import views
 
 urlpatterns = patterns(
     '',
-    url(r'^json/?$', views.jobs_index_json, name="jobs_json"),
+    url(r'^json/$', views.jobs_index_json, name="jobs_json"),
     url(r'^$', views.jobs, name="jobs"),
 )
