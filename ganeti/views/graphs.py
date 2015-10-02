@@ -21,7 +21,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from ganeti.decorators import check_instance_auth
 from ganeti.forms import GraphForm
@@ -105,7 +105,7 @@ def cluster_nodes_graphs(request, cluster_slug=None):
                 )
 
         elif cluster_slug:
-            cluster = Cluster.objects.get(slug=cluster_slug)
+            cluster = get_object_or_404(Cluster, slug=cluster_slug)
             initial_data = {}
             if cluster:
                 initial_data.update({'cluster': cluster})
