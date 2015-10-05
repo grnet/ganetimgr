@@ -25,7 +25,7 @@ from django.contrib.auth.models import User, Group
 from django.core.cache import cache
 from django.db import close_connection
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 
 from ganeti.models import Cluster
@@ -139,7 +139,7 @@ def stats_ajax_vms_per_cluster(request, cluster_slug):
         cluster_slug)
     )
     if cluster_dict is None:
-        cluster = Cluster.objects.get(slug=cluster_slug)
+        cluster = get_object_or_404(Cluster, slug=cluster_slug)
         cluster_dict = {}
         cluster_dict['name'] = cluster.slug
         cluster_dict['instances'] = {'up': 0, 'down': 0}
