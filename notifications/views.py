@@ -18,14 +18,14 @@
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
 from notifications.forms import *
 from ganeti.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import json
-
+from django.core.exceptions import PermissionDenied
 from gevent.pool import Pool
 
 from util.client import GanetiApiError
@@ -39,7 +39,10 @@ from notifications.models import NotificationArchive
 def notify(request, instance=None):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         if instance:
-            instance = Instance.objects.get(name=instance)
+            try:
+                instance = Instance.objects.get(name=instance)
+            except ObjectDoesNotExist:
+                raise Http404
         users = []
         if request.method == 'POST':
             form = MessageForm(request.POST)
@@ -103,7 +106,7 @@ def notify(request, instance=None):
             }
         )
     else:
-        return HttpResponseRedirect(reverse('user-instances'))
+        raise PermissionDenied()
 
 
 @login_required
@@ -118,6 +121,7 @@ def archive(request, notification):
     else:
         return HttpResponseRedirect(reverse('user-instances'))
 
+
 @login_required
 def get_user_group_list(request):
     if (
@@ -126,6 +130,8 @@ def get_user_group_list(request):
     ):
         q_params = request.GET.get('q')
         type_of_search = request.GET.get('type')
+        if not (q_params or type_of_search):
+            return HttpResponseBadRequest()
         p = Pool(20)
         bad_clusters = []
 
@@ -205,7 +211,4 @@ def get_user_group_list(request):
         action = ret_list
         return HttpResponse(json.dumps(action), mimetype='application/json')
     else:
-        action = {
-            'error': "Permissions' violation. This action has been logged and our admins will be notified about it"
-        }
-        return HttpResponse(json.dumps(action), mimetype='application/json')
+        raise PermissionDenied()
