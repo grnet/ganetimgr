@@ -21,11 +21,11 @@ from ganeti import views
 
 urlpatterns = patterns(
     '',
-    url(r'^tags/(?P<instance>[^/]+)/$', views.tagInstance, name="instance-tags"),
+    url(r'^tags/(?P<instance>[^/]+)?$', views.tagInstance, name="instance-tags"),
     url(r'^json/$', views.user_index_json, name="user-instances-json"),
     url(r'^stats/json/$', views.user_sum_stats, name="user-stats-json"),
-    url(r'^lock/(?P<instance>[^/]+)/$', views.lock, name="lock"),
-    url(r'^isolate/(?P<instance>[^/]+)/$', views.isolate, name="isolate"),
+    url(r'^lock/(?P<instance>[^/]+)?$', views.lock, name="lock"),
+    url(r'^isolate/(?P<instance>[^/]+)?$', views.isolate, name="isolate"),
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/poll/?$', views.poll, name="instance-poll"),
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/vnc/?$', views.vnc, name="instance-vnc"),
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/novnc/?$', views.novnc, name="instance-novnc"),
