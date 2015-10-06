@@ -260,10 +260,10 @@ def review_application(request, application_id=None):
             form.fields['vgs'].choices.append(('test', 'test'))
         else:
             if not form.data.get('reject'):
-                form.fields['node_group'] = forms.ChoiceField(choices=form_ngs)
-                form.fields['netw'] = forms.ChoiceField(choices=form_netw)
-                form.fields['vgs'] = forms.ChoiceField(choices=form_vgs)
-                form.fields['disk_template'] = forms.ChoiceField(choices=form_dt)
+                form.fields['node_group'] = forms.ChoiceField(choices=form_ngs, label="Node Group")
+                form.fields['netw'] = forms.ChoiceField(choices=form_netw, label="Network")
+                form.fields['vgs'] = forms.ChoiceField(choices=form_vgs, label="Volume Groups",)
+                form.fields['disk_template'] = forms.ChoiceField(choices=form_dt, label="Disk Template",)
         if form.is_valid():
             application = form.save(commit=False)
             # if the instance does not exist yet
