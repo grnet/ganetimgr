@@ -214,12 +214,12 @@ BRANDING = {
         "SOCIAL_NETWORKS": [
             {
                 "URL": "https://facebook.com/",
-                "FONT_AWSOME_NAME": "fa-facebook",
+                "FONT_AWESOME_NAME": "fa-facebook",
                 "FONT_COLOR": "#3b5998"
             },
             {
                 "URL": "https://twitter.com/",
-                "FONT_AWSOME_NAME": "fa-twitter",
+                "FONT_AWESOME_NAME": "fa-twitter",
                 "FONT_COLOR": "#00acee"
             }
         ]
