@@ -19,7 +19,8 @@ class AccountsTestCase(TestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_login_url(self):
-        res = self.client.get(settings.LOGIN_URL)
+        res = self.client.get(settings.LOGIN_URL, follow=True)
+
         self.assertEqual(res.status_code, 200)
 
     def test_activate_url(self):
