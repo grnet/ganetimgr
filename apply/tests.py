@@ -8,6 +8,7 @@ from apply.models import (
     SshPublicKey,
     Organization
 )
+from apply.forms import InstanceApplicationReviewForm
 from ganeti.models import Cluster
 
 
@@ -66,7 +67,7 @@ class ApplicationTestCase(TestCase):
         self.assertEqual(res.status_code, 400)
 
         res = self.client.get(reverse('cluster_ng_stack'), {'cluster_id': 1})
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 404)
 
     def send_application_review(self, data, application):
         # accept instance
@@ -99,7 +100,6 @@ class ApplicationTestCase(TestCase):
             'admin_contact_name': 'asd',
             'admin_contact_email': 'asd@sad.ad',
             'admin_contact_phone': '12123489',
-
         }
         res = self.client.post(reverse('apply'), data)
         # redirect means form is valid
