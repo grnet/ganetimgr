@@ -109,7 +109,7 @@
 
 
 	$( "#destroyapplybutton" )
-	.click(function() {
+	.one('click', function() {
 		$(this).html('Sending Email...');
 		clearTimeout(polltimer);
 		$.ajax({
