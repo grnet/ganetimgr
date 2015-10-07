@@ -73,6 +73,7 @@ def clear_cache(request):
             "len*",
             "locked_instances",
             "*list",
+            "operating_systems",
         ]
         for key in keys_pattern:
             if key in cache:
