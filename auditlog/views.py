@@ -20,26 +20,51 @@ import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
-from django.template.context import RequestContext
-
+from django.conf import settings
 from auditlog.models import AuditEntry
 
 
 @login_required
 def auditlog(request):
-    return render_to_response('auditlog/auditlog.html',
-                              context_instance=RequestContext(request))
+    '''
+    In case "AUDIT_ENTRIES_LAST_X_DAYS" is set in settings.py
+    we have to pass it to the template in order to show a warning to
+    superusers.
+    '''
+    context = {}
+    if (
+        hasattr(settings, 'AUDIT_ENTRIES_LAST_X_DAYS')
+        and settings.AUDIT_ENTRIES_LAST_X_DAYS > 0
+        and request.user.is_superuser
+    ):
+            context['days'] = settings.AUDIT_ENTRIES_LAST_X_DAYS
+    return render(request, 'auditlog/auditlog.html', context)
 
 
 @login_required
 def auditlog_json(request):
+    '''
+    Shows all the audit entries of the current user or of all
+    users in case we are the superuser. There are limits depending on the
+    usage of the service and the time it has been up, so there is an extra
+    setting "AUDIT_ENTRIES_LAST_X_DAYS" which limits the results (only for
+    the superusers).
+    '''
+    # age of the log entries that will be shown. We have to store it in order
+    # to show it in the template
+    days = None
     if (
         request.user.is_superuser or
         request.user.has_perm('ganeti.view_instances')
     ):
-        al = AuditEntry.objects.filter(last_updated__gte=datetime.datetime.now() - datetime.timedelta(days=10))
+        days = 0
+        al = AuditEntry.objects.all()
+        if hasattr(settings, 'AUDIT_ENTRIES_LAST_X_DAYS'):
+            days = settings.AUDIT_ENTRIES_LAST_X_DAYS
+        if days > 0:
+            al = al.filter(last_updated__gte=datetime.datetime.now() - datetime.timedelta(days=days))
     else:
         al = AuditEntry.objects.filter(requester=request.user)
     entries = []
@@ -66,7 +91,7 @@ def auditlog_json(request):
                 "instance-detail",
                 kwargs={
                     'cluster_slug': entry.cluster,
-                    'instance': entry.instance
+                    'instance': entry.instance,
                 }
             )
         )

@@ -2,7 +2,7 @@
 Installation Instructions
 =========================
 
-We test (and use) ganetimgr on the latest stable version of Debian. We also prefer using the Debian packages for Django and any python dependencies instead of using pip and virtualenv. That way we don't have to worry about any of the upstream projects breaking anything and we have quicker/easier security updates. 
+We test (and use) ganetimgr on the latest stable version of Debian. We also prefer using the Debian packages for Django and any python dependencies instead of using pip and virtualenv. That way we don't have to worry about any of the upstream projects breaking anything and we have quicker/easier security updates.
 
 This guide documents how to install ganetimgr with the following software:
 
@@ -86,6 +86,7 @@ Below are explanations for most of the settings:
 - ``SHOW_ADMINISTRATIVE_FORM`` toggles the admin info panel for the instance application form.
 - ``SHOW_ORGANIZATION_FORM`` does the same for the Organization dropdown menu.
 - You can use use an analytics service (Piwik, Google Analytics) by editing ``templates/analytics.html`` and adding the JS code that is generated for you by the service. This is souruced from all the project's pages.
+- ``AUDIT_ENTRIES_LAST_X_DAYS`` (not required, default is None) determines if an audit entry will be shown depending on the date it was created. It's only applied for the admin and is used in order to prevent ganetimgr from beeing slow. '0' is forever.
 
 External Services
 ^^^^^^^^^^^^^^^^^

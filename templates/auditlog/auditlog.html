@@ -37,6 +37,9 @@
     <div class="row-fluid">
         <div class="row-fluid">
             <h2>{% if user.is_superuser or perms.ganeti.view_instances %}{% trans "Audit Log" %}{% else %}{% trans "History" %}{% endif %}</h2>
+            {% if request.user.is_superuser and days %}
+            <span class="label label-warning">{% trans "Showing results for the last" %} {{ days }} {% trans "days." %}</span>
+            {% endif %}
             <table class="table table-first-column-number data-table display full visoverflow" id="auditlog_table">
                 <thead>
                     <tr>

@@ -281,6 +281,18 @@ RECAPTCHA_USE_SSL = True
 # eg.  GANETI_TAG_PREFIX = "vmservice"
 GANETI_TAG_PREFIX = "ganetimgr"
 
+#########################
+#                       #
+#      Auditlog         #
+#                       #
+#########################
+
+# this option sets the amount of days old an audit entry has to be
+# in order to be shown in audit log page
+# '0' means show all entries
+
+AUDIT_ENTRIES_LAST_X_DAYS = 10
+
 
 # Instance specific django config.
 ADMINS = (
