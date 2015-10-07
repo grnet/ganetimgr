@@ -409,7 +409,7 @@ def discover_available_operating_systems():
                                                 'img_format': img_format,
                                             }
                                         }
-                                     })
+                                    })
         return operating_systems
     else:
         return {}
@@ -435,11 +435,7 @@ def operating_systems():
             if os[0] == 'none':
                 operating_systems.remove(os)
                 operating_systems.insert(0, os)
-        if discovery:
-            status = 'success'
-        else:
-            status = 'success'
-        response = json.dumps({'status': status, 'operating_systems': operating_systems})
+        response = json.dumps({'status': 'success', 'operating_systems': operating_systems})
         # add results to cache for one day
         cache.set('operating_systems', response, timeout=86400)
     return response

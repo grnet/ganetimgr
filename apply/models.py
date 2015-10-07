@@ -25,6 +25,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ImproperlyConfigured
+from django.http import HttpResponseBadRequest
 from ganetimgr.settings import GANETI_TAG_PREFIX
 
 try:
@@ -198,7 +200,13 @@ class InstanceApplication(models.Model):
         if self.operating_system == 'noop':
             sel_os = "none"
         os = op_systems_dict.get(sel_os)
-        provider = os["provider"]
+        # Os shoul have been found. There are two cases that could cause
+        # Ganetimgr is not configured properly (500 ImproperlyConfigured)
+        if os is None:
+            raise ImproperlyConfigured(
+                'OPERATING_SYSTEMS is not configured properly (key must be same as img_id)'
+            )
+        provider = os.get('provider')
         osparams = {}
 
         if "osparams" in os:
