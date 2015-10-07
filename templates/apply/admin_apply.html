@@ -324,7 +324,7 @@
                         } else {
                             parsed_groups.push(selected_ng.networks[i].type);
                             selnet.append($('<optgroup id="gr_'+selected_ng.networks[i].type+'" label="'+selected_ng.networks[i].type.capitalize()+'"></optgroup>'));
-                            selgroup = $('#gr_'+selected_ng.networks[i].type+'');
+                            selgroup = $('#gr_'+selected_ng.networks[i].type);
                         }
                         selecttext = '';
                         if (selgroup.attr('id') === 'gr_routed') {
@@ -333,7 +333,7 @@
                             }
                         }
                         var option = '<option ';
-                            if (selected_ng.networks[i].free_count < 1) {
+                            if (selected_ng.networks[i].free_count < 1 && !(selected_ng.networks[i].free_count==null)) {
                                 option += 'disabled=disabled';
                             }
                             option += 'data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
