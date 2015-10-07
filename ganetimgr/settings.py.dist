@@ -245,12 +245,25 @@ FLATPAGES = {
     "TOS": True,
     "FAQ": True,
 }
-
-RAPI_CONNECT_TIMEOUT = 8
-RAPI_RESPONSE_TIMEOUT = 15
+# Get a recaptcha key
+RECAPTCHA_PUBLIC_KEY = ''
+RECAPTCHA_PRIVATE_KEY = ''
+RECAPTCHA_USE_SSL = True
 
 MARKDOWN_EDITOR_SKIN = 'simple'
 
+
+#########################
+#                       #
+#       Ganeti          #
+#                       #
+#########################
+# Select your ganetimgr prefix. This is applied in the tags
+# of the instances. You could leave it as it is or set your own,
+# eg.  GANETI_TAG_PREFIX = "vmservice"
+GANETI_TAG_PREFIX = "ganetimgr"
+RAPI_CONNECT_TIMEOUT = 8
+RAPI_RESPONSE_TIMEOUT = 15
 # List of operating system images you provide...
 OPERATING_SYSTEMS = {
     "none": {
@@ -269,17 +282,6 @@ OPERATING_SYSTEMS_URLS = ['http://example.com/images']
 # We assume that they have the same configuration
 OPERATING_SYSTEMS_PROVIDER = 'image+default'
 OPERATING_SYSTEMS_SSH_KEY_PARAM = 'img_ssh_key_url'
-
-
-# Get a recaptcha key
-RECAPTCHA_PUBLIC_KEY = ''
-RECAPTCHA_PRIVATE_KEY = ''
-RECAPTCHA_USE_SSL = True
-
-# Select your ganetimgr prefix. This is applied in the tags
-# of the instances. You could leave it as it is or set your own,
-# eg.  GANETI_TAG_PREFIX = "vmservice"
-GANETI_TAG_PREFIX = "ganetimgr"
 
 #########################
 #                       #
