@@ -264,27 +264,29 @@
     </div>
     <footer>
         <div class="container" id="footcontainer">
-        {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
-            {% trans "This is a service provided by" %}
-                {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
-                    <a target="_blank" href="//noc.grnet.gr">
-                {% endif %}
-                {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
-                    {{ BRANDING.SERVICE_PROVIDED_BY.NAME}}
-                {% endif %}
-                {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
-                    </a>
-                {% endif %}
-        {% endif %}|
-        {% if BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
-            {% for sn in BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
-            <a target="_blank" href="{{sn.URL}}">
-                <font style="color:{{sn.FONT_COLOR|safe}};">
-                    <i class="fa {{ sn.FONT_AWESOME_NAME }}"></i>
-                </font>
-            </a>
-            {% endfor %}
-        {% endif %}|
+        {% if BRANDING %}
+            {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
+                {% trans "This is a service provided by" %}
+                    {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
+                        <a target="_blank" href="//noc.grnet.gr">
+                    {% endif %}
+                    {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
+                        {{ BRANDING.SERVICE_PROVIDED_BY.NAME}}
+                    {% endif %}
+                    {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
+                        </a>
+                    {% endif %}
+            {% endif %}|
+            {% if BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
+                {% for sn in BRANDING.SERVICE_PROVIDED_BY.SOCIAL_NETWORKS %}
+                <a target="_blank" href="{{sn.URL}}">
+                    <font style="color:{{sn.FONT_COLOR|safe}};">
+                        <i class="fa {{ sn.FONT_AWESOME_NAME }}"></i>
+                    </font>
+                </a>
+                {% endfor %}
+            {% endif %}|
+        {% endif %}
         {% if FLATPAGES.INFO or FLATPAGES.TOS %}
         {% if FLATPAGES.INFO %}
             <a href="/about/info/{{ LANGUAGE_CODE }}">

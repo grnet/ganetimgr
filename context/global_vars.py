@@ -19,14 +19,16 @@ from django.conf import settings
 
 
 def settings_vars(context):
-    # return the value you want as a dictionnary. you may add multiple values in there.
+    # return the value you want as a dictionary. you may add multiple
+    # values in there. Also check if these values exist in settings.py
+
     return {
-        'HELPDESK_INTEGRATION_JAVASCRIPT_URL': settings.HELPDESK_INTEGRATION_JAVASCRIPT_URL,
-        'HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS': settings.HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS,
-        'VERSION': settings.SW_VERSION,
-        'FEED_URL': settings.FEED_URL,
-        'WEBSOCK_VNC_ENABLED': settings.WEBSOCK_VNC_ENABLED,
-        'BRANDING': settings.BRANDING,
-        'FLATPAGES': settings.FLATPAGES,
-        'COLLECTD_URL': settings.COLLECTD_URL
+        'HELPDESK_INTEGRATION_JAVASCRIPT_URL': settings.HELPDESK_INTEGRATION_JAVASCRIPT_URL if hasattr(settings, 'HELPDESK_INTEGRATION_JAVASCRIPT_URL') else '',
+        'HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS': settings.HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS if hasattr(settings, 'HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS') else '',
+        'VERSION': settings.SW_VERSION if hasattr(settings, 'SW_VERSION') else '',
+        'FEED_URL': settings.FEED_URL if hasattr(settings, 'FEED_URL') else '',
+        'WEBSOCK_VNC_ENABLED': settings.WEBSOCK_VNC_ENABLED if hasattr(settings, 'WEBSOCK_VNC_ENABLED') else '',
+        'BRANDING': settings.BRANDING if hasattr(settings, 'BRANDING') else '',
+        'FLATPAGES': settings.FLATPAGES if hasattr(settings, 'FLATPAGES') else '',
+        'COLLECTD_URL': settings.COLLECTD_URL if hasattr(settings, 'COLLECTD_URL') else ''
     }
