@@ -19,11 +19,24 @@ from django.contrib import admin
 from models import Cluster, Network, InstanceAction
 
 
+def enable(modeladmin, request, queryset):
+    queryset.update(disabled=False)
+enable.short_description = "Enable clusters"
+
+
+def disable(modeladmin, request, queryset):
+    queryset.update(disabled=True)
+
+disable.short_description = "Disable clusters"
+
+
 class ClusterAdmin(admin.ModelAdmin):
     list_display = ('hostname', 'description', 'disabled')
     list_editable = ('disabled',)
     prepopulated_fields = {'slug': ('hostname',)}
     exclude = ('fast_create', 'use_gnt_network')
+    actions = [enable, disable]
+    search_fields = ('hostname', 'slug', 'description')
 
 
 class NetworkAdmin(admin.ModelAdmin):
