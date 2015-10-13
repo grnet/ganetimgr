@@ -211,6 +211,7 @@ hr {
   padding-bottom: 20px;
   border-left: 1px solid #cfcfd6;
   border-bottom: 1px solid #cfcfd6;
+  z-index: 10;
 }
 .content .actionbar.btn-toolbar {
   font-size: 1em;

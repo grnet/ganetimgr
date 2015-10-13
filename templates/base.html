@@ -104,9 +104,9 @@
                 <div class="navbar-inner">
                     <ul class="nav pull-right">
                     {% if user.is_authenticated %}
-                        <li class="hidden-phone">
-                            <a href="{% url profile %}" role="button">{% trans "My Profile" %}</a>
-                        </li>
+                        {% if request.user.is_superuser %}
+                        <li ><a href="#" id="clearcache"> <i class="fa fa-adjust"></i> {% trans "Clear Cache" %}</a></li>
+                        {% endif %}
                         {% if FLATPAGES.FAQ %}
                         <li class="hidden-phone">
                             <a href="/about/faq/{{ LANGUAGE_CODE }}">{% trans "FAQ" %}</a>
@@ -218,9 +218,6 @@
                 {% if FEED_URL %}
                 <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="fa fa-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
                 {% endif %}
-                {% if request.user.is_superuser %}
-                 <li ><a href="#" id="clearcache"> <i class="fa fa-adjust"></i> {% trans "Clear Cache" %}</a></li>
-                 {% endif %}
             </ul>
         </div>
         {% endif %}
