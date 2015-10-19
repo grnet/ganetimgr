@@ -87,6 +87,8 @@ Below are explanations for most of the settings:
 - ``SHOW_ORGANIZATION_FORM`` does the same for the Organization dropdown menu.
 - You can use use an analytics service (Piwik, Google Analytics) by editing ``templates/analytics.html`` and adding the JS code that is generated for you by the service. This is souruced from all the project's pages.
 - ``AUDIT_ENTRIES_LAST_X_DAYS`` (not required, default is None) determines if an audit entry will be shown depending on the date it was created. It's only applied for the admin and is used in order to prevent ganetimgr from beeing slow. '0' is forever.
+- ``GANETI_TAG_PREFIX`` (Default is 'ganetimgr') sets the prefix ganetimgr will use in order to handle tags in instances. eg in order to define an owner it sets 'ganeti_tag_prefix:users:testuser' as a tag in an instance owned by `testuser`, assuming the GANETI_TAG_PREFIX is equal to 'ganeti_tag_prefix'.
+
 
 External Services
 ^^^^^^^^^^^^^^^^^
