@@ -36,7 +36,7 @@ except ImportError:
 
 from util import beanstalkc
 from paramiko import RSAKey, DSSKey
-from paramiko.util import hexlify
+from binascii import hexlify
 
 from ganeti.fields.jsonfield import JSONField
 
