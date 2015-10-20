@@ -145,6 +145,18 @@ var needsrebootset = false;
 
 $(document).ready( function(){
 	$('.content').addClass('loading');
+
+	setTimeout(function () {
+		// check if still loading after a minute
+		if ($('.content').hasClass('loading')) {
+			$('.content').removeClass('loading').html('An error occured, reloading...');
+			setTimeout(function () {
+				// refresh
+				location.reload();
+			}, 3000);
+		}
+	}, 60000);
+
 	var oTable = $('#vm_instance_table').dataTable({
 		"bPaginate": true,
 		"bFilter": true,
