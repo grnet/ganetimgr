@@ -536,7 +536,7 @@ $.fn.dataTableExt.afnFiltering.push(
 	function showTags(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Instance Owners: '+instance);
-		$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"/");
+		$( "#instDetsbody" ).load("{% url instance-tags %}"+instance);
 		$( "#instDets" ).modal('show');
 		return false;
 	}
