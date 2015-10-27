@@ -21,6 +21,7 @@ from ganeti import views
 
 urlpatterns = patterns(
     '',
+    url(r'^list/$', views.list_user_instances, name='instances-list'),
     url(r'^tags/(?P<instance>[^/]+)?$', views.tagInstance, name="instance-tags"),
     url(r'^json/$', views.user_index_json, name="user-instances-json"),
     url(r'^stats/json/$', views.user_sum_stats, name="user-stats-json"),

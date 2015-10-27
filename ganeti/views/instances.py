@@ -25,12 +25,13 @@ from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.conf import settings
 from django.db import close_connection
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import authenticate
 
 from auditlog.utils import auditlog_entry
 
@@ -42,6 +43,7 @@ from ganeti.utils import (
     clear_cluster_user_cache,
     notifyuseradvancedactions,
     get_os_details,
+    get_user_instances,
 )
 
 from ganeti.forms import (
@@ -67,6 +69,26 @@ def user_index(request):
         'instances/user_instances_json.html',
         {}
     )
+
+
+@csrf_exempt
+def list_user_instances(request):
+    '''
+    This view a username and a password and
+    returns the user's instances,
+    if the credentials are valid.
+    '''
+    if request.method == 'POST':
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+
+        if username is not None and password is not None:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    response = get_user_instances(user)
+                    return HttpResponse(json.dumps(response))
+    return HttpResponseForbidden()
 
 
 @login_required

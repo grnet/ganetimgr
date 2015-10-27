@@ -28,6 +28,27 @@ def disksizes(value):
     return [filesizeformat(v * 1024 ** 2) for v in value]
 
 
+def get_user_instances(user):
+    '''
+    Return a list of users instances.
+    '''
+
+    instances = []
+    error = False
+
+    def _get_instances(cluster):
+        try:
+            instances.extend([i.name for i in cluster.get_user_instances(user)])
+        except (GanetiApiError, Exception):
+            error = True
+        finally:
+            close_connection()
+    p = Pool(20)
+    clusters = Cluster.objects.filter(disabled=False)
+    p.map(_get_instances, clusters)
+    return {'instances': instances, 'errors': error}
+
+
 def get_instance_data(instance, cluster, node=None):
     instance.cpu_url = reverse(
         'graph',
