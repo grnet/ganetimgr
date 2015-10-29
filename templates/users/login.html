@@ -72,7 +72,8 @@
 										<p  class="error" style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>
 									{% endif %}
 									<form method="POST" class="form" action="{% url login %}">
-									{% csrf_token %}
+										<input type="hidden" name="next" value="{{ next }}" />
+										{% csrf_token %}
 					                	<div class="control-group {% if form.username.errors %}error{% endif %}">
 					                   		<div class="controls">
 						                   	{% render_field form.username class+="input-xlarge" style+="width:95%;" placeholder=form.username.label|capfirst  %}

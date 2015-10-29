@@ -70,6 +70,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'middleware.UserMessages.UserMessageMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 )
 
 STATIC_URL = '/static/'
@@ -107,6 +108,8 @@ INSTALLED_APPS = (
     'notifications',
     'stats',
     'auditlog',
+    'oauth2_provider',
+    'corsheaders',
 )
 
 # Caching is a vital part of ganetimgr.
@@ -316,3 +319,15 @@ DATABASES = {
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = <CHANGE ME>
+
+
+# Oauth2 settings
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'read': 'Read scope',
+    },
+    'CLIENT_ID_GENERATOR_CLASS': 'oauth2_provider.generators.ClientIdGenerator',
+}
+
+CORS_ORIGIN_ALLOW_ALL = True

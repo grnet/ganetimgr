@@ -57,6 +57,8 @@ urlpatterns = patterns(
     # get a list of the available operating systems
     url(r'^markdown/', include('django_markdown.urls')),
     (r'^admin/', include(admin.site.urls)),
+    # oauth
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 )
 
 if settings.DEBUG:

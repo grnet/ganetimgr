@@ -49,3 +49,18 @@ Ganetimgr autodiscovers any network available through gnt-network on the cluster
 - Link is the name of the network device found on the cluster.
 - Mode is the network mode for the interface can be routed or bridged.
 - Groups ties the network to a specific user group. When a user from that group submits an application this network is autoselected.
+
+
+Using Oauth2
+------------
+We have integrated oauth2 support.
+For now the only api call which is working over oauth2 is /instances/list/, which fetches all the instances of the current user.
+
+Configuring oauth2
+------------------
+* Hit /o/applications and create a new one.
+* Create a new application with implicit authorization grant type
+* Set the redirect urls to the desired ones
+* by hitting /o/authorize?redirect_uri=<redirect_uri>&client_id=<client_id>&response_type=token&scope=read you get a response with the token.
+* by adding the access_token in the request to /instances/lists/?access_token=<token> you get a list of all the user instances.
+
