@@ -12,6 +12,7 @@ New Features:
 	- Admins can now create instances without having to review their own applications
 	- Email Notifications archive
 	- Disable choice for full networks in applications review
+    - Oauth2 for the list of the vms (optional, read the docs for more details)
 
 Fixes/Improvements:
 	- Improved cluster admin
