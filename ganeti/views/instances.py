@@ -32,7 +32,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
-from oauth2_provider.decorators import protected_resource
+
+if 'oauth2_provider' in settings.INSTALLED_APPS:
+    from oauth2_provider.decorators import protected_resource
 
 from auditlog.utils import auditlog_entry
 
@@ -72,16 +74,19 @@ def user_index(request):
     )
 
 
-@protected_resource()
-def list_user_instances(request):
-    '''
-    This view a username and a password and
-    returns the user's instances,
-    if the credentials are valid.
-    '''
-    response = get_user_instances(request.user)
-    return HttpResponse(json.dumps(response))
-
+if 'oauth2_provider' in settings.INSTALLED_APPS:
+    @protected_resource()
+    def list_user_instances(request):
+        '''
+        This view a username and a password and
+        returns the user's instances,
+        if the credentials are valid.
+        '''
+        response = get_user_instances(request.user)
+        return HttpResponse(json.dumps(response))
+else:
+    def list_user_instances(request):
+        raise NotImplementedError('Please install oauth2_toolkit. For more details take a look at admin section of the docs.')
 
 @login_required
 def user_index_json(request):

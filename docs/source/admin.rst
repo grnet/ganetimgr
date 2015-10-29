@@ -58,6 +58,18 @@ For now the only api call which is working over oauth2 is /instances/list/, whic
 
 Configuring oauth2
 ------------------
+In order to add oauth2 you have to install:
+
+* django-cors-headers==1.1.0
+* django-oauth-toolkit==0.5.0
+
+And insert in installed apps:
+
+* oauth2_provider
+* corsheaders
+
+Usage
+-----
 * Hit /o/applications and create a new one.
 * Create a new application with implicit authorization grant type
 * Set the redirect urls to the desired ones

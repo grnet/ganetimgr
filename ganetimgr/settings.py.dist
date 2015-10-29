@@ -321,13 +321,14 @@ DATABASES = {
 SECRET_KEY = <CHANGE ME>
 
 
-# Oauth2 settings
+# OAUTH2
+if 'oauth2_provider' in INSTALLED_APPS and 'corsheaders' in INSTALLED_APPS:
+    OAUTH2_PROVIDER = {
+        'SCOPES': {
+            'read': 'Read scope',
+        },
+        'CLIENT_ID_GENERATOR_CLASS': 'oauth2_provider.generators.ClientIdGenerator',
+    }
+    CORS_ORIGIN_ALLOW_ALL = True
+    MIDDLEWARE_CLASSES += ('corsheaders.middleware.CorsMiddleware',)
 
-OAUTH2_PROVIDER = {
-    'SCOPES': {
-        'read': 'Read scope',
-    },
-    'CLIENT_ID_GENERATOR_CLASS': 'oauth2_provider.generators.ClientIdGenerator',
-}
-
-CORS_ORIGIN_ALLOW_ALL = True
