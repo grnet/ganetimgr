@@ -17,9 +17,9 @@
 import re
 import random
 import sha
-import ipaddr
 import base64
 import os
+import ipaddr
 
 from datetime import datetime, timedelta
 from gevent.pool import Pool
@@ -55,9 +55,9 @@ RAPI_RESPONSE_TIMEOUT = settings.RAPI_RESPONSE_TIMEOUT
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
-try:
-    from ganetimgr.settings import BEANSTALK_TUBE
-except ImportError:
+if hasattr(settings, 'BEANSTALK_TUBE'):
+    BEANSTALK_TUBE = settings.BEANSTALK_TUBE
+else:
     BEANSTALK_TUBE = None
 
 from util import beanstalkc
@@ -97,7 +97,7 @@ class InstanceManager(object):
                 cluster = kwargs['cluster']
             else:
                 try:
-                    cluster = Cluster.object.get(slug=kwargs['cluster'])
+                    cluster = Cluster.objects.get(slug=kwargs['cluster'])
                 except:
                     return []
             try:
