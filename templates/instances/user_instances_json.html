@@ -176,6 +176,9 @@ $(document).ready( function(){
 			$('div.dataTables_filter label').append('<i class="fa fa-times clear"></i>');
 			$('div.dataTables_filter label').on('click', '.clear', function () {
 				oTable.fnFilter('');
+				$('.form-horizontal input').each(function () {
+					$(this).val('');
+				});
 			});
 			$('div.dataTables_filter input').focus();
 			$('.content').removeClass('loading');
