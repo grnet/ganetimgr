@@ -19,7 +19,7 @@
     <div class="row-fluid">
         <div class="row-fluid">
 			<h2><i class="fa fa-terminal"></i> {% trans "VNC session on" %} {{ instance }}</h2>
-			<applet archive="{% static 'javavnc/VncViewer.jar %}" code="VncViewer.class" width="99%" height="790px" align="middle">
+			<applet archive="{% static 'javavnc/VncViewer.jar' %}" code="VncViewer.class" width="99%" height="790px" align="middle">
 				<param name="PORT" value="{{ port }}">
 				<param name="PASSWORD" value="{{ password }}">
 				<!--
