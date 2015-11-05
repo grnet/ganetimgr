@@ -22,6 +22,6 @@ urlpatterns = patterns(
     '',
     url(r'^applications/?', views.stats_ajax_applications, name="stats_ajax_apps"),
     url(r'^instances/?', views.stats_ajax_instances, name="stats_ajax_instances"),
-    url(r'^vms_cluster/(?P<cluster_slug>\w+)/?', views.stats_ajax_vms_per_cluster, name="stats_ajax_vms_pc"),
+    url(r'^vms_cluster/(?P<cluster_slug>[^/]+)/?', views.stats_ajax_vms_per_cluster, name="stats_ajax_vms_pc"),
     url(r'^$', views.stats, name="stats"),
 )
