@@ -27,15 +27,6 @@
 </style>
 <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap-switch.css' %}">
 <script type="text/javascript">
-	$(document).ready( function(){
-		$('#usergroup_instance_table').dataTable({
-			"bJQueryUI": true,
-			"oLanguage": {
-				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select>'
-			},
-			"iDisplayLength": 25,
-		});
-	});
 
 	var status;
 	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
@@ -79,6 +70,15 @@
 	    }
 	});
 	$(document).ready( function(){
+		$('#usergroup_instance_table').dataTable({
+			"bJQueryUI": true,
+			"oLanguage": {
+				"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select>'
+			},
+			"iDisplayLength": 25,
+
+		});
+
 		var oTable = $('#vm_instance_table').dataTable( {
 			"bPaginate": false,
 		    "bFilter": true,
@@ -331,11 +331,6 @@
 							{% for group in usergroup.groups.all %}
 								<a class="btn" href="{% url user-info 'group' group %}"><i class="fa fa-group"></i> {{ group }}</a>
 							{% endfor %}
-						</td>
-						<td>
-						{% for group in instance.groups %}
-							<a class="btn" href="{% url user-info 'group' group %}"><i class="fa fa-group"></i>  {{ group }}</a>{% if not forloop.last %}, {% endif %}
-						{% endfor %}
 						</td>
 					</tr>
 				{% endifequal %}
