@@ -422,6 +422,11 @@
         });
 
         function cleanfields(){
+            $("#networkinfo").html('')
+            $("#id_node_group").html('')
+            $("#id_disk_template").html('')
+            $("#id_vgs").html('')
+            $("#id_netw").html('')
             $("#networkinfo").select2('data', null);
             $("#id_node_group").select2('data', null);
             $("#id_disk_template").select2('data', null);
@@ -610,14 +615,6 @@
 
 
     });
-
-    function cleanfields(){
-        $("#networkinfo").empty();
-        $("#id_node_group").empty();
-        $("#id_disk_template").empty();
-        $("#id_vgs").empty();
-        $("#id_netw").empty();
-    }
 
     function formatng(selection) {
         if (selection.disabled){
