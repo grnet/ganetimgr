@@ -33,6 +33,14 @@ Fixes/Improvements:
 Notes:
 	- There is a datamigration (accounts/migrations/0004_organizations.py) in this version that fills user's organization field (new), based on his last application.
 
+Upgrading from 1.5:
+
+	- Table ganeti_cluster.default_disk_template is deleted
+	- The following settings have been added:
+		- AUDIT_ENTRIES_LAST_X_DAYS (how many days should the auditlog show us)
+		- New BRANDING settings and new values ("LOGO": "/static/ganetimgr/img/logo.png", "FAVICON": "/static/ganetimgr/img/favicon.ico",)
+		- Changed NODATA_IMAGE = 'static/nodata.gif' value
+
 ===========
 
 
