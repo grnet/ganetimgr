@@ -294,22 +294,22 @@ $('body').on('change', '#clusterfilter', function(){
 		return false;
 	});
 
-var tid = setInterval(refreshJobs, 5000);
+var tid = setInterval(refreshJobs, 60000);
 function refreshJobs() {
-  oTable.fnReloadAjax(ajaxSource, function(data){
-	var statusObj = {};
-			statusObj.running = 0;
-			statusObj.error = 0;
-			statusObj.waiting = 0;
-			statusObj.success = 0;
-			for (var i=0; i<data.jqXHR.responseJSON.aaData.length; i++) {
-				jobitem = data.jqXHR.responseJSON.aaData[i];
-				statusObj[jobitem.status] = statusObj[jobitem.status] + 1;
-			}
-			$("#success_num").html(statusObj.success);
-			$("#error_num").html(statusObj.error);
-			$("#waiting_num").html(statusObj.waiting);
-			$("#running_num").html(statusObj.running);
+  	oTable.fnReloadAjax(ajaxSource, function(data){
+		var statusObj = {};
+		statusObj.running = 0;
+		statusObj.error = 0;
+		statusObj.waiting = 0;
+		statusObj.success = 0;
+		for (var i=0; i<data.jqXHR.responseJSON.aaData.length; i++) {
+			jobitem = data.jqXHR.responseJSON.aaData[i];
+			statusObj[jobitem.status] = statusObj[jobitem.status] + 1;
+		}
+		$("#success_num").html(statusObj.success);
+		$("#error_num").html(statusObj.error);
+		$("#waiting_num").html(statusObj.waiting);
+		$("#running_num").html(statusObj.running);
   });
 }
 
