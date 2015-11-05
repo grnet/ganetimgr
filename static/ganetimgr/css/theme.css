@@ -1880,11 +1880,11 @@ label.required { font-weight: bold; }
 .loading:after {
   display: block;
   content: "";
-  position: absolute;
+  position: fixed;
   background: white;
-  top: 0;
-  bottom: 0;
-  left: 0;
+  top: 45px;
+  bottom: 72px;
+  left: 200px;
   right: 0;
   opacity: 0.5;
   z-index: 10000;
