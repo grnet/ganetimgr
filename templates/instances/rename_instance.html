@@ -1,9 +1,9 @@
 {% load i18n %}
 {% load staticfiles %}
-<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js '%}"></script>
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
 <script>
 	$(document).ready(function() {
-		$("#renamebutton").click(function(){
+		$("#renamebutton").one('click', function(){
 			$(this).html('Sending Email...');
 			var instance = $("#instancetagsform").data('instance');
 			var cluster = $("#instancetagsform").data('cluster');
