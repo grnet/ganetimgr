@@ -254,7 +254,11 @@ def pass_notify(request):
     if user.email:
         email = render_to_string(
             "users/emails/pass_change_notify_mail.txt",
-            {"user": request.user}
+            {
+                "user": request.user,
+                "service_title": settings.BRANDING.get('TITLE'),
+                "provider": settings.BRANDING.get('SERVICE_PROVIDED_BY').get('NAME'),
+            }
         )
         send_mail(
             "%sUser password change" % (settings.EMAIL_SUBJECT_PREFIX),
