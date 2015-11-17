@@ -20,6 +20,7 @@ from gevent.pool import Pool
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.contrib.messages import constants as msgs
 from django.contrib import messages
@@ -31,22 +32,34 @@ from django.http import (
     HttpResponse,
     HttpResponseRedirect,
     HttpResponseServerError,
+    HttpResponseForbidden,
     Http404
 )
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import mail_managers
 
 from util.client import GanetiApiError
 
 from ganeti.utils import refresh_cluster_cache
 
 from auditlog.utils import auditlog_entry
+from django.template.loader import render_to_string
+
 
 from ganeti.utils import (
     prepare_clusternodes,
     clusterdetails_generator,
 )
 from ganeti.models import Cluster, InstanceAction, Instance
+
+
+def mail_unauthorized_action(action, instance, user):
+
+    subject = 'Unauthorized action'
+    body = 'Unauthorized ' + action + ' was attempted in instance ' + instance + ' by user ' + user
+    body += '\nYou can view this attempt logged in the auditlog'
+    mail_managers(subject, body)
 
 
 @login_required
@@ -231,6 +244,25 @@ def reinstalldestreview(request, application_hash, action_id):
         )
     instance = action.instance
     cluster = action.cluster
+    if not request.user.userprofile.is_owner(cluster.get_instance(instance)):
+        # auditlog = auditlog_entry(request, "", instance, cluster.slug)
+        action = ''
+        if action_id is 1:
+            action = 'reinstall'
+        elif action_id is 3:
+            action = 'rename'
+        elif action_id is 2:
+            action = 'destroy'
+        elif action_id is 4:
+            action = 'mail change'
+        auditlog_entry(request, 'Unauthorized ' + action + ' attempt',
+                       instance, cluster.slug, True, False)
+        # import ipdb; ipdb.set_trace()
+        mail_unauthorized_action(
+            action, instance, request.user.userprofile.user.username
+        )
+        # return HttpResponseForbidden(_('You are not allowed to do that.'))
+        raise PermissionDenied
     action_value = action.action_value
     activated = False
     try:

@@ -29,6 +29,8 @@ Fixes/Improvements:
 	- If application form is invalid, os selection is set to noop, fixed
 	- Proper message in 'user has been notified' after application rejection
 	- Organization and contact information now exists in user model
+	- A security issue allowing users to edit instances that do not belong to them has been fixed. In such occasion, the administrators are now notified via email and the
+	issue is logged in the auditlog as "unauthorized"
 
 Notes:
 	- There is a datamigration (accounts/migrations/0004_organizations.py) in this version that fills user's organization field (new), based on his last application.
@@ -40,6 +42,7 @@ Upgrading from 1.5:
 		- AUDIT_ENTRIES_LAST_X_DAYS (how many days should the auditlog show us)
 		- New BRANDING settings and new values ("LOGO": "/static/ganetimgr/img/logo.png", "FAVICON": "/static/ganetimgr/img/favicon.ico",)
 		- Changed NODATA_IMAGE = 'static/nodata.gif' value
+	- Table auditlog_auditentry now contains an extra row named is_authorized 
 
 ===========
 

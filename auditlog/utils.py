@@ -11,13 +11,15 @@ def get_client_ip(request):
     return ip
 
 
-def auditlog_entry(request, action, instance, cluster, save=True):
+def auditlog_entry(request, action, instance,
+                   cluster, save=True, authorized=True):
     entry = AuditEntry(
         requester=User.objects.get(pk=request.user.id),
         ipaddress=get_client_ip(request),
         action=action,
         instance=instance,
-        cluster=cluster
+        cluster=cluster,
+        is_authorized=authorized
     )
     if save:
         entry.save()

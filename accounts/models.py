@@ -36,6 +36,15 @@ class UserProfile(models.Model):
         self.force_logout_date = datetime.now()
         self.save()
 
+    def is_owner(self, instance):
+        if self.user in instance.users:
+            return True
+        else:
+            for group in self.user.groups.all():
+                if group in instance.groups:
+                    return True
+        return False
+
     def __unicode__(self):
         return "%s profile" % self.user
 

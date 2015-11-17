@@ -125,9 +125,19 @@
             "aoColumns":[
             {% if user.is_superuser or perms.ganeti.view_instances %}
                          {"mData":"job_id", "sClass" : "alignCenter","bSearchable": true,"bSortable": true,
-                         "mRender":  function (data, type, full) {
-                                 var ret = ''+
-                                   '<a class="btn btn-info btn-small" href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">'+data+'</a>';
+                         "mRender":  function (data, type, full, json) {
+                                 var ret = '<a class="btn '
+
+                                 if(full.is_authorized){
+                                     ret += 'btn-info ';
+                                 }
+                                 else{
+                                     ret += 'btn-danger ';
+                                 }
+                                 if(data == null){
+                                  data = 'unauthorized'
+                                 }
+                                 ret += 'btn-small" href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">'+data+'</a>';
                          return ret;
                          }},
                          {"mData":"cluster", "sClass" : "alignCenter","bSearchable": true,"bSortable": true},
