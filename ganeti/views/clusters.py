@@ -245,7 +245,6 @@ def reinstalldestreview(request, application_hash, action_id):
     instance = action.instance
     cluster = action.cluster
     if not request.user.userprofile.is_owner(cluster.get_instance(instance)):
-        # auditlog = auditlog_entry(request, "", instance, cluster.slug)
         action = ''
         if action_id is 1:
             action = 'reinstall'
@@ -257,7 +256,6 @@ def reinstalldestreview(request, application_hash, action_id):
             action = 'mail change'
         auditlog_entry(request, 'Unauthorized ' + action + ' attempt',
                        instance, cluster.slug, True, False)
-        # import ipdb; ipdb.set_trace()
         mail_unauthorized_action(
             action, instance, request.user.userprofile.user.username
         )

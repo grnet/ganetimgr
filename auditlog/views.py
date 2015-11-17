@@ -95,7 +95,6 @@ def auditlog_json(request):
                 }
             )
         )
-        # import pdb; pdb.set_trace()
         entrydict['is_authorized'] = entry.is_authorized
         entries.append(entrydict)
     jresp = {}
