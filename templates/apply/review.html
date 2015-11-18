@@ -505,6 +505,7 @@
             }
             selnet.empty();
             var parsed_groups = [];
+            var selected = false;
             for (var i=0; i<selected_ng.networks.length; i++) {
                 if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1) {
                     selgroup = $('#gr_'+selected_ng.networks[i].type+'');
@@ -514,9 +515,10 @@
                     selgroup = $('#gr_'+selected_ng.networks[i].type+'');
                 }
                 selecttext = '';
-                if (selgroup.attr('id') === 'gr_routed') {
+                if (selgroup.attr('id') === 'gr_routed' && !selected) {
                     if (selecttext === '') {
                         selecttext = "selected='selected'";
+                        selected = true;
                     }
                 }
                 var option = '<option ';
@@ -527,7 +529,7 @@
                 data-free="'+selected_ng.networks[i].free_count+'" \
                 data-reserved="'+selected_ng.networks[i].reserved_count+'" \
                 data-type="'+selected_ng.networks[i].type+'" \
-                value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>'
+                value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network + ' (' + selected_ng.networks[i].link + ') </option>'
                 selgroup.append(option);
 
             }
