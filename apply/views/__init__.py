@@ -229,27 +229,38 @@ def review_application(request, application_id=None):
             }
         )
     elif request.method == "POST":
-        nodegroup = request.POST.get('node_group', '')
+        data = request.POST.dict()
+        if data.get('reject', ''):
+            if data.get('node_group'):
+                del data['node_group']
+            if data.get('netw'):
+                del data['netw']
+            if data.get('vgs'):
+                del data['vgs']
+            if data.get('disk_template'):
+                del data['disk_template']
+
+        nodegroup = data.get('node_group', '')
         form_ngs = (('', ''),)
         if nodegroup:
             form_ngs = ((nodegroup, nodegroup),)
 
-        netw = request.POST.get('netw', '')
+        netw = data.get('netw', '')
         form_netw = (('', ''),)
         if netw:
             form_netw = ((netw, netw),)
 
-        vgs = request.POST.get('vgs', '')
+        vgs = data.get('vgs', '')
         form_vgs = (('', ''),)
         if vgs:
             form_vgs = ((vgs, vgs),)
 
-        dt = request.POST.get('disk_template', '')
+        dt = data.get('disk_template', '')
         form_dt = (('', ''),)
         if dt:
             form_dt = ((dt, dt),)
 
-        form = InstanceApplicationReviewForm(request.POST, instance=app)
+        form = InstanceApplicationReviewForm(data, instance=app)
         # check if code is run in test mode
         import sys
         if sys.argv[1:2] == ['test']:
