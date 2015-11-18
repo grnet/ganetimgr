@@ -519,12 +519,16 @@
                         selecttext = "selected='selected'";
                     }
                 }
-                selgroup.append('<option \
-                                data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
-                                data-free="'+selected_ng.networks[i].free_count+'" \
-                                data-reserved="'+selected_ng.networks[i].reserved_count+'" \
-                                data-type="'+selected_ng.networks[i].type+'" \
-                                value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>');
+                var option = '<option ';
+                if (selected_ng.networks[i].free_count < 1 && !(selected_ng.networks[i].free_count==null)) {
+                    option += 'disabled=disabled';
+                }
+                option += 'data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
+                data-free="'+selected_ng.networks[i].free_count+'" \
+                data-reserved="'+selected_ng.networks[i].reserved_count+'" \
+                data-type="'+selected_ng.networks[i].type+'" \
+                value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network+'</option>'
+                selgroup.append(option);
 
             }
             if (('routed', parsed_groups) != -1){
