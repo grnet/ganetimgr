@@ -123,12 +123,22 @@ class InstanceConfigForm(forms.Form):
         help_text="If isolated, allow access from v4/v6 address/network"
     )
 
+    def clean_cdrom_type(self):
+        boot_order = self.cleaned_data.get('boot_order')
+        if boot_order == 'cdrom':
+            cdrom_type = self.cleaned_data.get('cdrom_type')
+            if cdrom_type == 'none':
+                raise forms.ValidationError(_(
+                    'You selected cdrom as a boot device. You have to enable the CD-ROM drive.'
+                ))
+        return self.cleaned_data.get('cdrom_type')
+
     def clean_cdrom_image_path(self):
         data = self.cleaned_data['cdrom_image_path']
-        if data:
+        cdrom_type = self.cleaned_data.get('cdrom_type')
+        if data and cdrom_type != 'none':
             if not (data == 'none' or re.match(r'(https?|ftp)://', data)):
                 raise forms.ValidationError(_('Only HTTP URLs are allowed'))
-
             elif data != 'none':
                 # Check if the image is there
                 oldtimeout = socket.getdefaulttimeout()
