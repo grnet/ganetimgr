@@ -114,8 +114,14 @@ def user_index_json(request):
                     locked_clusters.append(str(cluster.description))
                     locked_nodes.extend(cluster_locked_node_groups)
                 instances.extend(cluster.get_user_instances(request.user))
-            except (GanetiApiError, Exception):
-                bad_clusters.append(cluster)
+            except GanetiApiError as e:
+                if e.message[0] == '(':
+                    message = e.message.split(',')[1].replace(')', '')
+                else:
+                    message = e.message
+                bad_clusters.append((cluster, message))
+            except Exception as e:
+                bad_clusters.append((cluster, e))
             finally:
                 close_connection()
     jresp = {}
@@ -140,8 +146,14 @@ def user_index_json(request):
             else:
                 instance.joblock = False
             instancedetails.extend(generate_json(instance, request.user, locked_nodes))
-        except (GanetiApiError, Exception):
-            bad_instances.append(instance)
+        except GanetiApiError as e:
+            if e.message[0] == '(':
+                message = e.message.split(',')[1].replace(')', '')
+            else:
+                message = e.message
+            bad_clusters.append((cluster, message))
+        except Exception as e:
+                bad_clusters.append((cluster, e))
         finally:
             close_connection()
     if res is None:
@@ -156,7 +168,16 @@ def user_index_json(request):
         if bad_clusters:
             messages = "Some instances may be missing because the" \
                 " following clusters are unreachable: %s" \
-                % (", ".join([c.description or c.hostname for c in bad_clusters]))
+                % (
+                    ", ".join(
+                        [
+                            "%s: %s" % (
+                                c[0].description or c[0].hostname,
+                                c[1]
+                            ) for c in bad_clusters
+                        ]
+                    )
+                )
             cache_timeout = 30
         j.map(_get_instance_details, instances)
         if locked_clusters:
