@@ -48,6 +48,7 @@ from ganeti.utils import (
     get_os_details,
     get_user_instances,
     format_ganeti_api_error,
+    add_message,
 )
 
 from ganeti.forms import (
@@ -225,9 +226,8 @@ def user_sum_stats(request):
         p.map(_get_instances, Cluster.objects.filter(disabled=False))
 
     if bad_clusters:
-        djmessages.add_message(
+        add_message(
             request,
-            msgs.WARNING,
             "Some instances may be missing because the following clusters are unreachable: %s" % (
                 ", ".join(
                     [

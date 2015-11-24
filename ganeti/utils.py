@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
+from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.db import close_connection
 from django.shortcuts import get_object_or_404
@@ -546,3 +547,10 @@ def format_ganeti_api_error(e):
     return message
 
 
+def add_message(request, message_text):
+    if message_text not in [m for m in messages.get_messages(request)]:
+        messages.add_message(
+            request,
+            messages.constants.WARNING,
+            message_text
+        )

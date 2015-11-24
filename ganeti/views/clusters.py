@@ -50,6 +50,7 @@ from django.template.loader import render_to_string
 from ganeti.utils import (
     prepare_clusternodes,
     clusterdetails_generator,
+    add_message,
 )
 from ganeti.models import Cluster, InstanceAction, Instance
 
@@ -78,9 +79,8 @@ def clusternodes_json(request, cluster=None):
             nodes, bad_clusters, bad_nodes = prepare_clusternodes()
             cache.set('allclusternodes', nodes, 90)
         if bad_clusters:
-            messages.add_message(
+            add_message(
                 request,
-                msgs.WARNING,
                 "Some nodes may be missing because the" +
                 " following clusters are unreachable: " +
                 ", ".join([c.description or c.hostname for c in bad_clusters])
@@ -166,9 +166,8 @@ def get_clusternodes(request):
             nodes, bad_clusters, bad_nodes = prepare_clusternodes()
             cache.set('allclusternodes', nodes, 90)
         if bad_clusters:
-            messages.add_message(
+            add_message(
                 request,
-                msgs.WARNING,
                 "Some nodes may be missing because the" +
                 " following clusters are unreachable: " +
                 ", ".join([c.description or c.hostname for c in bad_clusters])
