@@ -450,8 +450,7 @@
                     success: function(data) {
                         if (data.failed === true) {
                             // something wrong happened with ganeti
-                            var messageDiv = $('#jsonmessages');
-                            messageDiv.find('#jsonmessage').text(data.reason);
+                            $.add_message(data.reason);
                             messageDiv.prop({'style': ''});
                         } else {
 

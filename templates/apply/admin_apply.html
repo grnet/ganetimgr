@@ -260,9 +260,7 @@
                         cleanfields();
                         if (data.failed === true) {
                             // something wrong happened with ganeti
-                            var messageDiv = $('#jsonmessages');
-                            messageDiv.find('#jsonmessage').text(data.reason);
-                            messageDiv.prop({'style': ''});
+                            $.add_message(data.reason);
                         } else {
                             selected_cluster = data;
                             for (var i=0; i<data.node_groups.length; i++) {
@@ -296,9 +294,7 @@
                         }
                     }
                 }).fail(function() {
-                    var messageDiv = $('#jsonmessages');
-                        messageDiv.find('#jsonmessage').text("{% trans 'Something bad happened. The administrators have been notified' %}");
-                        messageDiv.prop({'style': ''});
+                    $.add_message("{% trans 'Something bad happened. The administrators have been notified' %}");
                 });
             }
         });

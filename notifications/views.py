@@ -32,7 +32,7 @@ from util.client import GanetiApiError
 from django.db import close_connection
 from notifications.utils import get_mails, send_emails
 from notifications.models import NotificationArchive
-from ganeti.utils import format_ganeti_api_error
+from ganeti.utils import format_ganeti_api_error, add_message
 
 
 @csrf_exempt
@@ -161,6 +161,7 @@ def get_user_group_list(request):
                     ]
                 )
             )
+            add_message(request, message_text)
 
         if q_params and type_of_search:
             ret_list = []

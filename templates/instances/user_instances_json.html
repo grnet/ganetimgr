@@ -183,8 +183,7 @@ $(document).ready( function(){
 			$('div.dataTables_filter input').focus();
 			$('.content').removeClass('loading');
 			if(json.hasOwnProperty('messages')){
-				$('#jsonmessages').show();
-				$('#jsonmessage').html(json.messages);
+				$.add_message(json.messages);
 			}
 			{% if not user.is_superuser and not perms.ganeti.view_instances %}
 			$('body').on('click', '.revertbutton', function () {
@@ -333,8 +332,7 @@ $(document).ready( function(){
 							  {% if not user.is_superuser and not perms.ganeti.view_instances %}
 								msg = "One or more instances' core configuration components (any of network adapter, hard disk type, boot device, cdrom) have changed.<br/> " +
 								 " In order for these changes to take effect, you need to <strong>Reboot</strong> the instance(s). Tip: Search for 'Needs Reboot'";
-								  $('#jsonmessage').html(msg);
-								  $('#jsonmessages').show();
+								  $.add_message(msg);
 								  needsrebootset = true;
 								{% endif %}
 								}

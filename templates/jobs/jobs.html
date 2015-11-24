@@ -167,9 +167,7 @@ $(document).ready( function(){
 		"bDeferRender": true,
 		"fnInitComplete": function(oSettings, json) {
 			if(json.hasOwnProperty('messages')){
-				$('#jsonmessages').show();
-				$('#jsonmessage').html(json.messages);
-
+				$.add_message(json.messages);
 			}
 			if(json.hasOwnProperty('clusters')){
 				var clustertoggle = $('<select id="clusterfilter" multiple></select>');

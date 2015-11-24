@@ -25,6 +25,10 @@ a:hover {
   text-decoration: none;
 }
 
+.message-template {
+  display: none;
+}
+
 h1 {
   color: #41414c;
   margin-top: 0px;

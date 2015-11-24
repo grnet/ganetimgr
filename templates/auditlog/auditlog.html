@@ -99,9 +99,7 @@
     	    "sDom": "<'row-fluid'<'span4'l><'span4'<'#clusterph'>><'span4'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
     	    "fnInitComplete": function(oSettings, json) {
                 if(json.hasOwnProperty('messages')){
-                	$('#jsonmessages').show();
-                	$('#jsonmessage').html(json.messages);
-
+                	$.add_message(json.messages);
                 }
                 var seen_clusters = [];
 

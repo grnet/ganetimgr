@@ -231,10 +231,11 @@
                     <li class="active">{% trans "Home" %}</li>
                     {% endblock %}
                 </ul>
+
                 <div id="jsonmessages" style="display:none">
-                    <div class="alert alert-warning">
-                    <button class="close" data-dismiss="alert" type="button"> × </button>
-                        <span id="jsonmessage"></span>
+                    <div class="alert alert-warning message-template">
+                        <button class="close" data-dismiss="alert" type="button"> × </button>
+                        <span></span>
                     </div>
                 </div>
                 {% if messages %}
@@ -306,6 +307,8 @@
     </footer>
     {% include "includes/analytics.html" %}
     {% block postfooter %}{% endblock %}
+    <script src="{% static 'ganetimgr/js/messages.js' %}"></script>
+
   </body>
 </html>
 
