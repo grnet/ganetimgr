@@ -41,7 +41,7 @@ from django.core.mail import mail_managers
 
 from util.client import GanetiApiError
 
-from ganeti.utils import refresh_cluster_cache
+from ganeti.utils import refresh_cluster_cache, format_ganeti_api_error
 
 from auditlog.utils import auditlog_entry
 from django.template.loader import render_to_string
@@ -370,13 +370,25 @@ def clusterdetails_json(request):
             def _get_cluster_details(cluster):
                 try:
                     clusterlist.append(clusterdetails_generator(cluster.slug))
-                except (GanetiApiError, Exception):
-                    errors.append(Exception)
+                except GanetiApiError as e:
+                    errors.append(
+                        '%s: %s' % (
+                            cluster,
+                            format_ganeti_api_error(e)
+                        )
+                    )
+                except Exception as e:
+                    errors.append(e)
                 finally:
                     close_connection()
             # get only enabled clusters
             p.map(_get_cluster_details, Cluster.objects.filter(disabled=False))
             cache.set("clusters:allclusterdetails", clusterlist, 180)
-        return HttpResponse(json.dumps(clusterlist), mimetype='application/json')
+        return HttpResponse(json.dumps(
+            {
+                'clusterlist': clusterlist,
+                'errors': errors
+            }
+        ), mimetype='application/json')
     else:
         raise PermissionDenied

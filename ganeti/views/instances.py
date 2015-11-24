@@ -47,6 +47,7 @@ from ganeti.utils import (
     notifyuseradvancedactions,
     get_os_details,
     get_user_instances,
+    format_ganeti_api_error,
 )
 
 from ganeti.forms import (
@@ -115,11 +116,7 @@ def user_index_json(request):
                     locked_nodes.extend(cluster_locked_node_groups)
                 instances.extend(cluster.get_user_instances(request.user))
             except GanetiApiError as e:
-                if e.message[0] == '(':
-                    message = e.message.split(',')[1].replace(')', '')
-                else:
-                    message = e.message
-                bad_clusters.append((cluster, message))
+                bad_clusters.append((cluster, format_ganeti_api_error(e)))
             except Exception as e:
                 bad_clusters.append((cluster, e))
             finally:
@@ -147,11 +144,7 @@ def user_index_json(request):
                 instance.joblock = False
             instancedetails.extend(generate_json(instance, request.user, locked_nodes))
         except GanetiApiError as e:
-            if e.message[0] == '(':
-                message = e.message.split(',')[1].replace(')', '')
-            else:
-                message = e.message
-            bad_clusters.append((cluster, message))
+            bad_clusters.append((cluster, format_ganeti_api_error(e)))
         except Exception as e:
                 bad_clusters.append((cluster, e))
         finally:
@@ -220,8 +213,11 @@ def user_sum_stats(request):
     def _get_instances(cluster):
         try:
             instances.extend(cluster.get_user_instances(request.user))
-        except (GanetiApiError, Exception):
-            bad_clusters.append(cluster)
+        except GanetiApiError as e:
+            bad_clusters.append((cluster, format_ganeti_api_error(e)))
+        except Exception as e:
+            bad_clusters.append((cluster, e))
+
         finally:
             close_connection()
     if not request.user.is_anonymous():
@@ -232,9 +228,16 @@ def user_sum_stats(request):
         djmessages.add_message(
             request,
             msgs.WARNING,
-            'Some instances may be missing because the'
-            ' following clusters are unreachable: ' +
-            ', '.join([c.description or c.hostname for c in bad_clusters])
+            "Some instances may be missing because the following clusters are unreachable: %s" % (
+                ", ".join(
+                    [
+                        "%s: %s" % (
+                            c[0].description or c[0].hostname,
+                            c[1]
+                        ) for c in bad_clusters
+                    ]
+                )
+            )
         )
     jresp = {}
     cache_key = "user:%s:index:instance:light" % request.user.username

@@ -536,3 +536,13 @@ def prepare_tags(taglist):
                 Group.objects.get(pk=i.replace('g_','')).name
             ))
     return list(set(tags))
+
+
+def format_ganeti_api_error(e):
+    if e.message[0] == '(':
+        message = e.message.split(',')[1].replace(')', '')
+    else:
+        message = e.message
+    return message
+
+

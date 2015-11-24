@@ -31,6 +31,7 @@ from django.core.exceptions import PermissionDenied
 
 from util.client import GanetiApiError
 from ganeti.models import Cluster
+from ganeti.utils import format_ganeti_api_error
 
 
 @login_required
@@ -79,8 +80,10 @@ def jobs_index_json(request):
         def _get_jobs(cluster):
             try:
                 jobs.extend(cluster.get_job_list())
-            except (GanetiApiError, Exception):
-                bad_clusters.append(cluster)
+            except GanetiApiError as e:
+                bad_clusters.append((cluster, format_ganeti_api_error(e)))
+            except Exception as e:
+                bad_clusters.append((cluster, e))
             finally:
                 close_connection()
         if not request.user.is_anonymous():
@@ -90,9 +93,18 @@ def jobs_index_json(request):
                 clusters = clusters.filter(slug=cluster_slug)
             p.map(_get_jobs, clusters)
         if bad_clusters:
-            messages = "Some jobs may be missing because the" \
+            messages = "Some instances may be missing because the" \
                 " following clusters are unreachable: %s" \
-                % (", ".join([c.description for c in bad_clusters]))
+                % (
+                    ", ".join(
+                        [
+                            "%s: %s" % (
+                                c[0].description or c[0].hostname,
+                                c[1]
+                            ) for c in bad_clusters
+                        ]
+                    )
+                )
         jresp = {}
         clusters = list(set([j['cluster'] for j in jobs]))
         jresp['aaData'] = jobs
