@@ -89,9 +89,9 @@ else:
     def list_user_instances(request):
         raise NotImplementedError('Please install oauth2_toolkit. For more details take a look at admin section of the docs.')
 
+
 @login_required
 def user_index_json(request):
-    messages = ""
     cluster_slug = request.GET.get('cluster', None)
     if request.user.is_anonymous():
         action = {
@@ -159,7 +159,7 @@ def user_index_json(request):
             p.map(_get_instances, clusters)
         cache_timeout = 90
         if bad_clusters:
-            for c in bad_clusters:
+            if request.user.is_superuser:
                 djmessages.add_message(
                     request,
                     msgs.WARNING,
@@ -169,13 +169,27 @@ def user_index_json(request):
                         ", ".join(
                             [
                                 "%s: %s" % (
-                                    c[0].description or c[0].hostname,
+                                    c[0].slug or c[0].hostname,
                                     c[1]
-                                )
+                                ) for c in bad_clusters
                             ]
                         )
                     )
                 )
+            else:
+                djmessages.add_message(
+                    request,
+                    msgs.WARNING,
+                    "Some instances may be missing because the"
+                    " following clusters are unreachable: %s"
+                    % (
+                        ", ".join(
+                            [c[0].slug or c[0].hostname for c in bad_clusters]
+                        )
+                    )
+                )
+                pass
+
             cache_timeout = 30
         j.map(_get_instance_details, instances)
         if locked_clusters:
@@ -232,20 +246,36 @@ def user_sum_stats(request):
 
     if bad_clusters:
         for c in bad_clusters:
-            djmessages.add_message(
-                request,
-                msgs.WARNING,
-                "Some instances may be missing because the following clusters are unreachable: %s" % (
-                    ", ".join(
-                        [
-                            "%s: %s" % (
-                                c[0].description or c[0].hostname,
-                                c[1]
-                            )
-                        ]
+            if request.user.is_supseruser:
+                djmessages.add_message(
+                    request,
+                    msgs.WARNING,
+                    "Some instances may be missing because the following clusters are unreachable: %s" % (
+                        ", ".join(
+                            [
+                                "%s: %s" % (
+                                    c[0].slug or c[0].hostname,
+                                    c[1]
+                                )
+                            ]
+                        )
                     )
                 )
-            )
+            else:
+                djmessages.add_message(
+                    request,
+                    msgs.WARNING,
+                    "Some instances may be missing because the following clusters are unreachable: %s" % (
+                        ", ".join(
+                            [
+                                "%s" % (
+                                    c[0].slug or c[0].hostname,
+                                )
+                            ]
+                        )
+                    )
+                )
+
     jresp = {}
     cache_key = "user:%s:index:instance:light" % request.user.username
     res = cache.get(cache_key)

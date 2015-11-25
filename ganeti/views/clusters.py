@@ -21,6 +21,7 @@ from gevent.pool import Pool
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
 from django.contrib.messages import constants as msgs
 from django.contrib import messages
@@ -261,7 +262,6 @@ def reinstalldestreview(request, application_hash, action_id):
         mail_unauthorized_action(
             action, instance, request.user.userprofile.user.username
         )
-        # return HttpResponseForbidden(_('You are not allowed to do that.'))
         raise PermissionDenied
     action_value = action.action_value
     activated = False
@@ -347,7 +347,7 @@ def reinstalldestreview(request, application_hash, action_id):
         return HttpResponseRedirect(reverse('user-instances'))
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def clusterdetails(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         return render(
@@ -360,7 +360,6 @@ def clusterdetails(request):
         return HttpResponseRedirect(reverse('user-instances'))
 
 
-@login_required
 def clusterdetails_json(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         clusterlist = cache.get("cluster:allclusterdetails")
@@ -374,7 +373,8 @@ def clusterdetails_json(request):
                     clusterlist.append(clusterdetails_generator(cluster.slug))
                 except GanetiApiError as e:
                     errors.append(
-                        '%s: %s' % (
+                        '%s: %s' %
+                        (
                             cluster,
                             format_ganeti_api_error(e)
                         )
@@ -387,7 +387,8 @@ def clusterdetails_json(request):
             p.map(_get_cluster_details, Cluster.objects.filter(disabled=False))
             cache.set("clusters:allclusterdetails", clusterlist, 180)
         for error in errors:
-            messages.add_message(request, msgs.WARNING, error)
+            if request.user.is_superuser:
+                messages.add_message(request, msgs.WARNING, error)
         return HttpResponse(json.dumps(
             {
                 'clusterlist': clusterlist,

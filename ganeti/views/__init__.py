@@ -40,6 +40,7 @@ from django.http import (
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.messages import constants as msgs
 from django.contrib.auth.decorators import user_passes_test
+from django.utils.translation import ugettext as _
 
 MESSAGE_TAGS = {
     msgs.ERROR: '',
@@ -47,8 +48,8 @@ MESSAGE_TAGS = {
 }
 
 MESSAGE_CSS = {
-    'info': 'success',
-    'success': 'info',
+    'info': 'info',
+    'success': 'success',
     'warning': 'warning',
     'error': 'danger',
 }
@@ -61,7 +62,6 @@ def news(request):
     )
 
 
-@user_passes_test(lambda u: u.is_superuser)
 def get_messages(request):
     mes = [
         {
@@ -69,6 +69,7 @@ def get_messages(request):
             'css': MESSAGE_CSS.get(m.tags, 'warning')
         } for m in messages.get_messages(request)
     ]
+
     return HttpResponse(
         json.dumps(mes),
         mimetype='application/json'
