@@ -5,9 +5,8 @@
 <script>
 	$(document).ready(function() {
 		$("#mailapplybutton").click(function(){
-			$(this).html('Sending...')
+			$.add_message('Sending notification...')
 			$.ajax({
-
 				url:"{% url notify %}",
 				data:$("#notifyform").serialize(),
 				type: "POST",

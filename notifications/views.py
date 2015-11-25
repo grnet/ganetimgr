@@ -136,6 +136,9 @@ def get_user_group_list(request):
         p = Pool(20)
         bad_clusters = []
 
+        cache_key = "user:%s:index:instances" % request.user.username
+        instances = cache.get(cache_key, [])
+
         def _get_instances(cluster):
             try:
                 instances.extend(cluster.get_user_instances(request.user))
@@ -146,23 +149,6 @@ def get_user_group_list(request):
             finally:
                 close_connection()
 
-        if not request.user.is_anonymous():
-            # get only enabled clusters
-            p.map(_get_instances, Cluster.objects.filter(disabled=False))
-
-        if bad_clusters:
-            for c in bad_clusters:
-                message_text = "Some instances may be missing because the following clusters are unreachable: %s" % (
-                    ", ".join(
-                        [
-                            "%s: %s" % (
-                                c[0].description or c[0].hostname,
-                                c[1]
-                            )
-                        ]
-                    )
-                )
-                messages.add_message(request, messages.WARNING, message_text)
 
         if q_params and type_of_search:
             ret_list = []
@@ -192,9 +178,8 @@ def get_user_group_list(request):
                     groupd['type'] = "group"
                     ret_list.append(groupd)
             elif type_of_search == 'instances':
-                instances = []
-                instances = Instance.objects.filter(name__icontains=q_params)
-                for instance in instances:
+                notif_instances = Instance.objects.filter(name__icontains=q_params)
+                for instance in notif_instances:
                     instd = {}
                     instd['text'] = instance.name
                     instd['id'] = "i_%s" % instance.name
@@ -203,19 +188,31 @@ def get_user_group_list(request):
             elif type_of_search == 'nodes':
                 # get only enabled clusters
                 for cluster in Cluster.objects.filter(disabled=False):
-                    for node in cluster.get_cluster_nodes():
-                        if q_params in node.get('name'):
-                            noded = {
-                                'text': '%s - %s' % (cluster, node.get('name')),
-                                'id': 'n_%s_c_%s' % (node.get('name'), cluster.id),
-                                'type': 'node'
-                            }
-                            ret_list.append(noded)
+                    try:
+                        for node in cluster.get_cluster_nodes():
+                            if q_params in node.get('name'):
+                                noded = {
+                                    'text': '%s - %s' % (cluster, node.get('name')),
+                                    'id': 'n_%s_c_%s' % (node.get('name'), cluster.id),
+                                    'type': 'node'
+                                }
+                                ret_list.append(noded)
+                    except GanetiApiError as e:
+                        bad_clusters.append((cluster, format_ganeti_api_error(e)))
+                    except Exception as e:
+                        bad_clusters.append((cluster, e))
+
             elif type_of_search == 'nodegroups':
                 nodegroups = []
                 # get only enabled clusters
                 for cluster in Cluster.objects.filter(disabled=False):
-                    nodegroups.append({cluster: cluster.get_node_groups()})
+                    try:
+                        nodegroups.append({cluster: cluster.get_node_groups()})
+                    except GanetiApiError as e:
+                        bad_clusters.append((cluster, format_ganeti_api_error(e)))
+                    except Exception as e:
+                        bad_clusters.append((cluster, e))
+
                 for nodegroup_list in nodegroups:
                     for cluster, nodegroup in nodegroup_list.items():
                         for ng in nodegroup:
@@ -226,6 +223,20 @@ def get_user_group_list(request):
                                     'type': 'nodegroup'
                                 }
                                 ret_list.append(nodegroupsd)
+        if bad_clusters:
+            for c in list(set(bad_clusters)):
+                message_text = "Some instances may be missing because the following clusters are unreachable: %s" % (
+                    ", ".join(
+                        [
+                            "%s: %s" % (
+                                c[0].description or c[0].hostname,
+                                c[1]
+                            )
+                        ]
+                    )
+                )
+                messages.add_message(request, messages.WARNING, message_text)
+
 
         action = ret_list
         return HttpResponse(json.dumps(action), mimetype='application/json')
