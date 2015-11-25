@@ -1091,7 +1091,7 @@ def preload_instance_data():
         for network in networks:
             networkdict[network.link] = network.ipv6_prefix
         networks = networkdict
-        cache.set('networklist', networks, 30)
+        cache.set('networklist', networks, 60)
     users = cache.get('userlist')
     if not users:
         users = User.objects.select_related('groups').all()
@@ -1099,7 +1099,7 @@ def preload_instance_data():
         for user in users:
             userdict[user.username] = user
         users = userdict
-        cache.set('userlist', users, 30)
+        cache.set('userlist', users, 60)
     orgs = cache.get('orgslist')
     if not orgs:
         orgs = Organization.objects.all()
@@ -1107,7 +1107,7 @@ def preload_instance_data():
         for org in orgs:
             orgsdict[org.tag] = org
         orgs = orgsdict
-        cache.set('orgslist', orgs, 30)
+        cache.set('orgslist', orgs, 60)
     groups = cache.get('groupslist')
     if not groups:
         groups = Group.objects.all()
@@ -1116,7 +1116,7 @@ def preload_instance_data():
             group.userset = group.user_set.all()
             groupsdict[group.name] = group
         groups = groupsdict
-        cache.set('groupslist', groups, 30)
+        cache.set('groupslist', groups, 60)
     instanceapps = cache.get('instaceapplist')
     if not instanceapps:
         instanceapps = InstanceApplication.objects.all()
@@ -1124,7 +1124,7 @@ def preload_instance_data():
         for instapp in instanceapps:
             instappdict[str(instapp.pk)] = instapp
         instanceapps = instappdict
-        cache.set('instaceapplist', instanceapps, 30)
+        cache.set('instaceapplist', instanceapps, 60)
     return users, orgs, groups, instanceapps, networks
 
 
