@@ -129,7 +129,7 @@ class ClusterTestCase(LoginTestCase):
     def test_clusterdetails_json(self):
         # should get a redirect to the login page
         res = self.client.get(reverse('clusterdetails_json'))
-        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res.status_code, 403)
 
         # should get a 403
         self.login_user()

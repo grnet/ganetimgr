@@ -246,7 +246,7 @@ def user_sum_stats(request):
 
     if bad_clusters:
         for c in bad_clusters:
-            if request.user.is_supseruser:
+            if request.user.is_superuser:
                 djmessages.add_message(
                     request,
                     msgs.WARNING,
