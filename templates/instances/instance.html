@@ -5,6 +5,8 @@
 
 {% block title %}{{ instance.name }} on {{ instance.cluster.description }}{% endblock %}
 
+{% block contentclass %}no-loading{% endblock %}
+
 {% block extraticketinfo %} {% trans "about" %} {{ instance.name }} {% trans "on cluster" %} {{ instance.cluster.description }}{% endblock %}
 
 {% block extrahead %}

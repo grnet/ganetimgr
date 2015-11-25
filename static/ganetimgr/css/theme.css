@@ -1880,129 +1880,23 @@ label.required { font-weight: bold; }
   cursor: pointer;
 }
 
-
-.loading:after {
-  display: block;
-  content: "";
-  position: fixed;
-  background: white;
-  top: 45px;
-  bottom: 72px;
-  left: 200px;
-  right: 0;
-  opacity: 0.5;
-  z-index: 10000;
+.content .spinner {
+  display: none;
 }
 
-.loading:before {
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  background: #eeeeee;
-  display: block;
-  content: "";
+.loading .spinner {
+  display: inline-block;
   position: fixed;
-  margin: auto;
-  z-index: 100000;
   left: 50%;
-  margin-left: -50px;
+  right: 50%;
   top: 50%;
-  margin-top: -50px;
-  animation: resize 1s forwards;
-  -webkit-animation: resize 2s forwards;
-  -moz-animation: resize 2s forwards;
-  -o-animation: resize 2s forwards;
-  animation-iteration-count: infinite;
-  -webkit-animation-iteration-count: infinite;
-  -moz-animation-iteration-count: infinite;
-  -o-animation-iteration-count: infinite;
-  opacity: 0.4;
-
+  bottom: 50%;
+  margin: auto;
+  color: #747cb4;
+  opacity: 0.5;
 }
-
-
-@keyframes resize {
-  0% {
-    width: 50px;
-    height: 50px;
-    margin-left: -50px;
-    margin-top: -50px;
-  }
-  50% {
-    width: 60px;
-    height: 60px;
-    margin-left: -55px;
-    margin-top: -55px;
-  }
-  100% {
-    width: 50px;
-    height: 50px;
-    margin-left: -50px;
-    margin-top: -50px;
-  }
-}
-
-@-webkit-keyframes resize {
-0% {
-    width: 50px;
-    height: 50px;
-    margin-left: -50px;
-    margin-top: -50px;
-  }
-  50% {
-    width: 60px;
-    height: 60px;
-    margin-left: -55px;
-    margin-top: -55px;
-  }
-  100% {
-    width: 50px;
-    height: 50px;
-    margin-left: -50px;
-    margin-top: -50px;
-  }
-}
-
-@-moz-keyframes resize {
-0% {
-    width: 50px;
-    height: 50px;
-    margin-left: -50px;
-    margin-top: -50px;
-  }
-  50% {
-    width: 60px;
-    height: 60px;
-    margin-left: -55px;
-    margin-top: -55px;
-  }
-  100% {
-    width: 50px;
-    height: 50px;
-    margin-left: -50px;
-    margin-top: -50px;
-  }
-}
-
-@-o-keyframes resize {
-0% {
-    width: 50px;
-    height: 50px;
-    margin-left: -50px;
-    margin-top: -50px;
-  }
-  50% {
-    width: 60px;
-    height: 60px;
-    margin-left: -55px;
-    margin-top: -55px;
-  }
-  100% {
-    width: 50px;
-    height: 50px;
-    margin-left: -50px;
-    margin-top: -50px;
-  }
+.loading.no-loading .spinner {
+  display: none;
 }
 
 .archive {
