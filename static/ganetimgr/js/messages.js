@@ -27,9 +27,13 @@
         }
 	});
 
-    $(document).ajaxComplete(function() {
+    $(document).ajaxComplete(function(event, xhr, settings) {
         // in case an ajax request is completed
-        content.removeClass('loading');
+        if (xhr.readyState < 4) {
+            xhr.abort();
+        } else {
+            content.removeClass('loading');
+        }
     });
 
     $(document).ajaxSend(function() {
