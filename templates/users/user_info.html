@@ -87,11 +87,6 @@
 			"bProcessing": true,
 	        "sAjaxSource": "{% url user-instances-json %}",
 	        "bDeferRender": true,
-	        "fnInitComplete": function(oSettings, json) {
-	            if(json.hasOwnProperty('messages')){
-	            	$.add_message(json.messages);
-	            }
-	          },
 	        "aoColumns":[
 	                     {"mData": "name" ,
 	                    	 "mRender": function (data, type, full) {

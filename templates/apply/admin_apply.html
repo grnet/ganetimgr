@@ -258,10 +258,7 @@
                     dataType: 'json',
                     success: function(data) {
                         cleanfields();
-                        if (data.failed === true) {
-                            // something wrong happened with ganeti
-                            $.add_message(data.reason);
-                        } else {
+                        if (data) {
                             selected_cluster = data;
                             for (var i=0; i<data.node_groups.length; i++) {
                                 unallocable = '';
@@ -293,8 +290,6 @@
                             dtng.select2({dropdownAutoWidth : true, formatResult: formatdt});
                         }
                     }
-                }).fail(function() {
-                    $.add_message("{% trans 'Something bad happened. The administrators have been notified' %}");
                 });
             }
         });

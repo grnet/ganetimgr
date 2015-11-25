@@ -232,8 +232,8 @@
                     {% endblock %}
                 </ul>
 
-                <div id="jsonmessages" style="display:none">
-                    <div class="alert alert-warning message-template">
+                <div id="jsonmessages" style="display:none" data-messages='{% url get_messages %}'>
+                    <div class="alert message-template">
                         <button class="close" data-dismiss="alert" type="button"> × </button>
                         <span></span>
                     </div>

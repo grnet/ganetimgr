@@ -32,7 +32,7 @@ from util.client import GanetiApiError
 from django.db import close_connection
 from notifications.utils import get_mails, send_emails
 from notifications.models import NotificationArchive
-from ganeti.utils import format_ganeti_api_error, add_message
+from ganeti.utils import format_ganeti_api_error
 
 
 @csrf_exempt
@@ -151,17 +151,18 @@ def get_user_group_list(request):
             p.map(_get_instances, Cluster.objects.filter(disabled=False))
 
         if bad_clusters:
-            message_text = "Some instances may be missing because the following clusters are unreachable: %s" % (
-                ", ".join(
-                    [
-                        "%s: %s" % (
-                            c[0].description or c[0].hostname,
-                            c[1]
-                        ) for c in bad_clusters
-                    ]
+            for c in bad_clusters:
+                message_text = "Some instances may be missing because the following clusters are unreachable: %s" % (
+                    ", ".join(
+                        [
+                            "%s: %s" % (
+                                c[0].description or c[0].hostname,
+                                c[1]
+                            )
+                        ]
+                    )
                 )
-            )
-            add_message(request, message_text)
+                messages.add_message(request, messages.WARNING, message_text)
 
         if q_params and type_of_search:
             ret_list = []

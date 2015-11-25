@@ -149,7 +149,6 @@ $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallba
 };
 $(document).ready( function(){
 	$('.content').addClass('loading');
-
 	ajaxSource = "{% url jobs_json %}";
 	oTable = $('#jobs_table').dataTable( {
 		"bPaginate": true,
@@ -166,9 +165,6 @@ $(document).ready( function(){
 		"sAjaxSource": ajaxSource,
 		"bDeferRender": true,
 		"fnInitComplete": function(oSettings, json) {
-			if(json.hasOwnProperty('messages')){
-				$.add_message(json.messages);
-			}
 			if(json.hasOwnProperty('clusters')){
 				var clustertoggle = $('<select id="clusterfilter" multiple></select>');
 				for (var i=0; i<json.clusters.length; i++) {
@@ -190,7 +186,6 @@ $(document).ready( function(){
 			$("#error_num").html(statusObj.error);
 			$("#waiting_num").html(statusObj.waiting);
 			$("#running_num").html(statusObj.running);
-			$('.content').removeClass('loading');
 		  },
 		"aaSorting": [[ 4, "desc" ]],
 		"aoColumns":[

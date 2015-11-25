@@ -545,12 +545,3 @@ def format_ganeti_api_error(e):
     else:
         message = e.message
     return message
-
-
-def add_message(request, message_text):
-    if message_text not in [m for m in messages.get_messages(request)]:
-        messages.add_message(
-            request,
-            messages.constants.WARNING,
-            message_text
-        )

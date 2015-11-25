@@ -39,6 +39,7 @@ urlpatterns = patterns(
 
     # unique, helper urls
     url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
+    url(r'^get_messages/$', 'ganeti.views.get_messages', name="get_messages"),
     url(r'^operating_systems/$', discovery.get_operating_systems, name='operating_systems_json'),
     url(r'^tagusergrps/?$', 'ganeti.views.get_user_groups', name="tagusergroups"),
 
@@ -64,7 +65,7 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
     urlpatterns += patterns(
         '',
         url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-        
+
     )
 
 if settings.DEBUG:

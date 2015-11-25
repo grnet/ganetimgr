@@ -122,14 +122,8 @@
 			dataType: 'json',
 			success: function(data) {
 				all_cluster_data = data.clusterlist;
-				var errormessage = 'Some errors occured while fetching data: ';
-				for (var e=0; e < data.errors.length; e++) {
-					errormessage += data.errors[e];
-				}
-				$.add_message(errormessage);
 				$("#pick_cluster").select2();
 				$("#pick_cluster").trigger("change");
-				$('.content').removeClass('loading');
 			}
 		});
 		$('body').on('change', '#pick_cluster', function(){

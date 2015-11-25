@@ -146,17 +146,6 @@ var needsrebootset = false;
 $(document).ready( function(){
 	$('.content').addClass('loading');
 
-	setTimeout(function () {
-		// check if still loading after a minute
-		if ($('.content').hasClass('loading')) {
-			$('.content').removeClass('loading').html('An error occured, reloading...');
-			setTimeout(function () {
-				// refresh
-				location.reload();
-			}, 3000);
-		}
-	}, 60000);
-
 	var oTable = $('#vm_instance_table').dataTable({
 		"bPaginate": true,
 		"bFilter": true,
@@ -181,10 +170,6 @@ $(document).ready( function(){
 				});
 			});
 			$('div.dataTables_filter input').focus();
-			$('.content').removeClass('loading');
-			if(json.hasOwnProperty('messages')){
-				$.add_message(json.messages);
-			}
 			{% if not user.is_superuser and not perms.ganeti.view_instances %}
 			$('body').on('click', '.revertbutton', function () {
 				var my = $(this);

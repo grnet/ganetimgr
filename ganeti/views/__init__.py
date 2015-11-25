@@ -28,6 +28,7 @@ from ganeti.utils import prepare_tags
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
+from django.contrib import messages
 from django.template.context import RequestContext
 from django.template.loader import get_template
 from django.shortcuts import render
@@ -38,10 +39,18 @@ from django.http import (
 )
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.messages import constants as msgs
+from django.contrib.auth.decorators import user_passes_test
 
 MESSAGE_TAGS = {
     msgs.ERROR: '',
     50: 'danger',
+}
+
+MESSAGE_CSS = {
+    'info': 'success',
+    'success': 'info',
+    'warning': 'warning',
+    'error': 'danger',
 }
 
 
@@ -49,6 +58,20 @@ def news(request):
     return render(
         request,
         'news/news.html'
+    )
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def get_messages(request):
+    mes = [
+        {
+            'message': m.message,
+            'css': MESSAGE_CSS.get(m.tags, 'warning')
+        } for m in messages.get_messages(request)
+    ]
+    return HttpResponse(
+        json.dumps(mes),
+        mimetype='application/json'
     )
 
 

@@ -50,7 +50,6 @@ from django.template.loader import render_to_string
 from ganeti.utils import (
     prepare_clusternodes,
     clusterdetails_generator,
-    add_message,
 )
 from ganeti.models import Cluster, InstanceAction, Instance
 
@@ -79,12 +78,14 @@ def clusternodes_json(request, cluster=None):
             nodes, bad_clusters, bad_nodes = prepare_clusternodes()
             cache.set('allclusternodes', nodes, 90)
         if bad_clusters:
-            add_message(
-                request,
-                "Some nodes may be missing because the" +
-                " following clusters are unreachable: " +
-                ", ".join([c.description or c.hostname for c in bad_clusters])
-            )
+            for c in bad_clusters:
+                messages.add_message(
+                    request,
+                    msgs.WARNING,
+                    "Some nodes may be missing because the" +
+                    " following clusters are unreachable: " +
+                    ", ".join([c.description or c.hostname])
+                )
             cache.set('badclusters', bad_clusters, 90)
         if bad_nodes:
             messages.add_message(
@@ -166,12 +167,14 @@ def get_clusternodes(request):
             nodes, bad_clusters, bad_nodes = prepare_clusternodes()
             cache.set('allclusternodes', nodes, 90)
         if bad_clusters:
-            add_message(
-                request,
-                "Some nodes may be missing because the" +
-                " following clusters are unreachable: " +
-                ", ".join([c.description or c.hostname for c in bad_clusters])
-            )
+            for c in bad_clusters:
+                messages.add_message(
+                    request,
+                    msgs.WARNING,
+                    "Some nodes may be missing because the" +
+                    " following clusters are unreachable: " +
+                    ", ".join([c.description or c.hostname])
+                )
             cache.set('badclusters', bad_clusters, 90)
         if bad_nodes:
             messages.add_message(
@@ -383,10 +386,11 @@ def clusterdetails_json(request):
             # get only enabled clusters
             p.map(_get_cluster_details, Cluster.objects.filter(disabled=False))
             cache.set("clusters:allclusterdetails", clusterlist, 180)
+        for error in errors:
+            messages.add_message(request, msgs.WARNING, error)
         return HttpResponse(json.dumps(
             {
                 'clusterlist': clusterlist,
-                'errors': errors
             }
         ), mimetype='application/json')
     else:

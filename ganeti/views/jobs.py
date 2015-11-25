@@ -22,6 +22,7 @@ from gevent.pool import Pool
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.contrib import messages as djmessages
 from django.db import close_connection
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
@@ -109,7 +110,11 @@ def jobs_index_json(request):
         clusters = list(set([j['cluster'] for j in jobs]))
         jresp['aaData'] = jobs
         if messages:
-            jresp['messages'] = messages
+            djmessages.add_message(
+                request,
+                djmessages.WARNING,
+                messages
+            )
         jresp['clusters'] = clusters
         res = jresp
         return HttpResponse(json.dumps(res), mimetype='application/json')

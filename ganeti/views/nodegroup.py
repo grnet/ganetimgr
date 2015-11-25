@@ -2,9 +2,10 @@ import json
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import permission_required
+from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from ganeti.models import Network, Cluster
-from ganeti.utils import prepare_cluster_node_group_stack
+from ganeti.utils import prepare_cluster_node_group_stack, format_ganeti_api_error
 from util.client import GanetiApiError
 
 
@@ -29,6 +30,8 @@ def get_nodegroups_fromnet(request):
 
 @permission_required("apply.change_instanceapplication")
 def get_cluster_node_group_stack(request):
+    res = ''
+    error = None;
     cluster_id = request.GET.get('cluster_id', None)
     if cluster_id:
         cluster = get_object_or_404(Cluster, pk=cluster_id)
@@ -38,9 +41,9 @@ def get_cluster_node_group_stack(request):
     try:
         res = prepare_cluster_node_group_stack(cluster)
     except GanetiApiError as e:
-        try:
-            error = tuple(x for x in e.message[1:-1].split(","))[1]
-        except:
-            error = _('Could not connect to api')
-        return HttpResponse(json.dumps({'failed': True, 'reason': error.replace('"', '')}), mimetype='application/json')
+        error = format_ganeti_api_error(e)
+    except Exception as e:
+        error = e
+    if error:
+        messages.add_message(request, messages.ERROR, error)
     return HttpResponse(json.dumps(res), mimetype='application/json')

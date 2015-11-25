@@ -48,7 +48,6 @@ from ganeti.utils import (
     get_os_details,
     get_user_instances,
     format_ganeti_api_error,
-    add_message,
 )
 
 from ganeti.forms import (
@@ -160,37 +159,43 @@ def user_index_json(request):
             p.map(_get_instances, clusters)
         cache_timeout = 90
         if bad_clusters:
-            messages = "Some instances may be missing because the" \
-                " following clusters are unreachable: %s" \
-                % (
-                    ", ".join(
-                        [
-                            "%s: %s" % (
-                                c[0].description or c[0].hostname,
-                                c[1]
-                            ) for c in bad_clusters
-                        ]
+            for c in bad_clusters:
+                djmessages.add_message(
+                    request,
+                    msgs.WARNING,
+                    "Some instances may be missing because the"
+                    " following clusters are unreachable: %s"
+                    % (
+                        ", ".join(
+                            [
+                                "%s: %s" % (
+                                    c[0].description or c[0].hostname,
+                                    c[1]
+                                )
+                            ]
+                        )
                     )
                 )
             cache_timeout = 30
         j.map(_get_instance_details, instances)
         if locked_clusters:
-            messages += 'Some clusters are under maintenance: <br>'
-            messages += ', '.join(locked_clusters)
-            messages += '.'
+            djmessages.add_message(
+                request,
+                msgs.WARNING,
+                'Some clusters are under maintenance: <br> %s' % ', '.join(locked_clusters)
+            )
         if bad_instances:
-            bad_inst_text = "Could not get details for " + \
-                str(len(bad_instances)) + \
-                " instances.<br> %s. Please try again later." % ', '.join([i.name for i in bad_instances])
-            if messages:
-                messages = messages + "<br>" + bad_inst_text
-            else:
-                messages = bad_inst_text
+            djmessages.add_message(
+                request,
+                msgs.WARNING,
+                "Could not get details for %s instances: %s. Please try again later." % (
+                    str(len(bad_instances)),
+                    ', '.join([i.name for i in bad_instances])
+                )
+            )
             cache_timeout = 30
 
         jresp['aaData'] = instancedetails
-        if messages:
-            jresp['messages'] = messages
         cache.set(cache_key, jresp, cache_timeout)
         res = jresp
 
@@ -226,19 +231,21 @@ def user_sum_stats(request):
         p.map(_get_instances, Cluster.objects.filter(disabled=False))
 
     if bad_clusters:
-        add_message(
-            request,
-            "Some instances may be missing because the following clusters are unreachable: %s" % (
-                ", ".join(
-                    [
-                        "%s: %s" % (
-                            c[0].description or c[0].hostname,
-                            c[1]
-                        ) for c in bad_clusters
-                    ]
+        for c in bad_clusters:
+            djmessages.add_message(
+                request,
+                msgs.WARNING,
+                "Some instances may be missing because the following clusters are unreachable: %s" % (
+                    ", ".join(
+                        [
+                            "%s: %s" % (
+                                c[0].description or c[0].hostname,
+                                c[1]
+                            )
+                        ]
+                    )
                 )
             )
-        )
     jresp = {}
     cache_key = "user:%s:index:instance:light" % request.user.username
     res = cache.get(cache_key)

@@ -98,9 +98,6 @@
     	    {% if user.is_superuser or perms.ganeti.view_instances %}
     	    "sDom": "<'row-fluid'<'span4'l><'span4'<'#clusterph'>><'span4'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
     	    "fnInitComplete": function(oSettings, json) {
-                if(json.hasOwnProperty('messages')){
-                	$.add_message(json.messages);
-                }
                 var seen_clusters = [];
 
             	var clustertoggle = $('<select id="clusterfilter" multiple></select>');

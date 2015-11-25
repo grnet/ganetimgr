@@ -448,12 +448,8 @@
                     url: clusturl,
                     dataType: 'json',
                     success: function(data) {
-                        if (data.failed === true) {
+                        if (data) {
                             // something wrong happened with ganeti
-                            $.add_message(data.reason);
-                            messageDiv.prop({'style': ''});
-                        } else {
-
                             selected_cluster = data;
                             cleanfields();
                             for (var i=0; i<data.node_groups.length; i++) {
