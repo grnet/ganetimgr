@@ -315,7 +315,7 @@ def user_sum_stats(request):
             user_stats_dict['memory'] = user_dict[u]['memory']
             instances_stats_list.append(user_stats_dict)
         return_dict = {'aaData': instances_stats_list}
-        cache.set(cache_key_stats, return_dict, 120)
+        cache.set(cache_key_stats, return_dict, 300)
         instances_stats = return_dict
     return HttpResponse(
         json.dumps(instances_stats),
