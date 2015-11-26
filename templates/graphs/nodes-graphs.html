@@ -93,7 +93,7 @@
 		var $node = $('#id_nodes');
 		var currentNodes = $node.val().split(',');
 		$cluster.select2();
-		var cluster = $cluster.select2('data').text;
+		var cluster = $cluster.select2('data').id;
 		var availabeNodeChoices;
 
 		$node.select2({
@@ -107,6 +107,7 @@
 
 
 		function getNodesForCluster (cluster) {
+			console.log(cluster);
 			$.getJSON('{% url cluster-nodes-json %}' + cluster + '/', function(data) {
 				var options = ''
 				availabeNodeChoices = [];
@@ -133,7 +134,7 @@
 		}
 
 		$cluster.on('change', function(e) {
-			cluster = $(this).select2('data').text;
+			cluster = $(this).select2('data').id;
 			getNodesForCluster(cluster);
 		});
 

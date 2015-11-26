@@ -98,7 +98,7 @@ def prepare_clusternodes(cluster=None):
         # get only enabled clusters
         clusters = Cluster.objects.filter(disabled=False)
     else:
-        clusters = Cluster.objects.filter(slug=cluster)
+        clusters = Cluster.objects.filter(slug=cluster.slug)
     p = Pool(15)
     nodes = []
     bad_clusters = []

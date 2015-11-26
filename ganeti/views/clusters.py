@@ -29,6 +29,7 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import close_connection
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 from django.http import (
     HttpResponse,
     HttpResponseRedirect,
@@ -71,23 +72,22 @@ def clusternodes_json(request, cluster=None):
     ):
         nodedetails = []
         jresp = {}
-        nodes = None
-        nodes = cache.get('allclusternodes')
-        bad_clusters = cache.get('badclusters')
-        bad_nodes = cache.get('badnodes')
-        if nodes is None:
-            nodes, bad_clusters, bad_nodes = prepare_clusternodes()
+        nodes = []
+        bad_clusters = []
+        bad_nodes = []
+        if cluster:
+            cluster = get_object_or_404(Cluster, pk=cluster)
+        if not nodes:
+            nodes, bad_clusters, bad_nodes = prepare_clusternodes(cluster)
             cache.set('allclusternodes', nodes, 90)
         if bad_clusters:
-            for c in bad_clusters:
-                messages.add_message(
-                    request,
-                    msgs.WARNING,
-                    "Some nodes may be missing because the" +
-                    " following clusters are unreachable: " +
-                    ", ".join([c.description or c.hostname])
-                )
-            cache.set('badclusters', bad_clusters, 90)
+            messages.add_message(
+                request,
+                msgs.ERROR,
+                "Some clusters appear to be offline: " +
+                ", ".join([c.slug for c in bad_clusters])
+            )
+
         if bad_nodes:
             messages.add_message(
                 request,
@@ -95,12 +95,6 @@ def clusternodes_json(request, cluster=None):
                 "Some nodes appear to be offline: " +
                 ", ".join(bad_nodes)
             )
-            cache.set('badnodes', bad_nodes, 90)
-        if cluster:
-            try:
-                cluster = Cluster.objects.get(hostname=cluster)
-            except Cluster.DoesNotExist:
-                cluster = None
         for node in nodes:
             if not cluster or (cluster and node['cluster'] == cluster.slug):
                 node_dict = {}
