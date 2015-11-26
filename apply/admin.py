@@ -19,6 +19,7 @@ from django.contrib import admin
 from apply.models import *
 from ganeti.models import Cluster
 
+
 def make_fast_create_actions():
     actions = []
     for cluster in Cluster.objects.filter(fast_create=True):
@@ -45,6 +46,8 @@ class ApplicationAdmin(admin.ModelAdmin):
     list_display = ["hostname", "applicant", "organization", "cluster",
                     "status", "filed"]
     list_filter = ["status", "organization"]
+    search_fields = ["hostname", "applicant", "organization", "cluster",
+                    "status", "filed"]
     list_editable = ["organization"]
     readonly_fields = ["job_id", "backend_message"]
     ordering = ["-filed", "hostname"]
