@@ -13,6 +13,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/bootstrap-responsive.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/font-awesome.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/includes/nprogress.css' %}">
         <link rel="icon" type="image/png" href="{{ BRANDING.FAVICON }}">
         <link rel="stylesheet" type="text/css" href="{% static 'ganetimgr/css/theme.css' %}">
         <!--[if lt IE 9]>
@@ -21,6 +22,7 @@
         <script src="{% static 'ganetimgr/js/includes/jquery-1.10.1.min.js' %}"></script>
         <script src="{% static 'ganetimgr/js/includes/jquery.cookie.js' %}"></script>
         <script src="{% static 'ganetimgr/js/includes/bootstrap.min.js' %}"></script>
+
         {% if user.is_authenticated and HELPDESK_INTEGRATION_JAVASCRIPT_URL %}
         <script type="text/javascript" src="{{HELPDESK_INTEGRATION_JAVASCRIPT_URL}}"></script>
         <script type="text/javascript">
@@ -224,9 +226,6 @@
         {% endblock %}
         {% block blockcontainer %}
         <div class="content {% block contentclass %}{% endblock %}">
-            <div class="spinner">
-                <i class="fa fa-cog fa-5x fa-spin"></i>
-            </div>
             <div class="container-fluid">
             {% block brcrmb_container %}
                 <ul class="breadcrumb">
@@ -310,6 +309,7 @@
     </footer>
     {% include "includes/analytics.html" %}
     {% block postfooter %}{% endblock %}
+    <script src="{% static 'ganetimgr/js/includes/nprogress.js' %}"></script>
     <script src="{% static 'ganetimgr/js/messages.js' %}"></script>
 
   </body>

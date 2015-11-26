@@ -1880,25 +1880,6 @@ label.required { font-weight: bold; }
   cursor: pointer;
 }
 
-.content .spinner {
-  display: none;
-}
-
-.loading .spinner {
-  display: inline-block;
-  position: fixed;
-  left: 50%;
-  right: 50%;
-  top: 50%;
-  bottom: 50%;
-  margin: auto;
-  color: #747cb4;
-  opacity: 0.5;
-}
-.loading.no-loading .spinner {
-  display: none;
-}
-
 .archive {
   cursor: pointer;
 }

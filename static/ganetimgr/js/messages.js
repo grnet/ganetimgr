@@ -3,7 +3,6 @@
     var content = $('.content');
     var message_container = $('#jsonmessages');
     var messages_url = message_container.data('messages');
-
     var last = '';
 
     $.add_message = function(text, css) {
@@ -19,7 +18,6 @@
             message_div.find('span').text(text);
             message_div.addClass(css_class);
             message_container.append(message_div);
-            content.removeClass('loading');
             message_container.show();
             last = text;
         }
@@ -37,14 +35,14 @@
         if (xhr.readyState < 4) {
             xhr.abort();
         } else {
-            content.removeClass('loading');
+            NProgress.done();
         }
     });
 
     $(document).ajaxSend(function() {
         // in case an ajax request is sent
         // This does NOT work with jquery datatables.
-        content.addClass('loading');
+        NProgress.start();
     });
 
     $( document ).ajaxSuccess(function(event, xhr, settings) {
