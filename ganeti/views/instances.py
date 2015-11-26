@@ -83,8 +83,10 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
         returns the user's instances,
         if the credentials are valid.
         '''
-        response = get_user_instances(request.user)
-        return HttpResponse(json.dumps(response))
+        from oauth2_provider.models import AccessToken
+        user = AccessToken.objects.get(token=request.GET.get('access_token')).user
+        response = get_user_instances(user)
+        return HttpResponse(json.dumps({'user': user.username, 'response': response}),  mimetype='application/json')
 else:
     def list_user_instances(request):
         raise NotImplementedError('Please install oauth2_toolkit. For more details take a look at admin section of the docs.')
