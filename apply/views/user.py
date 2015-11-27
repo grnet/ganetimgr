@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
+from django.contrib import messages
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
@@ -16,6 +17,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string, get_template
 from django.template.context import RequestContext
 from django.utils.safestring import mark_safe
+
 from django.utils.translation import ugettext_lazy as _
 
 from ganeti.models import InstanceAction
@@ -250,6 +252,7 @@ def delete_key(request, key_id):
 @login_required
 def pass_notify(request):
     user = User.objects.get(username=request.user)
+    messages.add_message(request, messages.INFO, _('Password changed!'))
     user.get_profile().force_logout()
     if user.email:
         email = render_to_string(

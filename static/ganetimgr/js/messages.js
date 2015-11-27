@@ -48,8 +48,12 @@
     $( document ).ajaxSuccess(function(event, xhr, settings) {
         if (settings.url != messages_url) {
             $.get( messages_url, function(data) {
-                for (var i=0; i<data.length; i++) {
-                    $.add_message(data[i].message, data[i].css);
+                if (data.logout === false) {
+                    for (var i=0; i<data.messages.length; i++) {
+                        $.add_message(data[i].message, data[i].css);
+                    }
+                } else {
+                    location.reload();
                 }
             });
         }

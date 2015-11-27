@@ -39,7 +39,6 @@ from django.http import (
 )
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.messages import constants as msgs
-from django.contrib.auth.decorators import user_passes_test
 from django.utils.translation import ugettext as _
 
 MESSAGE_TAGS = {
@@ -62,19 +61,27 @@ def news(request):
     )
 
 
-@login_required
 def get_messages(request):
-    mes = [
-        {
-            'message': m.message,
-            'css': MESSAGE_CSS.get(m.tags, 'warning')
-        } for m in messages.get_messages(request)
-    ]
+    if request.user.is_authenticated():
+        mes = {
+            'messages': [
+                {
+                    'message': m.message,
+                    'css': MESSAGE_CSS.get(m.tags, 'warning')
+                } for m in messages.get_messages(request)
+            ],
+            'logout': False
+        }
 
-    return HttpResponse(
-        json.dumps(mes),
-        mimetype='application/json'
-    )
+        return HttpResponse(
+            json.dumps(mes),
+            mimetype='application/json'
+        )
+    else:
+        return HttpResponse(
+            json.dumps({'logout': True}),
+            mimetype='application/json'
+        )
 
 
 @login_required
