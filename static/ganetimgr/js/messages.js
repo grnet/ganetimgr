@@ -53,7 +53,13 @@
                         $.add_message(data[i].message, data[i].css);
                     }
                 } else {
-                    location.reload();
+                    $.add_message('Logging out...', 'info');
+                    setTimeout(
+                        function(){
+                            location.reload();
+                        },
+                        3000
+                    );
                 }
             });
         }
