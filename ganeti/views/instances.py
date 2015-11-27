@@ -84,7 +84,8 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
         if the credentials are valid.
         '''
         from oauth2_provider.models import AccessToken
-        user = AccessToken.objects.get(token=request.GET.get('access_token')).user
+        token = get_object_or_404(AccessToken, token=request.GET.get('access_token'))
+        user = token.user
         response = get_user_instances(user)
         return HttpResponse(
             json.dumps(
