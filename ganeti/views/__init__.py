@@ -62,6 +62,7 @@ def news(request):
     )
 
 
+@login_required
 def get_messages(request):
     mes = [
         {
