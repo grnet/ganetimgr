@@ -49,8 +49,8 @@
         if (settings.url != messages_url) {
             $.get( messages_url, function(data) {
                 if (data.logout === false) {
-                    for (var i=0; i<data.messages.length; i++) {
-                        $.add_message(data[i].message, data[i].css);
+                    for (var i=0; i < data.messages.length; i++) {
+                        $.add_message(data.messages[i].message, data.messages[i].css);
                     }
                 } else {
                     $.add_message('Logging out...', 'info');
