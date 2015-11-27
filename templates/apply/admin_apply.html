@@ -430,12 +430,14 @@
         return selection.text;
     }
 
-    function formatnet(selection) {
+   function formatnet(selection) {
         element = selection.element;
         free = $(element).data('free');
         reserved = $(element).data('reserved');
-        if (free && reserved){
-            var piechart = $("<span style='float:right'>&nbsp;</span>");
+        var piechart = $("<span style='float:right'>&nbsp;</span>");
+        if (free===0) {
+            piechart.sparkline([reserved], {type: 'pie',sliceColors : ['#F2DEDE'], disableHiddenCheck: true });
+        } else {
             piechart.sparkline([reserved, free], {type: 'pie',sliceColors : ["#f89406", "#468847"], disableHiddenCheck: true });
         }
 
@@ -455,6 +457,7 @@
 
         return res;
     }
+
 
         function showDetails(cluster, jobid){
             $( "#instDetsbody" ).html( "" );
