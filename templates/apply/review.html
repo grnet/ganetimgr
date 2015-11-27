@@ -518,7 +518,7 @@
                 }
                 var option = '<option ';
                 if (selected_ng.networks[i].free_count < 1 && !(selected_ng.networks[i].free_count==null)) {
-                    option += 'disabled=disabled';
+                    option += 'disabled="disabled" ';
                 }
                 option += 'data-defaultnet="'+selected_ng.networks[i].defaultnet+'" \
                 data-free="'+selected_ng.networks[i].free_count+'" \
@@ -636,37 +636,33 @@
         element = selection.element;
         free = $(element).data('free');
         reserved = $(element).data('reserved');
+
         var piechart = $("<span style='float:right'>&nbsp;</span>");
-        if (free===0) {
-            piechart.sparkline([reserved], {type: 'pie',sliceColors : ['#F2DEDE'], disableHiddenCheck: true });
-        } else {
+        if (free === 0) {
+            console.log(element);
+            piechart.sparkline([reserved], {type: 'pie',sliceColors : ["#B94A48"], disableHiddenCheck: true });
+        } else if (free && reserved) {
             piechart.sparkline([reserved, free], {type: 'pie',sliceColors : ["#f89406", "#468847"], disableHiddenCheck: true });
         }
 
-
-       if ($(element).data('defaultnet')){
-       var res=$("<font style='color:#38D64A; font-weight: bold;'>"+selection.text+"</font>");
-            if (free && reserved){
-                res.append(piechart);
-            }
-       }
-       else {
+        if ($(element).data('defaultnet')) {
+            var res=$("<font style='color:#38D64A; font-weight: bold;'>"+selection.text+"</font>");
+            res.append(piechart);
+        } else {
             var res = $("<font>"+selection.text+"</font>");
-            if (free && reserved){
-                res.append(piechart);
-            }
+            res.append(piechart);
        }
 
         return res;
     }
 
-        function showDetails(cluster, jobid){
-            $( "#instDetsbody" ).html( "" );
-            $( "#myModalLabelservdets" ).text('Job Details: '+jobid);
-            $( "#instDetsbody" ).load("{% url jobdets-popup %}/?cluster="+cluster+"&jobid="+jobid+"");
-            $( "#instDets" ).modal('show');
-            return false;
-        }
+    function showDetails(cluster, jobid){
+        $( "#instDetsbody" ).html( "" );
+        $( "#myModalLabelservdets" ).text('Job Details: '+jobid);
+        $( "#instDetsbody" ).load("{% url jobdets-popup %}/?cluster="+cluster+"&jobid="+jobid+"");
+        $( "#instDets" ).modal('show');
+        return false;
+    }
 
 </script>
 {% endblock %}
