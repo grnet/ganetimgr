@@ -152,7 +152,7 @@
 				<fieldset class="span5">
 					<legend>{% trans "Administrative contact" %}</legend>
 					{% if BRANDING.SHOW_ORGANIZATION_FORM and BRANDING.SHOW_ADMINISTRATIVE_FORM %}
-						<p>{% blocktrans %}If you are applying on behalf of a NOC under GRNET's
+						<p>{% blocktrans with name=BRANDING.SERVICE_PROVIDED_BY.NAME %}If you are applying on behalf of a NOC under {{ name }}'s
 						constituency, please select the appropriate organization.
 						Otherwise, fill-in the admin contact information below.{% endblocktrans %}</p>
 					{% endif %}

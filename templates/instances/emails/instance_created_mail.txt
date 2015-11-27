@@ -10,7 +10,7 @@
 
 Για περισσότερες πληροφορίες για την εικονική μηχανή σας ή για οποιοιδήποτε
 άλλο αίτημα αφορά την υπηρεσία, μπορείτε να επικοινωνήσετε με το Helpdesk του
-ΕΔΕΤ.
+{{ BRANDING.SERVICE_PROVIDED_BY.NAME }}.
 
 -----------------------------------------------------------------------------
 
@@ -24,4 +24,4 @@ You can manipulate and view the data at the following address:
 {% endif %}
 
 For more information on the virtual machine or any
-other request regarding the service, you can contact the GRNET Helpdesk.
+other request regarding the service, you can contact the {{ BRANDING.SERVICE_PROVIDED_BY.NAME }} Helpdesk.

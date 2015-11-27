@@ -244,7 +244,9 @@ def handle_creation(job):
                                                       application.hostname)))
                 mail_body = render_to_string("instances/emails/instance_created_mail.txt",
                                              {"application": application,
-                                              "instance_url": instance_url})
+                                              "instance_url": instance_url,
+                                              "BRANDING": settings.BRANDING
+                                            })
                 try_log(send_mail, settings.EMAIL_SUBJECT_PREFIX +
                           "Instance %s is ready" % application.hostname,
                           mail_body, settings.SERVER_EMAIL,

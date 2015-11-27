@@ -29,6 +29,8 @@ from django.http import Http404
 from django.template.loader import render_to_string, get_template
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
+from django.template import RequestContext
+
 from django.http import (
     HttpResponseRedirect,
     HttpResponseForbidden,
@@ -285,8 +287,11 @@ def review_application(request, application_id=None):
             if "reject" in request.POST:
                 application.status = STATUS_REFUSED
                 application.save()
-                mail_body = render_to_string("apply/emails/application_rejected_mail.txt",
-                                             {"application": application})
+                mail_body = render_to_string(
+                    "apply/emails/application_rejected_mail.txt",
+                    {"application": application, },
+                    context_instance=RequestContext(request)
+                )
                 send_mail(
                     settings.EMAIL_SUBJECT_PREFIX + "Application for %s rejected" % (
                         application.hostname

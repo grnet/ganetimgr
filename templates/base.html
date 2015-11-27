@@ -268,7 +268,7 @@
             {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
                 {% trans "This is a service provided by" %}
                     {% if BRANDING.SERVICE_PROVIDED_BY.URL %}
-                        <a target="_blank" href="//noc.grnet.gr">
+                        <a target="_blank" href="{{ BRANDING.SERVICE_PROVIDED_BY.URL }}">
                     {% endif %}
                     {% if BRANDING.SERVICE_PROVIDED_BY.NAME %}
                         {{ BRANDING.SERVICE_PROVIDED_BY.NAME}}

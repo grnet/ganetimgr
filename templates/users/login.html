@@ -43,11 +43,11 @@
 								<div class="row-fluid">
 									<h2><i class="fa fa-cloud"></i> {% trans "Welcome" %}</h2>
 									<div id="change_name_placeholder" class="padwidget">
-										{% blocktrans %}
-											<p>Welcome to GRNET's ViMa service.</p>
+										{% blocktrans with name=BRANDING.SERVICE_PROVIDED_BY.NAME title=BRANDING.TITLE %}
+											<p>Welcome to {{ name }}'s {{ title }} service.</p>
 											<p>If you are new to the service, take some time to read the service description supplied at the hyperlink at the end of this page and then register for a new account.</p>
 											<p>If you already have an account, you can log in using the form on the right.</p>
-											<p>For troubleshooting info and remarks do not hesitate to contact GRNET's Helpdesk.</p>
+											<p>For troubleshooting info and remarks do not hesitate to contact {{ name }}'s Helpdesk.</p>
 										{% endblocktrans %}
 									</div>
 								</div>

@@ -4,7 +4,7 @@
 {{ application.admin_comments }}
 
 Για περισσότερες πληροφορίες μπορείτε να επικοινωνήσετε με το Helpdesk του
-ΕΔΕΤ.
+{{ BRANDING.SERVICE_PROVIDED_BY.NAME }}.
 
 -----------------------------------------------------------------------------
 
@@ -13,4 +13,4 @@ Your request #{{ application.pk }} to create virtual machine name
 
 {{ application.admin_comments }}
 
-For more information please contact the GRNET Helpdesk.
+For more information please contact the {{ BRANDING.SERVICE_PROVIDED_BY.NAME }} Helpdesk.
