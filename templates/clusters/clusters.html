@@ -114,6 +114,7 @@
 	var selected_cluster;
 	var ipolll;
 	$(document).ready( function(){
+    	NProgress.configure({ showSpinner: false });
 		NProgress.start();
 		var url = "{% url clusterdetails_json %}";
 		$.ajax({

@@ -4,6 +4,7 @@
     var message_container = $('#jsonmessages');
     var messages_url = message_container.data('messages');
     var last = '';
+    NProgress.configure({ showSpinner: false });
 
     $.add_message = function(text, css) {
         if (last !== text) {

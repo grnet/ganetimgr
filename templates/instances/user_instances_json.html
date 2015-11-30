@@ -144,8 +144,8 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 var needsrebootset = false;
 
 $(document).ready( function(){
+    NProgress.configure({ showSpinner: false });
     NProgress.start();
-
 
 	var oTable = $('#vm_instance_table').dataTable({
 		"bPaginate": true,
