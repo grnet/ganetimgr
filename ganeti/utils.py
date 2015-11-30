@@ -29,9 +29,12 @@ def disksizes(value):
     return [filesizeformat(v * 1024 ** 2) for v in value]
 
 
-def get_user_instances(user):
+def get_user_instances(user, admin=True):
     '''
     Return a list of users instances.
+    if admin is false the result will be the instances
+    of the user regardless the fact that he has access to all
+    of them.
     '''
 
     instances = []
@@ -39,7 +42,7 @@ def get_user_instances(user):
 
     def _get_instances(cluster):
         try:
-            instances.extend([i.name for i in cluster.get_user_instances(user)])
+            instances.extend([i.name for i in cluster.get_user_instances(user, admin)])
         except (GanetiApiError, Exception):
             error = True
         finally:

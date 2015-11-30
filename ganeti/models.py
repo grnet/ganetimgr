@@ -533,9 +533,9 @@ class Cluster(models.Model):
         ]
         return retinstances
 
-    def get_user_instances(self, user):
+    def get_user_instances(self, user, admin=True):
         instances = self.get_instances()
-        if user.is_superuser or user.has_perm('ganeti.view_instances'):
+        if (user.is_superuser or user.has_perm('ganeti.view_instances')) and admin:
             return instances
         else:
             user = User.objects.filter(pk=user.pk).select_related(

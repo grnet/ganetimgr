@@ -86,7 +86,7 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
         from oauth2_provider.models import AccessToken
         token = get_object_or_404(AccessToken, token=request.GET.get('access_token'))
         user = token.user
-        response = get_user_instances(user)
+        response = get_user_instances(user, admin=False)
         return HttpResponse(
             json.dumps(
                 {
