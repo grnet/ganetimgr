@@ -501,6 +501,16 @@
             selnet.empty();
             var parsed_groups = [];
             var selected = false;
+            var byProperty = function(prop) {
+                return function(a,b) {
+                    if (typeof a[prop] == "number") {
+                        return (b[prop] - a[prop]);
+                    } else {
+                        return ((a[prop] > b[prop]) ? -1 : ((a[prop] < b[prop]) ? 1 : 0));
+                    }
+                };
+            };
+            selected_ng.networks.sort(byProperty("free_count"));
             for (var i=0; i<selected_ng.networks.length; i++) {
                 if ($.inArray(selected_ng.networks[i].type, parsed_groups) != -1) {
                     selgroup = $('#gr_'+selected_ng.networks[i].type+'');
@@ -526,7 +536,6 @@
                 data-type="'+selected_ng.networks[i].type+'" \
                 value="'+selected_ng.networks[i].link+'::'+selected_ng.networks[i].type+'" '+selecttext+'>'+selected_ng.networks[i].network + ' (' + selected_ng.networks[i].link + ') </option>'
                 selgroup.append(option);
-
             }
             if (('routed', parsed_groups) != -1){
                 topgroup = $('#gr_routed');
@@ -639,7 +648,6 @@
 
         var piechart = $("<span style='float:right'>&nbsp;</span>");
         if (free === 0) {
-            console.log(element);
             piechart.sparkline([reserved], {type: 'pie',sliceColors : ["#B94A48"], disableHiddenCheck: true });
         } else if (free && reserved) {
             piechart.sparkline([reserved, free], {type: 'pie',sliceColors : ["#f89406", "#468847"], disableHiddenCheck: true });
