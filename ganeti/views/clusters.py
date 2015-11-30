@@ -246,6 +246,11 @@ def reinstalldestreview(request, application_hash, action_id):
         user = User.objects.get(username=request.user)
         user.email = action.action_value
         user.save()
+        messages.add_message(
+            request,
+            messages.INFO,
+            _('Mail changed succesfully.')
+        )
         return HttpResponseRedirect(reverse('profile'))
     instance = action.instance
     cluster = action.cluster
