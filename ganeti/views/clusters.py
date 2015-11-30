@@ -239,6 +239,14 @@ def reinstalldestreview(request, application_hash, action_id):
                 'hash': application_hash
             }
         )
+    if action_id == 4:
+        instance_action = InstanceAction.objects.activate_request(
+            application_hash
+        )
+        user = User.objects.get(username=request.user)
+        user.email = action.action_value
+        user.save()
+        return HttpResponseRedirect(reverse('profile'))
     instance = action.instance
     cluster = action.cluster
     if not request.user.userprofile.is_owner(cluster.get_instance(instance)):
@@ -249,8 +257,6 @@ def reinstalldestreview(request, application_hash, action_id):
             action = 'rename'
         elif action_id is 2:
             action = 'destroy'
-        elif action_id is 4:
-            action = 'mail change'
         auditlog_entry(request, 'Unauthorized ' + action + ' attempt',
                        instance, cluster.slug, True, False)
         mail_unauthorized_action(
@@ -261,7 +267,7 @@ def reinstalldestreview(request, application_hash, action_id):
     activated = False
     try:
         instance_object = Instance.objects.get(name=instance)
-    except Instance.DoesNotExist:
+    except:
         # This should occur only when user changes email
         pass
     if action.activation_key_expired():
@@ -304,11 +310,6 @@ def reinstalldestreview(request, application_hash, action_id):
                 auditlog.update(action="Rename to %s" % action_value)
                 jobid = cluster.rename_instance(instance, action_value)
                 auditlog.update(job_id=jobid)
-            if action_id == 4:
-                user = User.objects.get(username=request.user)
-                user.email = action_value
-                user.save()
-                return HttpResponseRedirect(reverse('profile'))
             activated = True
             return HttpResponseRedirect(reverse('user-instances'))
         else:

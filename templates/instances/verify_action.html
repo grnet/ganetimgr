@@ -74,8 +74,9 @@ $(document).ready( function(){
 					<button type="submit" class="btn btn-info requestaction">{% trans "Change Email" %}</button>
 			 	</form>
 			{% else %}
-				{% trans "Mail change is no longer available. It has either expired or it is already performed.<br>
-			  	Apply for a new request via the instance details page." %}
+				{% blocktrans %}
+				Mail change is no longer available. It has either expired or it is already performed.<br>
+			  	Apply for a new request via the instance details page. {% endblocktrans %}
 			{% endif %}
 			</div>
 		{% endif %}
