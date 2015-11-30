@@ -362,37 +362,34 @@ def clusterdetails(request):
 
 def clusterdetails_json(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
-        clusterlist = cache.get("cluster:allclusterdetails")
-        if clusterlist is None:
-            clusterlist = []
-            errors = []
-            p = Pool(10)
-
-            def _get_cluster_details(cluster):
+        if request.GET.get('cluster'):
+            cluster_slug = request.GET.get('cluster')
+            cluster_details = cache.get("cluster:%s:clusterdetails" % (cluster_slug))
+            if not cluster_details:
                 try:
-                    clusterlist.append(clusterdetails_generator(cluster.slug))
+                    cluster_details = clusterdetails_generator(cluster_slug)
                 except GanetiApiError as e:
-                    errors.append(
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
                         '%s: %s' %
                         (
-                            cluster,
+                            cluster_slug,
                             format_ganeti_api_error(e)
                         )
                     )
                 except Exception as e:
-                    errors.append(e)
-                finally:
-                    close_connection()
-            # get only enabled clusters
-            p.map(_get_cluster_details, Cluster.objects.filter(disabled=False))
-            cache.set("clusters:allclusterdetails", clusterlist, 180)
-        for error in errors:
-            if request.user.is_superuser:
-                messages.add_message(request, msgs.WARNING, error)
-        return HttpResponse(json.dumps(
-            {
-                'clusterlist': clusterlist,
-            }
-        ), mimetype='application/json')
-    else:
-        raise PermissionDenied
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        '%s' %
+                        (
+                            e
+                        )
+                    )
+                cache.set("cluster:%s:clusterdetails" % (cluster_slug), cluster_details, 3600 * 24)
+            return HttpResponse(
+                json.dumps(cluster_details),
+                mimetype='application/json'
+            )
+    raise PermissionDenied
