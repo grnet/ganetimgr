@@ -198,7 +198,7 @@ def user_index_json(request):
                     " following clusters are unreachable: %s"
                     % (
                         ", ".join(
-                            [c[0].slug or c[0].hostname for c in bad_clusters]
+                            [c[0].description or c[0].hostname for c in bad_clusters]
                         )
                     )
                 )
