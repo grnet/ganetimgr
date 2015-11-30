@@ -136,10 +136,10 @@ class ClusterTestCase(LoginTestCase):
         res = self.client.get(reverse('clusterdetails_json'))
         self.assertEqual(res.status_code, 403)
 
-        # should get a 200
+        # should get a 403, we must define a cluster slug
         self.login_superuser()
         res = self.client.get(reverse('clusterdetails_json'))
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 403)
 
 
 class GraphsTestCase(LoginTestCase):
