@@ -303,6 +303,7 @@
 						<th>{% trans "First Name" %}</th>
 						<th>{% trans "Last Name" %}</th>
 						<th>{% trans "E-mail" %}</th>
+						<th>{% trans "Is Active" %}</th>
 						<th style="text-align: center;">{% trans "Groups" %}</th>
 						{% endifequal %}
 						{% ifequal type 'group' %}
@@ -321,6 +322,7 @@
 						<td>{{usergroup.first_name}}</td>
 						<td>{{usergroup.last_name}}</td>
 						<td><a href="mailto:{{usergroup.email}}">{{usergroup.email}}</a></td>
+						<td>{{usergroup.is_active}}</td>
 						<td>
 							{% for group in usergroup.groups.all %}
 								<a class="btn" href="{% url user-info 'group' group %}"><i class="fa fa-group"></i> {{ group }}</a>
