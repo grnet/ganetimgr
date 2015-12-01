@@ -55,8 +55,7 @@ def check_instance_auth(view_fn):
             ):
                 res = True
 
-            cache.set(cache_key, res, 60)
-
+            cache.set(cache_key, res, 180)
         if not res:
             t = get_template("403.html")
             return HttpResponseForbidden(content=t.render(RequestContext(request)))
@@ -71,10 +70,15 @@ def check_admin_lock(view_fn):
             instance_name = kwargs["instance"]
         except KeyError:
             instance_name = args[0]
-        instance = Instance.objects.get(name=instance_name)
-        res = instance.adminlock
         if request.user.is_superuser:
-                res = False
+            res = False
+        else:
+            if cache.get('instances:%s' % (instance_name)):
+                res = cache.get('instances:%s' % (instance_name))
+            else:
+                instance = Instance.objects.get(name=instance_name)
+                res = instance.adminlock
+                cache.set('instances:%s' % (instance_name), res, 60 * 60)
         if not res:
             return view_fn(request, *args, **kwargs)
         else:

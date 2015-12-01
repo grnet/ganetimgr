@@ -506,9 +506,8 @@ def reinstalldestroy(
 
 
 @login_required
-@csrf_exempt
-@check_instance_auth
 @check_admin_lock
+@check_instance_auth
 def rename_instance(
     request,
     cluster_slug,
@@ -761,12 +760,15 @@ def lock(request, instance):
                         "Lock Instance",
                         instance, instance.cluster.slug
                     )
+                    # set the cache for a week
+                    cache.set('instances:%s' % (instance.name), True, 60 * 60 * 24 * 7)
                     jobid = instance.cluster.tag_instance(
                         instance.name,
                         ["%s:adminlock" % settings.GANETI_TAG_PREFIX]
                     )
                     auditlog.update(job_id=jobid)
                 if adminlock is False:
+                    cache.delete('instances:%s' % (instance.name))
                     auditlog = auditlog_entry(
                         request,
                         "Unlock Instance",
