@@ -189,7 +189,8 @@ class InstanceForm(forms.ModelForm):
                   'organization', 'hosts_mail_server',)
 
     def clean_hostname(self):
-        hostname = self.cleaned_data["hostname"].rstrip(".")
+        hostname = self.cleaned_data["hostname"].rstrip(".").lower()
+
         # Check copied from ganeti's code
         if (
             not _VALID_NAME_RE.match(hostname) or
@@ -370,7 +371,7 @@ class InstanceApplicationReviewForm(InstanceForm):
                 return disk_template
 
     def clean_hostname(self):
-        hostname = self.cleaned_data["hostname"].rstrip(".")
+        hostname = self.cleaned_data["hostname"].rstrip(".").lower()
         if self.data and "reject" in self.data:
             return hostname
         # Check copied from ganeti's code
