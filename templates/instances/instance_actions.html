@@ -73,7 +73,6 @@
     });
 		return false; });
 
-	{% if not instance.pending_reinstall %}
 		$( "#reinstall" )
 		.click(function() {
 			clearTimeout(polltimer);
@@ -99,9 +98,7 @@
 		        }
 	    });
 			return false; });
-	{% endif %}
 
-	{% if not instance.pending_destroy %}
 	$( "#destroy" )
 	.click(function() {
 		clearTimeout(polltimer);
@@ -124,12 +121,7 @@
 		return false; });
 
 
-	{% endif %}
-
-
-	{% if not instance.pending_rename %}
-	$( "#rename" )
-	.click(function() {
+	$( "#rename" ).click(function() {
 		clearTimeout(polltimer);
 		{% if instance.oper_state %}
 		$( "#instrenerr" ).modal('show');
@@ -139,8 +131,6 @@
 		$( "#instren" ).modal('show');
 		{% endif %}
 		return false; });
-
-	{% endif %}
 
 	$( "#reboot" ).click(function() {
 		clearTimeout(polltimer);
@@ -210,9 +200,9 @@
 				{% include "instances/includes/console-module.html" %}
 			</div>
 			<div class="span6">
-				<div class="row-fluid"><div class="span12"><a class="btn btn-small btn-fixed btn-info {% if instance.pending_rename %}disabled{% endif %}" id="rename" href="#"><i class="fa fa-font"></i> {% trans "Rename..." %}</a></div></div>
-				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#"><i class='fa fa-cloud-download'></i> {% trans "Reinstall..." %}</a></div></div>
-				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#"><i class='fa fa-trash'></i> {% trans "Destroy..." %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn btn-small btn-fixed btn-info" id="rename" href="#"><i class="fa fa-font"></i> {% trans "Rename..." %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger" id="reinstall" href="#"><i class='fa fa-cloud-download'></i> {% trans "Reinstall..." %}</a></div></div>
+				<div class="row-fluid"><div class="span12"><a class="btn  btn-small btn-fixed btn-danger" id="destroy" href="#"><i class='fa fa-trash'></i> {% trans "Destroy..." %}</a></div></div>
 				</div>
 				{% else %}
 				<div class="span12">Due to maintenance, actions have been disabled on a group of instances that includes this instance.
@@ -243,7 +233,7 @@
 						<div class="span6">
 							<div class="row-fluid">
 								<div class="span12">
-									<a class="btn btn-fixed btn-info btn-small {% if instance.pending_rename %}disabled{% endif %}" id="rename" href="#">
+									<a class="btn btn-fixed btn-info btn-small " id="rename" href="#">
 										<i class="fa fa-font"></i>
 										{% trans "Rename..." %}
 									</a>
@@ -251,7 +241,7 @@
 							</div>
 							<div class="row-fluid">
 								<div class="span12">
-									<a class="btn btn-fixed btn-small btn-danger {% if instance.pending_reinstall %}disabled{% endif %}" id="reinstall" href="#">
+									<a class="btn btn-fixed btn-small btn-danger" id="reinstall" href="#">
 										<i class='fa fa-cloud-download'></i>
 										{% trans "Reinstall..." %}
 									</a>
@@ -259,7 +249,7 @@
 							</div>
 							<div class="row-fluid">
 								<div class="span12">
-									<a class="btn btn-fixed btn-small btn-danger {% if instance.pending_destroy %}disabled{% endif %}" id="destroy" href="#">
+									<a class="btn btn-fixed btn-small btn-danger" id="destroy" href="#">
 										<i class='fa fa-trash'></i>
 										{% trans "Destroy..." %}
 									</a>
