@@ -417,8 +417,8 @@
     };
     $(document).ready( function(){
 
-        $('input.accept').on('click', function () {
-            $(this).hide();
+        $('input.accept').one('click', function () {
+            $(this).prop('disabled', 'disabled');
         });
 
         function cleanfields(){

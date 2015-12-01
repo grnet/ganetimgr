@@ -230,6 +230,10 @@
 
 
     $(document).ready( function(){
+        $('input[type="submit"]').one('click', function () {
+            $(this).prop('disabled', 'disabled');
+        });
+
         function cleanfields(){
             $("#networkinfo").html('')
             $("#id_node_group").html('')
