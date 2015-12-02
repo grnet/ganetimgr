@@ -324,6 +324,7 @@ SECRET_KEY = <CHANGE ME>
 # OAUTH2
 if 'oauth2_provider' in INSTALLED_APPS and 'corsheaders' in INSTALLED_APPS:
     OAUTH2_PROVIDER = {
+        'ACCESS_TOKEN_EXPIRE_SECONDS': 60 * 60 * 24 * 7 * 10,
         'SCOPES': {
             'read': 'Read scope',
         },

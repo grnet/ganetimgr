@@ -93,6 +93,7 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
                     'user': {
                         'username': user.username,
                         'email': user.email,
+                        'id': user.pk,
                     },
                     'response': response
                 }
