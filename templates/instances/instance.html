@@ -214,22 +214,28 @@
 							 			<span class="caret"></span>
 							 		</button>
 							 		<ul class="dropdown-menu instanceopt pull-right">
+							 			{% if request.user.is_superuser %}
 											<li><a href="#" onclick="javascript:showDetails('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Details" %}</a></li>
-											<li><a href="#" onclick="javascript:showTags('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Owners" %}</a></li>
 											<li><a href="#" onclick="javascript:showNotify('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Notify" %}</a></li>
-										{% if instance.adminlock %}
-											<li><a href="#" onclick="javascript:showLock('{{instance.cluster.slug}}','{{instance.name}}', 'unlock'); return false;">{% trans "Unlock" %}</a></li>
-										{% else %}
-											<li><a href="#" onclick="javascript:showLock('{{instance.cluster.slug}}','{{instance.name}}', 'lock'); return false;">{% trans "Lock" %}</a></li>
 										{% endif %}
-										{% if instance.isolate %}
-								 			<li>
-								 				<a href="#" onclick="javascript:showIsolate('{{instance.cluster.slug}}','{{instance.name}}', 'connect'); return false;">{% trans "De-Isolate" %}</a>
-								 			</li>
-							   			{% else %}
-											<li>
-												<a href="#" onclick="javascript:showIsolate('{{instance.cluster.slug}}','{{instance.name}}', 'isolate'); return false;">{% trans "Isolate" %}</a>
-											</li>
+											<li><a href="#" onclick="javascript:showTags('{{instance.cluster.slug}}','{{instance.name}}'); return false;">{% trans "Owners" %}</a></li>
+										{% if perms.ganeti.can_lock %}
+											{% if instance.adminlock %}
+												<li><a href="#" onclick="javascript:showLock('{{instance.cluster.slug}}','{{instance.name}}', 'unlock'); return false;">{% trans "Unlock" %}</a></li>
+											{% else %}
+												<li><a href="#" onclick="javascript:showLock('{{instance.cluster.slug}}','{{instance.name}}', 'lock'); return false;">{% trans "Lock" %}</a></li>
+											{% endif %}
+										{% endif %}
+										{% if perms.ganeti.can_isolate %}
+											{% if instance.isolate %}
+									 			<li>
+									 				<a href="#" onclick="javascript:showIsolate('{{instance.cluster.slug}}','{{instance.name}}', 'connect'); return false;">{% trans "De-Isolate" %}</a>
+									 			</li>
+								   			{% else %}
+												<li>
+													<a href="#" onclick="javascript:showIsolate('{{instance.cluster.slug}}','{{instance.name}}', 'isolate'); return false;">{% trans "Isolate" %}</a>
+												</li>
+											{% endif %}
 										{% endif %}
 							 		</ul>
 						   		</div>
@@ -412,6 +418,7 @@
 			<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
 		</div>
 	</div>
+
 {% endblock %}
 
 {% block postfooter %}
@@ -513,7 +520,8 @@
 		$( "#instDets" ).modal('show');
 		return false;
 	}
-{% if user.is_superuser  %}
+
+{% if user.is_superuser %}
 	function showDetails(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Instance Details: '+instance);
@@ -529,7 +537,9 @@
 		$( "#instDets" ).modal('show');
 		return false;
 	}
+{% endif %}
 
+{% if user.is_superuser or perms.ganeti.can_lock or perms.ganeti.can_isolate %}
 	function showLock(cluster, instance, action){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text(action + ': '+instance);

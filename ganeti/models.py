@@ -350,6 +350,12 @@ class Instance(object):
     def pending_rename(self):
         return self._pending_action_request(3)
 
+    class Meta:
+        permissions = (
+            ("can_isolate", "Can Isolate"),
+            ("can_lock", "Can Lock"),
+        )
+
 
 class Cluster(models.Model):
     hostname = models.CharField(max_length=128)

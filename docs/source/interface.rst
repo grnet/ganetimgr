@@ -23,7 +23,7 @@ There is a statistics view that shows graphs and data about the user (stats , ac
 
 .. image:: _static/images/ss_03_user_statistics.png
 	:scale: 50 %
-	
+
 Profile
 -------
 This is the profile settings page. The user can change the profile full name, the password or the registered email address. Also SSH key management.
@@ -47,6 +47,22 @@ User can view a timeline of the events for all his vms.
 .. image:: _static/images/history.png
 	:scale: 50 %
 
+
+Permissions
+^^^^^^^^^^^
+The are three extra permissions for non-administrative users:
+
+Can view all instances
+----------------------
+When a user has this permission, they can view all instances.
+
+Can Lock
+--------
+Combined with the above permission, they can lock an instance.
+
+Can Isolate
+--------
+Combined with the 'can view all instances' permission, they can isolate an instance.
 
 Admin view
 ^^^^^^^^^^
@@ -80,7 +96,7 @@ List all instances Cpu and nerwork graphs, per cluster or per node. You can coll
 
 .. image:: _static/images/graphs.png
 	:scale: 50 %
-	
+
 Jobs
 ----
 Real-time view of the cluster(s) job queue. Ability to sort based on job status (running, success, failed, waiting) and per cluster).

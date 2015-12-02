@@ -18,7 +18,7 @@
 import json
 
 from gevent.pool import Pool
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.messages import constants as msgs
 from django.contrib import messages as djmessages
 from django.core.urlresolvers import reverse
@@ -740,6 +740,7 @@ def instance(request, cluster_slug, instance):
 
 @csrf_exempt
 @login_required
+@permission_required('ganeti.can_lock')
 def lock(request, instance):
     if (
         request.user.is_superuser or
@@ -810,6 +811,7 @@ def lock(request, instance):
 
 @csrf_exempt
 @login_required
+@permission_required('ganeti.can_isolate')
 def isolate(request, instance):
     if (
         request.user.is_superuser or
