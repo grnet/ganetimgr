@@ -359,9 +359,74 @@ else:
     from ganetimgr.settings import OPERATING_SYSTEMS_PROVIDER, OPERATING_SYSTEMS_SSH_KEY_PARAM
 
 try:
+    from ganetimgr.settings import SNF_OPERATING_SYSTEMS_URLS
+except ImportError:
+    SNF_OPERATING_SYSTEMS_URLS = False
+else:
+    from ganetimgr.settings import OPERATING_SYSTEMS_PROVIDER, OPERATING_SYSTEMS_SSH_KEY_PARAM
+
+try:
     from ganetimgr.settings import OPERATING_SYSTEMS
 except ImportError:
     OPERATING_SYSTEMS = False
+
+
+def discover_snf_images():
+    snf_images = {}
+    if SNF_OPERATING_SYSTEMS_URLS:
+        for url in SNF_OPERATING_SYSTEMS_URLS:
+            try:
+                raw_response = requests.get(url)
+            except ConnectionError:
+                # fail silently if url is unreachable
+                break
+            else:
+                if raw_response.ok:
+                    soup = BeautifulSoup(raw_response.text)
+                    extensions = {
+                        'img': 'diskdump',
+                    }
+                    for link in soup.findAll('a'):
+                        try:
+                            # lets see if the link we've got is an image
+                            extension = link.attrs.get('href').split('.')[-1]
+                        except IndexError:
+                            continue
+                        else:
+                            if extension in extensions.keys():
+                                # in case we have an images lets store it
+                                img = '%s%s' % (url, link.attrs.get('href'))
+                            else:
+                                continue
+                            re = requests.get(
+                                '%s%s.dsc' % (
+                                    url,
+                                    link.attrs.get('href')
+                                )
+                            )
+                            if re.ok:
+                                description = re.text.strip()
+                            else:
+                                description = link.attrs.get('href')
+                            snf_images.update(
+                                {
+                                    img: {
+                                        'description': description,
+                                        'provider': 'snf-image+default',
+                                        'osparams': {
+                                            'img_id': img,
+                                            'img_format': extensions.get(extension),
+                                            'img_properties': {
+                                                'SWAP': '2:512'
+                                            },
+                                        },
+                                        'ssh_user_keys': 'root',
+                                    },
+                                }
+                            )
+        return snf_images
+    else:
+        return {}
 
 
 def discover_available_operating_systems():
@@ -372,7 +437,7 @@ def discover_available_operating_systems():
                 raw_response = requests.get(url)
             except ConnectionError:
                 # fail silently if url is unreachable
-                break
+                continue
             else:
                 if raw_response.ok:
                     soup = BeautifulSoup(raw_response.text)
@@ -452,9 +517,12 @@ def operating_systems():
     response = cache.get('operating_systems')
     # if no items in cache
     if not response:
-        discovery = discover_available_operating_systems()
         dictionary = get_operating_systems_dict()
-        operating_systems = sorted(dict(discovery.items() + dictionary.items()).items())
+        discovery = discover_available_operating_systems()
+        snf_discovery = discover_snf_images()
+        operating_systems = sorted(dict(
+            discovery.items() + dictionary.items() + snf_discovery.items()
+        ).items())
         # move 'none' on the top of the list for ui purposes.
         for os in operating_systems:
             if os[0] == 'none':

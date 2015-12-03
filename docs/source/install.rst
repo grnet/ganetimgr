@@ -160,6 +160,13 @@ You also need to set OPERATING_SYSTEMS_PROVIDER and OPERATING_SYSTEMS_SSH_KEY_PA
 
 GannetiMgr will look for available images both from both sources. None of the above settings is required.
 
+There is also an autodiscovery mechanism for snf images, by setting snf-image url in settings.py as such:
+
+    SNF_OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/snf-image/']
+
+The process is identical with that above. 
+
+
 FLATPAGES
 ^^^^^^^^^
 

@@ -13,6 +13,8 @@ New Features:
 	- Email Notifications archive
 	- Disable choice for full networks in applications review
     - Oauth2 for the list of the vms (optional, read the docs for more details)
+    - Add support for remote discovery and retrieval of available snf-images
+
 
 Fixes/Improvements:
 	- Improved cluster admin

@@ -280,6 +280,8 @@ OPERATING_SYSTEMS = {
 
 # the urls of the available os images
 OPERATING_SYSTEMS_URLS = ['http://example.com/images']
+SNF_OPERATING_SYSTEMS_URLS = ['http://example.com/snf-images/']
+
 
 # the provider and ssh key param
 # We assume that they have the same configuration
