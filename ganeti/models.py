@@ -297,6 +297,12 @@ class Instance(object):
         except:
             return False
 
+    def get_state(self):
+        if self.oper_state == self.admin_state:
+            return _('Running') if self.oper_state else _('Stopped')
+        else:
+            return _('Running, should be stopped') if self.oper_state else _('Stopped, should be running')
+
     def set_params(self, **kwargs):
         job_id = self.cluster._client.ModifyInstance(self.name, **kwargs)
         self.lock(reason=_("modifying"), job_id=job_id)
@@ -809,7 +815,7 @@ class Cluster(models.Model):
                         ],
                         ["|", ["=", "name", "%s" % instance]]
                     ))[0]
-                cache.set(cache_key, info, 3)
+                cache.set(cache_key, info, 60)
             except GanetiApiError:
                 info = None
         return info

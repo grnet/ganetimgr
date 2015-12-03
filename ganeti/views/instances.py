@@ -369,23 +369,39 @@ def user_sum_stats(request):
 
 
 @login_required
-@check_instance_auth
 def poll(request, cluster_slug, instance):
         cluster = get_object_or_404(Cluster, slug=cluster_slug)
         instance = cluster.get_instance_or_404(instance)
-        try:
-            instance.osname = instance.osparams['img_id']
-        except Exception:
-            instance.osname = instance.os
-        instance.node_group_locked = instance.pnode in instance.cluster.locked_nodes_from_nodegroup()
-        return render(
-            request,
-            'instances/instance_actions.html',
-            {
-                'cluster': cluster,
-                'instance': instance,
-            },
-        )
+        if (
+            request.user.is_superuser or
+            request.user in instance.users or
+            set.intersection(
+                set(request.user.groups.all()), set(instance.groups)
+            )
+        ):
+            try:
+                instance.osname = instance.osparams['img_id']
+            except Exception:
+                instance.osname = instance.os
+            instance.node_group_locked = instance.pnode in instance.cluster.locked_nodes_from_nodegroup()
+            return render(
+                request,
+                'instances/instance_actions.html',
+                {
+                    'cluster': cluster,
+                    'instance': instance,
+                },
+            )
+        elif request.user.has_perm('ganeti.view_instances'):
+            return render(
+                request,
+                'instances/includes/instance_status.html',
+                {
+                    'instance': instance,
+                },
+            )
+
+
 
 
 @login_required

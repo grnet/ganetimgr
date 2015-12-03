@@ -275,9 +275,7 @@
 	</div>
 {% endif %}
 
-<div id="instance_status" style="display:none;">
-	{{ instance.oper_state|yesno:"Running,Stopped" }}
-</div>
+{% include 'instances/includes/instance_status.html'%}
 
 <div class="modal hide fade" id="instreinst" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
 	<div class="modal-header">

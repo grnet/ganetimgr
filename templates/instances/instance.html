@@ -98,7 +98,7 @@
 					<tbody>
 						<tr>
 							<td class="">{% trans "Status" %}</td>
-							<td id="status"></td>
+							<td id="status">{% trans "Loading" %}...</td>
 						</tr>
 						<tr>
 							<td class="">{% trans "Cluster" %}</td>
@@ -480,7 +480,6 @@
 	});
 </script>
 <script type="text/javascript">
-{% if configform %}
 	var polltimer;
 	var timer = 4000;
 	var state = "show";
@@ -490,7 +489,8 @@
 				url: '{% url instance-poll cluster.slug instance.name %}'+"?_="+new Date().getTime(),
 				dataType: 'html',
 				success: function(data) {
-					if ($(data).find('#instdestbody').length) {
+					if ($(data).find('#inst_status').length) {
+						{% if configform %}
 						$('#actions_container').html(data);
 						if ($('#show_no_actions').size()==1){
 							$('#conf_form').hide();
@@ -501,7 +501,8 @@
 								window.setTimeout('location.reload()', 800);
 							}
 						}
-						$("#status").html($("#instance_status").html());
+						{% endif %}
+						$("#status").html($(data).find('#inst_status').html());
 						polltimer = setTimeout(load_data, timer);
 					} else {
 						$('#actions_container').html('<h2><a href="/">Session Expired. Please login again.</a></h2>');
@@ -512,7 +513,6 @@
 	$(function() {
 		load_data();
 	});
-{% endif %}
 	function showTags(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Instance Owners: '+instance);
