@@ -38,30 +38,33 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         idle_users = []
         idle_users.extend(
-            [u.email for u in User.objects.filter(
+            [{'email': u.email, 'username': u.username} for u in User.objects.filter(
                 is_active=True,
                 last_login__lte=datetime.datetime.now() - datetime.timedelta(
                     days=int(settings.IDLE_ACCOUNT_NOTIFICATION_DAYS)
                 )
             ) if u.email])
-        idle_users = list(set(idle_users))
-
         if idle_users:
-            email = render_to_string(
-                "users/emails/idle_account.txt",
-                {
-                    "site": Site.objects.get_current(),
-                    "days": settings.IDLE_ACCOUNT_NOTIFICATION_DAYS
-                }
-            )
+            if hasattr(settings, 'BRANDING'):
+                service = settings.BRANDING
+            for user in idle_users:
+                email = render_to_string(
+                    "users/emails/idle_account.txt",
+                    {
+                        "site": Site.objects.get_current(),
+                        "days": settings.IDLE_ACCOUNT_NOTIFICATION_DAYS,
+                        "service": service,
+                        "user": user
+                    }
+                )
 
-            self.send_new_mail(
-                _("%sIdle Account Notification") % settings.EMAIL_SUBJECT_PREFIX,
-                email,
-                settings.SERVER_EMAIL,
-                [],
-                idle_users
-            )
+                self.send_new_mail(
+                    _("%sIdle Account Notification") % settings.EMAIL_SUBJECT_PREFIX,
+                    email,
+                    settings.SERVER_EMAIL,
+                    [user.get('email')],
+                    [],
+                )
 
     def send_new_mail(
         self,

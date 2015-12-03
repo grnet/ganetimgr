@@ -22,10 +22,10 @@ from django.template.loader import render_to_string
 from django.core.mail import mail_managers
 
 from registration import signals
-from registration.forms import RegistrationForm
 from registration.models import RegistrationProfile
 from registration.backends.default import DefaultBackend
 from apply.models import Organization
+
 
 class GanetimgrBackend(DefaultBackend):
 

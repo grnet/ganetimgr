@@ -1,61 +1,30 @@
-Ο χρήστης {{user.username}} ({{user.first_name}} {{user.last_name}}) υπέβαλε το
-ακόλουθο αίτημα:
+{% load i18n %}{% blocktrans  with username=user.username first_name=user.first_name last_name=user.last_name %}User {{ username }} ({{ first_name }} {{ last_name }}) made the following request:{% endblocktrans %}
 {% load disksizes %}
-Παράμετροι VM
--------------
-Όνομα: {{application.hostname}}
-Μνήμη: {{application.memory|memsize}}
-vCPUS: {{application.vcpus}}
-Δίσκος: {{application.disk_size}} GB
-Λειτουργικό σύστημα: {{application.operating_system}}
-Φιλοξενία mail server: {{application.hosts_mail_server|yesno:"Ναι,Όχι"}}
-
-{% if application.network %}Ο χρήστης ζήτησε το VM να συνδεθεί στο δίκτυο «{{ application.network }}»{% endif %}
-
-Στοιχεία επικοινωνίας:
-{% if application.organization %}
-Υπεύθυνος φορέας: {{ application.organization }} {% else %}
-Διαχειριστικός υπεύθυνος
-------------------------
-{{ application.admin_contact_name }}
-{{ application.admin_contact_email }}
-{{ application.admin_contact_phone }}{% endif %}
-
-{% if application.comments %}
-Σχόλια
-------
-{{ application.comments }} {% endif %}
-
-Για να διαχειριστείτε το αίτημα, επισκεφθείτε το {{url}}
-
------------------------------------------------------------------------------
-
-The user {{user.username}} ({{user.first_name}} {{user.last_name}}) made the
-following request:
-{% load disksizes %}
+{% blocktrans with hostname=application.hostname memory=application.memory|memsize vcpus=application.vcpus disk_size=application.disk_size operating_system=application.operating_system hosts_mail_server=application.hosts_mail_server|yesno:"Yes,No" %}
 VM parameters
 -------------
-Name:   {{application.hostname}}
-Memory: {{application.memory|memsize}}
-vCPUs:  {{application.vcpus}}
-Disk:   {{application.disk_size}} GB
-Operating system:    {{application.operating_system}}
-Hosting mail server: {{application.hosts_mail_server|yesno:"Yes,No"}}
+Name:   {{ hostname }}
+Memory: {{ memory }}
+vCPUs:  {{ vcpus }}
+Disk:   {{ disk_size }} GB
+Operating system:    {{ operating_system }}
+Hosting mail server: {{ hosts_mail_server }}
+{% endblocktrans %}
+{% if application.network %}{% blocktrans %}The user requested the VM to connect to the network{% endblocktrans %} «{{application.network}}»{% endif %}
 
-{% if application.network %}The user requested the VM to connect to the network «{{application.network}}»{% endif %}
-
-Contact:
+{% trans "Contact" %}:
 {% if application.organization %}
-Responsible entity: {{application.organization}} {% else %}
-Administrative Contact
+
+{% trans "Responsible entity" %}: {{application.organization}} {% else %}
+{% trans "Administrative Contact" %}
 ----------------------
 {{ application.admin_contact_name }}
 {{ application.admin_contact_email }}
 {{ application.admin_contact_phone }}{% endif %}
 
 {% if application.comments %}
-Comments
+{% trans "Comments" %}
 --------
 {{ application.comments }}{% endif %}
 
-To manage the request, visit {{url}}
+{% blocktrans %}To manage the request, visit {{url}}{% endblocktrans %}

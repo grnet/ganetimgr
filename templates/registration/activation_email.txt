@@ -1,25 +1,12 @@
-Ο/H {{ user.get_full_name }} έκανε αίτηση για νεό λογαριασμό στην υπηρεσία.
+{% load i18n %}{% url activate_account activation_key as activation_url %}{% blocktrans with full_name=user.get_full_name username=user.username email=user.email domain=site.domain %}{{ full_name }} has registered for a new account.
 
-Όνομα χρήστη: {{ user.username }}
-E-mail: {{ user.email }}
-
-Για να ενεργοποιήσετε το λογαριασμό και να επιτρέψετε στο χρήστη να
-χρησιμοποιήσει την υπηρεσία, επισκεφθείτε τον ακόλουθο σύνδεσμο:
-
-http://{{ site.domain }}{% url activate_account activation_key %}
-
-Ο χρήστης θα ενημερωθεί για την ενεργοποίηση του λογαριασμού του μέσω e-mail.
-
------------------------------------------------------------------------------
-
-{{ user.get_full_name }} has registered for a new account.
-
-Username: {{user.username}}
-E-mail: {{user.email}}
+Username: {{ username }}
+E-mail: {{ email }}
 
 To activate the user's account and allow them to access the service, click on
 the following link:
 
-http://{{ site.domain }}{% url activate_account activation_key %}
+http://{{ domain }}{{ activation_url }}
 
 The user will be notified via mail about the account activation
+{% endblocktrans %}

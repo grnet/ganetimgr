@@ -1,16 +1,8 @@
-Η αίτησή σας #{{ application.pk }} για τη δημιουργία εικονικής μηχανής με όνομα
-{{ application.hostname }} απορρίφθηκε για τους παρακάτω λόγους:
+{% load i18n %}{% blocktrans with username=application.applicant.username pk=application.pk hostname=application.hostname admin_comments=application.admin_comments service=BRANDING.SERVICE_PROVIDED_BY.NAME %}Dear {{ username }},
+Your request #{{ pk }} to create virtual machine name
+{{ hostname }} has been rejected for the following reasons:
 
-{{ application.admin_comments }}
+{{ admin_comments }}
 
-Για περισσότερες πληροφορίες μπορείτε να επικοινωνήσετε με το Helpdesk του
-{{ BRANDING.SERVICE_PROVIDED_BY.NAME }}.
-
------------------------------------------------------------------------------
-
-Your request #{{ application.pk }} to create virtual machine name
-{{ application.hostname }} has been rejected for the following reasons:
-
-{{ application.admin_comments }}
-
-For more information please contact the {{ BRANDING.SERVICE_PROVIDED_BY.NAME }} Helpdesk.
+For more information please contact the {{ service }} Helpdesk.
+{% endblocktrans %}
