@@ -503,7 +503,7 @@ class Cluster(models.Model):
                         'ctime',
                         'mtime'
                     ]))
-            cache.set("cluster:%s:instances" % self.slug, instances, 45)
+            cache.set("cluster:%s:instances" % self.slug, instances, 180)
         users, orgs, groups, instanceapps, networks = preload_instance_data()
         retinstances = [
             Instance(

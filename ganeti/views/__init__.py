@@ -127,8 +127,10 @@ def tagInstance(request, instance):
         instance = Instance.objects.get(name=instance)
     except ObjectDoesNotExist:
         raise Http404()
+
     # get cluster
     cluster = instance.cluster
+
     # get cache key
     cache_key = "cluster:%s:instance:%s:user:%s" % (
         cluster.slug, instance.name,
@@ -149,7 +151,7 @@ def tagInstance(request, instance):
             )
         ):
             res = True
-        cache.set(cache_key, res, 60)
+        cache.set(cache_key, res, 90)
         if not res:
             t = get_template("403.html")
             return HttpResponseForbidden(content=t.render(RequestContext(request)))
