@@ -16,6 +16,11 @@
 		#actions {
 			margin-bottom: 30px;
 		}
+
+		textarea#paste {
+			width: 100%;
+			margin: 10px;
+		}
 	</style>
 	<script type="text/javascript" src="{% static 'noVNC/include/util.js' %}"></script>
 	<script type="text/javascript">
@@ -35,13 +40,17 @@
 			var connected = false;
 			var ctrlaltdelete = $('#ctrlaltdelete');
 			var toggleCtrlButton = $('#toggleCtrlButton');
+			var pasteButton = $('#pasteButton');
 			var toggleAltButton = $('#toggleAltButton');
 			var vnc_errors = $("#vnc_errors");
 			var vnc_status_bar = $("#VNC_status_bar");
 			var vnc_canvas = $('#VNC_canvas');
 			var vnc_screen = $('#VNC_screen');
+			var pasteArea = $('textarea#paste');
+			pasteArea.hide();
 			ctrlaltdelete.addClass('disabled');
 			toggleCtrlButton.addClass('disabled');
+			pasteButton.addClass('disabled');
 			toggleAltButton.addClass('disabled');
 
 			function stop() {
@@ -89,6 +98,18 @@
 				return true;
 			}
 
+			$('#paste').keydown(function(event) {
+			    if (event.keyCode == 13) {
+			    	var text = $(this).val();
+			    	$(this).val('');
+			    	if (connected) {
+						for (var i=0; i < text.length; i+=1) {
+							rfb.sendKey(text.charCodeAt(i));
+						}
+			    	}
+			     }
+			});
+
 			function updateState(rfb, state, oldstate, msg) {
 				var klass;
 				switch (state) {
@@ -118,6 +139,7 @@
 					toggleCtrlButton.removeClass('disabled');
 					toggleAltButton.removeClass('disabled');
 					vnc_canvas.addClass("connected");
+					pasteButton.removeClass('disabled');
 				} else {
 					vnc_canvas.removeClass("connected");
 					connected = false;
@@ -144,6 +166,10 @@
 					start();
 				}
 
+			});
+
+			pasteButton.click(function () {
+				pasteArea.toggle();
 			});
 
 			ctrlaltdelete.click(function(event) {
@@ -205,15 +231,23 @@
 	<div class="span11 main-content">
 		<div class="row-fluid">
 			<div class="row-fluid">
-				<h2><i class="fa fa-terminal"></i> {% trans "VNC session on" %} {{ instance }}</h2>
-				<button id="connect" class="btn btn-success">
-					Connect
-				</button>
-				<button class="btn" id="ctrlaltdelete">
-					Ctrl+Alt+Del
-				</button>
-				<button id="toggleCtrlButton" class="btn">Toggle Ctrl</button>
-				<button id="toggleAltButton" class="btn">Toggle Alt</button>
+				<div class="span12">
+					<h2><i class="fa fa-terminal"></i> {% trans "VNC session on" %} {{ instance }}</h2>
+					<button id="connect" class="btn btn-success">
+						Connect
+					</button>
+					<button class="btn" id="ctrlaltdelete">
+						Ctrl+Alt+Del
+					</button>
+					<button id="toggleCtrlButton" class="btn">Toggle Ctrl</button>
+					<button id="toggleAltButton" class="btn">Toggle Alt</button>
+					<button id="pasteButton" class="btn">Paste Data</button>
+				</div>
+				<div class="row">
+					<div class="span4" style="margin-left: 1%">
+						<textarea name="" id="paste"></textarea>
+					</div>
+				</div>
 				<div id="VNC_screen">
 					<span id="VNC_status_bar" class="label label-info">Click Connect to... connect</span>
 					<br>
