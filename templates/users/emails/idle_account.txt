@@ -1,6 +1,6 @@
 {% load i18n %}{% trans 'Dear' %} {{ user.username }},
 {% blocktrans %}To ensure the validity of user accounts in the
-ganetimgr service we monitor usage of the web management interface.{% endblocktrans %}
+service we monitor usage of the web management interface.{% endblocktrans %}
 {% blocktrans %}We would like to inform you that the last time you logged in was {{days}} ago (or more). {% endblocktrans %}
 
 {% blocktrans %}Therefore we kindly ask you to confirm the validity of your account.
