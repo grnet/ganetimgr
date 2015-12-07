@@ -18,6 +18,7 @@ New Features:
 
 Fixes/Improvements:
 	- Improved cluster admin
+	- Translations
     - Exception handling when cluster won't respond.
 	- Improved settings file
 	- Fancier Frontend
@@ -44,7 +45,7 @@ Upgrading from 1.5:
 		- AUDIT_ENTRIES_LAST_X_DAYS (how many days should the auditlog show us)
 		- New BRANDING settings and new values ("LOGO": "/static/ganetimgr/img/logo.png", "FAVICON": "/static/ganetimgr/img/favicon.ico",)
 		- Changed NODATA_IMAGE = 'static/nodata.gif' value
-	- Table auditlog_auditentry now contains an extra row named is_authorized 
+	- Table auditlog_auditentry now contains an extra row named is_authorized
 
 ===========
 
