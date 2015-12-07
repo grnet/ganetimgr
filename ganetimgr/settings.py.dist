@@ -108,8 +108,8 @@ INSTALLED_APPS = (
     'notifications',
     'stats',
     'auditlog',
-    'oauth2_provider',
-    'corsheaders',
+#    'oauth2_provider',
+#    'corsheaders',
 )
 
 # Caching is a vital part of ganetimgr.
@@ -119,10 +119,13 @@ INSTALLED_APPS = (
 # If memcache is your preferred cache, then select:
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-        'TIMEOUT': 1,
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
+    # 'default': {
+    #     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+    #     'LOCATION': '127.0.0.1:11211',
+    #     'TIMEOUT': 1,
+    # }
 }
 
 LOGIN_URL = '/user/login'
@@ -320,7 +323,7 @@ DATABASES = {
 }
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = <CHANGE ME>
+SECRET_KEY = '<CHANGE ME>'
 
 
 # OAUTH2
