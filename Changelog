@@ -6,6 +6,7 @@ Requirements:
 	- Update settings.py to settings.py.dist
 
 New Features:
+	- NoVNC transfer commands from text area
     - Tests
 	- Search by column on the home table
 	- Clear button in search input on the home table

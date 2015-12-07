@@ -127,6 +127,30 @@ The statistics page shows data from all the clusters that ganetimgr knows about.
 .. image:: _static/images/ss_11_admin_stats.png
 	:scale: 50 %
 
+
+Instance Actions
+----------------
+A user has permission to make some actions to the instances he or the groups he is in owns.
+
+- Shutdown Instance
+
+- Reboot Instance
+
+- Can have console access (VNC/NoVNC):
+	A vnc console (java applet) and a novnc console can be given to the user
+	in order to use the vm remotely through ganetimgr. We also have a text
+	area in case one needs to paste some commands and easily send them to the
+	virtuall machine
+
+- Rename Instance
+
+- Reinstall Instance
+
+- Destroy
+
+Fatal actions require email verification.
+
+
 Notifications
 -------------
 An administrator can direclty send mail to vm owners. The Recipient field is dynamic. It can lookup a usernames email address dynamically and also fetch all the emails associated with a vm or even all the vms the reside on a cluster.
