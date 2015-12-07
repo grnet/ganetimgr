@@ -11,6 +11,7 @@ In essence, ganetimgr aims to be the frontend of a VPS service.
 - 2010-2012 Apollon Oikonomopoulos (@apoikos)
 - 2011-2014 Leonidas Poulopoulos (@leopoul)
 - 2014-2015 Stavros Kroustouris (@kroustou)
+- 2015 Sergios Aftsidis (@sergafts)
 
 ## Contribution
 
@@ -25,9 +26,6 @@ In essence, ganetimgr aims to be the frontend of a VPS service.
  - 2013 George Kargiotakis (@kargig)
 
 ## Instructions
-
-This is the main repository. The code can also be found at [code.grnet.gr](https://code.grnet.gr/projects/ganetimgr).
-
 For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.org/en/latest/) page.
 
 [![Documentation Status](https://readthedocs.org/projects/ganetimgr/badge/?version=stable)](https://readthedocs.org/projects/ganetimgr/?badge=stable)
@@ -36,12 +34,11 @@ For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.
 
 User discussions: ganetimgr-users@lists.grnet.gr
 
-
 =====================================================================
 
 ## Copyright and license
 
-Copyright © 2010-2014 Greek Research and Technology Network (GRNET S.A.)
+Copyright © 2010-2015 Greek Research and Technology Network (GRNET S.A.)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
