@@ -50,6 +50,7 @@
 <div class="main-content span12">
 	<div class="row">
 		<div class="span4">
+			<div class="span12">
 		        <h2>{% trans "Details" %}</h2>
 		    	<table class="table visoverflow  small-font-table">
 		            <thead>
@@ -75,24 +76,23 @@
 					</tr>
 		            </tbody>
 		        </table>
+		    </div>
+			<div class="span12">
+				<h2>{% trans "Networks" %}</h2>
+			    	<table class="table visoverflow  small-font-table">
+			    		<thead>
+			            	<tr>
+			            		<th>Name</th><th>Type</th><th>Network</th><th>Network6</th><th>Free</th>
+			            	</tr>
+			        	</thead>
+			        	<tbody id="networks_ph">
+			        	</tbody>
+			    	</table>
+			</div>
 		</div>
 		<div class="span8">
 			<h2>{% trans "Nodegroups" %}</h2>
 		    	<table class="table visoverflow  small-font-table" id="ng_cluster_ph">
-		    	</table>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span4">
-			<h2>{% trans "Networks" %}</h2>
-		    	<table class="table visoverflow  small-font-table">
-		    		<thead>
-		            	<tr>
-		            		<th>Name</th><th>Type</th><th>Network</th><th>Network6</th><th>Free</th>
-		            	</tr>
-		        	</thead>
-		        	<tbody id="networks_ph">
-		        	</tbody>
 		    	</table>
 		</div>
 	</div>
