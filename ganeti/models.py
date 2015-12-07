@@ -745,11 +745,14 @@ class Cluster(models.Model):
         info = self._client.GetJobs(bulk=True)
         for i in info:
             i['cluster'] = self.slug
-            i['start_time'] = "%s" % (
-                datetime.fromtimestamp(
-                    int(i['start_ts'][0])
-                ).strftime('%Y-%m-%d %H:%M:%S')
-            )
+            if i.get('start_ts'):
+                i['start_time'] = "%s" % (
+                    datetime.fromtimestamp(
+                        int(i['start_ts'][0])
+                    ).strftime('%Y-%m-%d %H:%M:%S')
+                )
+            else:
+                i['start_time'] = ''
             i['ops'][0]['OP_ID'] = i['ops'][0]['OP_ID'].replace(
                 "OP_", ''
             ).replace("_", ' ').lower().capitalize()
