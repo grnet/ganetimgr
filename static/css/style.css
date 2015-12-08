@@ -2,23 +2,59 @@ body {
 	background: #4c7dbf;
 }
 
-.intro {
-	padding: 150px 0;
+.yellow {
+	color: #e5d11d;
+}
+
+.white {
 	background: #f6f6f6;
+}
+
+div.row {
+	padding: 5% 0;
+	font-size: 20px;
 }
 
 .title {
 	color: #e5d11d;
-	font-size: 150px;
-	display: block;
+	font-size: 10vw;
 	text-align: center;
 }
 
-.intro .link {
+.white .link {
 	font-family: 'Source Code Pro' ;
 	color: #4c7dbf;
-	font-size: 40px;
 	display: block;
-	margin-top: 50px;
+	margin-top: 2%;
 	text-align: center;
+	font-size: 2vw;
+}
+
+img {
+	width: 100%;
+}
+
+.about {
+	color: white;
+}
+
+.about .images li {
+	display: inline;
+
+}
+
+.footer {
+	font-size: 80px;
+	text-align: center;
+}
+
+
+@media (max-width: 600px) {
+  .white .link {
+    font-size: 15px;
+  }
+
+  .instances {
+  	display: none;
+  }
 }

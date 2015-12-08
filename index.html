@@ -4,6 +4,7 @@
 	<title>Ganetimgr</title>
 	<meta name="description" content="Ganetimgr">
 	<meta name="author" content="SitePoint">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:200' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link rel="stylesheet" href="static/css/style.css?v=1.0">
@@ -13,10 +14,118 @@
 </head>
 
 <body>
-	<div class="intro">
-		<span class="title">Ganetimgr</span>
-		<a target="_blank" href="https://github.com/grnet/ganetimgr" class="link">https://github.com/grnet/ganetimgr</a>
+	<div class="container-fluid">
+		<div class="row white">
+			<div class="container">
+				<div class="title yellow col-xs-12">Ganetimgr</div>
+				<a target="_blank" href="https://github.com/grnet/ganetimgr" class="link col-xs-12">https://github.com/grnet/ganetimgr</a>
+			</div>
+		</div>
+		<div class="about container">
+			<div class="row">
+				<div class="col-xs-12">
+					<p>Ganetimgr is a web platform that eases the provisioning of virtual machines over multiple Ganeti clusters. It leverages Ganeti's RAPI functionality to administer the clusters, and is stateless from the VM perspective. The project is written in Django and uses Bootstrap for the frontend. In essence, ganetimgr aims to be the frontend of a VPS service, making people's life easier.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-4">
+					<img src="static/images/cluster.png" alt="">
+				</div>
+				<div class="col-xs-4">
+					<img src="static/images/cluster.png" alt="">
+				</div>
+				<div class="col-xs-4">
+					<img src="static/images/cluster.png" alt="">
+				</div>
+			</div>
+		</div>
+		<div class="row white">
+			<div class="container">
+				<div class="col-xs-12">
+					<h1>For users</h1>
+					Virtual machine management has never been easier. A simple user can:
+					<ul>
+						<li>Create virtual machines</li>
+						<li>Don't like the vms name? Rename it!</li>
+						<li>Don't want it anymore? Destroy it!</li>
+						<li>Something went wrong? a user can reinstall an instance with the same or different OS!</li>
+						<li>Remote control via VNC/Websocket</li>
+						<li>Change owners, groups</li>
+						<li>View graphs and statistics</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="row white instances">
+			<div class="col-xs-12">
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
+				<div class="col-xs-1">
+					<img src="static/images/instance.png">
+				</div>
 
+			</div>
+		</div>
+		<div class="row">
+			<div class="container">
+				<div class="col-xs-12">
+					<h1>For administrators</h1>
+					A Ganeti administrator can:
+					<ul>
+						<li>Add as many cluster as he pleases</li>
+						<li>Send mass notifications to users in case of maintenance.</li>
+						<li>Get statistics and info about the active clusters!</li>
+						<li>Get information about each node!</li>
+						<li>Remote control via VNC/Websocket</li>
+						<li>Monitor all the runing jobs from each cluster</li>
+						<li>See graphs</li>
+						<li>Monitor user actions</li>
+						<li>Review user applications and approve/reject them</li>
+						<li>See idle accounts</li>
+						<li>lock instances, nodes, nodegroups or even clusters</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="row white">
+			<div class="container">
+				<div class="col-xs-12 yellow footer">Created by GRNET NOC</div>
+				<a class="link" href="https://noc.grnet.gr">
+					https://noc.grnet.gr
+				</a>
+			</div>
+		</div>
 	</div>
 	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </body>
