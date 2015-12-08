@@ -1,7 +1,0 @@
-3rd party sources
-
-vnc_javasrc: the source used to build /static/javavnc/VncViewer.jar
-
-init.d: init script to start ganetimgr-watcher
-
-default: sample defaults file for ganetimgr-watcher (use with init script)

@@ -1,8 +1,0 @@
-ganetimgr/settings.py
-ganeti.db
-grappelli/
-*.pyc
-apache/django.wsgi
-docs/build/
-admin/
-django_markdown/

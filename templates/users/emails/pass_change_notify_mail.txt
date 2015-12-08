@@ -1,7 +1,0 @@
-{% load i18n %}{% blocktrans %}Dear {{ user }},{% endblocktrans %}{% blocktrans %}
-We hereby inform you that the password for your account
-in the {{ service_title }} service has been changed successfully.
-{% endblocktrans %}{% blocktrans %}
-If the password change was not made by you, please inform
-the {{ provider }} Helpdesk.
-{% endblocktrans %}
