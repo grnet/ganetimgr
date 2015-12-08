@@ -269,7 +269,7 @@
 <div class="span8">
 	<div class="row-fluid">
 		<div class="row-fluid">
-			<h2>{% trans "ganetimgr Statistics" %}</h2>
+			<h2>{{ BRANDING.TITLE }} {% trans "Statistics" %}</h2>
 			{% if user.is_superuser or perms.ganeti.view_instances %}
 			<div class="row-fluid">
 				{% for cluster in clusters %}
