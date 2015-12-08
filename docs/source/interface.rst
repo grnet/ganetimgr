@@ -129,8 +129,9 @@ The statistics page shows data from all the clusters that ganetimgr knows about.
 	:scale: 50 %
 
 
-Instance Actions
+Instance Details
 ----------------
+There is an instance details page, which shows the basic information of an instance to a user.
 A user has permission to make some actions to the instances he or the groups he is in owns.
 
 - Shutdown Instance
@@ -150,6 +151,10 @@ A user has permission to make some actions to the instances he or the groups he 
 - Destroy
 
 Fatal actions require email verification.
+
+
+.. image:: _static/images/instance_details.png
+	:scale: 50 %
 
 
 Notifications
