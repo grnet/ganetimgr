@@ -15,7 +15,7 @@ New Features:
 	- Disable choice for full networks in applications review
     - Oauth2 for the list of the vms (optional, read the docs for more details)
     - Add support for remote discovery and retrieval of available snf-images
-
+    - Add fabric script under contrib for automated deployment
 
 Fixes/Improvements:
 	- Improved cluster admin
