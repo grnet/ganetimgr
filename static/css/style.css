@@ -1,3 +1,24 @@
 body {
 	background: #4c7dbf;
 }
+
+.intro {
+	padding: 150px 0;
+	background: #f6f6f6;
+}
+
+.title {
+	color: #e5d11d;
+	font-size: 150px;
+	display: block;
+	text-align: center;
+}
+
+.intro .link {
+	font-family: 'Source Code Pro' ;
+	color: #4c7dbf;
+	font-size: 40px;
+	display: block;
+	margin-top: 50px;
+	text-align: center;
+}
