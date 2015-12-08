@@ -21,6 +21,7 @@ from apply import views
 urlpatterns = patterns(
     '',
     url(r'^info/(?P<type>\w+)/(?P<usergroup>[\w\.\@-]+)/?$', views.user_info, name="user-info"),
+    url(r'^details/$', views.detail_api, name="user-details-json"),
     url(r'^idle/$', views.idle_accounts, name="idle_accounts"),
     url(r'^profile/$', views.profile, name="profile"),
     url(r'^mail_change/$', views.mail_change, name="mail-change"),

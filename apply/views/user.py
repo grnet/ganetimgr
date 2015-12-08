@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -22,9 +23,45 @@ from django.utils.translation import ugettext_lazy as _
 
 from ganeti.models import InstanceAction
 
-from apply.forms import EmailChangeForm, NameChangeForm, SshKeyForm, OrganizationPhoneChangeForm
+from apply.forms import (
+    EmailChangeForm,
+    NameChangeForm,
+    SshKeyForm,
+    OrganizationPhoneChangeForm
+)
 from apply.utils import check_mail_change_pending
 from apply.models import SshPublicKey
+
+
+if 'oauth2_provider' in settings.INSTALLED_APPS:
+    from oauth2_provider.decorators import protected_resource
+
+    @protected_resource()
+    def detail_api(request):
+        '''
+        This view a username and a password and
+        returns the user's instances,
+        if the credentials are valid.
+        '''
+        from oauth2_provider.models import AccessToken
+        token = get_object_or_404(AccessToken, token=request.GET.get('access_token'))
+        user = token.user
+        return HttpResponse(
+            json.dumps(
+                {
+                    'username': user.username,
+                    'email': user.email,
+                    'id': user.pk,
+                }
+            ),
+            mimetype='application/json'
+        )
+else:
+    def detail_api(request):
+        raise NotImplementedError(
+            'Please install oauth2_toolkit.'
+            'For more details take a look at admin section of the docs.'
+        )
 
 
 @login_required
