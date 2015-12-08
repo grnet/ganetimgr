@@ -54,7 +54,20 @@ Ganetimgr autodiscovers any network available through gnt-network on the cluster
 Using Oauth2
 ------------
 We have integrated oauth2 support.
-For now the only api call which is working over oauth2 is /instances/list/, which fetches all the instances of the current user.
+API
++++
+The endpoints the api provides are::
+
+	/instances/list/
+
+ which fetches all the instances of the current user.
+
+ And::
+
+ 	/user/details/
+
+ which lists user details (username, email, password, id)
+
 
 Configuring oauth2
 ------------------

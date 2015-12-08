@@ -7,6 +7,7 @@ This document showcases some of ganetimgr's features from the user's and adminis
 ganetimgr is the frontend to a VPS service, albeit without a pricing component. A regular user has access to administrer only the vms assigned to them. An administrator can view and administer every resource. There is a permissions system that can be configured to provide seperate access levels.
 A user can't create a vm by themself, they needs to submit an instance application which needs to be approved by an administrator for the vm to be created.
 
+
 User View
 ^^^^^^^^^
 
@@ -138,8 +139,8 @@ A user has permission to make some actions to the instances he or the groups he 
 
 - Can have console access (VNC/NoVNC):
 	A vnc console (java applet) and a novnc console can be given to the user
-	in order to use the vm remotely through ganetimgr. We also have a text
-	area in case one needs to paste some commands and easily send them to the
+	in order to use the vm remotely through ganetimgr. There is also a text
+	area (NoVNC) in case one needs to paste some commands and easily send them to the
 	virtuall machine
 
 - Rename Instance

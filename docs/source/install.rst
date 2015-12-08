@@ -24,6 +24,31 @@ Update and install the required packages::
     apt-get install python-mysqldb python-django python-redis python-django-south python-django-registration python-paramiko python-simplejson python-daemon python-setproctitle python-pycurl python-recaptcha python-ipaddr python-bs4 python-requests python-markdown
 
 
+Fabric sript
+^^^^^^^^^^^^
+We have created a fabric sript in order to set up and deploy ganetimgr. It is included under "contrib/fabric/". One can use it by running::
+
+    fab deploy:tag='v1.6' -H ganetimgr.example.com -u user
+
+You will need to have fabric installed though.
+
+This scrip will connect to the specified server and try to set up ganetimgr under "/srv/ganetimgr" which will be a symlink to the actual directory.
+
+In general it performs the following steps:
+
+ - stop redis, beanstalk, touch "/srv/maintenance.on"
+ - git clone, git archive under "/tmp" and move to "/srv/ganetimgr<year><month><day><hour><minute>"
+ - check if there is an old installation under /srv/ganetimgr and get all the dist files in order to compare them with the newer version
+ - create a buckup of the database
+ - If no differences have been found between the two versions of ganetimgr, the old configuration files (whatever has also a dist file) will be copied to the new installation.
+ - "/srv/ganetimgr" will be point to the new installation
+ - management commands (migrate, collectstatic) will be run
+ - fabric will ask your permission to remove old installations
+ - restart nginx, gunicorn, redis, beanstalk, rm "maintenance.on"
+ - in case something goes wrong it will try to make a rollback
+ - in case no older installations exist or the dist files, it will ask you to log in the server and edit the settings, while waiting for your input.
+
+
 Beanstalkd
 ----------
 
@@ -53,6 +78,13 @@ Create database and user::
     mysql> CREATE USER 'ganetimgr'@'localhost' IDENTIFIED BY <PASSWORD>;
     mysql> GRANT ALL PRIVILEGES ON ganetimgr.* TO 'ganetimgr';
     mysql> flush privileges;
+
+Requirements.txt
+----------------
+A requirements.txt file is included in order to help you install the required python dependencies.
+You can do that by running::
+
+   pip install -r requirements.txt
 
 Pre-Setup
 ---------
@@ -143,7 +175,7 @@ From the OPERATING_SYSTEMS dictionary (e.g. for a Debian Wheezy image)::
     	},
     }
 
-As of v.1.5.0 there is an autodiscovery mechanism for the images.
+As of v.1.5.0 there is an autodiscovery mechanism for the images. You just have to insert the following settings variable::
 
     OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/', 'http://example.com/images/']
 
@@ -160,11 +192,11 @@ You also need to set OPERATING_SYSTEMS_PROVIDER and OPERATING_SYSTEMS_SSH_KEY_PA
 
 GannetiMgr will look for available images both from both sources. None of the above settings is required.
 
-There is also an autodiscovery mechanism for snf images, by setting snf-image url in settings.py as such:
+There is also an autodiscovery mechanism for snf images, by setting snf-image url in settings.py as such::
 
     SNF_OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/snf-image/']
 
-The process is identical with that above. 
+The process is identical with that above.
 
 
 FLATPAGES
@@ -272,3 +304,4 @@ End
 Ths installation is finished. If you visit your webserver's address you should see the ganetimgr welcome page.
 
 Now it's time to go through the :doc:`Admin guide <admin>` to setup your clusters.
+

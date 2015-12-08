@@ -7,21 +7,27 @@ This article describes the actions that are needed when upgrading from a previou
 Migrating to v.1.6
 ------------------
 
-- Perform south migration::
+- Perform south migration:
     python manage.py migrate
-    
-- Collect static files::
+
+- Collect static files:
     python manage.py collectstatic
-    
+
 - Update settings.py to settings.py.dist
+
+Requirements
+++++++++++++
+Ganetimgr v.1.6 comes with a requirements.txt file, which lists all requirements.
+Make sure all of these requirements have been installed on your system.
+
 
 Migrating to v.1.5.3
 --------------------
 
-- Perform south migration::
+- Perform south migration:
     python manage.py migrate
 
-- Collect static files::
+- Collect static files:
     python manage.py collectstatic
 
 - Update settings.py to settings.py.dist. A new context proccessor is deployed
