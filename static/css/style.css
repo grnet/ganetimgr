@@ -46,16 +46,19 @@ img {
 }
 
 .footer {
-	font-size: 80px;
+	font-size: 10vw;
 	text-align: center;
 }
 
 
-@media (max-width: 600px) {
+@media (max-width: 300px) {
   .white .link {
     font-size: 15px;
   }
+}
 
+
+@media (max-width: 1200px) {
   .instances {
   	display: none;
   }
