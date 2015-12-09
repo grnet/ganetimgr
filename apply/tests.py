@@ -8,12 +8,13 @@ from apply.models import (
     SshPublicKey,
     Organization
 )
-from apply.forms import InstanceApplicationReviewForm
+
 from ganeti.models import Cluster
 
 
 class ApplicationTestCase(TestCase):
     def setUp(self):
+        from apply.forms import InstanceApplicationReviewForm
         self.client = Client()
         self.user = User.objects.create_user('applytest', 'test@test.com', 'applytest')
         self.superuser = User.objects.create_user('applytestadmin', 'test@test.com', 'applytestadmin')
