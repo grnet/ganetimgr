@@ -27,8 +27,11 @@ div.row {
 	text-align: center;
 }
 
-.white .link {
+a.link {
 	font-family: 'Source Code Pro' ;
+}
+
+.white .link {
 	color: #4c7dbf;
 	margin-top: 2%;
 	text-align: center;
