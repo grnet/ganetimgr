@@ -46,20 +46,26 @@ img {
 }
 
 .footer {
-	font-size: 10vw;
 	text-align: center;
+	font-size: 80px;
 }
 
 
+
 @media (max-width: 300px) {
-  .white .link {
-    font-size: 15px;
-  }
+	.white .link {
+		font-size: 15px;
+	}
+
+  	.footer {
+		font-size: 10vw
+	}
 }
 
 
 @media (max-width: 1200px) {
-  .instances {
-  	display: none;
-  }
+	.instances {
+		display: none;
+	}
+
 }
