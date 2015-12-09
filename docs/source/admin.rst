@@ -89,3 +89,9 @@ Usage
 * by hitting /o/authorize?redirect_uri=<redirect_uri>&client_id=<client_id>&response_type=token&scope=read you get a response with the token.
 * by adding the access_token in the request to /instances/lists/?access_token=<token> you get a list of all the user instances.
 
+Translations
+------------
+Ganetimgr uses Django's translation system. We have created translations in Greek. In order to create translations
+to another language you have to follow these instructions_.
+
+.. _instructions: https://docs.djangoproject.com/en/1.4/topics/i18n/translation/#localization-how-to-create-language-files
