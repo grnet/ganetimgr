@@ -22,7 +22,7 @@ In essence, ganetimgr aims to be the frontend of a VPS service.
 
 ### Documentation
  - 2014 Alex Kiousis (@alexkiousis)
- - 2014 Nikos Kokkalis (@fubvr)
+ - 2014 Nikos Kokkalis (@nkokkalis)
  - 2013 George Kargiotakis (@kargig)
 
 ## Instructions
