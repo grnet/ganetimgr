@@ -97,16 +97,49 @@
 				return true;
 			}
 
-			$('#paste').keydown(function(event) {
-			    if (event.keyCode == 13) {
-			    	var text = $(this).val();
-			    	$(this).val('');
-			    	if (connected) {
+			var pasteSpecialKeys = {
+				enter: {
+					descr: function(i) { return i == "Enter" },
+					code: function(i) { return i == 10 || i == 13 }
+				},
+				esc: {
+					descr: function(i) { return i == "Escape" },
+					code: function(i) { return i == 27 }
+				}
+			}
+			$('#paste').on('keydown keyup keypress', function(evt) {
+				evt.stopPropagation(); // don't propagate to noVNC
+				if (!!evt.key) {
+					var way = 'descr';
+				} else if (!!evt.which || !!evt.keyCode) {
+					var way = 'code';
+				} else {
+					// abort!
+					return true;
+				}
+				var testKey = function(koi) {
+					return way == 'descr' ?
+					pasteSpecialKeys[koi][way](evt.key) :
+					pasteSpecialKeys[koi][way](evt.which || evt.keyCode);
+				}
+				if (connected && evt.type == "keypress") {
+					var reset = false;
+					if (testKey('enter')) {
+						evt.preventDefault();
+						var text = $(this).val();
 						for (var i=0; i < text.length; i+=1) {
 							rfb.sendKey(text.charCodeAt(i));
 						}
-			    	}
-			     }
+						rfb.sendKey(XK_Return);
+						reset = true;
+					} else if (testKey('esc')) {
+						// evt.preventDefault();
+						reset = true;
+					}
+					if (reset) {
+						$(this).val('').hide();
+					}
+				}
 			});
 
 			function updateState(rfb, state, oldstate, msg) {
