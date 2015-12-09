@@ -86,7 +86,17 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
         from oauth2_provider.models import AccessToken
         token = get_object_or_404(AccessToken, token=request.GET.get('access_token'))
         user = token.user
-        response = get_user_instances(user, admin=False)
+        # is the api user requests a specific tag we must filter the vms
+        # by this tag
+        tag = request.GET.get('tag')
+        if tag:
+            response = get_user_instances(
+                user,
+                admin=False,
+                tag=tag
+            )
+        else:
+            response = get_user_instances(user, admin=False)
         return HttpResponse(
             json.dumps(
                 {

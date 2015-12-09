@@ -60,13 +60,19 @@ The endpoints the api provides are::
 
 	/instances/list/
 
- which fetches all the instances of the current user.
+which fetches all the instances of the current user. Optionally the api user can pass a get parameter named 'tag' which filters all instances by the specific tag.
 
- And::
+E.g::
+
+ 	/instances/list/?access_token=CUST0MT0k3N&tag=ganetimgr:filterby:thistag
+
+will fetch us only the instances tagged with "ganetimgr:filterby:thistag"
+
+And::
 
  	/user/details/
 
- which lists user details (username, email, password, id)
+which lists user details (username, email, password, id)
 
 
 Configuring oauth2

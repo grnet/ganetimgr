@@ -29,7 +29,18 @@ def disksizes(value):
     return [filesizeformat(v * 1024 ** 2) for v in value]
 
 
-def get_user_instances(user, admin=True):
+def build_instance_list(instances, tag=None):
+    if tag:
+        result = []
+        for i in instances:
+            if tag in i.tags:
+                result.append(i.name)
+    else:
+        result = [i.name for i in instances]
+    return result
+
+
+def get_user_instances(user, admin=True, tag=None):
     '''
     Return a list of users instances.
     if admin is false the result will be the instances
@@ -42,7 +53,9 @@ def get_user_instances(user, admin=True):
 
     def _get_instances(cluster):
         try:
-            instances.extend([i.name for i in cluster.get_user_instances(user, admin)])
+            instances.extend(
+                build_instance_list(cluster.get_user_instances(user, admin), tag)
+            )
         except (GanetiApiError, Exception):
             error = True
         finally:
