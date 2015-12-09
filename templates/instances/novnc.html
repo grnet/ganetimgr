@@ -17,9 +17,8 @@
 			margin-bottom: 30px;
 		}
 
-		textarea#paste {
-			width: 100%;
-			margin: 10px;
+		input#paste {
+			margin-bottom: 0px;
 		}
 	</style>
 	<script type="text/javascript" src="{% static 'noVNC/include/util.js' %}"></script>
@@ -46,7 +45,7 @@
 			var vnc_status_bar = $("#VNC_status_bar");
 			var vnc_canvas = $('#VNC_canvas');
 			var vnc_screen = $('#VNC_screen');
-			var pasteArea = $('textarea#paste');
+			var pasteArea = $('input#paste');
 			pasteArea.hide();
 			ctrlaltdelete.addClass('disabled');
 			toggleCtrlButton.addClass('disabled');
@@ -241,12 +240,8 @@
 					</button>
 					<button id="toggleCtrlButton" class="btn">Toggle Ctrl</button>
 					<button id="toggleAltButton" class="btn">Toggle Alt</button>
-					<button id="pasteButton" class="btn">Paste Data</button>
-				</div>
-				<div class="row">
-					<div class="span4" style="margin-left: 1%">
-						<textarea name="" id="paste"></textarea>
-					</div>
+					<button id="pasteButton" class="btn">Paste Text</button>
+					<input type="text" class="span4" id="paste" placeholder="Paste text and press enter"></input>
 				</div>
 				<div id="VNC_screen">
 					<span id="VNC_status_bar" class="label label-info">Click Connect to... connect</span>
