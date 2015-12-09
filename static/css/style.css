@@ -8,6 +8,10 @@ html, body {
 	color: #e5d11d;
 }
 
+.yellow-bg {
+	background: #e5d11d;
+}
+
 .white {
 	background: #f6f6f6;
 }
@@ -26,7 +30,6 @@ div.row {
 .white .link {
 	font-family: 'Source Code Pro' ;
 	color: #4c7dbf;
-	display: block;
 	margin-top: 2%;
 	text-align: center;
 	font-size: 2vw;
@@ -47,7 +50,11 @@ img {
 
 .footer {
 	text-align: center;
-	font-size: 80px;
+	font-size: 30px;
+}
+
+.footer .link {
+	font-size: 30px;
 }
 
 
@@ -58,7 +65,7 @@ img {
 	}
 
   	.footer {
-		font-size: 10vw
+		font-size: 5vw
 	}
 }
 
