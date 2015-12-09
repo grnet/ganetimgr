@@ -1,5 +1,7 @@
-body {
+html, body {
 	background: #4c7dbf;
+	max-width: 100%;
+    overflow-x: hidden;
 }
 
 .yellow {
