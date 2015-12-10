@@ -109,3 +109,40 @@ DATABASES = {
 
 RAPI_CONNECT_TIMEOUT = 8
 RAPI_RESPONSE_TIMEOUT = 15
+GANETI_TAG_PREFIX = 'TEST'
+
+BRANDING = {
+    "SERVICE_PROVIDED_BY": {
+        "NAME": "EXAMPLE",
+        "URL": "//example.dot.com",
+        "SOCIAL_NETWORKS": [
+            {
+                "URL": "https://facebook.com/",
+                "FONT_AWESOME_NAME": "fa-facebook",
+                "FONT_COLOR": "#3b5998"
+            },
+            {
+                "URL": "https://twitter.com/",
+                "FONT_AWESOME_NAME": "fa-twitter",
+                "FONT_COLOR": "#00acee"
+            }
+        ]
+    },
+    "LOGO": "/static/ganetimgr/img/logo.png",
+    "FAVICON": "/static/ganetimgr/img/favicon.ico",
+    "MOTTO": "virtual private servers",
+    "FOOTER_ICONS_IFRAME": True,
+    # show the administrative contact
+    # option when creating a new vm
+    "SHOW_ADMINISTRATIVE_FORM": True,
+    "SHOW_ORGANIZATION_FORM": True,
+}
+
+IDLE_ACCOUNT_NOTIFICATION_DAYS = '180'
+SITE_ID = 1
+RECAPTCHA_PUBLIC_KEY = ''
+RECAPTCHA_PRIVATE_KEY = ''
+RECAPTCHA_USE_SSL = True
+ACCOUNT_ACTIVATION_DAYS = 10
+LOGIN_URL = '/user/login'
+LOGIN_REDIRECT_URL = '/'
