@@ -31,6 +31,10 @@
 			<h2>
 				{% trans "Nodes" %}
 			</h2>
+
+			<div id="clusterfilter">
+				<select  multiple>{% for cluster in clusters %}<option value="{{cluster}}">{{cluster}}</option>{% endfor %}</select>
+			</div>
 			<table class="table table-first-column-number data-table display full" id="vm_instance_table">
 				<thead>
 					<tr>
@@ -104,148 +108,4 @@
 </div>
 {% endblock %}
 
-{% block bottomblock %}
-<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'ganetimgr/js/includes/jquery.dataTables.bootstrap.js' %}"></script>
-<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
-<script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
-<script type="text/javascript">
-	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-		"dataattr-string-pre": function ( a ) {
-			var x = a.match(/data-size="(.*?)"/)[1].toLowerCase();
-			return parseFloat( x );
-		},
 
-		"dataattr-string-asc": function ( a, b ) {
-			return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-		},
-
-		"dataattr-string-desc": function ( a, b ) {
-			return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-		}
-	});
-	jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-		"pinstcnt-string-pre": function ( a ) {
-			var x = a.match(/data-ninst="(.*?)"/)[1].toLowerCase();
-			return parseFloat( x );
-		},
-		"pinstcnt-string-asc": function ( a, b ) {
-			return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-		},
-		"pinstcnt-string-desc": function ( a, b ) {
-			return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-		}
-	});
-
-	$(document).ready(function() {
-		var oTable = $('#vm_instance_table').dataTable( {
-		"bPaginate": true,
-		"bLengthChange": true,
-		"bFilter": true,
-		"bSort": true,
-		"bDeferRender": true,
-		"bInfo": true,
-		"bAutoWidth": true,
-		"oSearch": {"bSmart": false, "bRegex":true},
-		"oLanguage": {
-			"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> nodes'
-		},
-		"sPaginationType": "bootstrap",
-		"sDom": "<'row-fluid' <'span6'<'#itoggleph'>> <'span6'<'#clusterph'>> >\
-		<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-		"aoColumns": [
-			{"bSearchable": true,"bSortable": true }, {"bSearchable": true,"bSortable": true },
-			{"bSearchable": true,"bSortable": true, "sType":"dataattr-string"},
-			{"bSearchable": true,"bSortable": true, "sType":"dataattr-string"},
-			{"bSearchable": true,"bSortable": true},
-			{"bSearchable": true,"bSortable": true, "sType":"pinstcnt-string"},
-			{"bSearchable": true,"bSortable": true},
-			{"bSearchable": true,"bSortable": true},
-		],
-		"iDisplayLength": 25,
-	});
-
-	oTable.fnDraw();
-	var itoggle = '<div id="itoggle" class="span12" style="text-align:center;"> \
-	   <div class="btn-group" data-toggle="buttons-checkbox"> \
-		<button type="button" class="btn" name="status_filter" value="Master" id="show_master"><span class="badge badge-success">Master {{statuses.master}}</span></button> \
-		<button type="button" class="btn" name="status_filter" value="Regular" id="show_regular"><span class="badge badge">Regular {{statuses.regular}}</span></button> \
-		<button type="button" class="btn" name="status_filter" value="Candidate" id="show_candidate"><span class="badge badge-info">Candidate {{statuses.candidate}}</span></button> \
-		<button type="button" class="btn" name="status_filter" value="Drained" id="show_drained"><span class="badge badge-warning">Drained {{statuses.drained}}</span></button> \
-		<button type="button" class="btn" name="status_filter" value="Offline" id="show_offline"><span class="badge badge-important">Offline {{statuses.offline}}</span></button> \
-		</div></div> ';
-	$("#itoggleph").html(itoggle);
-
-	var clustertoggle = '<select id="clusterfilter" multiple>{% for cluster in clusters %}<option value="{{cluster}}">{{cluster}}</option>{% endfor %}</select>';
-	$("#clusterph").html(clustertoggle);
-	$("#clusterfilter").select2({placeholder: "Select Clusters"});
-
-	var reg_exp = '';
-	var checkboxs = document.getElementsByName('status_filter');
-	for (var i = 0, inp; inp = checkboxs[i]; i++) {
-		checkCookie = readCookie("cookie_" + inp.value);
-		if (checkCookie) {
-			if (checkCookie == 'true') {
-				$(inp).addClass('active');
-			}
-			else {
-				$(inp).removeClass('active');
-			}
-		}
-		if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
-			reg_exp = reg_exp + inp.value + '|';
-		}
-	}
-
-	if (reg_exp == '') {
-		reg_exp = '|';
-	}
-
-	oTable.fnFilter(reg_exp.slice(0, -1), 6, true, false, false);
-
-	$('body').on('click', 'button[name="status_filter"]', function(){
-		var reg_exp = '';
-		var checkboxs = document.getElementsByName('status_filter');
-		$(this).button('toggle');
-			for (var i = 0, inp; inp = checkboxs[i]; i++) {
-				if (inp.type.toLowerCase() == 'button' && $(inp).hasClass('active')) {
-					reg_exp = reg_exp + inp.value + '|';
-				}
-				createCookie("cookie_" + inp.value, $(inp).hasClass('active'), 30);
-			}
-			//passing an empty string will result in no filter
-			//thus, it must be set to something that will not exist in the column
-			if (reg_exp == '') {
-				reg_exp = '|';
-			}
-			oTable.fnFilter(reg_exp.slice(0, -1), 6, true, false, false);
-			return false;
-		});
-
-		$('body').on('change', '#clusterfilter', function(){
-			var cl_reg_exp_arr = $('#clusterfilter').val();
-			cl_reg_exp = '';
-			if (cl_reg_exp_arr){
-				for (var i = 0, inp; inp = cl_reg_exp_arr[i]; i++) {
-					cl_reg_exp = cl_reg_exp + inp + '|';
-				}
-			}
-			if (cl_reg_exp == '') {
-				cl_reg_exp = '|';
-			}
-			oTable.fnFilter(cl_reg_exp.slice(0, -1), 7, true, false, false);
-			return false;
-		});
-
-		oTable.$("a[rel=popover]").popover().click(function(e) {
-			e.preventDefault();
-		});
-
-		$('body').on('click', function(e) {
-			if ($(e.target).data('toggle') !== 'popover' && $(e.target).parents('.popover.in').length === 0) {
-				$('[data-toggle="popover"]').popover('hide');
-			}
-		});
-	});
-</script>
-{% endblock %}
