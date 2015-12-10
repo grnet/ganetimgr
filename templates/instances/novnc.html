@@ -17,9 +17,8 @@
 			margin-bottom: 30px;
 		}
 
-		textarea#paste {
-			width: 100%;
-			margin: 10px;
+		input#paste {
+			margin-bottom: 0px;
 		}
 	</style>
 	<script type="text/javascript" src="{% static 'noVNC/include/util.js' %}"></script>
@@ -46,11 +45,11 @@
 			var vnc_status_bar = $("#VNC_status_bar");
 			var vnc_canvas = $('#VNC_canvas');
 			var vnc_screen = $('#VNC_screen');
-			var pasteArea = $('textarea#paste');
+			var pasteArea = $('input#paste');
 			pasteArea.hide();
 			ctrlaltdelete.addClass('disabled');
 			toggleCtrlButton.addClass('disabled');
-			pasteButton.addClass('disabled');
+			pasteButton.addClass('disabled').prop('disabled', true);
 			toggleAltButton.addClass('disabled');
 
 			function stop() {
@@ -98,16 +97,49 @@
 				return true;
 			}
 
-			$('#paste').keydown(function(event) {
-			    if (event.keyCode == 13) {
-			    	var text = $(this).val();
-			    	$(this).val('');
-			    	if (connected) {
+			var pasteSpecialKeys = {
+				enter: {
+					descr: function(i) { return i == "Enter" },
+					code: function(i) { return i == 10 || i == 13 }
+				},
+				esc: {
+					descr: function(i) { return i == "Escape" },
+					code: function(i) { return i == 27 }
+				}
+			}
+			$('#paste').on('keydown keyup keypress', function(evt) {
+				evt.stopPropagation(); // don't propagate to noVNC
+				if (!!evt.key) {
+					var way = 'descr';
+				} else if (!!evt.which || !!evt.keyCode) {
+					var way = 'code';
+				} else {
+					// abort!
+					return true;
+				}
+				var testKey = function(koi) {
+					return way == 'descr' ?
+					pasteSpecialKeys[koi][way](evt.key) :
+					pasteSpecialKeys[koi][way](evt.which || evt.keyCode);
+				}
+				if (connected && evt.type == "keypress") {
+					var reset = false;
+					if (testKey('enter')) {
+						evt.preventDefault();
+						var text = $(this).val();
 						for (var i=0; i < text.length; i+=1) {
 							rfb.sendKey(text.charCodeAt(i));
 						}
-			    	}
-			     }
+						rfb.sendKey(XK_Return);
+						reset = true;
+					} else if (testKey('esc')) {
+						// evt.preventDefault();
+						reset = true;
+					}
+					if (reset) {
+						$(this).val('').hide();
+					}
+				}
 			});
 
 			function updateState(rfb, state, oldstate, msg) {
@@ -139,7 +171,7 @@
 					toggleCtrlButton.removeClass('disabled');
 					toggleAltButton.removeClass('disabled');
 					vnc_canvas.addClass("connected");
-					pasteButton.removeClass('disabled');
+					pasteButton.removeClass('disabled').prop('disabled', false);
 				} else {
 					vnc_canvas.removeClass("connected");
 					connected = false;
@@ -147,6 +179,8 @@
 					ctrlaltdelete.addClass('disabled');
 					toggleCtrlButton.addClass('disabled');
 					toggleAltButton.addClass('disabled');
+					pasteButton.addClass('disabled').prop('disabled', true);
+					pasteArea.val('').hide();
 				}
 
 				if (msg != undefined) {
@@ -168,8 +202,14 @@
 
 			});
 
-			pasteButton.click(function () {
-				pasteArea.toggle();
+			pasteButton.click(function (evt) {
+				if ($(this).prop('disabled')) {
+					evt.preventDefault();
+					return false;
+				} else {
+					pasteArea.toggle().
+					filter(':visible').focus();
+				}
 			});
 
 			ctrlaltdelete.click(function(event) {
@@ -241,12 +281,8 @@
 					</button>
 					<button id="toggleCtrlButton" class="btn">Toggle Ctrl</button>
 					<button id="toggleAltButton" class="btn">Toggle Alt</button>
-					<button id="pasteButton" class="btn">Paste Data</button>
-				</div>
-				<div class="row">
-					<div class="span4" style="margin-left: 1%">
-						<textarea name="" id="paste"></textarea>
-					</div>
+					<button id="pasteButton" class="btn">Paste Text</button>
+					<input type="text" class="span4" id="paste" placeholder="Paste text and press enter"></input>
 				</div>
 				<div id="VNC_screen">
 					<span id="VNC_status_bar" class="label label-info">Click Connect to... connect</span>
