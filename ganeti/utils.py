@@ -605,7 +605,7 @@ def prepare_cluster_node_group_stack(cluster):
 def prepare_tags(taglist):
     tags = []
     for i in taglist:
-        #User
+        # User
         if i.startswith('u'):
             tags.append(
                 "%s:user:%s" % (
@@ -614,18 +614,18 @@ def prepare_tags(taglist):
                     ).username
                 )
             )
-        #Group
+        # Group
         if i.startswith('g'):
             tags.append("%s:group:%s" % (
                 settings.GANETI_TAG_PREFIX,
-                Group.objects.get(pk=i.replace('g_','')).name
+                Group.objects.get(pk=i.replace('g_', '')).name
             ))
     return list(set(tags))
 
 
 def format_ganeti_api_error(e):
     if e.message[0] == '(':
-        message = e.message.split(',')[1].replace(')', '')
+        message = e.message.split(',')[1].replace('(', '').replace(')', '')
     else:
         message = e.message
     return message
