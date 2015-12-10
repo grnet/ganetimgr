@@ -1,6 +1,5 @@
 import json
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
-from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
@@ -31,7 +30,7 @@ def get_nodegroups_fromnet(request):
 @permission_required("apply.change_instanceapplication")
 def get_cluster_node_group_stack(request):
     res = ''
-    error = None;
+    error = None
     cluster_id = request.GET.get('cluster_id', None)
     if cluster_id:
         cluster = get_object_or_404(Cluster, pk=cluster_id)
