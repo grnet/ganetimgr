@@ -281,7 +281,6 @@ footer hr {
 /*Navigation*/
 #sidebar-nav {
   position: absolute;
-  width: 200px;
   float: left;
   margin: 0em;
 }
@@ -1618,6 +1617,10 @@ ul.nav.nav-tabs.fancy  > li.active  > a:hover {
 }
 /* Large desktop */
 @media (min-width: 1200px) {
+
+  #sidebar-nav {
+    width: 200px;
+  }
 
 }
 
