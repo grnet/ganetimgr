@@ -154,7 +154,7 @@ class ApplicationTestCase(TestCase):
 
         # accept instance
         res = self.send_application_review(form.data, application)
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 302)
         # make sure the application has pending code
         self.assertEqual(application.status in PENDING_CODES, True)
 
@@ -252,7 +252,7 @@ class ApplicationTestCase(TestCase):
             data
         )
         # make sure the form has been processed
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 302)
 
 
 class UserTestCase(TestCase):
