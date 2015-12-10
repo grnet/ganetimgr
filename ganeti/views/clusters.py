@@ -199,6 +199,9 @@ def get_clusternodes(request):
             if n['role'] == 'M':
                 status_dict['master'] += 1
         clusters = list(set([n['cluster'] for n in nodes]))
+        cache.set('allclusternodes', 180)
+        cache.set('badclusters', 180)
+        cache.set('badnodes', 180)
         return render(
             request,
             'clusters/cluster_nodes.html',
