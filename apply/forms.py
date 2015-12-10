@@ -34,8 +34,9 @@ from django.forms.widgets import Select
 from django.utils.encoding import force_unicode
 from django.utils.html import escape, conditional_escape
 from accounts.models import UserProfile
+from django.conf import settings
 
-from ganetimgr.settings import BRANDING
+BRANDING = settings.BRANDING
 
 # Taken from ganeti and patched to avoid non-bind9 friendly VM names
 _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
