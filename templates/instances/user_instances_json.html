@@ -387,23 +387,27 @@ $(document).ready( function(){
 									users = '<a class="btn" href="'+full.groups[j].group_href+'"><i class="fa fa-group"></i> '+full.groups[j].group+'</a>' + ' '+ users;
 								 }
 							 }
-						return users;
+							return users;
 						 }
 					 },
 					 {"mData": "name", "bSearchable": false,"bSortable": false, "sClass" : "alignCenter",
 						 "mRender":  function (data, type, full) {
+							{% if perms.ganeti.can_lock %}
 							 if (full.hasOwnProperty("adminlock")){
 								 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'unlock\'); return false;">{% trans "Unlock" %}</a></li>';
 							 }
 							 else{
 								 var lock = '<li><a href="#" onclick="javascript:showLock(\''+full.cluster+'\',\''+data+'\', \'lock\'); return false;">{% trans "Lock" %}</a></li>';
 							 }
+							 {% endif %}
+							 {% if perms.ganeti.can_isolate %}
 							 if (full.hasOwnProperty("isolate")){
 								 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'connect\'); return false;">{% trans "De-Isolate" %}</a></li>';
 							 }
 							 else{
 								 var isolate = '<li><a href="#" onclick="javascript:showIsolate(\''+full.cluster+'\',\''+data+'\', \'isolate\'); return false;">{% trans "Isolate" %}</a></li>';
 							 }
+							 {% endif %}
 							 var ret = ''+
 							 '<div class="btn-group">'+
 							 '<button data-toggle="dropdown" class="btn dropdown-toggle"><i class="fa fa-cog"></i> {% trans "Options" %} <span class="caret"></span></button>'+
@@ -411,7 +415,13 @@ $(document).ready( function(){
 							   '<li><a href="#" onclick="javascript:showDetails(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Details" %}</a></li>'+
 							   '<li><a href="#" onclick="javascript:showTags(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Owners" %}</a></li>'+
 							   '<li><a href="#" onclick="javascript:showNotify(\''+full.cluster+'\',\''+data+'\'); return false;">{% trans "Notify" %}</a></li>'+
-							   lock + isolate +
+							{% if perms.ganeti.can_lock %}
+							   lock +
+							{% endif %}
+
+							{% if perms.ganeti.can_isolate %}
+							   isolate +
+							{% endif %}
 							 '</ul>'+
 						   '</div>';
 					 return ret;
@@ -536,6 +546,7 @@ $.fn.dataTableExt.afnFiltering.push(
 		return false;
 	}
 
+{% if user.is_superuser or perms.ganeti.can_lock or perms.ganeti.can_isolate %}
 	function showLock(cluster, instance, action){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text(action + ': '+instance);
@@ -551,6 +562,8 @@ $.fn.dataTableExt.afnFiltering.push(
 		$( "#instDets" ).modal('show');
 		return false;
 	}
+{% endif %}
+
 
 </script>
 {% endblock %}
