@@ -89,7 +89,7 @@ class ClusterTestCase(LoginTestCase):
         # should get a redirect to the instances page
         self.login_user()
         res = self.client.get(reverse('cluster-nodes'))
-        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res.status_code, 403)
 
         # should get a 200
         self.login_superuser()
