@@ -39,9 +39,9 @@ from django.conf import settings
 
 from util import vapclient
 from util.client import GanetiRapiClient, GanetiApiError, GenericCurlConfig
-from ganetimgr.settings import GANETI_TAG_PREFIX
-
 from apply.models import Organization, InstanceApplication
+
+GANETI_TAG_PREFIX = settings.GANETI_TAG_PREFIX
 
 REQUEST_ACTIONS = (
     (1, 'reinstall'),
