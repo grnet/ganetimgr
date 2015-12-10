@@ -561,9 +561,9 @@ def refresh_cluster_cache(cluster, instance):
     for u in User.objects.all():
         cache.delete("user:%s:index:instances" % u.username)
     nodes, bc, bn = prepare_clusternodes()
-    cache.set('allclusternodes', nodes, 90)
-    cache.set('badclusters', bc, 90)
-    cache.set('badnodes', bn, 90)
+    cache.set('allclusternodes', nodes, 180)
+    cache.set('badclusters', bc, 180)
+    cache.set('badnodes', bn, 180)
 
 
 def clusterdetails_generator(slug):

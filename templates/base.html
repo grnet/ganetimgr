@@ -308,9 +308,9 @@
         <div>Powered by <a target='_blank' href="https://grnet.github.io/ganetimgr">ganetimgr</a> v{{ VERSION }} <a target='_blank' href="https://github.com/grnet/ganetimgr/"><i class="fa fa-github"></i></a></div>
     </footer>
     {% include "includes/analytics.html" %}
-    {% block postfooter %}{% endblock %}
     <script src="{% static 'ganetimgr/js/includes/nprogress.js' %}"></script>
     <script src="{% static 'ganetimgr/js/messages.js' %}"></script>
+    {% block postfooter %}{% endblock %}
 
   </body>
 </html>

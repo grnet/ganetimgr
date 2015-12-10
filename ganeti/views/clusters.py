@@ -77,6 +77,7 @@ def clusternodes_json(request, cluster=None):
         bad_nodes = []
         if cluster:
             cluster = get_object_or_404(Cluster, pk=cluster)
+        cache.get('allclusternodes')
         if not nodes:
             nodes, bad_clusters, bad_nodes = prepare_clusternodes(cluster)
             cache.set('allclusternodes', nodes, 90)
@@ -155,12 +156,28 @@ def get_clusternodes(request):
         request.user.is_superuser or
         request.user.has_perm('ganeti.view_instances')
     ):
+        return render(
+            request,
+            'clusters/cluster_nodes.html',
+            {
+            }
+        )
+    else:
+        raise PermissionDenied
+
+
+@login_required
+def get_clusternodes_pjax(request):
+    if (
+        request.user.is_superuser or
+        request.user.has_perm('ganeti.view_instances')
+    ):
         nodes = cache.get('allclusternodes')
         bad_clusters = cache.get('badclusters')
         bad_nodes = cache.get('badnodes')
         if nodes is None:
             nodes, bad_clusters, bad_nodes = prepare_clusternodes()
-            cache.set('allclusternodes', nodes, 90)
+            cache.set('allclusternodes', nodes, 180)
         if bad_clusters:
             for c in bad_clusters:
                 messages.add_message(
@@ -170,7 +187,7 @@ def get_clusternodes(request):
                     " following clusters are unreachable: " +
                     ", ".join([c.description or c.hostname])
                 )
-            cache.set('badclusters', bad_clusters, 90)
+            cache.set('badclusters', bad_clusters, 180)
         if bad_nodes:
             messages.add_message(
                 request,
@@ -178,7 +195,7 @@ def get_clusternodes(request):
                 "Some nodes appear to be offline: " +
                 ", ".join(bad_nodes)
             )
-            cache.set('badnodes', bad_nodes, 90)
+            cache.set('badnodes', bad_nodes, 180)
         if settings.SERVER_MONITORING_URL:
             servermon_url = settings.SERVER_MONITORING_URL
         status_dict = {}
@@ -199,12 +216,9 @@ def get_clusternodes(request):
             if n['role'] == 'M':
                 status_dict['master'] += 1
         clusters = list(set([n['cluster'] for n in nodes]))
-        cache.set('allclusternodes', 180)
-        cache.set('badclusters', 180)
-        cache.set('badnodes', 180)
         return render(
             request,
-            'clusters/cluster_nodes.html',
+            'clusters/cluster_nodes_pjax.html',
             {
                 'nodes': nodes,
                 'clusters': clusters,
@@ -213,7 +227,7 @@ def get_clusternodes(request):
             }
         )
     else:
-        return HttpResponseRedirect(reverse('user-instances'))
+        raise PermissionDenied
 
 
 @login_required
@@ -350,7 +364,6 @@ def reinstalldestreview(request, application_hash, action_id):
         return HttpResponseRedirect(reverse('user-instances'))
 
 
-@user_passes_test(lambda u: u.is_superuser)
 def clusterdetails(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
         return render(
