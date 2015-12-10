@@ -26,8 +26,9 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
-from django.http import HttpResponseBadRequest
-from ganetimgr.settings import GANETI_TAG_PREFIX
+from django.conf import settings
+
+GANETI_TAG_PREFIX = settings.GANETI_TAG_PREFIX
 
 try:
     from ganetimgr.settings import BEANSTALK_TUBE
