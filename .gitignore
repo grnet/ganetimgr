@@ -6,3 +6,4 @@ apache/django.wsgi
 docs/build/
 admin/
 django_markdown/
+.coverage
