@@ -131,4 +131,3 @@ def jobs(request):
         )
     else:
         raise PermissionDenied()
-
