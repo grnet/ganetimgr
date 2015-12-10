@@ -7,6 +7,7 @@ Requirements:
 
 New Features:
 	- NoVNC transfer commands from text area
+	- SNF images discovery
     - Tests
 	- Search by column on the home table
 	- Clear button in search input on the home table
@@ -18,6 +19,12 @@ New Features:
     - Add fabric script under contrib for automated deployment
 
 Fixes/Improvements:
+    - Instance creation button triggers only once
+    - Improve email messages remove greek, add translations
+    - Reinstall/Rename form submits on enter
+    - Better token handling of rename/reinstall requests
+	- Added more permissions (lock, isolate) and improve options dropdown in vms
+	- Cluster page faster loading
 	- Improved cluster admin
 	- Translations
     - Exception handling when cluster won't respond.
@@ -141,6 +148,7 @@ New Features:
     - Implement support for multiple graphs for VMs with many network interfaces
 
 Fixes/Enhancements:
+	- Branding
     - Allow failed and approved-but-not-submitted applications to be resubmitted
     - Reset backend_message when re-submitting job
     - Display status when reviewing application
