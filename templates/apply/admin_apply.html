@@ -231,7 +231,7 @@
 
     $(document).ready( function(){
         $('input[type="submit"]').one('click', function () {
-            $(this).prop('disabled', 'disabled');
+            $(this).addClass('disabled');
         });
 
         function cleanfields(){
