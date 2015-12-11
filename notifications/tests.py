@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.core import mail
 from notifications.forms import MessageForm
 
 
@@ -70,3 +71,19 @@ class NoficationsTestCase(LoginTestCase):
         }
         form = MessageForm(data)
         self.assertEqual(form.is_valid(), True)
+
+    def test_send_notification(self):
+        self.login_superuser()
+        res = self.client.post(reverse('notify'))
+        self.assertEqual(res.status_code, 200)
+
+        body = 'this is a test'
+        res = self.client.post(reverse('notify'), {
+            'recipient_list': 'u_%s' % (self.user.pk),
+            'subject': 'test',
+            'message': body,
+            'search_for': 'users',
+        })
+        self.assertEqual(mail.outbox[0].recipients()[0], self.user.email)
+        self.assertEqual(mail.outbox[0].body, body)
+        self.assertEqual(res.status_code, 302)
