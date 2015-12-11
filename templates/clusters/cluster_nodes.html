@@ -160,8 +160,8 @@
 				return false;
 			});
 
-			$('body').on('change', '#clusterfilter', function(){
-				var cl_reg_exp_arr = $('#clusterfilter').val();
+			$('body').on('change', '#clusterph select', function(){
+				var cl_reg_exp_arr = $('#clusterph select').val();
 				cl_reg_exp = '';
 				if (cl_reg_exp_arr){
 					for (var i = 0, inp; inp = cl_reg_exp_arr[i]; i++) {
@@ -186,7 +186,7 @@
 			});
 		});
 	});
-	});
+});
 
 </script>
 {% endblock %}
