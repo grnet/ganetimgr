@@ -1,5 +1,6 @@
 # Ganetimgr
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/grnet/ganetimgr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Documentation Status](https://readthedocs.org/projects/ganetimgr/badge/?version=latest)](https://readthedocs.org/projects/ganetimgr/?badge=latest)
 
 `Ganetimgr` is a web platform that eases the provisioning of virtual machines over multiple `ganeti` clusters.
 It leverages Ganeti's RAPI functionality to administer the clusters, and is stateless from the VM perspective.
@@ -28,7 +29,6 @@ In essence, ganetimgr aims to be the frontend of a VPS service.
 ## Instructions
 For detailed instructions, go to our [readthedocs](http://ganetimgr.readthedocs.org/en/latest/) page.
 
-[![Documentation Status](https://readthedocs.org/projects/ganetimgr/badge/?version=stable)](https://readthedocs.org/projects/ganetimgr/?badge=stable)
 
 ## Contact Information
 
