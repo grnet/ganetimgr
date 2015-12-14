@@ -198,56 +198,60 @@
 						for (var k=0; k<ng_nodes.length; k++) {
 								curriternode = ng_nodes[k];
 								node_info = get_node_info(curriternode);
-								node_class = "";
-								title = "";
-								if (node_info.role == "C"){
-									node_class = 'label label-info';
-									title = "Candidate";
-								}
-								if (node_info.role == "R"){
-									node_class = 'label';
-									title = "Regular";
-								}
-								if (node_info.role == "O"){
-									node_class = 'label label-important';
-									title = "Offline";
-								}
-								if (node_info.role == "M"){
-									node_class = 'label label-success';
-									title = "Master";
-								}
-								if (node_info.role == "D"){
-									node_class = 'label label-warning';
-									title = "Drained";
-								}
-								node_span = $("<span class='"+node_class+"' title='"+title+"'>"+ng_nodes[k]+"</span> <span class='badge'>"+node_info.pinst_cnt+"</span>");
-								bullcolor = "#3a87ad";
-								if (node_info.mem_used > 0){
-									if (node_info.mem_used < 50){
-										bullcolor = "#3a87ad";
+								if (node_info) {
+									node_class = "";
+									title = "";
+									if (node_info.role == "C"){
+										node_class = 'label label-info';
+										title = "Candidate";
 									}
-									if (node_info.mem_used >= 50){
-										bullcolor = "#468847";
+									if (node_info.role == "R"){
+										node_class = 'label';
+										title = "Regular";
 									}
-									if (node_info.mem_used >= 80){
-										bullcolor = "#f89406";
+									if (node_info.role == "O"){
+										node_class = 'label label-important';
+										title = "Offline";
 									}
+									if (node_info.role == "M"){
+										node_class = 'label label-success';
+										title = "Master";
+									}
+									if (node_info.role == "D"){
+										node_class = 'label label-warning';
+										title = "Drained";
+									}
+									node_span = $("<span class='"+node_class+"' title='"+title+"'>"+ng_nodes[k]+"</span> <span class='badge'>"+node_info.pinst_cnt+"</span>");
+									bullcolor = "#3a87ad";
+									if (node_info.mem_used > 0){
+										if (node_info.mem_used < 50){
+											bullcolor = "#3a87ad";
+										}
+										if (node_info.mem_used >= 50){
+											bullcolor = "#468847";
+										}
+										if (node_info.mem_used >= 80){
+											bullcolor = "#f89406";
+										}
+									}
+									var bulletchart = $(" <span style='float:right'>&nbsp;</span> ");
+									bulletchart.sparkline([node_info.mem_used, 100],
+										{
+								    	type: 'bullet',
+								    	targetWidth: 5,
+								    	performanceColor: bullcolor,
+								    	tooltipValueLookups: { fields: {r: 'Range', p: 'Mem 100%', t: 'Mem Used %'} }
+								    	});
+								    nodes.append(node_span);
+								    nodes.append(bulletchart);
+								    if (node_info.ctotal == null){
+								    	node_info.ctotal = "-";
+								    }
+								    nodes.append("<span style='float:right' class='badge badge-info'>"+node_info.ctotal+"</span> ");
+								    nodes.append('<br>');
+								} else {
+									$.add_message(curriternode + ' could not be loaded.')
 								}
-								var bulletchart = $(" <span style='float:right'>&nbsp;</span> ");
-								bulletchart.sparkline([node_info.mem_used, 100],
-									{
-							    	type: 'bullet',
-							    	targetWidth: 5,
-							    	performanceColor: bullcolor,
-							    	tooltipValueLookups: { fields: {r: 'Range', p: 'Mem 100%', t: 'Mem Used %'} }
-							    	});
-							    nodes.append(node_span);
-							    nodes.append(bulletchart);
-							    if (node_info.ctotal == null){
-							    	node_info.ctotal = "-";
-							    }
-							    nodes.append("<span style='float:right' class='badge badge-info'>"+node_info.ctotal+"</span> ");
-							    nodes.append('<br>');
 						}
 						$.sparkline_display_visible();
 						vgs = "";
