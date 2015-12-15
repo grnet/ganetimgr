@@ -16,6 +16,10 @@ html, body {
 	background: #f6f6f6;
 }
 
+.white.images {
+	background: white;
+}
+
 div.row {
 	padding: 5% 0;
 	font-size: 20px;
