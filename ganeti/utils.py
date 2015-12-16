@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
-from django.db import close_connection
+from django.db import close_old_connections
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import filesizeformat
 from django.template.loader import render_to_string
@@ -59,7 +59,7 @@ def get_user_instances(user, admin=True, tag=None):
         except (GanetiApiError, Exception):
             error = True
         finally:
-            close_connection()
+            close_old_connections()
     p = Pool(20)
     clusters = Cluster.objects.filter(disabled=False)
     p.map(_get_instances, clusters)
@@ -130,7 +130,7 @@ def prepare_clusternodes(cluster=None):
             cluster._client = None
             bad_clusters.append(cluster)
         finally:
-            close_connection()
+            close_old_connections()
     p.map(_get_nodes, clusters)
     return nodes, bad_clusters, bad_nodes
 
@@ -658,8 +658,8 @@ def prepare_tags(taglist):
 
 
 def format_ganeti_api_error(e):
-    if e.message[0] == '(':
-        message = e.message.split(',')[1].replace('(', '').replace(')', '')
+    if e.args[0][0] == '(':
+        message = e.args[0].split(',')[1].replace('(', '').replace(')', '')
     else:
-        message = e.message
+        message = e.args[0]
     return message

@@ -120,6 +120,12 @@ class CustomRegistrationManager(models.Manager):
                     user.save()
                     profile.save()
 
+                    
+                    if Site._meta.installed:
+                        site = Site.objects.get_current()
+                    else:
+                        site = ''
+
                     # an e-mail is sent to the site managers to activate the
                     # user's account
 

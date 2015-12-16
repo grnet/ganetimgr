@@ -7,7 +7,7 @@
 		$("#mailapplybutton").click(function(){
 			$.add_message('Sending notification...')
 			$.ajax({
-				url:"{% url notify %}",
+				url:"{% url 'notify' %}",
 				data:$("#notifyform").serialize(),
 				type: "POST",
 				cache: false,

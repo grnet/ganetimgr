@@ -24,7 +24,7 @@ from django.contrib import messages as djmessages
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.conf import settings
-from django.db import close_connection
+from django.db import close_old_connections
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _
@@ -32,6 +32,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
+
+from django.http import JsonResponse
 
 if 'oauth2_provider' in settings.INSTALLED_APPS:
     from oauth2_provider.decorators import protected_resource
@@ -68,6 +70,7 @@ from ganeti.decorators import (
 def user_index(request):
     if request.user.is_anonymous():
         return HttpResponseRedirect(reverse('login'))
+
     return render(
         request,
         'instances/user_instances_json.html',
@@ -108,7 +111,7 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
                     'response': response
                 }
             ),
-            mimetype='application/json'
+            content_type='application/json'
         )
 else:
     def list_user_instances(request):
@@ -125,7 +128,7 @@ def user_index_json(request):
                 " and our admins will be notified about it"
             )
         }
-        return HttpResponse(json.dumps(action), mimetype='application/json')
+        return HttpResponse(json.dumps(action), content_type='application/json')
     p = Pool(20)
     instances = []
     bad_clusters = []
@@ -145,7 +148,7 @@ def user_index_json(request):
             except Exception as e:
                 bad_clusters.append((cluster, e))
             finally:
-                close_connection()
+                close_old_connections()
     jresp = {}
     cache_key = "user:%s:index:instances" % request.user.username
     if cluster_slug:
@@ -173,7 +176,7 @@ def user_index_json(request):
         except Exception as e:
                 bad_clusters.append((cluster, e))
         finally:
-            close_connection()
+            close_old_connections()
     if res is None:
         if not request.user.is_anonymous():
             if cluster_slug:
@@ -238,7 +241,7 @@ def user_index_json(request):
         cache.set(cache_key, jresp, cache_timeout)
         res = jresp
 
-    return HttpResponse(json.dumps(res), mimetype='application/json')
+    return HttpResponse(json.dumps(res), content_type='application/json')
 
 
 @login_required
@@ -250,7 +253,7 @@ def user_sum_stats(request):
                 " logged and our admins will be notified about it"
             )
         }
-        return HttpResponse(json.dumps(action), mimetype='application/json')
+        return HttpResponse(json.dumps(action), content_type='application/json')
     p = Pool(20)
     instances = []
     bad_clusters = []
@@ -264,7 +267,7 @@ def user_sum_stats(request):
             bad_clusters.append((cluster, e))
 
         finally:
-            close_connection()
+            close_old_connections()
     if not request.user.is_anonymous():
         # get only enabled clusters
         p.map(_get_instances, Cluster.objects.filter(disabled=False))
@@ -314,7 +317,7 @@ def user_sum_stats(request):
         except (GanetiApiError, Exception):
             pass
         finally:
-            close_connection()
+            close_old_connections()
     if res is None:
         j.map(_get_instance_details, instances)
         jresp['aaData'] = instancedetails
@@ -374,7 +377,7 @@ def user_sum_stats(request):
         instances_stats = return_dict
     return HttpResponse(
         json.dumps(instances_stats),
-        mimetype='application/json'
+        content_type='application/json'
     )
 
 
@@ -456,7 +459,7 @@ def novnc_proxy(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
     use_tls = settings.NOVNC_USE_TLS
     result = json.dumps(cluster.setup_novnc_forwarding(instance, tls=use_tls))
-    return HttpResponse(result, mimetype="application/json")
+    return HttpResponse(result, content_type='application/json')
 
 
 @login_required
@@ -814,7 +817,7 @@ def lock(request, instance):
                 res = {
                     'result': 'success'
                 }
-                return HttpResponse(json.dumps(res), mimetype='application/json')
+                return HttpResponse(json.dumps(res), content_type='application/json')
             else:
                 return render(
                     request,
@@ -884,7 +887,7 @@ def isolate(request, instance):
                     instance.cluster.migrate_instance(instance.name)
                 res = {'result': 'success'}
                 return HttpResponse(
-                    json.dumps(res), mimetype='application/json'
+                    json.dumps(res), content_type='application/json'
                 )
             else:
                 return render(

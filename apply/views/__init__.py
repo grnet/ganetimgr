@@ -90,11 +90,11 @@ def apply(request):
             )
         else:
             form = InstanceApplicationForm()
-            org = request.user.get_profile().organization
+            org = request.user.userprofile.organization
             if org and settings.BRANDING['SHOW_ORGANIZATION_FORM']:
                 form.fields['organization'].initial = org
             if settings.BRANDING['SHOW_ADMINISTRATIVE_FORM']:
-                telephone = request.user.get_profile().telephone
+                telephone = request.user.userprofile.telephone
                 if telephone:
                     form.fields['admin_contact_phone'].initial = telephone
                 full_name = '%s %s' % (request.user.first_name, request.user.last_name)
@@ -116,12 +116,12 @@ def apply(request):
             net = request.POST.get('network', '')
 
             # fill user profile with any missing data
-            user_profile = request.user.get_profile()
+            user_profile = request.user.userprofile
             # organization
             if not user_profile.organization and settings.BRANDING['SHOW_ORGANIZATION_FORM']:
                 user_profile.organization = form.cleaned_data['organization']
             # telephone
-            if not request.user.get_profile().telephone and settings.BRANDING['SHOW_ADMINISTRATIVE_FORM']:
+            if not request.user.userprofile.telephone and settings.BRANDING['SHOW_ADMINISTRATIVE_FORM']:
                 user_profile.telephone = form.cleaned_data['admin_contact_phone']
             user_profile.save()
             if net:
@@ -364,4 +364,4 @@ def instance_ssh_keys(request, application_id, cookie):
     output = StringIO()
     output.writelines([k.key_line() for k in
                        app.applicant.sshpublickey_set.all()])
-    return HttpResponse(output.getvalue(), mimetype="text/plain")
+    return HttpResponse(output.getvalue(), content_type="text/plain")

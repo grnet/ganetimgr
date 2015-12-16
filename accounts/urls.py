@@ -17,8 +17,7 @@
 
 from accounts import views
 from accounts.forms import PasswordResetFormPatched, RegistrationForm
-
-from django.conf.urls.defaults import include, patterns, url
+from django.conf.urls import patterns, url, include
 from django.contrib.auth import views as auth_v
 
 urlpatterns = patterns(

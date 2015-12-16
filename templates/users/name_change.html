@@ -46,7 +46,7 @@
         			str = $('#change_name_form').serialize();
                     $.ajax({
                         type: "POST",
-                        url: "{% url name-change %}",
+                        url: "{% url 'name-change' %}",
                         data: str,
                         success: function(response){
                         	$("#user_namechange_placeholder").html(response);

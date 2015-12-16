@@ -24,7 +24,7 @@ def get_nodegroups_fromnet(request):
         nodeg_dict = {}
         nodeg_dict['name'] = g['name']
         nodegroups_list.append(nodeg_dict)
-    return HttpResponse(json.dumps(nodegroups_list), mimetype='application/json')
+    return HttpResponse(json.dumps(nodegroups_list), content_type='application/json')
 
 
 @permission_required("apply.change_instanceapplication")
@@ -45,4 +45,4 @@ def get_cluster_node_group_stack(request):
         error = e
     if error:
         messages.add_message(request, messages.ERROR, error)
-    return HttpResponse(json.dumps(res), mimetype='application/json')
+    return HttpResponse(json.dumps(res), content_type='application/json')

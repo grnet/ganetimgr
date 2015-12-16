@@ -3,10 +3,10 @@ from django.core.serializers import deserialize, serialize
 from django.core.serializers.base import DeserializationError
 from django.db import models
 from django.test import TestCase
-from django.utils import simplejson as json
+import json
 
 from .fields import JSONField, JSONCharField
-from django.forms.util import ValidationError
+from django.core.exceptions import ValidationError
 
 from collections import OrderedDict
 

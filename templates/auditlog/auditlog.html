@@ -28,7 +28,7 @@
 {% block title %}{% if user.is_superuser or perms.ganeti.view_instances %}{% trans "Audit Log" %}{% else %}{% trans "History" %}{% endif %}{% endblock %}
 {% block auditlog %}class="active"{% endblock %}
 {% block crumbs %}
-    <li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+    <li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
     <li class="active">{% if user.is_superuser or perms.ganeti.view_instances %}{% trans "Audit Log" %}{% else %}{% trans "History" %}{% endif %}</li>
 {% endblock %}
 
@@ -114,7 +114,7 @@
               "sDom": "<'row-fluid'<'span6'l><'span6'f>ip>tr<'row-fluid'<'span6'i><'span6'p>>",
               {% endif %}
     		"bProcessing": true,
-            "sAjaxSource": "{% url auditlog_json %}",
+            "sAjaxSource": "{% url 'auditlog_json' %}",
             "bDeferRender": true,
             "aaSorting": [[ 5, "desc" ]],
             "aoColumns":[
@@ -183,7 +183,7 @@
 	function showDetails(cluster, jobid){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Job Details: '+jobid);
-		$( "#instDetsbody" ).load("{% url jobdets-popup %}/?cluster="+cluster+"&jobid="+jobid+"");
+		$( "#instDetsbody" ).load("{% url 'jobdets-popup' %}/?cluster="+cluster+"&jobid="+jobid+"");
 		$( "#instDets" ).modal('show');
 		return false;
 	}

@@ -8,7 +8,7 @@
 			$(this).html('Saving...');
 			var instance = $("#instanceisolateform").data('instance');
 			$.ajax({
-				url:"{% url isolate %}"+instance,
+				url:"{% url 'isolate' %}"+instance,
 				data:$("#instanceisolateform").serialize(),
 				type: "POST",
 				cache: false,

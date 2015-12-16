@@ -23,7 +23,7 @@ from gevent.pool import Pool
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages as djmessages
-from django.db import close_connection
+from django.db import close_old_connections
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
@@ -51,7 +51,7 @@ def job_details(request):
                 job = cluster.get_job(jobid)
             except Exception as e:
                 try:
-                    error = tuple(x for x in e.message[1:-1].split(","))[1]
+                    error = tuple(x for x in e.args[0][1:-1].split(","))[1]
                 except:
                     error = _('Could not connect to api')
                 return HttpResponse(error.replace('"', ''))
@@ -86,7 +86,7 @@ def jobs_index_json(request):
             except Exception as e:
                 bad_clusters.append((cluster, e))
             finally:
-                close_connection()
+                close_old_connections()
         if not request.user.is_anonymous():
             # get only enabled clusters
             clusters = Cluster.objects.filter(disabled=False)
@@ -117,7 +117,7 @@ def jobs_index_json(request):
             )
         jresp['clusters'] = clusters
         res = jresp
-        return HttpResponse(json.dumps(res), mimetype='application/json')
+        return HttpResponse(json.dumps(res), content_type='application/json')
     else:
         raise PermissionDenied()
 

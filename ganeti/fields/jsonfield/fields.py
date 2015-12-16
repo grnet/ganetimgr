@@ -7,17 +7,10 @@ try:
 except ImportError:
     import six
 
-try:
-    import json
-except ImportError:
-    from django.utils import simplejson as json
+import json
 
 from django.forms import fields
-try:
-    from django.forms.utils import ValidationError
-except ImportError:
-    from django.forms.util import ValidationError
-
+from django.core.exceptions import ValidationError
 from .subclassing import SubfieldBase
 
 

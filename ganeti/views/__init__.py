@@ -75,12 +75,12 @@ def get_messages(request):
 
         return HttpResponse(
             json.dumps(mes),
-            mimetype='application/json'
+            content_type='application/json'
         )
     else:
         return HttpResponse(
             json.dumps({'logout': True}),
-            mimetype='application/json'
+            content_type='application/json'
         )
 
 
@@ -113,7 +113,7 @@ def clear_cache(request):
         result = {'result': "Success"}
     else:
         result = {'error': "Violation"}
-    return HttpResponse(json.dumps(result), mimetype='application/json')
+    return HttpResponse(json.dumps(result), content_type='application/json')
 
 
 @csrf_exempt
@@ -183,7 +183,7 @@ def tagInstance(request, instance):
                                 'reason': jobid
                             }
                         ),
-                        mimetype='application/json'
+                        content_type='application/json'
                     )
             newtagstoapply = prepare_tags(newtags)
 
@@ -191,7 +191,7 @@ def tagInstance(request, instance):
                 instance.cluster.tag_instance(instance.name, newtagstoapply)
 
             res = {'result': 'success'}
-            return HttpResponse(json.dumps(res), mimetype='application/json')
+            return HttpResponse(json.dumps(res), content_type='application/json')
         else:
             return render(
                 request,
@@ -259,6 +259,6 @@ def get_user_groups(request):
         groupd['type'] = "group"
         ret_list.append(groupd)
     action = ret_list
-    return HttpResponse(json.dumps(action), mimetype='application/json')
+    return HttpResponse(json.dumps(action), content_type='application/json')
 
 

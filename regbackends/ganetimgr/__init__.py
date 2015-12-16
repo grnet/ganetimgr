@@ -20,12 +20,8 @@ from accounts.models import CustomRegistrationProfile
 
 from apply.models import Organization
 
-from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMultiAlternatives, mail_managers
-from django.template.loader import render_to_string
-
 from registration import signals
 from registration.backends.default import DefaultBackend
 
@@ -52,7 +48,7 @@ class GanetimgrBackend(DefaultBackend):
         new_user.first_name = firstname
         new_user.last_name = lastname
         new_user.save()
-        profile = new_user.get_profile()
+        profile = new_user.userprofile
         try:
             organization = Organization.objects.get(title=organization)
         except Organization.DoesNotExist:

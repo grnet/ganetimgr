@@ -19,7 +19,7 @@
 {% block applications %}class="active"{% endblock %}
 
 {% block crumbs %}
-	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li class="active">{% trans "Instance Applications" %}</li>
 {% endblock %}
 
@@ -51,7 +51,7 @@
 			<tbody>
 				{% for app in pending %}
 				<tr class="{{ app.get_status_display }}">
-					<td>{% if perms.apply.change_instanceapplication %}<a href="{% url application-review app.pk %}">{{ app.hostname }}</a>{% else %}{{ app.hostname }}{% endif %}</td>
+					<td>{% if perms.apply.change_instanceapplication %}<a href="{% url 'application-review' app.pk %}">{{ app.hostname }}</a>{% else %}{{ app.hostname }}{% endif %}</td>
 					<td>{{ app.applicant }}</td><td>{{ app.memory }}</td><td>{{ app.vcpus }}</td>
 					<td>{{ app.instance_params.network|default_if_none:"&mdash;" }}</td>
 					<td><span class="label label-{{ app.get_status_display|appstatus }}">{{ app.get_status_display }}</span></td>
@@ -81,7 +81,7 @@
 <tbody>
 {% for app in completed %}
 <tr>
-	<td>{% if perms.apply.change_instanceapplication %}<a href="{% url application-review app.pk %}">{{ app.hostname }}</a>{% else %}{{ app.hostname }}{% endif %}</td>
+	<td>{% if perms.apply.change_instanceapplication %}<a href="{% url 'application-review' app.pk %}">{{ app.hostname }}</a>{% else %}{{ app.hostname }}{% endif %}</td>
 	<td>{{ app.applicant }}</td>
 	<td>{{ app.memory }}</td>
 	<td>{{ app.vcpus }}</td>

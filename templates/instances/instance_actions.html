@@ -45,7 +45,7 @@
 		$(this).html("<img src='{% static 'ganetimgr/img/gifs/ajax-loader.gif' %}'>");
 		$.ajax({
         type: 'POST',
-        url: "{% url instance-startup cluster.slug instance.name %}",
+        url: "{% url 'instance-startup' cluster.slug instance.name %}",
         dataType: 'json',
         success: function(data) {
 			$("#actions_container_inner").empty();
@@ -62,7 +62,7 @@
 		$(this).html("<img src='{% static 'ganetimgr/img/gifs/ajax-loader.gif' %}'>");
 		$.ajax({
         type: 'POST',
-        url: "{% url instance-shutdown cluster.slug instance.name %}",
+        url: "{% url 'instance-shutdown' cluster.slug instance.name %}",
         dataType: 'json',
         success: function(data) {
 			$("#actions_container_inner").empty();
@@ -88,7 +88,7 @@
 			clearTimeout(polltimer);
 			$.ajax({
 		        type: 'POST',
-		        url: "{% url instance-reinstall-destroy cluster.slug instance.name 1 %}",
+		        url: "{% url 'instance-reinstall-destroy' cluster.slug instance.name 1 %}",
 		        data: {
 		        	operating_system: $('#operating_system select').val()
 		        },
@@ -112,7 +112,7 @@
 		clearTimeout(polltimer);
 		$.ajax({
         type: 'POST',
-        url: "{% url instance-reinstall-destroy cluster.slug instance.name 2 %}",
+        url: "{% url 'instance-reinstall-destroy' cluster.slug instance.name 2 %}",
         dataType: 'json',
         success: function(data) {
         	$( "#instdestbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>");
@@ -127,7 +127,7 @@
 		$( "#instrenerr" ).modal('show');
 		{% else %}
 		$( "#instrenbody" ).html( "" );
-		$( "#instrenbody" ).load("{% url instance-rename cluster.slug instance.name 3 %}");
+		$( "#instrenbody" ).load("{% url 'instance-rename' cluster.slug instance.name 3 %}");
 		$( "#instren" ).modal('show');
 		{% endif %}
 		return false; });
@@ -137,7 +137,7 @@
 		$(this).html("<img src='{% static 'ganetimgr/img/gifs/ajax-loader.gif' %}'>");
 		$.ajax({
         type: 'POST',
-        url: "{% url instance-reboot cluster.slug instance.name %}",
+        url: "{% url 'instance-reboot' cluster.slug instance.name %}",
         dataType: 'json',
         success: function(data) {
 			$("#actions_container_inner").empty();
@@ -293,7 +293,7 @@
 				You will receive an email with an activation link. Only when you visit the activation link, your instance will be reinstalled.
 				{% endblocktrans %}
 			</p>
-			<div id="operating_system" data-os="{{ instance.osname }}" data-url="{% url operating_systems_json %}">
+			<div id="operating_system" data-os="{{ instance.osname }}" data-url="{% url 'operating_systems_json' %}">
 				<select name="operating_systems"></select>
 			</div>
 		</div>

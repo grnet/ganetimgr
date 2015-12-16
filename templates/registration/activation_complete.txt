@@ -1,4 +1,4 @@
 {% load i18n %}{% blocktrans %}Your account with username  {% endblocktrans %}“{{ user.username }}” {% blocktrans %}has been activated.{% endblocktrans %}
 {% blocktrans %}You may login using the following URL:{% endblocktrans %}
 
-http://{{ site.domain }}{% url login %}
+http://{{ site.domain }}{% url 'login' %}

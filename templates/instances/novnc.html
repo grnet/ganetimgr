@@ -26,7 +26,7 @@
 		// Set include path for noVNC scripts
 		var INCLUDE_URI = "{% static 'noVNC/include/' %}";
 		// Set path for proxy requests
-		var PROXY_REQUEST_URI = "{% url instance-novnc-proxy cluster.slug instance %}";
+		var PROXY_REQUEST_URI = "{% url 'instance-novnc-proxy' cluster.slug instance %}";
 		var rfb;
 		var vnc_canvas;
 		var ctrlOn = false;
@@ -256,10 +256,10 @@
 
 {% block crumbs %}
 	<li>
-		<a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span>
+		<a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span>
 	</li>
 	<li>
-		<a href="{% url instance-detail cluster.slug instance %}">{{ instance }}</a><span class="divider">/</span>
+		<a href="{% url 'instance-detail' cluster.slug instance %}">{{ instance }}</a><span class="divider">/</span>
 	</li>
 	<li class="active">
 		{% trans "Console" %}

@@ -54,7 +54,7 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
                     'id': user.pk,
                 }
             ),
-            mimetype='application/json'
+            content_type='application/json'
         )
 else:
     def detail_api(request):
@@ -222,9 +222,9 @@ def name_change(request):
 def other_change(request):
     changed = False
     if request.method == "GET":
-        form = OrganizationPhoneChangeForm(instance=request.user.get_profile())
+        form = OrganizationPhoneChangeForm(instance=request.user.userprofile)
     elif request.method == "POST":
-        form = OrganizationPhoneChangeForm(request.POST, instance=request.user.get_profile())
+        form = OrganizationPhoneChangeForm(request.POST, instance=request.user.userprofile)
         if form.is_valid():
             form.save()
             changed = True
@@ -290,7 +290,7 @@ def delete_key(request, key_id):
 def pass_notify(request):
     user = User.objects.get(username=request.user)
     messages.add_message(request, messages.INFO, _('Password changed!'))
-    user.get_profile().force_logout()
+    user.userprofile.force_logout()
     if user.email:
         email = render_to_string(
             "users/emails/pass_change_notify_mail.txt",
@@ -306,6 +306,6 @@ def pass_notify(request):
             settings.SERVER_EMAIL,
             [request.user.email]
         )
-        return HttpResponse("mail sent", mimetype="text/plain")
+        return HttpResponse("mail sent", content_type="text/plain")
     else:
-        return HttpResponse("mail not sent", mimetype="text/plain")
+        return HttpResponse("mail not sent", content_type="text/plain")

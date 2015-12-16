@@ -60,7 +60,7 @@
 {% block homepagetop %}class="active"{% endblock %}
 
 {% block crumbs %}
-	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li class="active">{{ instance.name }}</li>
 {% endblock %}
 
@@ -201,10 +201,10 @@
 							<td>
 							{% if user.is_superuser or perms.ganeti.view_instances %}
 								{% for u in instance.users %}
-									<a class="btn" href="{% if user.is_superuser %}{% url user-info type='user' usergroup=u.username %}{% else %}#{% endif %}"><i class="fa fa-user"></i> {{u.username}}</a>
+									<a class="btn" href="{% if user.is_superuser %}{% url 'user-info' type='user' usergroup=u.username %}{% else %}#{% endif %}"><i class="fa fa-user"></i> {{u.username}}</a>
 								{% endfor %}
 								{% for g in instance.groups %}
-									<a class="btn" href="{% if user.is_superuser %}{% url user-info type='group' usergroup=g.name %}{% else %}#{% endif %}"><i class="fa fa-group"></i> {{g.name}}</a>
+									<a class="btn" href="{% if user.is_superuser %}{% url 'user-info' type='group' usergroup=g.name %}{% else %}#{% endif %}"><i class="fa fa-group"></i> {{g.name}}</a>
 								{% endfor %}
 							{% else %}
 								{% for u in instance.users %}
@@ -261,7 +261,7 @@
 						<tr>
 							<td class="">{% trans "Application" %}</td>
 							<td>
-								<a href="{% url application-review instance.application.pk %}">#{{instance.application.pk}}</a>
+								<a href="{% url 'application-review' instance.application.pk %}">#{{instance.application.pk}}</a>
 							</td>
 						</tr>
 						{% endif %}
@@ -502,7 +502,7 @@
 	var load_data = function () {
 			$.ajax({
 				type: 'GET',
-				url: '{% url instance-poll cluster.slug instance.name %}'+"?_="+new Date().getTime(),
+				url: '{% url 'instance-poll' cluster.slug instance.name %}'+"?_="+new Date().getTime(),
 				dataType: 'html',
 				success: function(data) {
 					if ($(data).find('#inst_status').length) {
@@ -532,7 +532,7 @@
 	function showTags(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Instance Owners: '+instance);
-		$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"");
+		$( "#instDetsbody" ).load("{% url 'instance-tags' %}"+instance+"");
 		$( "#instDets" ).modal('show');
 		return false;
 	}
@@ -541,7 +541,7 @@
 	function showDetails(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Instance Details: '+instance);
-		$( "#instDetsbody" ).load("{% url instance-popup %}/?cluster="+cluster+"&instance="+instance+"");
+		$( "#instDetsbody" ).load("{% url 'instance-popup' %}/?cluster="+cluster+"&instance="+instance+"");
 		$( "#instDets" ).modal('show');
 		return false;
 	}
@@ -549,7 +549,7 @@
 	function showNotify(cluster, instance){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Notify: '+instance);
-		$( "#instDetsbody" ).load("{% url notify %}"+instance+"");
+		$( "#instDetsbody" ).load("{% url 'notify' %}"+instance+"");
 		$( "#instDets" ).modal('show');
 		return false;
 	}
@@ -559,7 +559,7 @@
 	function showLock(cluster, instance, action){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text(action + ': '+instance);
-		$( "#instDetsbody" ).load("{% url lock %}"+instance+"");
+		$( "#instDetsbody" ).load("{% url 'lock' %}"+instance+"");
 		$( "#instDets" ).modal('show');
 		return false;
 	}
@@ -567,7 +567,7 @@
 	function showIsolate(cluster, instance, action){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text(action + ': '+instance);
-		$( "#instDetsbody" ).load("{% url isolate %}"+instance+"");
+		$( "#instDetsbody" ).load("{% url 'isolate' %}"+instance+"");
 		$( "#instDets" ).modal('show');
 		return false;
 	}

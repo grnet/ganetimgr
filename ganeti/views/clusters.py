@@ -27,7 +27,6 @@ from django.contrib.messages import constants as msgs
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.db import close_connection
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.http import (
@@ -119,7 +118,7 @@ def clusternodes_json(request, cluster=None):
                 nodedetails.append(node_dict)
         jresp['aaData'] = nodedetails
         res = jresp
-        return HttpResponse(json.dumps(res), mimetype='application/json')
+        return HttpResponse(json.dumps(res), content_type='application/json')
     else:
         raise PermissionDenied
 
@@ -406,6 +405,6 @@ def clusterdetails_json(request):
                 cache.set("cluster:%s:clusterdetails" % (cluster_slug), cluster_details, 3600 * 24)
             return HttpResponse(
                 json.dumps(cluster_details),
-                mimetype='application/json'
+                content_type='application/json'
             )
     raise PermissionDenied

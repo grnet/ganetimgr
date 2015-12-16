@@ -1,4 +1,4 @@
-{% load i18n %}{% url activate_account activation_key as activation_url %}{% blocktrans with full_name=user.get_full_name username=user.username email=user.email domain=site.domain %}{{ full_name }} has registered for a new account.
+{% load i18n %}{% url 'activate_account' activation_key as activation_url %}{% blocktrans with full_name=user.get_full_name username=user.username email=user.email domain=site.domain %}{{ full_name }} has registered for a new account.
 
 Username: {{ username }}
 E-mail: {{ email }}

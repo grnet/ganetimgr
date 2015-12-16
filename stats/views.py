@@ -23,7 +23,7 @@ from operator import itemgetter
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.core.cache import cache
-from django.db import close_connection
+from django.db import close_old_connections
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
@@ -46,8 +46,7 @@ def instance_owners(request):
             except (GanetiApiError, Exception):
                 bad_clusters.append(cluster)
         if not request.user.is_anonymous():
-            p.imap(_get_instances, Cluster.objects.all())
-            p.join()
+            p.map(_get_instances, Cluster.objects.all())
         instances = [i for i in instancesall if i.users]
 
         def cmp_users(x, y):
@@ -86,7 +85,7 @@ def stats_ajax_applications(request):
             appd['time'] = (1000 * mktime(app.filed.timetuple()))
             app_list.append(appd)
         cache.set('%s:ajaxapplist' % username, app_list, 90)
-    return HttpResponse(json.dumps(app_list), mimetype='application/json')
+    return HttpResponse(json.dumps(app_list), content_type='application/json')
 
 
 @login_required
@@ -129,7 +128,7 @@ def stats_ajax_instances(request):
             if len(cinstances) > 0:
                 cluster_list.append(cluster_dict)
         cache.set('%s:ajaxinstances' % username, cluster_list, 90)
-    return HttpResponse(json.dumps(cluster_list), mimetype='application/json')
+    return HttpResponse(json.dumps(cluster_list), content_type='application/json')
 
 
 @login_required
@@ -147,7 +146,7 @@ def stats_ajax_vms_per_cluster(request, cluster_slug):
         try:
             cinstances.extend(cluster.get_user_instances(request.user))
         except (GanetiApiError, Timeout):
-            return HttpResponse(json.dumps([]), mimetype='application/json')
+            return HttpResponse(json.dumps([]), content_type='application/json')
         for instance in cinstances:
             if instance.admin_state:
                 cluster_dict['instances']['up'] = cluster_dict['instances']['up'] + 1
@@ -161,7 +160,7 @@ def stats_ajax_vms_per_cluster(request, cluster_slug):
             cluster_dict,
             90
         )
-    return HttpResponse(json.dumps(cluster_dict), mimetype='application/json')
+    return HttpResponse(json.dumps(cluster_dict), content_type='application/json')
 
 
 @login_required
@@ -181,7 +180,7 @@ def stats(request):
                 except (GanetiApiError, Exception):
                     exclude_pks.append(cluster.pk)
                 finally:
-                    close_connection()
+                    close_old_connections()
             if not request.user.is_anonymous():
                 p.map(_get_instances, clusters)
             instances = len(instances)

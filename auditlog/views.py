@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
-# Copyright (C) 2010-2014 GRNET S.A.
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8: # Copyright (C) 2010-2014 GRNET S.A.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -100,4 +99,4 @@ def auditlog_json(request):
     jresp = {}
     jresp['aaData'] = entries
     res = jresp
-    return HttpResponse(json.dumps(res), mimetype='application/json')
+    return HttpResponse(json.dumps(res), content_type='application/json')

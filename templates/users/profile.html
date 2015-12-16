@@ -10,14 +10,14 @@
 
 	<script>
 		$(document).ready(function () {
-			 $('#pass_change_placeholder').load("{% url pass_change %}");
+			 $('#pass_change_placeholder').load("{% url 'pass_change' %}");
 			// load ssh keys manager
-			$('#manage_sshkeys_placeholder').load("{% url user-keys %}");
+			$('#manage_sshkeys_placeholder').load("{% url 'user-keys' %}");
 			// change user mail
-			$('#change_email_placeholder').load("{% url mail-change %}");
+			$('#change_email_placeholder').load("{% url 'mail-change' %}");
 			// change user full name
-			$('#change_name_placeholder').load("{% url name-change %}");
-			$('#other_placeholder').load("{% url other-change %}", function () {
+			$('#change_name_placeholder').load("{% url 'name-change' %}");
+			$('#other_placeholder').load("{% url 'other-change' %}", function () {
             	$("#id_organization").select2({dropdownAutoWidth : true});
 			 });
 		});
@@ -35,7 +35,7 @@
 {% block profile %}class="active"{% endblock %}
 
 {% block crumbs %}
-	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li class="active">{{user}} {% trans "profile" %}</li>
 {% endblock %}
 
