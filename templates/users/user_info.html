@@ -85,7 +85,7 @@
 		    "bAutoWidth": true,
 		    "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
 			"bProcessing": true,
-	        "sAjaxSource": "{% url user-instances-json %}",
+	        "sAjaxSource": "{% url 'user-instances-json' %}",
 	        "bDeferRender": true,
 	        "aoColumns":[
 	                     {"mData": "name" ,
@@ -227,14 +227,14 @@
 
 	         ]
 	} );
-		var filter = '"{% url user-info type usergroup %}"';
+		var filter = '"{% url 'user-info' type usergroup %}"';
 		oTable.fnFilter( filter, null, false, true, true, true);
 	});
 
 		function showDetails(cluster, instance){
 			$( "#instDetsbody" ).html( "" );
 			$( "#myModalLabelservdets" ).text('Instance Details: '+instance);
-			$( "#instDetsbody" ).load("{% url instance-popup %}/?cluster="+cluster+"&instance="+instance+"");
+			$( "#instDetsbody" ).load("{% url 'instance-popup' %}/?cluster="+cluster+"&instance="+instance+"");
 			$( "#instDets" ).modal('show');
 			return false;
 		}
@@ -242,7 +242,7 @@
 		function showTags(cluster, instance){
 			$( "#instDetsbody" ).html( "" );
 			$( "#myModalLabelservdets" ).text('Instance Tags: '+instance);
-			$( "#instDetsbody" ).load("{% url instance-tags %}"+instance+"");
+			$( "#instDetsbody" ).load("{% url 'instance-tags' %}"+instance+"");
 			$( "#instDets" ).modal('show');
 			return false;
 		}
@@ -250,7 +250,7 @@
 		function showNotify(cluster, instance){
 			$( "#instDetsbody" ).html( "" );
 			$( "#myModalLabelservdets" ).text('Notify: '+instance);
-			$( "#instDetsbody" ).load("{% url notify %}"+instance+"");
+			$( "#instDetsbody" ).load("{% url 'notify' %}"+instance+"");
 			$( "#instDets" ).modal('show');
 			return false;
 		}
@@ -258,7 +258,7 @@
 		function showLock(cluster, instance, action){
 			$( "#instDetsbody" ).html( "" );
 			$( "#myModalLabelservdets" ).text(action + ': '+instance);
-			$( "#instDetsbody" ).load("{% url lock %}"+instance+"");
+			$( "#instDetsbody" ).load("{% url 'lock' %}"+instance+"");
 			$( "#instDets" ).modal('show');
 			return false;
 		}
@@ -276,7 +276,7 @@
 {% endblock %}
 
 {% block crumbs %}
-	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li class="active">{% ifequal type 'user' %}
 		{% trans "User Information" %}
 	{% endifequal %}{% ifequal type 'group' %}
@@ -325,7 +325,7 @@
 						<td>{{usergroup.is_active}}</td>
 						<td>
 							{% for group in usergroup.groups.all %}
-								<a class="btn" href="{% url user-info 'group' group %}"><i class="fa fa-group"></i> {{ group }}</a>
+								<a class="btn" href="{% url 'user-info' 'group' group %}"><i class="fa fa-group"></i> {{ group }}</a>
 							{% endfor %}
 						</td>
 					</tr>
@@ -334,7 +334,7 @@
 					{% for user in usergroup.user_set.all %}
 					<tr class="GradeA">
 						<td style="text-align: center;">{{usergroup.name}}</td>
-						<td><a href="{% url user-info 'user' user.username %}" class="btn"><i class="fa fa-user"></i> {{user.username}}</a></td>
+						<td><a href="{% url 'user-info' 'user' user.username %}" class="btn"><i class="fa fa-user"></i> {{user.username}}</a></td>
 						<td>{{user.first_name}}</td>
 						<td>{{user.last_name}}</td>
 						<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>

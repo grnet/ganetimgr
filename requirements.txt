@@ -1,8 +1,8 @@
 gevent==0.13.6
-django==1.4.5
+django==1.5
 redis==2.4.13
 south==0.7.5
-django-registration==0.8
+django-registration==1.0
 paramiko==1.12.1
 simplejson==2.5.2
 python-daemon==1.5.5

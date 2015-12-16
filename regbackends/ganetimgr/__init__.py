@@ -20,12 +20,8 @@ from accounts.models import CustomRegistrationProfile
 
 from apply.models import Organization
 
-from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMultiAlternatives, mail_managers
-from django.template.loader import render_to_string
-
 from registration import signals
 from registration.backends.default import DefaultBackend
 

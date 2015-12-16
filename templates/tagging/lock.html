@@ -7,7 +7,7 @@
 			$(this).html('Saving...');
 			var instance = $("#instancelockform").data('instance');
 			$.ajax({
-				url:"{% url lock %}"+instance,
+				url:"{% url 'lock' %}"+instance,
 				data:$("#instancelockform").serialize(),
 				type: "POST",
 				cache: false,

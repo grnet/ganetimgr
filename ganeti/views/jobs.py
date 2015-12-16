@@ -51,7 +51,7 @@ def job_details(request):
                 job = cluster.get_job(jobid)
             except Exception as e:
                 try:
-                    error = tuple(x for x in e.message[1:-1].split(","))[1]
+                    error = tuple(x for x in e.args[0][1:-1].split(","))[1]
                 except:
                     error = _('Could not connect to api')
                 return HttpResponse(error.replace('"', ''))

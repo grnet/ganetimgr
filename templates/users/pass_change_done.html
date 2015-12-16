@@ -3,13 +3,13 @@
 $(document).ready(function () {
 	$.ajax({
 		type: "GET",
-		url: "{% url pass_change_notify %}",
+		url: "{% url 'pass_change_notify' %}",
 		}).done(function ( data ) {
 			if( console && console.log ) {
 				console.log(data);
 				};
 		});
 });
-	
+
 </script>
 <div>{% trans "Password changed" %} <span style="color: green; font-size: 1.1em;">{% trans "successfully" %}</span></div>

@@ -46,7 +46,7 @@
 	       	str = $('#password_change_form').serialize();
                 $.ajax({
                     type: "POST",
-                    url: "{% url pass_change %}?csrf_token={{csrf_token}}",
+                    url: "{% url 'pass_change' %}?csrf_token={{csrf_token}}",
                     data: str
                 }).done(function(msg){
             	   $("#pass_form_placeholder").html(msg);

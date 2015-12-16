@@ -51,7 +51,7 @@
     			str = $('#sshkeyform').serialize();
                 $.ajax({
                     type: "POST",
-                    url: "{% url user-keys %}",
+                    url: "{% url 'user-keys' %}",
                     data: str,
                     success: function(response){
     //					var $response=$(response);
@@ -68,7 +68,7 @@
     			var key_id = id.replace("remove_key_", "")
                 $.ajax({
                     type: "GET",
-                    url: "{% url delete-key %}"+key_id,
+                    url: "{% url 'delete-key' %}"+key_id,
                     success: function(response){
     //					var $response=$(response);
     //					var resdata =  $response.filter("#sshkeys_placeholder").html();

@@ -6,7 +6,7 @@
 
 {% block crumbs %}
 	<li>
-		<a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span>
+		<a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span>
 	</li>
 	<li class="active">{% trans "Create Instance" %}</li>
 {% endblock %}
@@ -106,7 +106,7 @@
 					</div>
 					<div class="control-group span5{% if form.operating_system.errors %}error{% endif %}">
 						<label class="control-label {% if form.operating_system.field.required %}required{% endif %}" for="id_applier">{{ form.operating_system.label }}</label>
-					   <div class="controls" data-url="{% url operating_systems_json %}">
+					   <div class="controls" data-url="{% url 'operating_systems_json' %}">
 						<input type="hidden" name="" id="operating_system_hidden" value="{{ form.data.operating_system }}">
 						{{ form.operating_system }}
 						{% if form.operating_system.errors %}

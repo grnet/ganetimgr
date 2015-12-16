@@ -646,8 +646,8 @@ def prepare_tags(taglist):
 
 
 def format_ganeti_api_error(e):
-    if e.message[0] == '(':
-        message = e.message.split(',')[1].replace('(', '').replace(')', '')
+    if e.args[0][0] == '(':
+        message = e.args[0].split(',')[1].replace('(', '').replace(')', '')
     else:
-        message = e.message
+        message = e.args[0]
     return message

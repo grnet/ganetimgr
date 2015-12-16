@@ -32,7 +32,7 @@
 {% block clusterjobs %}class="active"{% endblock %}
 
 {% block crumbs %}
-	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li class="active">{% trans "Jobs" %}</li>
 {% endblock %}
 
@@ -151,7 +151,7 @@ $(document).ready( function(){
 	NProgress.configure({ showSpinner: false });
     NProgress.start();
 
-	ajaxSource = "{% url jobs_json %}";
+	ajaxSource = "{% url 'jobs_json' %}";
 	oTable = $('#jobs_table').dataTable( {
 		"bPaginate": true,
 		"bFilter": true,
@@ -323,7 +323,7 @@ var update_size = function() {
 	function showDetails(cluster, jobid){
 		$( "#instDetsbody" ).html( "" );
 		$( "#myModalLabelservdets" ).text('Job Details: '+jobid);
-		$( "#instDetsbody" ).load("{% url jobdets-popup %}/?cluster="+cluster+"&jobid="+jobid+"");
+		$( "#instDetsbody" ).load("{% url 'jobdets-popup' %}/?cluster="+cluster+"&jobid="+jobid+"");
 		$( "#instDets" ).modal('show');
 		return false;
 	}

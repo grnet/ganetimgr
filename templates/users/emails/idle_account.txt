@@ -5,7 +5,7 @@ service we monitor usage of the web management interface.{% endblocktrans %}
 
 {% blocktrans %}Therefore we kindly ask you to confirm the validity of your account.
 The confirmation is performed by accessing the login page of the service: {% endblocktrans %}
-https://{{ site.domain }}{% url login %}
+https://{{ site.domain }}{% url 'login' %}
 {% blocktrans %}Please do this as soon as possible.{% endblocktrans %}
 {% blocktrans with service_name=service.TITLE %}
 Sincerely,

@@ -20,7 +20,7 @@
 {% block clusternodes %}class="active"{% endblock %}
 
 {% block crumbs %}
-	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li class="active">{% trans "Nodes" %}</li>
 {% endblock %}
 
@@ -45,7 +45,7 @@
 	$(document).ready(function() {
 		NProgress.configure({ showSpinner: false });
     	NProgress.start();
-		$('#clusternodes').load('{% url cluster-nodes-pjax %} #clusternodes', function () {
+		$('#clusternodes').load('{% url 'cluster-nodes-pjax' %} #clusternodes', function () {
 
 		jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 			"dataattr-string-pre": function ( a ) {

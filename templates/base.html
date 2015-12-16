@@ -63,7 +63,7 @@
                     remaining = parseInt("{{session_remaining}}") * 1000;
                     setTimeout(
                         function(){
-                            window.location = "{% url logout %}"
+                            window.location = "{% url 'logout' %}"
                         },
                     remaining);
                 {% endif %}
@@ -77,7 +77,7 @@
                 $("#clearcache").click(function(){
                     $.ajax({
                         type: 'GET',
-                        url: "{% url clearcache %}",
+                        url: "{% url 'clearcache' %}",
                         dataType: 'json',
                         success: function(data) {
                             window.setTimeout('location.reload()', 100);
@@ -115,7 +115,7 @@
                         </li>
                         {% endif %}
                         {% if user.is_superuser %}
-                            <li ><a href="{% url admin:index %}" ><i class="fa fa-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
+                            <li ><a href="{% url 'admin:index' %}" ><i class="fa fa-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
                         {% endif %}
                     {% endif %}
                         <li class="dropdown pull-right hidden-phone">
@@ -123,7 +123,7 @@
                                 {% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<i class="fa fa-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu ">
-                            <form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform" >
+                            <form action="{% url 'set-language' %}" method="post" style="display:inline;" id="langform" >
                                 {% csrf_token %}
                                 <input name="next" type="hidden" value="{{ next }}" />
                                 <input id="langsel" name="language" type="hidden" value="" />
@@ -143,14 +143,14 @@
                         </a>
 
                         <ul class="dropdown-menu">
-                            <li><a tabindex="-1" href="{% url profile %}">{% trans "My Profile" %}</a></li>
+                            <li><a tabindex="-1" href="{% url 'profile' %}">{% trans "My Profile" %}</a></li>
                             <li class="divider visible-phone"></li>
-                            <li><a tabindex="-1" href="{% url logout %}">{% trans "Logout" %}</a></li>
+                            <li><a tabindex="-1" href="{% url 'logout' %}">{% trans "Logout" %}</a></li>
                         </ul>
                     </li>
                     {% endif %}
                 </ul>
-                <a  href="{% url user-instances %}">
+                <a  href="{% url 'user-instances' %}">
                     {% if BRANDING.LOGO %}
                         <img class="logoimg brand brandimg" src="{{BRANDING.LOGO}}">
                     {% endif %}
@@ -168,30 +168,30 @@
         <div id="main-menu">
             <div id="phone-navigation">
                 <select class="selectnav" id="phone-menu">
-                    <option value="{% url apply %}" >{% trans "Create Instance" %}</option>
+                    <option value="{% url 'apply' %}" >{% trans "Create Instance" %}</option>
                     {% if can_handle_applications or can_view_applications %}
-                    <option value="{% url application-list %}">{% trans "Applications" %}{% if pending_count %}({{ pending_count }}){% endif %}</option>
+                    <option value="{% url 'application-list' %}">{% trans "Applications" %}{% if pending_count %}({{ pending_count }}){% endif %}</option>
                     {% endif %}
                     {% if user.is_superuser %}
-                    <option value="{% url admin:index %}" >{% trans "Admin" %}</option>
+                    <option value="{% url 'admin:index' %}" >{% trans "Admin" %}</option>
                     {% endif %}
-                    <option value="{% url profile %}" >{% trans "My Profile" %}</option>
-                    <option value="{% url logout %}" >{% trans "Logout" %}</option>
+                    <option value="{% url 'profile' %}" >{% trans "My Profile" %}</option>
+                    <option value="{% url 'logout' %}" >{% trans "Logout" %}</option>
                 </select>
             </div>
         </div>
         <div id="sidebar-nav">
             <ul id="dashboard-menu" class="nav nav-list">
-                <li {% block homepage %}{% endblock %}><a href="{% url user-instances %}"><i class="fa fa-home"></i> <span>{% trans "Home" %}</span></a></li>
+                <li {% block homepage %}{% endblock %}><a href="{% url 'user-instances' %}"><i class="fa fa-home"></i> <span>{% trans "Home" %}</span></a></li>
                 {% if user.is_superuser or perms.ganeti.view_instances %}
-                    <li {% block notify %}{% endblock %}><a href="{% url notify %}"><i class="fa fa-envelope"></i> <span>{% trans "Nofications" %}</span></a></li>
-                    <li {% block clusterinfo %}{% endblock %}><a href="{% url clusterdetails %}"><i class="fa fa-puzzle-piece"></i> <span>{% trans "Cluster Info" %}</span></a></li>
-                    <li {% block clusternodes %}{% endblock %}><a href="{% url cluster-nodes %}"><i class="fa fa-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
-                    <li {% block clusterjobs %}{% endblock %}><a href="{% url jobs %}"><i class="fa fa-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>
-                    {% if COLLECTD_URL %}<li {% block nodegraphs %}{% endblock %}><a href="{% url cluster-get-nodes-graphs %}"><i class="fa fa-area-chart"></i> <span>{% trans "Graphs" %}</span></a></li>{% endif %}
+                    <li {% block notify %}{% endblock %}><a href="{% url 'notify' %}"><i class="fa fa-envelope"></i> <span>{% trans "Nofications" %}</span></a></li>
+                    <li {% block clusterinfo %}{% endblock %}><a href="{% url 'clusterdetails' %}"><i class="fa fa-puzzle-piece"></i> <span>{% trans "Cluster Info" %}</span></a></li>
+                    <li {% block clusternodes %}{% endblock %}><a href="{% url 'cluster-nodes' %}"><i class="fa fa-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
+                    <li {% block clusterjobs %}{% endblock %}><a href="{% url 'jobs' %}"><i class="fa fa-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>
+                    {% if COLLECTD_URL %}<li {% block nodegraphs %}{% endblock %}><a href="{% url 'cluster-get-nodes-graphs' %}"><i class="fa fa-area-chart"></i> <span>{% trans "Graphs" %}</span></a></li>{% endif %}
                 {% endif %}
                 <li {% block auditlog %}{% endblock %}>
-                    <a href="{% url auditlog %}">
+                    <a href="{% url 'auditlog' %}">
                         <i class="fa fa-book"></i>
                         <span>
                             {% if user.is_superuser or perms.ganeti.view_instances %}
@@ -200,12 +200,12 @@
                         </span>
                     </a>
                 </li>
-                <li {% block statistics %}{% endblock %}><a href="{% url stats %}"><i class="fa fa-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
-                <li {% block createtop %}{% endblock %}><a href="{% url apply %}" ><i class="fa fa-plus"></i> <span>{% trans "Create Instance" %}</span></a></li>
+                <li {% block statistics %}{% endblock %}><a href="{% url 'stats' %}"><i class="fa fa-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
+                <li {% block createtop %}{% endblock %}><a href="{% url 'apply' %}" ><i class="fa fa-plus"></i> <span>{% trans "Create Instance" %}</span></a></li>
                 {% if user.is_superuser or perms.ganeti.view_instances %}
                     {% if can_handle_applications or can_view_applications %}
                     <li {% block applications %}{% endblock %}>
-                        <a href="{% url application-list %}">
+                        <a href="{% url 'application-list' %}">
                             <i class="fa fa-inbox"></i>
                             <span>{% trans "Applications" %}
                             {% if pending_count %}
@@ -215,10 +215,10 @@
                         </a>
                     </li>
                     {% endif %}
-                    <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="fa fa-moon-o"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
+                    <li {% block idle %}{% endblock %}><a href="{% url 'idle_accounts' %}"><i class="fa fa-moon-o"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
                 {% endif %}
                 {% if FEED_URL %}
-                <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="fa fa-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
+                <li {% block news %}{% endblock %}><a href="{% url 'news' %}"><i class="fa fa-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
                 {% endif %}
             </ul>
         </div>
@@ -234,7 +234,7 @@
                     {% endblock %}
                 </ul>
 
-                <div id="jsonmessages" style="display:none" data-messages='{% url get_messages %}'>
+                <div id="jsonmessages" style="display:none" data-messages='{% url 'get_messages' %}'>
                     <div class="alert message-template">
                         <button class="close" data-dismiss="alert" type="button"> × </button>
                         <span></span>

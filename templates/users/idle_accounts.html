@@ -56,7 +56,7 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 {% endblock %}
 {% block idle %}class="active"{% endblock %}
 				{% block crumbs %}
-	    			<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	    			<li class="active">{% trans "Idle Accounts" %}</li>
 	    		{% endblock %}
 
@@ -78,7 +78,7 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 				<tbody>
 				{% for user in users %}
 					<tr class="GradeA">
-						<td style="text-align: center;"><a href="{% url user-info 'user' user.username %}">{{user.username}}</a></td>
+						<td style="text-align: center;"><a href="{% url 'user-info' 'user' user.username %}">{{user.username}}</a></td>
 						<td>{{user.first_name}}</td>
 						<td>{{user.last_name}}</td>
 						<td><a href="mailto:{{user.email}}">{{user.email}}</a></td>

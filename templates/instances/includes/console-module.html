@@ -1,6 +1,6 @@
 {% load i18n %}
 
 {% if WEBSOCK_VNC_ENABLED %}
-<div class="row-fluid"><div class="span12"><a class="btn btn-inverse  btn-small btn-fixed" id="consolenovnc" href="{% url instance-novnc cluster.slug instance.name %}"><i class='fa fa-terminal'></i> {% trans "Console" %} (WebSock)</a></div></div>
+<div class="row-fluid"><div class="span12"><a class="btn btn-inverse  btn-small btn-fixed" id="consolenovnc" href="{% url 'instance-novnc' cluster.slug instance.name %}"><i class='fa fa-terminal'></i> {% trans "Console" %} (WebSock)</a></div></div>
 {% endif %}
-<div class="row-fluid"><div class="span12"><a class="btn btn-inverse  btn-small btn-fixed" id="console" href="{% url instance-vnc cluster.slug instance.name %}"><i class='fa fa-terminal'></i> {% trans "Console" %} (Java)</a></div></div>
+<div class="row-fluid"><div class="span12"><a class="btn btn-inverse  btn-small btn-fixed" id="console" href="{% url 'instance-vnc' cluster.slug instance.name %}"><i class='fa fa-terminal'></i> {% trans "Console" %} (Java)</a></div></div>

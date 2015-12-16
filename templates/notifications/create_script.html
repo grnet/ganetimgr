@@ -15,7 +15,7 @@
 			minimumInputLength : 2,
 			multiple: true,
 			ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
-				url : "{% url usergroups %}",
+				url : "{% url 'usergroups' %}",
 				dataType : 'json',
 				delay: 10,
 				data : function(term, page) {

@@ -11,8 +11,8 @@
 {% block title %}{% trans "Review application" %} #{{ application.pk }}{% endblock %}
 
 {% block crumbs %}
-    <li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-    <li><a href="{% url application-list %}">{% trans "Instance Applications" %}</a><span class="divider">/</span></li>
+    <li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+    <li><a href="{% url 'application-list' %}">{% trans "Instance Applications" %}</a><span class="divider">/</span></li>
     <li class="active">#{{ application.pk }}: {{ application.hostname }}</li>
 {% endblock %}
 
@@ -142,7 +142,7 @@
                                 </div>
                                 <div class="control-group {% if appform.operating_system.errors %}error{% endif %}">
                                     <label class="control-label {% if appform.operating_system.field.required %}required{% endif %}" for="id_applier">{{ appform.operating_system.label }}</label>
-                                    <div class="controls" data-value="{{ appform.operating_system.value }}" data-url="{% url operating_systems_json %}">{{ appform.operating_system }}
+                                    <div class="controls" data-value="{{ appform.operating_system.value }}" data-url="{% url 'operating_systems_json' %}">{{ appform.operating_system }}
                                         {% if appform.operating_system.errors %}
                                         <span class="help-inline" style="clear:both;">
                                             {{ appform.operating_system.errors|join:", " }}
@@ -291,7 +291,7 @@
                                     </label>
                                     <div class="controls padcontrol">
                                         {% if application.cluster.slug %}
-                                            <a href="{% url instance-detail cluster_slug=application.cluster.slug instance=application.hostname %}">
+                                            <a href="{% url 'instance-detail' cluster_slug=application.cluster.slug instance=application.hostname %}">
                                                 {{ application.hostname }}
                                             </a>
                                         {% else %}
@@ -403,7 +403,7 @@
             <ul class="cards">
                 {% for appl in applications %}
                 <li>
-                    <p class="title"><a href="{% url application-review appl.pk %}"><i class="fa fa-laptop"></i> {{appl.hostname}}</a></p>
+                    <p class="title"><a href="{% url 'application-review' appl.pk %}"><i class="fa fa-laptop"></i> {{appl.hostname}}</a></p>
                     <p class="info small"><i class="fa fa-calendar"></i> {{appl.filed|date }}</p>
                 </li>
                 {% endfor %}
@@ -452,7 +452,7 @@
             if (cluster_id === '') {
                 cleanfields();
             } else {
-                var clusturl = "{% url cluster_ng_stack %}" + "?cluster_id=" + cluster_id;
+                var clusturl = "{% url 'cluster_ng_stack' %}" + "?cluster_id=" + cluster_id;
                 $.ajax({
                     type: 'GET',
                     url: clusturl,
@@ -677,7 +677,7 @@
     function showDetails(cluster, jobid){
         $( "#instDetsbody" ).html( "" );
         $( "#myModalLabelservdets" ).text('Job Details: '+jobid);
-        $( "#instDetsbody" ).load("{% url jobdets-popup %}/?cluster="+cluster+"&jobid="+jobid+"");
+        $( "#instDetsbody" ).load("{% url 'jobdets-popup' %}/?cluster="+cluster+"&jobid="+jobid+"");
         $( "#instDets" ).modal('show');
         return false;
     }

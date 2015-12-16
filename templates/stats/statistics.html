@@ -55,7 +55,7 @@
 			}
 		};
 
-		$.getJSON('{% url stats_ajax_instances %}', function(dt) {
+		$.getJSON('{% url 'stats_ajax_instances' %}', function(dt) {
 			var items = [];
 			$.each(dt, function(i, item) {
 				options.series.push({
@@ -111,7 +111,7 @@
 		}
 	};
 
-	$.getJSON('{% url stats_ajax_apps %}', function(dt) {
+	$.getJSON('{% url 'stats_ajax_apps' %}', function(dt) {
 		var items2 = [];
 		$.each(dt, function(i, item) {
 				options2.series[0].data.push({x:item.time, y:item.count, vm:item.instance, user:item.user});
@@ -170,7 +170,7 @@
 			}]
 
 		};
-		$.getJSON('{% url stats_ajax_vms_pc cluster.slug %}', function(dt) {
+		$.getJSON('{% url 'stats_ajax_vms_pc' cluster.slug %}', function(dt) {
 
 			options_{{cluster.pk}}.series[0].data.push({name:'Running', y:dt.instances.up, color: '#51A351'})
 			options_{{cluster.pk}}.series[0].data.push({name:'Stopped', y:dt.instances.down, color: '#BD362F'})
@@ -197,7 +197,7 @@
 			"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
 			"iDisplayLength": 20,
 			"bProcessing": true,
-			"sAjaxSource": "{% url user-stats-json %}",
+			"sAjaxSource": "{% url 'user-stats-json' %}",
 			"bDeferRender": true,
 			"aoColumns":[
 				{
@@ -236,7 +236,7 @@
 		}
 	});
  	{% else %}
- 	$.getJSON('{% url user-stats-json %}', function(dt) {
+ 	$.getJSON('{% url 'user-stats-json' %}', function(dt) {
 		var instances = dt.aaData[0].instances;
 		var mem = dt.aaData[0].memory;
 		var disk = dt.aaData[0].disk;
@@ -261,7 +261,7 @@
 {% block statstop %}class="active"{% endblock %}
 
 {% block crumbs %}
-	<li><a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li class="active">{% trans "Service Statistics" %}</li>
 {% endblock %}
 

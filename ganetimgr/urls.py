@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from django.conf.urls.defaults import patterns, include, url
+from django.conf.urls import patterns, include, url
 from django.conf import settings
 
 from django.contrib import admin
@@ -33,7 +33,7 @@ flatpages.register()
 
 urlpatterns = patterns(
     '',
-    (r'^setlang/?$', 'django.views.i18n.set_language'),
+    url(r'^setlang/?$', 'django.views.i18n.set_language', name='set-language'),
     url(r'^$', 'ganeti.views.user_index', name="user-instances"),
     url(r'^news/?$', 'ganeti.views.news', name="news"),
 
@@ -67,10 +67,3 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
         url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
     )
-
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)', 'django.views.static.serve',\
-            {'document_root':  settings.STATIC_URL}),
-    )
-

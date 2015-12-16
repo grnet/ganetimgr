@@ -15,7 +15,7 @@
 
 {% block crumbs %}
 <li>
-	<a href="{% url user-instances %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<a href="{% url 'user-instances' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 <li class="active">{% trans "Graphs" %}</li>
 {% endblock %}
 
@@ -51,7 +51,7 @@
 		{% for node in node_list %}
 			<div class="span12"></div>
 			<h4 class="span12">
-			  <a href="{% url cluster-get-nodes-graphs node.list.0.cluster %}?nodes={{ node.grouper }}">Graphs for {{ node.grouper }}</a>
+			  <a href="{% url 'cluster-get-nodes-graphs' node.list.0.cluster %}?nodes={{ node.grouper }}">Graphs for {{ node.grouper }}</a>
 			</h4>
 			<div class="collapse-toggle span12">
 			  <div class="label">Collapse</div>
@@ -108,7 +108,7 @@
 
 		function getNodesForCluster (cluster) {
 			console.log(cluster);
-			$.getJSON('{% url cluster-nodes-json %}' + cluster + '/', function(data) {
+			$.getJSON('{% url 'cluster-nodes-json' %}' + cluster + '/', function(data) {
 				var options = ''
 				availabeNodeChoices = [];
 				var setCurrent = [];
