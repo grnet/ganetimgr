@@ -65,7 +65,7 @@ def notify(request, instance=None):
                     ret = {'result': 'success'}
                     return HttpResponse(
                         json.dumps(ret),
-                        mimetype='application/json'
+                        content_type='application/json'
                     )
                 messages.add_message(
                     request,
@@ -239,6 +239,6 @@ def get_user_group_list(request):
 
 
         action = ret_list
-        return HttpResponse(json.dumps(action), mimetype='application/json')
+        return HttpResponse(json.dumps(action), content_type='application/json')
     else:
         raise PermissionDenied()

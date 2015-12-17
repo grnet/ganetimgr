@@ -86,7 +86,7 @@ def stats_ajax_applications(request):
             appd['time'] = (1000 * mktime(app.filed.timetuple()))
             app_list.append(appd)
         cache.set('%s:ajaxapplist' % username, app_list, 90)
-    return HttpResponse(json.dumps(app_list), mimetype='application/json')
+    return HttpResponse(json.dumps(app_list), content_type='application/json')
 
 
 @login_required
@@ -129,7 +129,7 @@ def stats_ajax_instances(request):
             if len(cinstances) > 0:
                 cluster_list.append(cluster_dict)
         cache.set('%s:ajaxinstances' % username, cluster_list, 90)
-    return HttpResponse(json.dumps(cluster_list), mimetype='application/json')
+    return HttpResponse(json.dumps(cluster_list), content_type='application/json')
 
 
 @login_required
@@ -147,7 +147,7 @@ def stats_ajax_vms_per_cluster(request, cluster_slug):
         try:
             cinstances.extend(cluster.get_user_instances(request.user))
         except (GanetiApiError, Timeout):
-            return HttpResponse(json.dumps([]), mimetype='application/json')
+            return HttpResponse(json.dumps([]), content_type='application/json')
         for instance in cinstances:
             if instance.admin_state:
                 cluster_dict['instances']['up'] = cluster_dict['instances']['up'] + 1
@@ -161,7 +161,7 @@ def stats_ajax_vms_per_cluster(request, cluster_slug):
             cluster_dict,
             90
         )
-    return HttpResponse(json.dumps(cluster_dict), mimetype='application/json')
+    return HttpResponse(json.dumps(cluster_dict), content_type='application/json')
 
 
 @login_required

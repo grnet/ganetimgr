@@ -117,7 +117,7 @@ def jobs_index_json(request):
             )
         jresp['clusters'] = clusters
         res = jresp
-        return HttpResponse(json.dumps(res), mimetype='application/json')
+        return HttpResponse(json.dumps(res), content_type='application/json')
     else:
         raise PermissionDenied()
 

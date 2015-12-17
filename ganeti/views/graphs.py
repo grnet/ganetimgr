@@ -64,7 +64,7 @@ def graph(
         response = open(settings.NODATA_IMAGE, "r")
     except Exception:
         response = open(settings.NODATA_IMAGE, "r")
-    return HttpResponse(response.read(), mimetype="image/png")
+    return HttpResponse(response.read(), content_type="image/png")
 
 
 @login_required

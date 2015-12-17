@@ -54,7 +54,7 @@ if 'oauth2_provider' in settings.INSTALLED_APPS:
                     'id': user.pk,
                 }
             ),
-            mimetype='application/json'
+            content_type='application/json'
         )
 else:
     def detail_api(request):
@@ -306,6 +306,6 @@ def pass_notify(request):
             settings.SERVER_EMAIL,
             [request.user.email]
         )
-        return HttpResponse("mail sent", mimetype="text/plain")
+        return HttpResponse("mail sent", content_type="text/plain")
     else:
-        return HttpResponse("mail not sent", mimetype="text/plain")
+        return HttpResponse("mail not sent", content_type="text/plain")
