@@ -23,10 +23,10 @@ def seconds(request):
     remaining = False
     if (
         request.user.is_authenticated() and
-        request.user.get_profile().force_logout_date and
+        request.user.userprofile.force_logout_date and
         (
             'LAST_LOGIN_DATE' not in request.session or
-            request.session['LAST_LOGIN_DATE'] < request.user.get_profile().force_logout_date
+            request.session['LAST_LOGIN_DATE'] < request.user.userprofile.force_logout_date
         )
     ):
         remaining = 2
@@ -35,7 +35,7 @@ def seconds(request):
             last_login = request.session['LAST_LOGIN_DATE']
             now = datetime.datetime.now()
             if now > last_login:
-                elapsed = (now-last_login).seconds
+                elapsed = (now - last_login).seconds
                 remaining = settings.SESSION_COOKIE_AGE - elapsed
                 if remaining < 0:
                     remaining = 2

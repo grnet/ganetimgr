@@ -22,6 +22,7 @@ PROJECT_DIR = os.path.join(BASE_DIR, 'ganetimgr')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 SITE_ID = 1
 
