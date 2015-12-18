@@ -68,7 +68,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_markdown',
     'accounts',
-    'south',
     'registration',
     'ganeti',
     'apply',
@@ -93,6 +92,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 
+SECRET_KEY = 'test'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -103,7 +103,7 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'ganetimgr',                # Or path to database file if using sqlite3.
+        'NAME': 'ganetimgr.db',                # Or path to database file if using sqlite3.
     }
 }
 
