@@ -18,7 +18,7 @@ import functools
 
 from django.contrib import admin
 
-from django.db.utils import ProgrammingError
+from django.db.utils import ProgrammingError, OperationalError
 from ganeti.models import Cluster
 from apply.models import Organization, InstanceApplication, \
     STATUS_PENDING, STATUS_APPROVED
@@ -38,7 +38,7 @@ def make_fast_create_actions():
     cluster_list = Cluster.objects.filter(fast_create=True)
     try:
         cluster_list.exists()
-    except ProgrammingError:
+    except (ProgrammingError, OperationalError):
         return
 
     for cluster in cluster_list:

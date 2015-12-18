@@ -146,3 +146,6 @@ RECAPTCHA_USE_SSL = True
 ACCOUNT_ACTIVATION_DAYS = 10
 LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
+
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+TEST_RUNNER = 'django.test.simple.DjangoTestSuiteRunner'
