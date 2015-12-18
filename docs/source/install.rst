@@ -6,7 +6,7 @@ We test (and use) ganetimgr on Debian 7 Wheezy. We also prefer using the Debian 
 
 This guide documents how to install ganetimgr with the following software:
 
-- Debian 7 Wheezy, the base OS
+- Debian 7 Wheezy Jessie, the base OS
 - gunicorn with gevent, it runs the Django project
 - NGINX, the web server that serves the static content and proxies to gunicorn
 - MySQL, the database backend
@@ -20,45 +20,13 @@ Install packages
 
 Update and install the required packages::
 
-    apt-get install git nginx mysql-server gunicorn python-gevent redis-server beanstalkd
-    apt-get install python-mysqldb python-django python-redis python-django-registration python-paramiko python-daemon python-setproctitle python-pycurl python-recaptcha python-ipaddr python-bs4 python-requests python-markdown
-
-
-Fabric sript
-^^^^^^^^^^^^
-We have created a fabric sript in order to set up and deploy ganetimgr. It is included under "contrib/fabric/". One can use it by running::
-
-    fab deploy:tag='v1.6' -H ganetimgr.example.com -u user
-
-You will need to have fabric installed though.
-
-This scrip will connect to the specified server and try to set up ganetimgr under "/srv/ganetimgr" which will be a symlink to the actual directory.
-
-In general it performs the following steps:
-
- - stop redis, beanstalk, touch "/srv/maintenance.on"
- - git clone, git archive under "/tmp" and move to "/srv/ganetimgr<year><month><day><hour><minute>"
- - check if there is an old installation under /srv/ganetimgr and get all the dist files in order to compare them with the newer version
- - create a buckup of the database
- - If no differences have been found between the two versions of ganetimgr, the old configuration files (whatever has also a dist file) will be copied to the new installation.
- - "/srv/ganetimgr" will be point to the new installation
- - management commands (migrate, collectstatic) will be run
- - fabric will ask your permission to remove old installations
- - restart nginx, gunicorn, redis, beanstalk, rm "maintenance.on"
- - in case something goes wrong it will try to make a rollback
- - in case no older installations exist or the dist files, it will ask you to log in the server and edit the settings, while waiting for your input.
-
-
-Beanstalkd
-----------
-
-Edit ``/etc/default/beanstalkd`` and uncomment the following line::
-
-    START=yes
-
+    apt-get install git nginx mysql-server gunicorn python-gevent redis-server beanstalkd memcached
 
 Setup Database (MySQL)
 #######################
+Make sure the beanastalkd is running::
+
+    systemctl start beanstalkd
 
 MySQL is used to store all necessary application data
 
@@ -75,7 +43,7 @@ Create database and user::
 
     mysql> CREATE DATABASE ganetimgr CHARACTER SET utf8;
     mysql> CREATE USER 'ganetimgr'@'localhost' IDENTIFIED BY <PASSWORD>;
-    mysql> GRANT ALL PRIVILEGES ON ganetimgr.* TO 'ganetimgr'@'localhost';
+    mysql> GRANT ALL PRIVILEGES ON ganetimgr.* TO 'ganetimgr';
     mysql> flush privileges;
 
 Get the code
@@ -121,9 +89,13 @@ settings that need modification before using the software.
 - ``BRANDING.ALNALYTICS_FILE_PATH`` is a file included in every page for analytics.
 - ``SHOW_ADMINISTRATIVE_FORM`` toggles the admin info panel for the instance application form.
 - ``SHOW_ORGANIZATION_FORM`` does the same for the Organization dropdown menu.
-- You can use use an analytics service (Piwik, Google Analytics) by editing ``templates/analytics.html`` and adding the JS code that is generated for you by the service. This is souruced from all the project's pages.
 - ``AUDIT_ENTRIES_LAST_X_DAYS`` (not required, default is None) determines if an audit entry will be shown depending on the date it was created. It's only applied for the admin and is used in order to prevent ganetimgr from beeing slow. '0' is forever.
 - ``GANETI_TAG_PREFIX`` (Default is 'ganetimgr') sets the prefix ganetimgr will use in order to handle tags in instances. eg in order to define an owner it sets 'ganeti_tag_prefix:users:testuser' as a tag in an instance owned by `testuser`, assuming the GANETI_TAG_PREFIX is equal to 'ganeti_tag_prefix'.
+- You can use use an analytics service (Piwik, Google Analytics) by editing ``templates/analytics.html`` and adding the JS code that is generated for you by the service. This is sourced from all the project's pages.
+
+.. note::
+    Setting the ``DEBUG`` option to True, implies to explicitly set the
+    ``ALLOWED_HOSTS`` options.
 
 Image Handling
 **************
@@ -203,7 +175,6 @@ There are three relevant VNC options for settings.py::
     NOVNC_USE_TLS  - specifies whether to use TLS or not in the websockets connection.
 
 For more information TLS/keys look at the :doc:`VNC documentation </vnc>`.
-
 
 Whitelisting subnet length
 **************************
@@ -295,9 +266,7 @@ and then start the daemon with::
 
 To enable processing of asynchronous jobs you need to run the watcher.py as a service. There is an init script for that provided in the contrib/init.d directory and a default file in the contrib/default. You can test that everything is OK before running the service issuing a::
 
-    cp contrib/default/ganetimgr-watcher /etc/default
-    cp contrib/init.d/ganetimgr-watcher /etc/init.d
-    service ganetimgr-watcher start
+    ./watcher.py
 
 Setup gunicorn
 ##############
@@ -305,19 +274,22 @@ Setup gunicorn
 Create a gunicorn configuration file (/etc/gunicorn.d/ganetimgr)::
 
     CONFIG = {
-        'mode': 'django',
-        'working_dir': '/srv/ganetimgr',
+        'mode': 'wsgi',
         'user': 'www-data',
         'group': 'www-data',
         'args': (
+            '--chdir=/srv/www/ganetimgr',
             '--bind=127.0.0.1:8088',
             '--workers=2',
-            '--worker-class=egg:gunicorn#gevent',
+            '--worker-class=gevent',
             '--timeout=30',
+            '--log-level=debug',
             '--log-file=/var/log/ganetimgr/ganetimgr.log',
+            'ganetimgr.wsgi:application',
         ),
     }
 
+<<<<<<< HEAD
 You can find an example in the contrib/gunicorn directory::
 
     cp contrib/gunicorn/ganetimgr /etc/gunicorn.d
@@ -325,9 +297,10 @@ You can find an example in the contrib/gunicorn directory::
 .. note::
     A logrotate script is recommended to keep the logfile from getting too big.
 
+
 Restart the service::
 
-    service gunicorn restart
+    systemctl restart gunicorn
 
 Setup Web Server
 ################
@@ -346,7 +319,7 @@ You can find an example config in the contrib/nginx directory.
 
 Restart nginx::
 
-    service nginx restart
+    systemctl restart nginx
 
 The End (is the beginning)
 #############################
