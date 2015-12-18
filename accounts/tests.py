@@ -15,7 +15,7 @@ class AccountsTestCase(TestCase):
         self.user.save()
 
     def test_registration_url(self):
-        res = self.client.get(reverse('registration.views.register'))
+        res = self.client.get(reverse('registration_register'))
         self.assertEqual(res.status_code, 200)
 
     def test_login_url(self):
@@ -23,7 +23,12 @@ class AccountsTestCase(TestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_activate_url(self):
-        res = self.client.get(reverse('activate_account', kwargs={'activation_key': 'test'}))
+        res = self.client.get(
+            reverse(
+                'registration_activate',
+                kwargs={'activation_key': 'test'}
+            )
+        )
         self.assertEqual(res.status_code, 200)
 
     def test_register(self):
@@ -37,7 +42,7 @@ class AccountsTestCase(TestCase):
             'password1': 'test',
             'password2': 'test',
         }
-        res = self.client.post(reverse('registration.views.register'), data)
+        res = self.client.post(reverse('registration_register'), data)
         # make sure the user is redirected - form is valid
         self.assertEqual(res.status_code, 302)
 

@@ -80,6 +80,8 @@ MIDDLEWARE_CLASSES = (
     'middleware.UserMessages.UserMessageMiddleware',
 )
 
+
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
