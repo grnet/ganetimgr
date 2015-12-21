@@ -1907,3 +1907,9 @@ label.required { font-weight: bold; }
 .archive.open + ul {
   max-height: 1000px;
 }
+
+/*video iframe*/
+iframe#video {
+  margin-top: 20px;
+  border: none;
+}

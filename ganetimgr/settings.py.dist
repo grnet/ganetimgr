@@ -230,6 +230,7 @@ BRANDING = {
             }
         ]
     },
+    "VIDEO": "", # iframe url
     "LOGO": "/static/ganetimgr/img/logo.png",
     "FAVICON": "/static/ganetimgr/img/favicon.ico",
     "MOTTO": "virtual private servers",

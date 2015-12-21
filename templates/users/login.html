@@ -38,6 +38,16 @@
 					{% else %}
 						<div class="span2"></div>
 					{% endif %}
+					{% if FEED_URL %}
+						<div class="span3 sidebar">
+							<div class="widget">
+								<div class="row-fluid">
+									<h2><i class="fa fa-bullhorn"></i> {% trans "Latest News" %}</h2>
+									<div id="divRss"></div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
 						<div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
 							<div class="widget">
 								<div class="row-fluid">
@@ -52,17 +62,10 @@
 									</div>
 								</div>
 							</div>
+							{% if BRANDING.VIDEO %}
+								<iframe id="video" width="100%" height="350" src="{{ BRANDING.VIDEO }}"></iframe>
+							{% endif %}
 						</div>
-					{% if FEED_URL %}
-						<div class="span3 sidebar">
-							<div class="widget">
-								<div class="row-fluid">
-									<h2><i class="fa fa-bullhorn"></i> {% trans "Latest News" %}</h2>
-									<div id="divRss"></div>
-								</div>
-							</div>
-						</div>
-					{% endif %}
 						<div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
 							<div class="widget">
 								<div class="row-fluid">
