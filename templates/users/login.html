@@ -56,15 +56,17 @@
 										{% blocktrans with name=BRANDING.SERVICE_PROVIDED_BY.NAME title=BRANDING.TITLE %}
 											<p>Welcome to {{ name }}'s {{ title }} service.</p>
 											<p>If you are new to the service, take some time to read the service description supplied at the hyperlink at the end of this page and then register for a new account.</p>
+										{% endblocktrans %}
+										{% if BRANDING.VIDEO %}
+											<iframe id="video" width="100%" height="350" src="{{ BRANDING.VIDEO }}"></iframe>
+										{% endif %}
+										{% blocktrans with name=BRANDING.SERVICE_PROVIDED_BY.NAME title=BRANDING.TITLE %}
 											<p>If you already have an account, you can log in using the form on the right.</p>
 											<p>For troubleshooting info and remarks do not hesitate to contact {{ name }}'s Helpdesk.</p>
 										{% endblocktrans %}
 									</div>
 								</div>
 							</div>
-							{% if BRANDING.VIDEO %}
-								<iframe id="video" width="100%" height="350" src="{{ BRANDING.VIDEO }}"></iframe>
-							{% endif %}
 						</div>
 						<div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
 							<div class="widget">
