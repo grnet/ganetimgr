@@ -238,6 +238,7 @@ BRANDING = {
     # option when creating a new vm
     "SHOW_ADMINISTRATIVE_FORM": True,
     "SHOW_ORGANIZATION_FORM": True,
+    "TITLE": "GanetiMGR",
 }
 
 # Set the email subject prefix:
