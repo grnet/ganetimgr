@@ -433,7 +433,7 @@ def discover_snf_images():
                                                 'SWAP': '2:512'
                                             },
                                         },
-                                        'ssh_user_keys': 'root',
+                                        'ssh_key_users': 'root',
                                     },
                                 }
                             )
