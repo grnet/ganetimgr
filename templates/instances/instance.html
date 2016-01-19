@@ -132,6 +132,12 @@
 							<td class="">Hard disk{{ instance.disk_sizes|pluralize }}</td>
 							<td>{{ instance.disk_sizes|disksizes|join:", " }}</td>
 						</tr>
+						{% if user.is_superuser or perms.ganeti.view_instances %}
+						<tr>
+							<td class="">Disk Template{{ instance.disk_sizes|pluralize }}</td>
+							<td>{{ instance.get_disk_template }}</td>
+						</tr>
+						{% endif %}
 						<tr>
 							<td class="">{% trans "Network cards" %}</td>
 							<td>{{ instance.nic_macs|length }}</td>

@@ -326,6 +326,10 @@ class Instance(object):
     def set_admin_view_only_True(self):
         self.admin_view_only = True
 
+    def get_disk_template(self):
+        info = self.cluster.get_instance_info(self.name)
+        return info.get('disk_template')
+
     def _pending_action_request(self, action):
         '''This should return either 1 or 0 instance actions'''
         actions = []
@@ -814,7 +818,8 @@ class Cluster(models.Model):
                             'mtime',
                             'osparams',
                             'os',
-                            'network_port'
+                            'network_port',
+                            'disk_template'
                         ],
                         ["|", ["=", "name", "%s" % instance]]
                     ))[0]
