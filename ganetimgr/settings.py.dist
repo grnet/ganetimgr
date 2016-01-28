@@ -292,6 +292,11 @@ SNF_OPERATING_SYSTEMS_URLS = ['http://example.com/snf-images/']
 OPERATING_SYSTEMS_PROVIDER = 'image+default'
 OPERATING_SYSTEMS_SSH_KEY_PARAM = 'img_ssh_key_url'
 
+SNF_IMG_PROPERTIES = {
+        "SWAP": "2:512"
+}
+SNF_IMG_PASSWD = "example-passphrase"
+
 #########################
 #                       #
 #      Auditlog         #
