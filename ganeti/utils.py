@@ -383,6 +383,16 @@ try:
 except ImportError:
     OPERATING_SYSTEMS = False
 
+try:
+    from ganetimgr.settings import SNF_IMG_PROPERTIES
+except ImportError:
+    SNF_IMG_PROPERTIES = False
+
+try:
+    from ganetimgr.settings import SNF_IMG_PASSWD
+except ImportError:
+    SNF_IMG_PASSWD = None
+
 
 def discover_snf_images():
     snf_images = {}
@@ -429,14 +439,24 @@ def discover_snf_images():
                                         'osparams': {
                                             'img_id': img,
                                             'img_format': extensions.get(extension),
-                                            'img_properties': {
-                                                'SWAP': '2:512'
-                                            },
                                         },
                                         'ssh_key_users': 'root',
                                     },
                                 }
                             )
+                            if SNF_IMG_PROPERTIES:
+                                snf_images.get(img).get('osparams').update(
+                                    {
+                                        'img_properties': SNF_IMG_PROPERTIES
+                                    }
+                                )
+                            if SNF_IMG_PASSWD is not None:
+                                snf_images.get(img).get('osparams').update(
+                                    {
+                                        'img_passwd': SNF_IMG_PASSWD
+                                    }
+                                )
+
         return snf_images
     else:
         return {}
