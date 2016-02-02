@@ -24,7 +24,8 @@ from accounts.forms import RegistrationForm, PasswordResetFormPatched
 
 urlpatterns = patterns(
     '',
-    url(r'^activate/(?P<activation_key>\w+)/$', views.activate, name='activate_account'),
+    url(r'^activate_admin/(?P<activation_key>\w+)/$', views.activate_admin, name='admin_activate_account'),
+    url(r'^activate_user/(?P<activation_key>\w+)/$', views.activate_user, name='user_activate_account'),
     url(r'^register/$', 'registration.views.register', {'backend': 'regbackends.ganetimgr.GanetimgrBackend', 'form_class': RegistrationForm}, name='registration.views.register'),
     url(r'^password/reset/$', auth_v.password_reset, {'password_reset_form': PasswordResetFormPatched}, name='password_reset'),
     (r'^', include('registration.backends.default.urls')),

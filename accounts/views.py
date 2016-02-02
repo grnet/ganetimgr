@@ -27,10 +27,42 @@ from django.utils.translation import ugettext_lazy as _
 from registration.models import RegistrationProfile
 
 
-def activate(request, activation_key):
+def activate_user(request, activation_key):
     # Normalize before trying anything with it.
     activation_key = activation_key.lower()
     account = RegistrationProfile.objects.activate_user(activation_key)
+    context = RequestContext(request)
+
+    if account:
+        # A user has been activated
+        email = render_to_string(
+            "registration/activation_complete.txt",
+            {
+                "site": Site.objects.get_current(),
+                "user": account
+            }
+        )
+        send_mail(
+            _("%sUser account activated") % settings.EMAIL_SUBJECT_PREFIX,
+            email,
+            settings.SERVER_EMAIL,
+            [account.email]
+        )
+
+    return render_to_response(
+        "registration/activate.html",
+        {
+            'account': account,
+            'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS
+        },
+        context_instance=context
+    )
+
+
+def activate_admin(request, activation_key):
+    # Normalize before trying anything with it.
+    activation_key = activation_key.lower()
+    account = RegistrationProfile.objects.admin_activate_user(activation_key)
     context = RequestContext(request)
 
     if account:

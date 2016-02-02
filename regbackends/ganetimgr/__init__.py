@@ -22,7 +22,7 @@ from django.template.loader import render_to_string
 from django.core.mail import mail_managers
 
 from registration import signals
-from registration.models import RegistrationProfile
+from accounts.models import CustomRegistrationProfile
 from registration.backends.default import DefaultBackend
 from apply.models import Organization
 
@@ -35,8 +35,9 @@ class GanetimgrBackend(DefaultBackend):
             site = Site.objects.get_current()
         else:
             site = RequestSite(request)
-        new_user = RegistrationProfile.objects.create_inactive_user(username, email,
-                                                                    password, site, send_email=False)
+        new_user = CustomRegistrationProfile.objects.create_inactive_user(
+            username, email,
+            password, site, send_email=False)
         new_user.first_name = firstname
         new_user.last_name = lastname
         new_user.save()
@@ -55,13 +56,15 @@ class GanetimgrBackend(DefaultBackend):
         )
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
-        registration_profile = RegistrationProfile.objects.get(user=new_user)
-        message = render_to_string('registration/activation_email.txt',
-                                   { 'activation_key': registration_profile.activation_key,
-                                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                                     'site': site,
-                                     'user': new_user })
-        mail_managers(subject, message)
+        registration_profile = CustomRegistrationProfile.objects.get(user=new_user)
+        registration_profile.send_activation_email('test')
+        registration_profile.send_admin_activation_email('test')
+        # message = render_to_string('registration/activation_email.txt',
+        #                            { 'activation_key': registration_profile.activation_key,
+        #                              'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+        #                              'site': site,
+        #                              'user': new_user })
+        # mail_managers(subject, message)
         signals.user_registered.send(sender=self.__class__,
                                      user=new_user,
                                      request=request)
