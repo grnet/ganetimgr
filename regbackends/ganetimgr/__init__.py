@@ -15,16 +15,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from accounts.models import CustomRegistrationProfile
+
+from apply.models import Organization
+
 from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
-from django.template.loader import render_to_string
 from django.core.mail import mail_managers
+from django.template.loader import render_to_string
 
 from registration import signals
-from accounts.models import CustomRegistrationProfile
 from registration.backends.default import DefaultBackend
-from apply.models import Organization
 
 
 class GanetimgrBackend(DefaultBackend):
@@ -35,6 +37,7 @@ class GanetimgrBackend(DefaultBackend):
             site = Site.objects.get_current()
         else:
             site = RequestSite(request)
+        import ipdb; ipdb.set_trace()
         new_user = CustomRegistrationProfile.objects.create_inactive_user(
             username, email,
             password, site, send_email=False)
