@@ -15,18 +15,37 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls.defaults import patterns, url, include
-from django.contrib.auth import views as auth_v
-
 from accounts import views
-from accounts.forms import RegistrationForm, PasswordResetFormPatched
+from accounts.forms import PasswordResetFormPatched, RegistrationForm
 
+from django.conf.urls.defaults import include, patterns, url
+from django.contrib.auth import views as auth_v
 
 urlpatterns = patterns(
     '',
-    url(r'^activate_admin/(?P<activation_key>\w+)/$', views.activate_admin, name='admin_activate_account'),
-    url(r'^activate_user/(?P<activation_key>\w+)/$', views.activate_user, name='user_activate_account'),
-    url(r'^register/$', 'registration.views.register', {'backend': 'regbackends.ganetimgr.GanetimgrBackend', 'form_class': RegistrationForm}, name='registration.views.register'),
-    url(r'^password/reset/$', auth_v.password_reset, {'password_reset_form': PasswordResetFormPatched}, name='password_reset'),
+    url(
+        r'^activate_account/(?P<activation_key>\w+)/$',
+        views.activate_account, name='activate_account'
+    ),
+    url(
+        r'^validate_email/(?P<validation_key>\w+)/$',
+        views.validate_email, name='validate_email'
+    ),
+    url(
+        r'^register/$', 'registration.views.register',
+        {
+            'backend': 'regbackends.ganetimgr.GanetimgrBackend',
+            'form_class': RegistrationForm
+        }, name='registration.views.register'
+    ),
+    url(
+        r'^password/reset/$',
+        auth_v.password_reset,
+        {
+            'password_reset_form':
+            PasswordResetFormPatched
+        },
+        name='password_reset'
+    ),
     (r'^', include('registration.backends.default.urls')),
 )

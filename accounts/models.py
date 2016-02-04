@@ -15,43 +15,38 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-from __future__ import unicode_literals
 import datetime
 import hashlib
 import random
 import re
 
+from apply.models import Organization
+
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
+from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
-from django.db import models, transaction
+from django.db import models
+from django.db import transaction
+from django.db.models.signals import post_save
 from django.template import RequestContext, TemplateDoesNotExist
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils.timezone import now as datetime_now
 from django.utils import six
+
+from django.utils.translation import ugettext_lazy as _
+
+try:
+    from django.utils.timezone import now as datetime_now
+except ImportError:
+    datetime_now = datetime.datetime.now
 
 from registration.models import RegistrationProfile
 
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.contrib.auth.signals import user_logged_in
-from apply.models import Organization
-
-from datetime import datetime
-
-from django.contrib.auth.models import User as UserModel
-
-# UserModel = get_user_model
-
-
-def UserModelString():
-    try:
-        return settings.AUTH_USER_MODEL
-    except AttributeError:
-        return 'auth.User'
+if Site._meta.installed:
+    site = Site.objects.get_current()
+else:
+    site = ''
 
 
 class UserProfile(models.Model):
@@ -62,7 +57,7 @@ class UserProfile(models.Model):
     telephone = models.CharField(max_length=13, blank=True, null=True)
 
     def force_logout(self):
-        self.force_logout_date = datetime.now()
+        self.force_logout_date = datetime.datetime.now()
         self.save()
 
     def is_owner(self, instance):
@@ -87,7 +82,7 @@ post_save.connect(create_user_profile, sender=User, dispatch_uid='create_UserPro
 
 def update_session_last_login(sender, user, request, **kwargs):
     if request:
-        request.session['LAST_LOGIN_DATE'] = datetime.now()
+        request.session['LAST_LOGIN_DATE'] = datetime.datetime.now()
 user_logged_in.connect(update_session_last_login)
 
 
@@ -95,42 +90,27 @@ SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
 
 class CustomRegistrationManager(models.Manager):
-    def activate_user(self, activation_key, get_profile=False):
+
+    def activate_user(self, activation_key):
+        # Make sure the key we're trying conforms to the pattern of a
+        # SHA1 hash; if it doesn't, no point trying to look it up in
+        # the database.
         if SHA1_RE.search(activation_key):
             try:
                 profile = self.get(activation_key=activation_key)
             except self.model.DoesNotExist:
-                # This is an actual activation failure as the activation
-                # key does not exist. It is *not* the scenario where an
-                # already activated User reuses an activation key.
                 return False
-
-            if profile.activated:
-                # The User has already activated and is trying to activate
-                # again. If the User is active, return the User. Else,
-                # return False as the User has been deactivated by a site
-                # administrator.
-                if profile.user.is_active:
-                    return profile.user
-                else:
-                    return False
-
             if not profile.activation_key_expired():
                 user = profile.user
-                # user.is_active = True
                 profile.activated = True
-                # if user is also admin_active, activate him
-                if profile.admin_activated:
-                    user.is_active = True
+                user.save()
+                profile.save()
 
-                with transaction.atomic():
-                    user.save()
-                    profile.save()
+                # an e-mail is sent to the site managers to activate the
+                # user's account
+                profile.send_admin_activation_email(site)
 
-                if get_profile:
-                    return profile
-                else:
-                    return user
+                return user
         return False
 
     def admin_activate_user(self, activation_key, get_profile=False):
@@ -138,55 +118,31 @@ class CustomRegistrationManager(models.Manager):
             try:
                 profile = self.get(admin_activation_key=activation_key)
             except self.model.DoesNotExist:
-                # This is an actual activation failure as the activation
-                # key does not exist. It is *not* the scenario where an
-                # already activated User reuses an activation key.
                 return False
-
-            if profile.admin_activated:
-                # The User has already activated and is trying to activate
-                # again. If the User is active, return the User. Else,
-                # return False as the User has been deactivated by a site
-                # administrator.
-                if profile.user.is_active:
-                    return profile.user
-                else:
-                    return False
 
             if not profile.admin_activation_key_expired():
                 user = profile.user
-                # user.is_active = True
                 profile.admin_activated = True
                 if profile.activated:
                     user.is_active = True
-
-                with transaction.atomic():
-                    user.save()
-                    profile.save()
-
-                if get_profile:
-                    return profile
-                else:
-                    return user
+                user.save()
+                profile.save()
+                return user
         return False
 
-    def create_inactive_user(self, site, new_user=None, send_email=False,
-                             request=None, profile_info={}, **user_info):
-        if new_user is None:
-            password = user_info.pop('password')
-            new_user = UserModel()(**user_info)
-            new_user.set_password(password)
+    def create_inactive_user(self, username, email, password,
+                             site, send_email=True):
+        new_user = User.objects.create_user(username, email, password)
         new_user.is_active = False
+        new_user.save()
 
-        with transaction.atomic():
-            new_user.save()
-            registration_profile = self.create_profile(new_user, **profile_info)
+        registration_profile = self.create_profile(new_user)
 
         if send_email:
-            registration_profile.send_activation_email(site, request)
-            registration_profile.send_admin_activation_email(site, request)
+            registration_profile.send_activation_email(site)
 
         return new_user
+    create_inactive_user = transaction.commit_on_success(create_inactive_user)
 
     def create_profile(self, user, **profile_info):
         profile = self.model(user=user, **profile_info)
@@ -199,48 +155,33 @@ class CustomRegistrationManager(models.Manager):
 
         return profile
 
-    def resend_activation_mail(self, email, site, request=None):
-        try:
-            profile = self.get(user__email=email)
-        except ObjectDoesNotExist:
-            return False
-
-        if profile.activated or profile.activation_key_expired():
-            return False
-
-        profile.create_new_activation_key()
-        profile.send_activation_email(site, request)
-
-        return True
-
-    def resend_admin_activation_mail(self, email, site, request=None):
-        try:
-            profile = self.get(user__email=email)
-        except ObjectDoesNotExist:
-            return False
-
-        # should not be here probably, admin can activate him whenever...
-        # (or not?)
-        if profile.admin_activated or profile.admin_activation_key_expired():
-            return False
-
-        profile.create_new_admin_activation_key()
-        profile.send_admin_activation_email(site, request)
-
-        return True
+    def delete_expired_users(self):
+        for profile in self.all():
+            try:
+                if profile.activation_key_expired():
+                    user = profile.user
+                    if not user.is_active:
+                        user.delete()
+                        profile.delete()
+            except User.DoesNotExist:
+                profile.delete()
 
 
-@python_2_unicode_compatible
 class CustomRegistrationProfile(RegistrationProfile):
 
     admin_activation_key = models.CharField(
         _('admin activation key'), max_length=40)
-
     admin_activated = models.BooleanField(default=False)
-
-    both_actived = models.BooleanField(default=False)
+    activated = models.BooleanField(default=False)
 
     objects = CustomRegistrationManager()
+
+    class Meta:
+        verbose_name = _('registration profile')
+        verbose_name_plural = _('registration profiles')
+
+    def __unicode__(self):
+        return u"Registration information for %s" % self.user
 
     def create_new_admin_activation_key(self, save=True):
         salt = hashlib.sha1(six.text_type(random.random())
@@ -254,6 +195,18 @@ class CustomRegistrationProfile(RegistrationProfile):
             self.save()
         return self.admin_activation_key
 
+    def create_new_activation_key(self, save=True):
+        salt = hashlib.sha1(six.text_type(random.random())
+                            .encode('ascii')).hexdigest()[:5]
+        salt = salt.encode('ascii')
+        user_pk = str(self.user.pk)
+        if isinstance(user_pk, six.text_type):
+            user_pk = user_pk.encode('utf-8')
+        self.activation_key = hashlib.sha1(salt + user_pk).hexdigest()
+        if save:
+            self.save()
+        return self.activation_key
+
     def admin_activation_key_expired(self):
         expiration_date = datetime.timedelta(
             days=settings.ACCOUNT_ACTIVATION_DAYS)
@@ -261,53 +214,53 @@ class CustomRegistrationProfile(RegistrationProfile):
                 (self.user.date_joined + expiration_date <= datetime_now()))
     admin_activation_key_expired.boolean = True
 
-    def send_admin_activation_email(self, site, request=None):
-
-        admin_activation_email_subject = getattr(
-            settings,
-            'ACTIVATION_EMAIL_SUBJECT',
-            'registration/activation_email_subject.txt')
-        admin_activation_email_body = getattr(
-            settings,
-            'ACTIVATION_EMAIL_BODY',
-            'registration/activation_email.txt')
-        admin_activation_email_html = getattr(
-            settings, 'ACTIVATION_EMAIL_HTML',
-            'registration/activation_email.html')
-
-        ctx_dict = {}
-        if request is not None:
-            ctx_dict = RequestContext(request, ctx_dict)
-        # update ctx_dict after RequestContext is created
-        # because template context processors
-        # can overwrite some of the values like user
-        # if django.contrib.auth.context_processors.auth is used
-        ctx_dict.update({
-            'user': self.user,
-            'activation_key': self.admin_activation_key,
-            'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-            'site': site,
-        })
-        subject = (getattr(settings, 'REGISTRATION_EMAIL_SUBJECT_PREFIX', '') +
-                   render_to_string(
-                       admin_activation_email_subject, ctx_dict))
+    def send_activation_email(self, site):
+        subject = render_to_string(
+            'registration/activation_email_subject.txt',
+            {'site': site}
+        )
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
-        from_email = getattr(settings, 'REGISTRATION_DEFAULT_FROM_EMAIL',
-                             settings.DEFAULT_FROM_EMAIL)
-        message_txt = render_to_string(admin_activation_email_body,
-                                       ctx_dict)
 
-        email_message = EmailMultiAlternatives(subject, message_txt,
-                                               from_email, ['sergiosaftsidis@gmail.com'])
+        message = render_to_string(
+            'registration/validation_email.txt',
+            {
+                'validation_key': self.activation_key,
+                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                'site': site,
+                'user': self.user
+            }
+        )
 
-        if getattr(settings, 'REGISTRATION_EMAIL_HTML', True):
-            try:
-                message_html = render_to_string(
-                    admin_activation_email_html, ctx_dict)
-            except TemplateDoesNotExist:
-                pass
-            else:
-                email_message.attach_alternative(message_html, 'text/html')
+        email_message = EmailMultiAlternatives(
+            subject, message,
+            settings.DEFAULT_FROM_EMAIL, [self.user.email])
+
+        email_message.send()
+
+    def send_admin_activation_email(self, site):
+
+        subject = render_to_string(
+            'registration/activation_email_subject.txt',
+            {'site': site}
+        )
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+
+        message = render_to_string(
+            'registration/activation_email.txt',
+            {
+                'activation_key': self.admin_activation_key,
+                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                'site': site,
+                'user': self.user
+            }
+        )
+
+        # test multiple managers
+        email_message = EmailMultiAlternatives(
+            subject, message,
+            settings.DEFAULT_FROM_EMAIL,
+            [addr[1] for addr in settings.MANAGERS])
 
         email_message.send()

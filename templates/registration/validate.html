@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Register" %}{% endblock %}
+{% block title %}{% trans "Activation Complete" %}{% endblock %}
 {% block brcrmb_container %}{% endblock %}
-
 {% block blockcontainer %}
 <div class="container-fluid">
 	<div class="row-fluid">
@@ -13,14 +12,14 @@
 					<div class="widget">
 						<div class="row-fluid">
 							<h2>
-								<i class="fa fa-envelope"></i> {% trans "Registration Email Sent" %}
+								<i class="fa fa-check"></i> {% trans "Activation Status" %}
 							</h2>
 							<div class="padwidget">
-								<div class="alert alert-success">
-									<p>{% trans "An e-mail has been sent to the account you specified during registration" %}</p>
-									<p>{% trans "To activate your account follow the instructions provided" %}</p> 
-   									<p>{% trans "Back to" %} <a href="{% url login %}">{% trans "login" %}</a> {% trans "page" %}.</p>
-								</div>
+								{% if account %}
+								    <div class="alert alert-success"><p>{{account}} {% trans "succesfully activated" %}</p></div>
+								{% else %}
+								    <div class="alert alert-error"><p>{% trans "The user has probably been already activated." %}</p></div>
+								{% endif %}
 							</div>
 						</div>
 					</div>

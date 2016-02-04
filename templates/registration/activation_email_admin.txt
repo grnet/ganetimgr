@@ -1,0 +1,12 @@
+{% load i18n %}{% url admin_activate_account activation_key as activation_url %}{% blocktrans with full_name=user.get_full_name username=user.username email=user.email domain=site.domain %}{{ full_name }} has registered for a new account.
+
+Username: {{ username }}
+E-mail: {{ email }}
+
+To activate the user's account and allow them to access the service, click on
+the following link:
+
+http://{{ domain }}{{ activation_url }}
+
+The user will be notified via mail about the account activation
+{% endblocktrans %}

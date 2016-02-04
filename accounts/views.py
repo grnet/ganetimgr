@@ -15,42 +15,44 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from accounts.models import CustomRegistrationProfile
 
 from django.conf import settings
-from django.core.mail import send_mail
 from django.contrib.sites.models import Site
+from django.core.mail import send_mail
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-from registration.models import RegistrationProfile
 
-
-def activate_user(request, activation_key):
+def validate_email(request, validation_key):
     # Normalize before trying anything with it.
-    activation_key = activation_key.lower()
-    account = RegistrationProfile.objects.activate_user(activation_key)
+    validation_key = validation_key.lower()
+    account = CustomRegistrationProfile.objects.activate_user(validation_key)
     context = RequestContext(request)
 
     if account:
-        # A user has been activated
         email = render_to_string(
-            "registration/activation_complete.txt",
+            "registration/validation_complete.txt",
             {
                 "site": Site.objects.get_current(),
                 "user": account
             }
         )
         send_mail(
-            _("%sUser account activated") % settings.EMAIL_SUBJECT_PREFIX,
+            _("%s account email validated") % settings.EMAIL_SUBJECT_PREFIX,
             email,
             settings.SERVER_EMAIL,
             [account.email]
         )
+    else:
+        # Probably validation key has expired, delete user's account and
+        # force him to register again
+        pass
 
     return render_to_response(
-        "registration/activate.html",
+        "registration/validation_complete.html",
         {
             'account': account,
             'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS
@@ -59,14 +61,15 @@ def activate_user(request, activation_key):
     )
 
 
-def activate_admin(request, activation_key):
+# TODO: should only be accessible from admins
+def activate_account(request, activation_key):
     # Normalize before trying anything with it.
     activation_key = activation_key.lower()
-    account = RegistrationProfile.objects.admin_activate_user(activation_key)
+    account = CustomRegistrationProfile.objects.admin_activate_user(activation_key)
     context = RequestContext(request)
 
     if account:
-        # A user has been activated
+        # the user must be emailed, not the admin
         email = render_to_string(
             "registration/activation_complete.txt",
             {
@@ -80,6 +83,10 @@ def activate_admin(request, activation_key):
             settings.SERVER_EMAIL,
             [account.email]
         )
+    else:
+        # Probably admin was lazy, account was deleted before he got to
+        # activating it
+        pass
 
     return render_to_response(
         "registration/activate.html",
