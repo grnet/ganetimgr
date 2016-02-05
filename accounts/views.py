@@ -47,9 +47,7 @@ def validate_email(request, validation_key):
             [account.email]
         )
     else:
-        # Probably validation key has expired, delete user's account and
-        # force him to register again
-        pass
+        return render_to_response("registration/validation_complete.html")
 
     return render_to_response(
         "registration/validation_complete.html",
@@ -84,9 +82,7 @@ def activate_account(request, activation_key):
             [account.email]
         )
     else:
-        # Probably admin was lazy, account was deleted before he got to
-        # activating it
-        pass
+        return render_to_response("registration/validation_complete.html")
 
     return render_to_response(
         "registration/activate.html",

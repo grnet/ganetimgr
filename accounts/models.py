@@ -119,15 +119,15 @@ class CustomRegistrationManager(models.Manager):
                 profile = self.get(admin_activation_key=activation_key)
             except self.model.DoesNotExist:
                 return False
-
-            if not profile.admin_activation_key_expired():
-                user = profile.user
-                profile.admin_activated = True
-                if profile.activated:
-                    user.is_active = True
-                user.save()
-                profile.save()
-                return user
+            # do not check for expired admin keys, admin can activate the
+            # account whenever
+            user = profile.user
+            profile.admin_activated = True
+            if profile.activated:
+                user.is_active = True
+            user.save()
+            profile.save()
+            return user
         return False
 
     def create_inactive_user(self, username, email, password,
@@ -207,12 +207,14 @@ class CustomRegistrationProfile(RegistrationProfile):
             self.save()
         return self.activation_key
 
-    def admin_activation_key_expired(self):
-        expiration_date = datetime.timedelta(
-            days=settings.ACCOUNT_ACTIVATION_DAYS)
-        return (self.admin_activated or
-                (self.user.date_joined + expiration_date <= datetime_now()))
-    admin_activation_key_expired.boolean = True
+    # Probably useless, if seen again delete it
+
+    # def admin_activation_key_expired(self):
+    #     expiration_date = datetime.timedelta(
+    #         days=settings.ACCOUNT_ACTIVATION_DAYS)
+    #     return (self.admin_activated or
+    #             (self.user.date_joined + expiration_date <= datetime_now()))
+    # admin_activation_key_expired.boolean = True
 
     def send_activation_email(self, site):
         subject = render_to_string(
