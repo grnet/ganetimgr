@@ -32,7 +32,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
-from django.views.decorators.cache import cache_page
 
 if 'oauth2_provider' in settings.INSTALLED_APPS:
     from oauth2_provider.decorators import protected_resource
@@ -116,7 +115,6 @@ else:
         raise NotImplementedError('Please install oauth2_toolkit. For more details take a look at admin section of the docs.')
 
 
-@cache_page(60 * 15)
 @login_required
 def user_index_json(request):
     cluster_slug = request.GET.get('cluster', None)
