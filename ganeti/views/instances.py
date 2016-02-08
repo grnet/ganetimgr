@@ -182,7 +182,7 @@ def user_index_json(request):
                 # get only enabled clusters
                 clusters = Cluster.objects.filter(disabled=False)
             p.map(_get_instances, clusters)
-        cache_timeout = 90
+        cache_timeout = 900
         if bad_clusters:
             if request.user.is_superuser:
                 djmessages.add_message(
