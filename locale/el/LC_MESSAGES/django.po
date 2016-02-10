@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-05 16:31+0200\n"
+"POT-Creation-Date: 2016-02-10 14:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -1470,7 +1470,7 @@ msgstr "ενεργοποιήθηκε επιτυχώς"
 
 #: templates/registration/activate.html:21
 #: templates/registration/validate.html:21
-#: templates/registration/validation_complete.html:24
+#: templates/registration/validation_complete.html:25
 msgid "The user has probably been already activated."
 msgstr "Ο χρήστης έχει πιθανότατα ενεργοποιηθεί ήδη."
 
@@ -1511,6 +1511,10 @@ msgstr ""
 #: templates/registration/activation_email_subject.txt:1
 msgid "Account registered at"
 msgstr "Ο λογαριασμός σας στην υπηρεσία"
+
+#: templates/registration/admin_activation_email_subject.txt:1
+msgid "New user account registered at"
+msgstr "Νέος λογαριασμός στην υπηρεσία"
 
 #: templates/registration/password_change_form.html:5
 #: templates/users/profile.html:59
@@ -1588,19 +1592,9 @@ msgstr "Ένα e-mail έχει αποσταλεί στην διεύθυνση π
 msgid ""
 "To proceed with your registration follow the instructions provided in the e-"
 "mail"
-msgstr "Για να προχωρήσετε με την διαδικασία εγγραφής ακολουθήστε τις οδηγίες στο "
-"e-mail"
-#: templates/registration/registration_complete.html:22
-msgid "Back to"
-msgstr "Πίσω στην"
-
-#: templates/registration/registration_complete.html:22
-msgid "login"
-msgstr "είσοδο"
-
-#: templates/registration/registration_complete.html:22
-msgid "page"
-msgstr "σελίδα"
+msgstr ""
+"Για να προχωρήσετε με την διαδικασία εγγραφής ακολουθήστε τις οδηγίες στο e-"
+"mail"
 
 #: templates/registration/registration_form.html:26
 msgid "Register new user"
@@ -1626,6 +1620,18 @@ msgstr ""
 "Ο λογαριασμός σας θα ενεργοποιηθεί από έναν διαχειριστή και θα ειδοποιηθείτε "
 "μέσω email"
 
+#: templates/registration/validation_complete.html:22
+msgid "Back to"
+msgstr "Πίσω στην"
+
+#: templates/registration/validation_complete.html:22
+msgid "login"
+msgstr "είσοδο"
+
+#: templates/registration/validation_complete.html:22
+msgid "page"
+msgstr "σελίδα"
+
 #: templates/registration/validation_complete.txt:1
 msgid ""
 "You have successfully validated your email address.\n"
@@ -1637,11 +1643,10 @@ msgstr ""
 #: templates/registration/validation_complete.txt:2
 msgid ""
 " will be activated by an administrator and you will be notified via email."
-msgstr ""
-" θα ενεργοποιηθεί από έναν διαχειριστή και θα ειδοποιηθείτε μέσω email"
+msgstr " θα ενεργοποιηθεί από έναν διαχειριστή και θα ειδοποιηθείτε μέσω email"
 
 #: templates/registration/validation_email.txt:1
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "User %(full_name)s has registered for a new account.\n"
 "\n"
@@ -1659,6 +1664,10 @@ msgid ""
 "account and\n"
 "proceed to activate it. \n"
 "\n"
+"You have %(expiration_days)s days to validate your e-mail address. If you "
+"fail to \n"
+"do so within the time limit, you will have to register again.\n"
+"\n"
 "Upon activation, you will receive a new email message.\n"
 msgstr ""
 "Κάνατε αίτηση για νέο λογαριασμό ως χρήστης %(full_name)s.\n"
@@ -1666,16 +1675,19 @@ msgstr ""
 "Username: %(username)s\n"
 "E-mail: %(email)s\n"
 "\n"
-"Για να προχωρήσετε με την διαδικασία ενεργοποίησης του λογαριασμού σας, πρέπει πρώτα να επιβεβαιώσετε "
-"την διεύθυνση e-mail\n"
-"σας. Για να την επιβεβαιώσετε ακολουθήστε τον παρακάτω σύνδεσμο ή αντιγράψτε την διεύθυνση στον "
-"περιηγητή σας\n"
+"Για να προχωρήσετε με την διαδικασία ενεργοποίησης του λογαριασμού σας, "
+"πρέπει πρώτα να επιβεβαιώσετε την διεύθυνση e-mail\n"
+"σας. Για να την επιβεβαιώσετε ακολουθήστε τον παρακάτω σύνδεσμο ή αντιγράψτε "
+"την διεύθυνση στον περιηγητή σας\n"
 "\n"
 "http://%(domain)s%(validation_url)s\n"
 "\n"
-"Ο διαχειριστής της υπηρεσίας θα ενημερωθεί για τον νέο σας "
-"λογαριασμό και\n"
+"Ο διαχειριστής της υπηρεσίας θα ενημερωθεί για τον νέο σας λογαριασμό και\n"
 "θα τον ενεργοποιήσει. \n"
+"\n"
+"Έχετε %(expiration_days)s ημέρες για να επιβεβαιώσετε την διεύθυνση e-email σας. Εαν "
+"δεν \n"
+"τα καταφέρετε εντός αυτών των ημερών θα πρέπει να εγγραφείτε ξανά.\n"
 "\n"
 "Όταν η ενεργοποίηση ολοκληρωθεί, θα λάβετε ένα νέο e-mail.\n"
 
@@ -1687,7 +1699,9 @@ msgstr "Η ενεργοποίηση έληξε"
 #: templates/registration/validation_expired.html:20
 msgid ""
 "Seems that you failed to activate your account within your given time limit."
-msgstr "Δεν καταφέρατε να ενεργοποιήσετε τον λογαριασμό σας εντός του προκαθορισμένου χρονικού ορίου"
+msgstr ""
+"Δεν καταφέρατε να ενεργοποιήσετε τον λογαριασμό σας εντός του "
+"προκαθορισμένου χρονικού ορίου"
 
 #: templates/registration/validation_expired.html:21
 msgid "Your account has been deleted. You need to register again."

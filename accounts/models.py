@@ -91,6 +91,23 @@ SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
 class CustomRegistrationManager(models.Manager):
 
+    '''
+    Class documentation
+
+    This class, in cooperation with CustomRegistrationProfile
+    implement a 3-step registration process.
+
+    Workflow:
+    1) User registers an account - Gets an email to validate his email address
+    2) User validates his email address - user gets an email informing him that
+        his account will be activated by an admin - admins get an email to
+        activate the newly created account
+    3) Admins activate user's account - user gets an email and can now login
+
+    This class requires CustomRegistrationProfile to function, as it needs some
+    extra boolean fields.
+    '''
+
     def activate_user(self, activation_key):
         # Make sure the key we're trying conforms to the pattern of a
         # SHA1 hash; if it doesn't, no point trying to look it up in
@@ -169,9 +186,32 @@ class CustomRegistrationManager(models.Manager):
 
 class CustomRegistrationProfile(RegistrationProfile):
 
+    '''
+    Class documentation
+
+    This class, in cooperation with CustomRegistrationManager
+    implement a 3-step registration process.
+
+    Workflow:
+    1) User registers an account - Gets an email to validate his email address
+    2) User validates his email address - user gets an email informing him that
+        his account will be activated by an admin - admins get an email to
+        activate the newly created account
+    3) Admins activate user's account - user gets an email and can now login
+
+    This class overrides RegistrationProfile (django-registration), adding some
+    extra boolean fields.
+    '''
+
+    # holds a unique key that is mailed to admins
+    # used for account activation
     admin_activation_key = models.CharField(
         _('admin activation key'), max_length=40)
+
+    # indicates that an administrator has activated the user's account
     admin_activated = models.BooleanField(default=False)
+
+    # indicates that a user has validated his email address
     activated = models.BooleanField(default=False)
 
     objects = CustomRegistrationManager()
@@ -183,6 +223,7 @@ class CustomRegistrationProfile(RegistrationProfile):
     def __unicode__(self):
         return u"Registration information for %s" % self.user
 
+    # creates a unique key used by admins in the activation process
     def create_new_admin_activation_key(self, save=True):
         salt = hashlib.sha1(six.text_type(random.random())
                             .encode('ascii')).hexdigest()[:5]
@@ -195,6 +236,7 @@ class CustomRegistrationProfile(RegistrationProfile):
             self.save()
         return self.admin_activation_key
 
+    # creates a unique key used by users in the email validation process
     def create_new_activation_key(self, save=True):
         salt = hashlib.sha1(six.text_type(random.random())
                             .encode('ascii')).hexdigest()[:5]
@@ -207,15 +249,7 @@ class CustomRegistrationProfile(RegistrationProfile):
             self.save()
         return self.activation_key
 
-    # Probably useless, if seen again delete it
-
-    # def admin_activation_key_expired(self):
-    #     expiration_date = datetime.timedelta(
-    #         days=settings.ACCOUNT_ACTIVATION_DAYS)
-    #     return (self.admin_activated or
-    #             (self.user.date_joined + expiration_date <= datetime_now()))
-    # admin_activation_key_expired.boolean = True
-
+    # sends an email to the user to validate his account
     def send_activation_email(self, site):
         subject = render_to_string(
             'registration/activation_email_subject.txt',
@@ -240,10 +274,11 @@ class CustomRegistrationProfile(RegistrationProfile):
 
         email_message.send()
 
+    # sends an email to the admins to activate the user's account
     def send_admin_activation_email(self, site):
 
         subject = render_to_string(
-            'registration/activation_email_subject.txt',
+            'registration/admin_activation_email_subject.txt',
             {'site': site}
         )
         # Email subject *must not* contain newlines

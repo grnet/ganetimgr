@@ -19,6 +19,7 @@
 								    <div class="alert alert-success">
 								    <p>{% trans "E-mail address for account "%}{{account}} {% trans "succesfully validated" %}</p>
 								    <p>{% trans "Your account will be activated by an administrator and you will be notified via email"%}</p>
+								    <p>{% trans "Back to" %} <a href="{% url login %}">{% trans "login" %}</a> {% trans "page" %}.</p>
 								    </div>
 								{% else %}
 								    <div class="alert alert-error"><p>{% trans "The user has probably been already activated." %}</p></div>

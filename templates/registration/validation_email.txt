@@ -11,5 +11,8 @@ http://{{ domain }}{{ validation_url }}
 The site's administrator will then be notified about your newly created account and
 proceed to activate it. 
 
+You have {{ expiration_days }} days to validate your e-mail address. If you fail to 
+do so within the time limit, you will have to register again.
+
 Upon activation, you will receive a new email message.
 {% endblocktrans %}
