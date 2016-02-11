@@ -29,7 +29,7 @@ from django.utils.translation import ugettext_lazy as _
 def validate_email(request, validation_key):
     # Normalize before trying anything with it.
     validation_key = validation_key.lower()
-    account = CustomRegistrationProfile.objects.activate_user(validation_key)
+    account = CustomRegistrationProfile.objects.validate_user(validation_key)
     context = RequestContext(request)
 
     if account:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-10 14:58+0200\n"
+"POT-Creation-Date: 2016-02-11 11:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -46,22 +46,22 @@ msgstr ""
 "Ο λογαριασμός που σχετίζεται με αυτή τη διεύθυνση e-mail δεν μπορεί να "
 "εισάγει νέο κωδικό."
 
-#: accounts/models.py:173
+#: accounts/models.py:208
 msgid "admin activation key"
 msgstr "Κλειδί ενεργοποίησης διαχειριστή"
 
-#: accounts/models.py:180
+#: accounts/models.py:216
 msgid "registration profile"
 msgstr "προφίλ εγγραφής"
 
-#: accounts/models.py:181
+#: accounts/models.py:217
 msgid "registration profiles"
 msgstr "προφίλ εγγραφής"
 
 #: accounts/views.py:44
 #, python-format
 msgid "%s account email validated"
-msgstr "Ο λογαριασμος σας στην εφαρμογη %s ενεργοποιήθηκε"
+msgstr "Επιβεβαίωση e-mail στην υπηρεσία %s"
 
 #: accounts/views.py:79
 #, python-format
@@ -1507,6 +1507,18 @@ msgid ""
 "\n"
 "The user will be notified via mail about the account activation\n"
 msgstr ""
+"Ο χρήστης %(full_name)s έκανε αίτηση για νέο λογαριασμό.\n"
+"\n"
+"Όνομα χρήστη: %(username)s\n"
+"E-mail: %(email)s\n"
+"\n"
+"Για να ενεργοποιήσετε το λογαριασμό του χρήστη και να του δώσετε πρόσβαση στην υπηρεσία, χρησιμοποιείστε "
+"τον\n"
+"ακόλουθο σύνδεσμο:\n"
+"\n"
+"http://%(domain)s%(activation_url)s\n"
+"\n"
+"Ο χρήστης θα ειδοποιηθεί μέσω e-mail για την ενεργοποίηση του λογαριασμού του\n"
 
 #: templates/registration/activation_email_subject.txt:1
 msgid "Account registered at"
@@ -1646,7 +1658,7 @@ msgid ""
 msgstr " θα ενεργοποιηθεί από έναν διαχειριστή και θα ειδοποιηθείτε μέσω email"
 
 #: templates/registration/validation_email.txt:1
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "User %(full_name)s has registered for a new account.\n"
 "\n"
@@ -1685,8 +1697,8 @@ msgstr ""
 "Ο διαχειριστής της υπηρεσίας θα ενημερωθεί για τον νέο σας λογαριασμό και\n"
 "θα τον ενεργοποιήσει. \n"
 "\n"
-"Έχετε %(expiration_days)s ημέρες για να επιβεβαιώσετε την διεύθυνση e-email σας. Εαν "
-"δεν \n"
+"Έχετε %(expiration_days)s ημέρες για να επιβεβαιώσετε την διεύθυνση e-email "
+"σας. Εαν δεν \n"
 "τα καταφέρετε εντός αυτών των ημερών θα πρέπει να εγγραφείτε ξανά.\n"
 "\n"
 "Όταν η ενεργοποίηση ολοκληρωθεί, θα λάβετε ένα νέο e-mail.\n"

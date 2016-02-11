@@ -108,7 +108,7 @@ class CustomRegistrationManager(models.Manager):
     extra boolean fields.
     '''
 
-    def activate_user(self, activation_key):
+    def validate_user(self, activation_key):
         # Make sure the key we're trying conforms to the pattern of a
         # SHA1 hash; if it doesn't, no point trying to look it up in
         # the database.
@@ -119,7 +119,7 @@ class CustomRegistrationManager(models.Manager):
                 return False
             if not profile.activation_key_expired():
                 user = profile.user
-                profile.activated = True
+                profile.validated = True
                 user.save()
                 profile.save()
 
@@ -139,8 +139,7 @@ class CustomRegistrationManager(models.Manager):
             # do not check for expired admin keys, admin can activate the
             # account whenever
             user = profile.user
-            profile.admin_activated = True
-            if profile.activated:
+            if profile.validated:
                 user.is_active = True
             user.save()
             profile.save()
@@ -156,7 +155,7 @@ class CustomRegistrationManager(models.Manager):
         registration_profile = self.create_profile(new_user)
 
         if send_email:
-            registration_profile.send_activation_email(site)
+            registration_profile.send_validation_email(site)
 
         return new_user
     create_inactive_user = transaction.commit_on_success(create_inactive_user)
@@ -208,11 +207,8 @@ class CustomRegistrationProfile(RegistrationProfile):
     admin_activation_key = models.CharField(
         _('admin activation key'), max_length=40)
 
-    # indicates that an administrator has activated the user's account
-    admin_activated = models.BooleanField(default=False)
-
     # indicates that a user has validated his email address
-    activated = models.BooleanField(default=False)
+    validated = models.BooleanField(default=False)
 
     objects = CustomRegistrationManager()
 
@@ -250,7 +246,7 @@ class CustomRegistrationProfile(RegistrationProfile):
         return self.activation_key
 
     # sends an email to the user to validate his account
-    def send_activation_email(self, site):
+    def send_validation_email(self, site):
         subject = render_to_string(
             'registration/activation_email_subject.txt',
             {'site': site}

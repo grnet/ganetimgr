@@ -69,7 +69,7 @@ class GanetimgrBackend(DefaultBackend):
         registration_profile = CustomRegistrationProfile.objects.get(
             user=new_user)
 
-        registration_profile.send_activation_email(site)
+        registration_profile.send_validation_email(site)
 
         signals.user_registered.send(sender=self.__class__,
                                      user=new_user,
