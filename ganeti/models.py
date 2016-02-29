@@ -908,7 +908,7 @@ class Cluster(models.Model):
                     ssh_base64 = base64.b64encode("".join(ssh_lines))
                     if "img_personality" not in osparams:
                         osparams["img_personality"] = []
-                    for user in os["ssh_key_users"].split():
+                    for user in details["ssh_key_users"].split():
                         # user[:group[:/path/to/authorized_keys]]
                         owner, group, path = map_ssh_user(*user.split(":"))
                         osparams["img_personality"].append({
