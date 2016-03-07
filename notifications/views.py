@@ -112,7 +112,7 @@ def notify(request, instance=None):
 
 @login_required
 def archive(request, notification):
-    if request.user.is_superuser:
+    if request.user.has_perm('notifications.view_notifications'):
         notification = get_object_or_404(NotificationArchive, pk=notification)
         return render(
             request,

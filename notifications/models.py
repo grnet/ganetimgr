@@ -18,3 +18,6 @@ class NotificationArchive(models.Model):
 
     class Meta():
         ordering = ['-date']
+        permissions = (
+            ("view_notifications", "Can view all notifications"),
+        )
