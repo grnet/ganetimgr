@@ -1173,16 +1173,16 @@ class InstanceActionManager(models.Manager):
         operating_system=None
     ):
         # create a new action and expireany older actions
-        for action in self.filter(
+        for oldaction in self.filter(
             applicant=user,
             instance=instance,
             cluster=cluster,
             action=action
         ).exclude(activation_key='ALREADY_ACTIVATED'):
-            action.expire_now()
+            oldaction.expire_now()
         salt = sha.new(str(random.random())).hexdigest()[:5]
         activation_key = sha.new(salt + user.username).hexdigest()
-        return self.create(
+        inst_action = self.create(
             applicant=user,
             instance=instance,
             cluster=cluster,
@@ -1191,6 +1191,7 @@ class InstanceActionManager(models.Manager):
             activation_key=activation_key,
             operating_system=operating_system
         )
+        return inst_action
 
 
 class InstanceAction(models.Model):
