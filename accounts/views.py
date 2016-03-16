@@ -59,11 +59,11 @@ def validate_email(request, validation_key):
     )
 
 
-# TODO: should only be accessible from admins
 def activate_account(request, activation_key):
     # Normalize before trying anything with it.
     activation_key = activation_key.lower()
-    account = CustomRegistrationProfile.objects.admin_activate_user(activation_key)
+    account = CustomRegistrationProfile.objects.admin_activate_user(
+        activation_key)
     context = RequestContext(request)
 
     if account:
@@ -82,7 +82,7 @@ def activate_account(request, activation_key):
             [account.email]
         )
     else:
-        return render_to_response("registration/validation_complete.html")
+        return render_to_response("registration/activate.html")
 
     return render_to_response(
         "registration/activate.html",

@@ -119,15 +119,18 @@ class CustomRegistrationManager(models.Manager):
                 return False
             if not profile.activation_key_expired():
                 user = profile.user
-                profile.validated = True
-                user.save()
-                profile.save()
+                if not profile.validated:
+                    profile.validated = True
+                    user.save()
+                    profile.save()
 
-                # an e-mail is sent to the site managers to activate the
-                # user's account
-                profile.send_admin_activation_email(site)
+                    # an e-mail is sent to the site managers to activate the
+                    # user's account
+                    profile.send_admin_activation_email(site)
 
-                return user
+                    return user
+                else:
+                    return False
         return False
 
     def admin_activate_user(self, activation_key, get_profile=False):
@@ -139,11 +142,14 @@ class CustomRegistrationManager(models.Manager):
             # do not check for expired admin keys, admin can activate the
             # account whenever
             user = profile.user
-            if profile.validated:
-                user.is_active = True
-            user.save()
-            profile.save()
-            return user
+            if not user.is_active:
+                if profile.validated:
+                    user.is_active = True
+                user.save()
+                profile.save()
+                return user
+            else:
+                return False
         return False
 
     def create_inactive_user(self, username, email, password,
