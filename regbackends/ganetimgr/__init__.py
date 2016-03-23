@@ -15,28 +15,40 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+
+from accounts.models import CustomRegistrationProfile
+
+from apply.models import Organization
+
 from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
+from django.core.mail import EmailMultiAlternatives, mail_managers
 from django.template.loader import render_to_string
-from django.core.mail import mail_managers
 
 from registration import signals
-from registration.models import RegistrationProfile
 from registration.backends.default import DefaultBackend
-from apply.models import Organization
 
 
 class GanetimgrBackend(DefaultBackend):
 
     def register(self, request, **kwargs):
-        username, email, password, firstname, lastname, organization, telephone = kwargs['username'], kwargs['email'], kwargs['password1'], kwargs['name'], kwargs['surname'], kwargs['organization'], kwargs['phone']
+
+        username = kwargs['username']
+        email = kwargs['email']
+        password = kwargs['password1']
+        firstname = kwargs['name']
+        lastname = kwargs['surname']
+        organization = kwargs['organization']
+        telephone = kwargs['phone']
+
         if Site._meta.installed:
             site = Site.objects.get_current()
         else:
             site = RequestSite(request)
-        new_user = RegistrationProfile.objects.create_inactive_user(username, email,
-                                                                    password, site, send_email=False)
+        new_user = CustomRegistrationProfile.objects.create_inactive_user(
+            username, email,
+            password, site, send_email=False)
         new_user.first_name = firstname
         new_user.last_name = lastname
         new_user.save()
@@ -49,19 +61,16 @@ class GanetimgrBackend(DefaultBackend):
             profile.organization = organization
         profile.telephone = telephone
         profile.save()
-        subject = render_to_string(
-            'registration/activation_email_subject.txt',
-            {'site': site}
-        )
-        # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
-        registration_profile = RegistrationProfile.objects.get(user=new_user)
-        message = render_to_string('registration/activation_email.txt',
-                                   { 'activation_key': registration_profile.activation_key,
-                                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                                     'site': site,
-                                     'user': new_user })
-        mail_managers(subject, message)
+
+        # Custom registration profile is being used to allow 2-step validation:
+        # 1) user validates his email address
+        # 2) admin activates user's account
+
+        registration_profile = CustomRegistrationProfile.objects.get(
+            user=new_user)
+
+        registration_profile.send_validation_email(site)
+
         signals.user_registered.send(sender=self.__class__,
                                      user=new_user,
                                      request=request)

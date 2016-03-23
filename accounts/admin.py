@@ -17,7 +17,12 @@
 
 
 from django.contrib import admin
-from accounts.models import UserProfile
+from accounts.models import UserProfile, CustomRegistrationProfile
+from registration.models import RegistrationProfile
+
 
 admin.site.register(UserProfile)
-
+admin.site.register(CustomRegistrationProfile)
+# This unregisters the default RegistrationProfile so that we
+# can use our own
+admin.site.unregister(RegistrationProfile)

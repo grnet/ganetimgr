@@ -1,0 +1,2 @@
+{% load i18n %}{% blocktrans %}You have successfully validated your email address.
+Your account with username {% endblocktrans %}“{{ user.username }}” {% blocktrans %} will be activated by an administrator and you will be notified via email.{% endblocktrans %}
