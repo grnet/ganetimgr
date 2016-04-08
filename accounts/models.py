@@ -259,7 +259,7 @@ class CustomRegistrationProfile(RegistrationProfile):
         )
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
-	subject = '{} {}'.format(settings.EMAIL_SUBJECT_PREFIX, subject)
+        subject = '{} {}'.format(settings.EMAIL_SUBJECT_PREFIX, subject)
 
         message = render_to_string(
             'registration/validation_email.txt',
@@ -286,7 +286,7 @@ class CustomRegistrationProfile(RegistrationProfile):
         )
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
-	subject = '{} {}'.format(settings.EMAIL_SUBJECT_PREFIX, subject)
+        subject = '{} {}'.format(settings.EMAIL_SUBJECT_PREFIX, subject)
 
         message = render_to_string(
             'registration/activation_email.txt',
