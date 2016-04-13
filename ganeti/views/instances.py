@@ -598,6 +598,9 @@ def instance(request, cluster_slug, instance):
                         configform.cleaned_data['cdrom_image_path'].startswith(
                             'http://'
                         ) or
+                        configform.cleaned_data['cdrom_image_path'].startswith(
+                            'https://'
+                        ) or
                         configform.cleaned_data['cdrom_image_path'] == ""
                     )
                 ):
