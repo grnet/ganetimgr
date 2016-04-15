@@ -1,0 +1,37 @@
+.imgstack-container{
+
+	/* relative positioning to match parent */
+	position:relative;
+}
+
+.imgstack-container > a {
+
+	/* make <a> appear clickable */
+	cursor:pointer;
+}
+
+.imgstack-container > a > img {
+
+	/* Center image on container, make it responsive */
+	left:50%;
+	top:50%;
+	--webkit-transform:translate(-50%,-50%);
+	--ms-transform:translate(-50%,-50%);
+	transform:translate(-50%,-50%);
+
+	/* absolute positioning to stack it on top
+		of other image */
+	position:absolute;
+
+	/* z-index is greater than the background element's */
+	z-index:99;
+}
+
+.imgstack-container img {
+
+	/* relative positioning to match parent */
+	position:relative;
+
+	/* z-index less than the element that will go on top */
+	z-index:90;
+}
