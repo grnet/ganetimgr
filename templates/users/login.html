@@ -13,6 +13,8 @@
 <script type="text/javascript" src="{% static 'ganetimgr/js/includes/feedek.js' %}"></script>
 <script type="text/javascript" src="{% static 'ganetimgr/js/includes/moment.min.js' %}"></script>
 <link rel="stylesheet" href="{% static 'ganetimgr/css/includes/feedek.css' %}">
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/resp-modal.css' %}">
+<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/img-on-top.css' %}">
 <script>
 	$(document).ready(function () {
 		$('#divRss').FeedEk({
@@ -23,6 +25,21 @@
 		});
 
 		$('#id_username').focus();
+
+		// Register handlers for 'shown', 'hidden' events. These are triggered
+		// when bootstrap 'data-toggle' elements are clicked.
+		// The approach here starts or stops an already included iframe in the
+		// html code. This was chosen as it is way faster than actually loading
+		// the player when the modal is shown
+
+		$("#video-modal").on('shown', function(){
+    		$('#yt-player')[0].contentWindow.postMessage(
+    			'{"event":"command","func":"playVideo","args":""}', '*');
+		});
+		$("#video-modal").on('hidden', function(){
+			$('#yt-player')[0].contentWindow.postMessage(
+				'{"event":"command","func":"stopVideo","args":""}', '*');
+		});
 	});
 </script>
 {% endblock %}
@@ -57,13 +74,16 @@
 											<p>Welcome to {{ name }}'s {{ title }} service.</p>
 											<p>If you are new to the service, take some time to read the service description supplied at the hyperlink at the end of this page and then register for a new account.</p>
 										{% endblocktrans %}
-										{% if BRANDING.VIDEO %}
-											<iframe id="video" width="100%" height="350" src="{{ BRANDING.VIDEO }}"></iframe>
-										{% endif %}
 										{% blocktrans with name=BRANDING.SERVICE_PROVIDED_BY.NAME title=BRANDING.TITLE %}
 											<p>If you already have an account, you can log in using the form on the right.</p>
 											<p>For troubleshooting info and remarks do not hesitate to contact {{ name }}'s Helpdesk.</p>
 										{% endblocktrans %}
+										{% if BRANDING.VIDEO %}
+											<div class="imgstack-container">
+												<a><img id="modal-show" src="{% static 'ganetimgr/img/learnmore.png' %}" data-toggle="modal" data-target="#video-modal" ></a>
+												<img src="{% static 'ganetimgr/img/video-crop.png' %}" style="">
+											</div>
+										{% endif %}
 									</div>
 								</div>
 							</div>
@@ -121,5 +141,16 @@
 			</div>
 		</div>
 	</div>
+	
+	{% if BRANDING.VIDEO %}
+	<div class="container">
+		<div class="modal resp-modal fade" id="video-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="video-container">
+				<iframe  id="yt-player" src="{{ BRANDING.VIDEO }}?enablejsapi=1&version=3" allowfullscreen></iframe>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+
 </div>
 {% endblock %}
