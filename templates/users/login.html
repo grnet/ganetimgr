@@ -35,10 +35,12 @@
 		$("#video-modal").on('shown', function(){
     		$('#yt-player')[0].contentWindow.postMessage(
     			'{"event":"command","func":"playVideo","args":""}', '*');
+    		this.toggle();
 		});
 		$("#video-modal").on('hidden', function(){
 			$('#yt-player')[0].contentWindow.postMessage(
 				'{"event":"command","func":"stopVideo","args":""}', '*');
+			this.toggle();
 		});
 	});
 </script>
@@ -142,15 +144,17 @@
 		</div>
 	</div>
 	
-	{% if BRANDING.VIDEO %}
-	<div class="container">
-		<div class="modal resp-modal fade" id="video-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			<div class="video-container">
-				<iframe  id="yt-player" src="{{ BRANDING.VIDEO }}?enablejsapi=1&version=3" allowfullscreen></iframe>
-			</div>
-		</div>
-	</div>
-	{% endif %}
 
 </div>
 {% endblock %}
+{% block video %}
+{% if BRANDING.VIDEO %}
+<div class="container">
+	<div class="modal resp-modal fade" id="video-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display:none">
+		<div class="video-container">
+			<iframe  id="yt-player" src="{{ BRANDING.VIDEO }}?enablejsapi=1&version=3" allowfullscreen></iframe>
+		</div>
+	</div>
+</div>
+{% endif %}
+{% endblock %}	
