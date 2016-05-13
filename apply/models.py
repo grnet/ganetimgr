@@ -83,6 +83,7 @@ class Organization(models.Model):
     tag = models.SlugField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     users = models.ManyToManyField(User, blank=True, null=True)
+    synced = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _("organization")
