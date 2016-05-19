@@ -19,6 +19,9 @@ from accounts import views
 from accounts.forms import PasswordResetFormPatched, RegistrationForm
 from django.conf.urls import patterns, url, include
 from django.contrib.auth import views as auth_v
+from registration.views import RegistrationView
+
+register = RegistrationView.as_view()
 
 urlpatterns = patterns(
     '',
@@ -31,11 +34,11 @@ urlpatterns = patterns(
         views.validate_email, name='validate_email'
     ),
     url(
-        r'^register/$', 'registration.views.register',
+        r'^register/$', register,
         {
             'backend': 'regbackends.ganetimgr.GanetimgrBackend',
             'form_class': RegistrationForm
-        }, name='registration.views.register'
+        }
     ),
     url(
         r'^password/reset/$',
