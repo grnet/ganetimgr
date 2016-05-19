@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-19 14:28+0300\n"
+"POT-Creation-Date: 2016-10-21 16:58+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: accounts/forms.py:55
+#: accounts/forms.py:56
 msgid "Invalid captcha"
 msgstr "Λανθασμένη αντιστοίχιση"
 
-#: accounts/forms.py:89 apply/forms.py:180
+#: accounts/forms.py:90 apply/forms.py:180
 msgid "Organization"
 msgstr "Φορέας"
 
-#: accounts/forms.py:91
+#: accounts/forms.py:92
 msgid "Verify"
 msgstr "Επαλήθευση"
 
-#: accounts/forms.py:96
+#: accounts/forms.py:97
 msgid ""
 "That e-mail address doesn't have an associated user account or the account "
 "has not been activated yet. Are you sure you've registered?"
@@ -38,7 +38,7 @@ msgstr ""
 "Αυτή η διεύθυνση e-mail δεν μπορεί να συσχετιστεί με κάποιο λογαριασμό ή ο "
 "λογαριασμός δεν έχει ενεργοποιηθεί ακόμη. Είστε σίγουροι πως έχετε εγγραφεί;"
 
-#: accounts/forms.py:98
+#: accounts/forms.py:99
 msgid ""
 "The user account associated with this e-mail address cannot reset the "
 "password."
@@ -50,28 +50,6 @@ msgstr ""
 #, python-format
 msgid "%sIdle Account Notification"
 msgstr "%sΕιδοποίηση Αδρανών Λογαριασμών"
-
-#: accounts/models.py:220
-msgid "admin activation key"
-msgstr "Κλειδί ενεργοποίησης διαχειριστή"
-
-#: accounts/models.py:228
-msgid "registration profile"
-msgstr "προφίλ εγγραφής"
-
-#: accounts/models.py:229
-msgid "registration profiles"
-msgstr "προφίλ εγγραφής"
-
-#: accounts/views.py:44
-#, python-format
-msgid "%s account email validated"
-msgstr "Επιβεβαίωση e-mail στην υπηρεσία %s"
-
-#: accounts/views.py:79
-#, python-format
-msgid "%sUser account activated"
-msgstr "%sΟ λογαριασμός σας ενεργοποιήθηκε"
 
 #: apply/forms.py:150 ganeti/forms.py:49
 msgid "A fully qualified domain name, e.g. host.domain.com"
@@ -116,12 +94,12 @@ msgstr "Φιλοξενία mail server"
 msgid "Operating System"
 msgstr "Λειτουργικό Σύστημα"
 
-#: apply/forms.py:203 apply/forms.py:386 ganeti/forms.py:65
+#: apply/forms.py:203 apply/forms.py:400 ganeti/forms.py:65
 #, python-format
 msgid "Invalid hostname %s"
 msgstr "Εσφαλμένο όνομα %s"
 
-#: apply/forms.py:207 apply/forms.py:390 ganeti/forms.py:69
+#: apply/forms.py:207 apply/forms.py:404 ganeti/forms.py:69
 msgid ""
 "Hostname should be fully qualified, e.g. <em>host.domain.com</em>, not "
 "<em>host</em>"
@@ -129,7 +107,7 @@ msgstr ""
 "Το όνομα πρέπει να περιλαμβάνει domain, π.χ. <em>host.domain.com</em>, όχι "
 "σκέτο <em>host</em>"
 
-#: apply/forms.py:217 apply/forms.py:397 ganeti/forms.py:76
+#: apply/forms.py:217 apply/forms.py:411 ganeti/forms.py:76
 msgid "Hostname already exists."
 msgstr "Το όνομα χρησιμοποιείται ήδη."
 
@@ -160,70 +138,70 @@ msgstr ""
 "Παρακαλούμε επιλέξτε ένα φορέα ή συμπληρώστε χειροκίνητα τα στοιχεία "
 "επικοινωνίας του διαχειριστικού υπεύθυνου"
 
-#: apply/forms.py:330
+#: apply/forms.py:344
 msgid "Please specify a reason for rejection"
 msgstr "Παρακαλώ καθορίστε το λόγο της απόρριψης της αίτησης"
 
-#: apply/forms.py:340 apply/forms.py:350 apply/forms.py:360 apply/forms.py:370
+#: apply/forms.py:354 apply/forms.py:364 apply/forms.py:374 apply/forms.py:384
 msgid "This field is required"
 msgstr "Αυτό το πεδίο είναι απαραίτητο"
 
-#: apply/forms.py:402
+#: apply/forms.py:416
 msgid "Application already handled"
 msgstr "Η αίτηση έχει ήδη εκκαθαριστεί"
 
-#: apply/forms.py:422
+#: apply/forms.py:436
 msgid "Malformed SSH key, must be in OpenSSH format, RSA or DSA"
 msgstr "Εσφαλμένο SSH κλειδί. Θα πρέπει να είναι σε μορφή OpenSSH, RSA ή DSA"
 
-#: apply/forms.py:435
+#: apply/forms.py:449
 msgid "Malformed SSH key"
 msgstr "Εσφαλμένη μορφή SSH κλειδιού"
 
-#: apply/forms.py:441
+#: apply/forms.py:455
 msgid "Invalid RSA SSH key"
 msgstr "Λανθασμένο RSA SSH key"
 
-#: apply/forms.py:446
+#: apply/forms.py:460
 msgid "Invalid DSS SSH key"
 msgstr "Λανθασμένο DSS SSH key"
 
-#: apply/forms.py:448
+#: apply/forms.py:462
 #, python-format
 msgid "Unknown key type '%s'"
 msgstr "Άγνωστος τύπος κλειδιού '%s'"
 
-#: apply/forms.py:456
+#: apply/forms.py:470
 msgid "Email"
 msgstr "Email"
 
-#: apply/forms.py:457
+#: apply/forms.py:471
 msgid "Email (verify)"
 msgstr "Email (επιβεβαίωση)"
 
-#: apply/forms.py:465
+#: apply/forms.py:479
 msgid "Mail fields do not match."
 msgstr "Τα πεδία e-mail δεν ταιριάζουν"
 
-#: apply/forms.py:471 templates/clusters/cluster_nodes_pjax.html:41
+#: apply/forms.py:485 templates/clusters/cluster_nodes_pjax.html:41
 #: templates/instances/user_instances_json.html:48
 #: templates/users/user_info.html:356
 msgid "Name"
 msgstr "Όνομα"
 
-#: apply/forms.py:477
+#: apply/forms.py:491
 msgid "Surname"
 msgstr "Επώνυμο"
 
-#: apply/models.py:85
+#: apply/models.py:88
 msgid "organization"
 msgstr "φορέας"
 
-#: apply/models.py:86
+#: apply/models.py:89
 msgid "organizations"
 msgstr "φορείς"
 
-#: apply/models.py:98
+#: apply/models.py:101
 msgid "operating system"
 msgstr "λειτουργικό σύστημα"
 
@@ -258,8 +236,8 @@ msgstr "Τα ακόλουθα κλειδιά υπήρχαν ήδη και δεν
 msgid "Password changed!"
 msgstr "Ο κωδικός άλλαξε!"
 
-#: ganeti/fields/jsonfield/fields.py:28 ganeti/fields/jsonfield/fields.py:40
-#: ganeti/fields/jsonfield/fields.py:78
+#: ganeti/fields/jsonfield/fields.py:24 ganeti/fields/jsonfield/fields.py:36
+#: ganeti/fields/jsonfield/fields.py:74
 msgid "Enter valid JSON"
 msgstr "Εισάγετε έγκυρο JSON"
 
@@ -376,11 +354,11 @@ msgstr "Το email δεν μπόρεσετ να αποσταλλεί"
 msgid "Mail sent"
 msgstr "Το email στάλθηκε"
 
-#: ganeti/views/clusters.py:269
+#: ganeti/views/clusters.py:268
 msgid "Mail changed succesfully."
 msgstr "Άλλαξε επιτυχώς"
 
-#: ganeti/views/instances.py:124 ganeti/views/instances.py:249
+#: ganeti/views/instances.py:127 ganeti/views/instances.py:252
 msgid ""
 "Permissions' violation. This action has been logged and our admins will be "
 "notified about it"
@@ -388,15 +366,15 @@ msgstr ""
 "Παραβίαση δικαιωμάτων χρήστη. Η ενέργειά σας έχει καταγραφεί και οι "
 "διαχειριστές της υπηρεσίας έχουν ειδοποιηθεί "
 
-#: ganeti/views/instances.py:473
+#: ganeti/views/instances.py:476
 msgid "Please wait... shutting-down"
 msgstr "Παρακαλώ περιμένετε... απενεργοποίηση"
 
-#: ganeti/views/instances.py:488
+#: ganeti/views/instances.py:491
 msgid "Please wait... starting-up"
 msgstr "Παρακαλώ περιμένετε... εκκίνηση"
 
-#: ganeti/views/instances.py:505
+#: ganeti/views/instances.py:508
 msgid "Please wait... rebooting"
 msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
 
@@ -404,7 +382,7 @@ msgstr "Παρακαλώ περιμένετε... επανεκκίνηση"
 msgid "Could not connect to api"
 msgstr "Ανικανότητα επικοινώνιας με το api."
 
-#: ganetimgr/settings.py:43
+#: ganetimgr/settings.py:44
 msgid "English"
 msgstr "English"
 
@@ -774,11 +752,15 @@ msgstr "Σχόλια προς το χρήστη"
 msgid "The instance has been placed on"
 msgstr "Η εικονική μηχανή έχει τοποθετηθεί στο"
 
-#: templates/apply/review.html:392
+#: templates/apply/review.html:383
+msgid "Reviewed by"
+msgstr "Εγκρίθηκε από"
+
+#: templates/apply/review.html:402
 msgid "Pending Instance Applications"
 msgstr "Αιτήσεις που εκκρεμούν"
 
-#: templates/apply/review.html:596
+#: templates/apply/review.html:606
 msgid "Requested os not found"
 msgstr "Δεν βρέθηκε το λειτουργικό που ζήτηθηκε"
 
@@ -1454,82 +1436,168 @@ msgid "Type name(s) from user, group, instance, cluster"
 msgstr "Επιλέξτε ονόματα από χρήστες, ομάδες, μηχανές, clusters"
 
 #: templates/registration/activate.html:3
-#: templates/registration/activation_complete.html:3
-#: templates/registration/activation_complete.html:16
-#: templates/registration/validate.html:3
-msgid "Activation Complete"
-msgstr "Η ενεργοποίηση ολοκληρώθηκε"
-
 #: templates/registration/activate.html:15
-#: templates/registration/validate.html:15
-#: templates/registration/validation_complete.html:15
+#: templates/registration/activation_complete_admin_pending.html:15
 msgid "Activation Status"
 msgstr "Ενεργοποίηση χρήστη"
 
 #: templates/registration/activate.html:19
-#: templates/registration/validate.html:19
+#: templates/registration/activation_complete_admin_pending.html:19
 msgid "succesfully activated"
 msgstr "ενεργοποιήθηκε επιτυχώς"
 
 #: templates/registration/activate.html:21
-#: templates/registration/validate.html:21
-#: templates/registration/validation_complete.html:25
-msgid "The user has probably been already activated."
+msgid "The account has probably been already activated."
 msgstr "Ο χρήστης έχει πιθανότατα ενεργοποιηθεί ήδη."
 
-#: templates/registration/activation_complete.html:19
-msgid "The user will be notified about his/her account activation"
-msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίηση του λογαριασμού"
+#: templates/registration/activation_complete_admin_pending.html:3
+msgid "Activation Complete"
+msgstr "Η ενεργοποίηση ολοκληρώθηκε"
 
-#: templates/registration/activation_complete.txt:1
-msgid "Your account with username  "
-msgstr "Ο λογιαριασμός με όνομα χρήστη "
+#: templates/registration/activation_complete_admin_pending.html:19
+msgid "Account"
+msgstr "Ο Λογαριασμος"
 
-#: templates/registration/activation_complete.txt:1
-msgid "has been activated."
-msgstr "ενεργοποιήθηκε"
+#: templates/registration/activation_complete_admin_pending.html:20
+msgid ""
+"Your account will be approved by an administrator and you will be notified "
+"via email"
+msgstr ""
+"Ο λογαριασμός σας θα εγκριθεί από έναν διαχειριστή και θα ειδοποιηθείτε μέσω "
+"email"
 
-#: templates/registration/activation_complete.txt:2
-msgid "You may login using the following URL:"
-msgstr "Μπορείτε να συνδεθείτε χρησιμοποιώντας το παρακάτω URL: "
+#: templates/registration/activation_complete_admin_pending.txt:1
+msgid ""
+"You have successfully validated your email address.\n"
+"Your account with username "
+msgstr ""
+"Εχετε επιτυχώς επιβεβαιώσει την διεύθυνση e-mail σας.\n"
+"Ο λογαριασμός σας με όνομα χρήστη "
+
+#: templates/registration/activation_complete_admin_pending.txt:2
+msgid ""
+" will be activated by an administrator and you will be notified via email."
+msgstr " θα ενεργοποιηθεί από έναν διαχειριστή και θα ειδοποιηθείτε μέσω email"
 
 #: templates/registration/activation_email.txt:1
 #, python-format
 msgid ""
-"%(full_name)s has registered for a new account.\n"
+"You have registered for a new account.\n"
 "\n"
 "Username: %(username)s\n"
 "E-mail: %(email)s\n"
 "\n"
-"To activate the user's account and allow them to access the service, click "
-"on\n"
-"the following link:\n"
+"To proceed with with your account activation, you must first validate your "
+"email\n"
+"address. To do so, click on the following link or copy the address to your "
+"browser\n"
+msgstr ""
+"Κάνατε εγγραφή νέου λογαριασμού.\n"
 "\n"
-"http://%(domain)s%(activation_url)s\n"
+"Όνομα Χρήστη: %(username)s\n"
+"E-mail: %(email)s\n"
 "\n"
-"The user will be notified via mail about the account activation\n"
+"Για να συνεχίσετε με την ενεργοποίηση του λογαριασμού πρέπει πρώτα να "
+"επιβεβαιώσετε την διεύθυνση\n"
+"email σας. Για να γίνει αυτό, κάντε κλίκ ή αντιγράψτε την παρακάτω διεύθυνση "
+"στον περιηγητή σας\n"
+
+#: templates/registration/activation_email.txt:12
+#, python-format
+msgid ""
+"\n"
+"The site's administrator will then be notified about your newly created "
+"account and\n"
+"proceed to approve it. \n"
+"\n"
+"You have %(expiration_days)s days to validate your email address. If you "
+"fail to \n"
+"do so within the time limit, you will have to register again.\n"
+"\n"
+"Upon approval, you will receive a new email message.\n"
+msgstr ""
+"\n"
+"Η διαχείριση της εφαρμογής θα ενημερωθεί για τον λογαριασμό που "
+"δημιουργήσατε και\n"
+"θα τον ενεργοποιήσει. \n"
+"\n"
+"Έχετε %(expiration_days)s μέρες για να επιβεβαιώσετε την διεύθυνση email "
+"σας. Εαν δεν την επιβεβαιώσετε \n"
+"εντός αυτού του διαστήματος, θα πρέπει να εγγραφείτε ξανά.\n"
+"\n"
+"Μόλις ο λογαριασμός σας εγκριθεί θα ενημερωθείτε με νέο email.\n"
+
+#: templates/registration/activation_email_subject.txt:1
+msgid "User account activation"
+msgstr "Ενεργοποίηση λογαριασμού χρήστη"
+
+#: templates/registration/admin_approve.html:3
+msgid "Admin approval status"
+msgstr "Κατάσταση έγκρισης διαχειριστή"
+
+#: templates/registration/admin_approve.html:15
+msgid "Approval Status"
+msgstr "Κατάσταση Έγκρισης"
+
+#: templates/registration/admin_approve.html:19
+msgid "is successfully approved"
+msgstr "έχει εγκριθεί επιτυχώς"
+
+#: templates/registration/admin_approve.html:21
+msgid "The user has probably been already approved."
+msgstr "Ο λογαριασμός χρήστη έχει πιθανότατα εγκριθεί ήδη."
+
+#: templates/registration/admin_approve_complete.html:3
+msgid "Admin approval Complete"
+msgstr "Η έγκριση ολοκληρώθηκε"
+
+#: templates/registration/admin_approve_complete.html:16
+msgid "Approval Complete"
+msgstr "Η έγκριση ολοκληρώθηκε"
+
+#: templates/registration/admin_approve_complete.html:19
+msgid "The user will be notified about his/her account approval"
+msgstr "Ο χρήστης θα ενημερωθεί για την έγκριση του λογαριασμού"
+
+#: templates/registration/admin_approve_complete_email.txt:1
+msgid "Your account "
+msgstr "Ο λογιαριασμός σας "
+
+#: templates/registration/admin_approve_complete_email.txt:1
+msgid "has been approved."
+msgstr "εγκρίθηκε."
+
+#: templates/registration/admin_approve_complete_email.txt:2
+msgid "You may login using the following URL:"
+msgstr "Μπορείτε να συνδεθείτε χρησιμοποιώντας το παρακάτω URL: "
+
+#: templates/registration/admin_approve_email.txt:1
+msgid ""
+"User %(full_name)s has registered for a new account.\n"
+"\n"
+"Username: %(username)s\n"
+"E-mail: %(email)s\n"
+"\n"
+"To approve the user's account, click on the following url:\n"
 msgstr ""
 "Ο χρήστης %(full_name)s έκανε αίτηση για νέο λογαριασμό.\n"
 "\n"
 "Όνομα χρήστη: %(username)s\n"
 "E-mail: %(email)s\n"
 "\n"
-"Για να ενεργοποιήσετε το λογαριασμό του χρήστη και να του δώσετε πρόσβαση "
-"στην υπηρεσία, χρησιμοποιείστε τον\n"
-"ακόλουθο σύνδεσμο:\n"
-"\n"
-"http://%(domain)s%(activation_url)s\n"
-"\n"
-"Ο χρήστης θα ειδοποιηθεί μέσω e-mail για την ενεργοποίηση του λογαριασμού "
-"του\n"
+"Για να εγκρίνετε το λογαριασμό του χρήστη, χρησιμοποιείστε τον ακόλουθο σύνδεσμο:\n"
 
-#: templates/registration/activation_email_subject.txt:1
-msgid "Account registered at"
-msgstr "Ο λογαριασμός σας στην υπηρεσία"
+#: templates/registration/admin_approve_email.txt:11
+msgid ""
+"\n"
+"Upon approval the user will receive a new email message.\n"
+msgstr ""
+"\n"
+"Μόλις ο λογαριασμός εγκριθεί, ο χρήστης θα ενημερωθεί με email.\n"
 
-#: templates/registration/admin_activation_email_subject.txt:1
-msgid "New user account registered at"
-msgstr "Νέος λογαριασμός στην υπηρεσία"
+#: templates/registration/admin_approve_email_subject.txt:1
+msgid "User account approval"
+msgstr "Έγκριση λογαριασμού χρήστη"
 
 #: templates/registration/password_change_form.html:5
 #: templates/users/profile.html:59
@@ -1589,122 +1657,33 @@ msgstr ""
 "κωδικού σας"
 
 #: templates/registration/registration_complete.html:3
+msgid "Activation email sent"
+msgstr "Στάλθηκε email ενεργοποίησης"
+
+#: templates/registration/registration_complete.html:16
+msgid "Activation Email Sent"
+msgstr "Στάλθηκε Email ενεργοποίησης"
+
+#: templates/registration/registration_complete.html:20
+msgid "An email has been sent to the address you specified during registration"
+msgstr "Ένα e-mail έχει αποσταλεί στην διεύθυνση που δώσατε κατα την εγγραφή"
+
+#: templates/registration/registration_complete.html:21
+msgid ""
+"To proceed with your registration follow the instructions provided in the "
+"email"
+msgstr ""
+"Για να προχωρήσετε με την διαδικασία εγγραφής ακολουθήστε τις οδηγίες στο "
+"email"
+
 #: templates/registration/registration_form.html:4
 #: templates/registration/registration_form.html:51
 msgid "Register"
 msgstr "Εγγραφή"
 
-#: templates/registration/registration_complete.html:16
-msgid "Registration Email Sent"
-msgstr "Στάλθηκε Email Εγγραφής"
-
-#: templates/registration/registration_complete.html:20
-msgid ""
-"An e-mail has been sent to the address you specified during registration"
-msgstr "Ένα e-mail έχει αποσταλεί στην διεύθυνση που δώσατε κατα την εγγραφή"
-
-#: templates/registration/registration_complete.html:21
-msgid ""
-"To proceed with your registration follow the instructions provided in the e-"
-"mail"
-msgstr ""
-"Για να προχωρήσετε με την διαδικασία εγγραφής ακολουθήστε τις οδηγίες στο e-"
-"mail"
-
 #: templates/registration/registration_form.html:26
 msgid "Register new user"
 msgstr "Εγγραφή νέου χρήστη"
-
-#: templates/registration/validation_complete.html:3
-msgid "Validation Complete"
-msgstr "Η επιβεβαίωση ολοκληρώθηκε"
-
-#: templates/registration/validation_complete.html:20
-msgid "E-mail address for account "
-msgstr "H Διεύθυνση email για τον λογαριασμο "
-
-#: templates/registration/validation_complete.html:20
-msgid "succesfully validated"
-msgstr "επιβεβαιώθηκε επιτυχώς"
-
-#: templates/registration/validation_complete.html:21
-msgid ""
-"Your account will be activated by an administrator and you will be notified "
-"via email"
-msgstr ""
-"Ο λογαριασμός σας θα ενεργοποιηθεί από έναν διαχειριστή και θα ειδοποιηθείτε "
-"μέσω email"
-
-#: templates/registration/validation_complete.html:22
-msgid "Back to"
-msgstr "Πίσω στην"
-
-#: templates/registration/validation_complete.html:22
-msgid "login"
-msgstr "είσοδο"
-
-#: templates/registration/validation_complete.html:22
-msgid "page"
-msgstr "σελίδα"
-
-#: templates/registration/validation_complete.txt:1
-msgid ""
-"You have successfully validated your email address.\n"
-"Your account with username "
-msgstr ""
-"Εχετε επιτυχώς επιβεβαιώσει την διεύθυνση e-mail σας.\n"
-"Ο λογαριασμός σας με όνομα χρήστη "
-
-#: templates/registration/validation_complete.txt:2
-msgid ""
-" will be activated by an administrator and you will be notified via email."
-msgstr " θα ενεργοποιηθεί από έναν διαχειριστή και θα ειδοποιηθείτε μέσω email"
-
-#: templates/registration/validation_email.txt:1
-#, python-format
-msgid ""
-"User %(full_name)s has registered for a new account.\n"
-"\n"
-"Username: %(username)s\n"
-"E-mail: %(email)s\n"
-"\n"
-"To proceed with with your account activation, you must first validate your "
-"email\n"
-"address. To do so, click on the following link or copy the address to your "
-"browser\n"
-"\n"
-"http://%(domain)s%(validation_url)s\n"
-"\n"
-"The site's administrator will then be notified about your newly created "
-"account and\n"
-"proceed to activate it. \n"
-"\n"
-"You have %(expiration_days)s days to validate your e-mail address. If you "
-"fail to \n"
-"do so within the time limit, you will have to register again.\n"
-"\n"
-"Upon activation, you will receive a new email message.\n"
-msgstr ""
-"Κάνατε αίτηση για νέο λογαριασμό ως χρήστης %(full_name)s.\n"
-"\n"
-"Username: %(username)s\n"
-"E-mail: %(email)s\n"
-"\n"
-"Για να προχωρήσετε με την διαδικασία ενεργοποίησης του λογαριασμού σας, "
-"πρέπει πρώτα να επιβεβαιώσετε την διεύθυνση e-mail\n"
-"σας. Για να την επιβεβαιώσετε ακολουθήστε τον παρακάτω σύνδεσμο ή αντιγράψτε "
-"την διεύθυνση στον περιηγητή σας\n"
-"\n"
-"http://%(domain)s%(validation_url)s\n"
-"\n"
-"Ο διαχειριστής της υπηρεσίας θα ενημερωθεί για τον νέο σας λογαριασμό και\n"
-"θα τον ενεργοποιήσει. \n"
-"\n"
-"Έχετε %(expiration_days)s ημέρες για να επιβεβαιώσετε την διεύθυνση e-email "
-"σας. Εαν δεν \n"
-"τα καταφέρετε εντός αυτών των ημερών θα πρέπει να εγγραφείτε ξανά.\n"
-"\n"
-"Όταν η ενεργοποίηση ολοκληρωθεί, θα λάβετε ένα νέο e-mail.\n"
 
 #: templates/registration/validation_expired.html:3
 #: templates/registration/validation_expired.html:16
@@ -2150,263 +2129,3 @@ msgstr "Προσθήκη νέου κλειδιού"
 #: templates/users/user_keys.html:116
 msgid "Add key"
 msgstr "Προσθήκη κλειδιού"
-
-#~ msgid ""
-#~ "An email has been sent to the system administrator. You will be soon "
-#~ "notified about the activation of your account."
-#~ msgstr ""
-#~ "Ένα email έχει αποσταλλεί στο διαχειριστή του συστήματος. Θα "
-#~ "ειδοποιηθείτε σύντομα για την ενεργοποίηση του λογαριασμού σας"
-
-#~ msgid "ganetimgr Statistics"
-#~ msgstr "Στατιστικά Πλατφόρμας"
-
-#~ msgid ""
-#~ "\n"
-#~ "Dear user,\n"
-#~ msgstr "Αγαπητέ χρήστη"
-
-#~ msgid "Send Mail"
-#~ msgstr "Αποστολή Mail"
-
-#~ msgid "Instance Owners"
-#~ msgstr "Κάτοχοι εικονικών μηχανών"
-
-#~ msgid "Instance owners"
-#~ msgstr "Κάτοχοι εικονικών μηχανών"
-
-#~ msgid "Cluster view"
-#~ msgstr "Προβολή συμπλέγματος"
-
-#~ msgid " of users"
-#~ msgstr "των χρηστών"
-
-#~ msgid "Change password"
-#~ msgstr "Αλλαγή κωδικού"
-
-#~ msgid "Administration"
-#~ msgstr "Διαχείριση"
-
-#~ msgid "Recent Actions"
-#~ msgstr "Πρόσφατες Ενέργειες"
-
-#~ msgid "Latest Django News"
-#~ msgstr "Τελευταία Νέα"
-
-#~ msgid "Links"
-#~ msgstr "Σύνδεσμοι"
-
-#~ msgid "Add"
-#~ msgstr "Προσθήκη"
-
-#~ msgid "Please correct the error below."
-#~ msgid_plural "Please correct the errors below."
-#~ msgstr[0] ""
-#~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
-#~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
-#~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
-#~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
-#~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
-#~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
-#~ msgstr[1] ""
-#~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
-#~ "#-#-#-#-#  django.pot (PACKAGE VERSION)  #-#-#-#-#\n"
-
-#~ msgid "Back"
-#~ msgstr "Πίσω"
-
-#~ msgid "My Actions"
-#~ msgstr "Ενέργειες"
-
-#~ msgid "None available"
-#~ msgstr "Μη διαθέσιμα δεδομένα..."
-
-#~ msgid "Password:"
-#~ msgstr "Κωδικός:"
-
-#~ msgid "Forgotten your password or username?"
-#~ msgstr "Ξεχάσατε τον κωδικό σας;"
-
-#~ msgid "Created object"
-#~ msgstr "Δημιουργήθηκε"
-
-#~ msgid "Password change"
-#~ msgstr "Ο κωδικός άλλαξε"
-
-#~ msgid "New password"
-#~ msgstr "Κωδικός"
-
-#~ msgid "Password (again)"
-#~ msgstr "Κωδικός (ξανά)"
-
-#~ msgid "Is modified"
-#~ msgstr "Τελευταία τροποποίηση"
-
-#~ msgid "Add Item"
-#~ msgstr "Προσθήκη κλειδιού"
-
-#~ msgid "Delete Item"
-#~ msgstr "Διαγραφή"
-
-#~ msgid "Password change successful"
-#~ msgstr "Ο κωδικός άλλαξε"
-
-#~ msgid "Your password was changed."
-#~ msgstr "Ο κωδικός άλλαξε"
-
-#~ msgid ""
-#~ "Please enter your old password, for security's sake, and then enter your "
-#~ "new password twice so we can verify you typed it in correctly."
-#~ msgstr ""
-#~ "Παρακαλώ εισάγετε τον τρέχοντα κωδικό σας, για λόγους ασφαλείας, και στη "
-#~ "συνέχεια εισάγετε το νέο σας κωδικό δύο φορές ώστε να βεβαιωθούμε ότι "
-#~ "έχει αποτυπωθεί ορθά"
-
-#~ msgid "Old password"
-#~ msgstr "Κωδικός"
-
-#~ msgid "Change my password"
-#~ msgstr "Αλλαγή κωδικού"
-
-#~ msgid "Password reset complete"
-#~ msgstr "Η αλλαγή του κωδικού ολοκληρώθηκε"
-
-#~ msgid "Your password has been set.  You may go ahead and log in now."
-#~ msgstr "Ο κωδικός σας έχει αλλάξει επιτυχώς. Μπορείτε να εισέλθετε"
-
-#~ msgid "Enter new password"
-#~ msgstr "Εισαγωγή νέου κωδικού"
-
-#~ msgid "Password reset unsuccessful"
-#~ msgstr "Ο κωδικός δεν άλλαξε"
-
-#~ msgid ""
-#~ "Please enter your new password twice so we can verify you typed it in "
-#~ "correctly."
-#~ msgstr ""
-#~ "εισάγετε τον κωδικό σας δύο φορές ώστε να βεβαιωθούμε ότι έχει αποτυπωθεί "
-#~ "ορθά"
-
-#~ msgid "Reset my password"
-#~ msgstr "Αλλαγή κωδικού"
-
-#~ msgid "Password reset successful"
-#~ msgstr "Ο κωδικός άλλαξε"
-
-#~ msgid "Password reset"
-#~ msgstr "Αλλαγή κωδικού"
-
-#~ msgid "Comment"
-#~ msgstr "Σχόλιο"
-
-#~ msgid "File name"
-#~ msgstr "όνομα αρχείου"
-
-#~ msgid "ViMa Statistics"
-#~ msgstr "Στατιστικά ViMa"
-
-#~ msgid "Please specify a network"
-#~ msgstr "Επιλέξτε ένα δίκτυο για τη σύνδεση της εικονικής μηχανής"
-
-#~ msgid "network"
-#~ msgstr "δίκτυο"
-
-#~ msgid ""
-#~ "Choose either a network, or a cluster from the quick list to use the "
-#~ "cluster's default network."
-#~ msgstr "Επιλέξτε είτε ένα δίκτυο είτε ένα cluster από τη λίστα"
-
-# python-format
-#~ msgid "Displaying %(user)s instances"
-#~ msgstr "Προβολή μηχανών %(user)s"
-
-#~ msgid "shutting down"
-#~ msgstr "η μηχανή απενεργοποιείται"
-
-#~ msgid "deleting"
-#~ msgstr "διαγραφή"
-
-#~ msgid "renaming"
-#~ msgstr "μετονομασία"
-
-#~ msgid "starting up"
-#~ msgstr "η μηχανή ξεκινά"
-
-#~ msgid "rebooting"
-#~ msgstr "η μηχανή επανεκκινεί"
-
-#~ msgid "Application submitted"
-#~ msgstr "Η αίτηση υποβλήθηκε"
-
-#~ msgid "%sUser password change"
-#~ msgstr "Ο κωδικός άλλαξε για τον %s"
-
-#~ msgid "OR"
-#~ msgstr "Ή"
-
-#~ msgid "Phone"
-#~ msgstr "Τηλέφωνο"
-
-#~ msgid "IP address"
-#~ msgstr "Διεύθυνση IP"
-
-#~ msgid "Fingerprint"
-#~ msgstr "Αποτύπωμα"
-
-#~ msgid "Instance is shutting down, no actions allowed"
-#~ msgstr ""
-#~ "Η εικονική μηχανή απενεργοποιείται. Δεν επιτρέπονται ενέργειες σε αυτή τη "
-#~ "φάση"
-
-#~ msgid "Instance is being created, no actions allowed."
-#~ msgstr ""
-#~ "Η εικονική μηχανή δημιουργείται. Δεν επιτρέπονται ενέργειες σε αυτή τη "
-#~ "φάση."
-
-#~ msgid "Activate users"
-#~ msgstr "Ενεργοποίηση χρηστών"
-
-#~ msgid "This value must contain only letters, numbers and underscores."
-#~ msgstr ""
-#~ "Αυτό το πεδίο μπορεί να περιέχει μόνο γράμματα, αριθμούς και underscores "
-
-#~ msgid "The two password fields didn't match."
-#~ msgstr "Τα πεδία κωδικού δεν ταιριάζουν"
-
-#~ msgid "I have read and agree to the Terms of Service"
-#~ msgstr "Διάβασα και συμφωνώ με τους Όρους Χρήσης της υπηρεσίας"
-
-#~ msgid "You must agree to the terms to register"
-#~ msgstr "Πρέπει να συμφωνείτε με τους όρους για να εγγραφείτε"
-
-#~ msgid ""
-#~ "This email address is already in use. Please supply a different email "
-#~ "address."
-#~ msgstr ""
-#~ "Η συγκεκριμένη διεύθυνση ηλεκτρονικού ταχυδρομείου χρησιμοποιείται ήδη. "
-#~ "Παρακαλώ δώστε κάποια άλλη."
-
-#~ msgid ""
-#~ "Registration using free email addresses is prohibited. Please supply a "
-#~ "different email address."
-#~ msgstr ""
-#~ "Η εγγραφή μέσω δωρεάν διευθύνσεων ηλεκτρονικού ταχυδρομείου απαγορεύεται. "
-#~ "Παρακαλώ δώστε κάποια άλλη."
-
-#~ msgid "Not a member?"
-#~ msgstr "Δεν έχετε εγγραφεί;"
-
-#~ msgid "you have not entered an name yet"
-#~ msgstr "δεν έχετε καταχωρήσει κάποιο ονοματεπώνυμο"
-
-#~ msgid "A key with the same fingerprint exists: %s"
-#~ msgstr "Βρέθηκε ένα κλειδί με το ίδιο αποτύπωμα: %s"
-
-#~ msgid "Developed by"
-#~ msgstr "Αναπτύχθηκε από το"
-
-#~ msgid "using"
-#~ msgstr "χρησιμοποιώντας το framework"
-
-#~ msgid "provided by"
-#~ msgstr "με λογισμικό που παρέχεται από το"

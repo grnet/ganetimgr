@@ -123,7 +123,7 @@
                                 {% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<i class="fa fa-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu ">
-                            <form action="{% url 'set-language' %}" method="post" style="display:inline;" id="langform" >
+                            <form action="{% url 'setlang' %}" method="post" style="display:inline;" id="langform" >
                                 {% csrf_token %}
                                 <input name="next" type="hidden" value="{{ next }}" />
                                 <input id="langsel" name="language" type="hidden" value="" />
