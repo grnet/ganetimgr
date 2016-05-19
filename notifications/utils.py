@@ -30,6 +30,7 @@ def send_emails(subject, body, emails):
     def _send(subject, text, from_email, email):
         EmailMessage(subject, text, from_email, [email]).send()
 
+    import ipdb; ipdb.set_trace()
     for email, instances in emails.items():
         text = b.render(Context({'instances': instances}))
         p.spawn(_send, subject, text, settings.SERVER_EMAIL, email)

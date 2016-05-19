@@ -15,27 +15,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from accounts import views
-from accounts.forms import PasswordResetFormPatched, RegistrationForm
+from accounts.forms import PasswordResetFormPatched
 from django.conf.urls import patterns, url, include
 from django.contrib.auth import views as auth_v
+from .views import CustomRegistrationView as RegistrationView
+
 
 urlpatterns = patterns(
     '',
     url(
-        r'^activate_account/(?P<activation_key>\w+)/$',
-        views.activate_account, name='activate_account'
-    ),
-    url(
-        r'^validate_email/(?P<validation_key>\w+)/$',
-        views.validate_email, name='validate_email'
-    ),
-    url(
-        r'^register/$', 'registration.views.register',
-        {
-            'backend': 'regbackends.ganetimgr.GanetimgrBackend',
-            'form_class': RegistrationForm
-        }, name='registration.views.register'
+        r'^register/$',
+        RegistrationView.as_view(),
+        name='registration_register'
     ),
     url(
         r'^password/reset/$',
@@ -46,5 +37,5 @@ urlpatterns = patterns(
         },
         name='password_reset'
     ),
-    (r'^', include('registration.backends.default.urls')),
+    (r'^', include('registration.backends.admin_approval.urls')),
 )

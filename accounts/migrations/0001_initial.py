@@ -8,8 +8,8 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('registration', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('registration', '0004_supervisedregistrationprofile'),
         ('apply', '0001_initial'),
     ]
 
@@ -37,8 +37,5 @@ class Migration(migrations.Migration):
                 ('organization', models.ForeignKey(blank=True, to='apply.Organization', null=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
     ]

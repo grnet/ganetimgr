@@ -15,11 +15,10 @@
 								<i class="fa fa-check"></i> {% trans "Activation Status" %}
 							</h2>
 							<div class="padwidget">
-								{% if account %}
-								    <div class="alert alert-success"><p>{{account}} {% trans "succesfully activated" %}</p></div>
-								{% else %}
-								    <div class="alert alert-error"><p>{% trans "The user has probably been already activated." %}</p></div>
-								{% endif %}
+                <div class="alert alert-success">
+                  <p>{% trans "Account"%} {{account}} {% trans "succesfully activated" %}</p>
+                  <p>{% trans "Your account will be approved by an administrator and you will be notified via email"%}</p>
+                </div>
 							</div>
 						</div>
 					</div>

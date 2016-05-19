@@ -1,0 +1,13 @@
+{% load i18n %}{% blocktrans with full_name=user.get_full_name username=user.username email=user.email %}User {{ full_name }} has registered for a new account.
+
+Username: {{ username }}
+E-mail: {{ email }}
+
+To approve the user's account, click on the following url:
+{% endblocktrans %}
+
+http://{{ site.domain }}{% url 'registration_admin_approve' profile_id %}"
+
+{% blocktrans %}
+Upon approval the user will receive a new email message.
+{% endblocktrans %}

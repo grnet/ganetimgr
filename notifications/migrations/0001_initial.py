@@ -26,6 +26,5 @@ class Migration(migrations.Migration):
                 'ordering': ['-date'],
                 'permissions': (('can_view_notif', 'Can view all notifications'),),
             },
-            bases=(models.Model,),
         ),
     ]

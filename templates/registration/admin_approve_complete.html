@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Activation Status" %}{% endblock %}
+{% block title %}{% trans "Admin approval Complete" %}{% endblock %}
 {% block brcrmb_container %}{% endblock %}
+
 {% block blockcontainer %}
 <div class="container-fluid">
 	<div class="row-fluid">
@@ -12,14 +13,10 @@
 					<div class="widget">
 						<div class="row-fluid">
 							<h2>
-								<i class="fa fa-check"></i> {% trans "Activation Status" %}
+								<i class="fa fa-check"></i> {% trans "Approval Complete" %}
 							</h2>
 							<div class="padwidget">
-								{% if account %}
-								    <div class="alert alert-success"><p>{{account}} {% trans "succesfully activated" %}</p></div>
-								{% else %}
-								    <div class="alert alert-error"><p>{% trans "The account has probably been already activated." %}</p></div>
-								{% endif %}
+							     <div class="alert alert-success"><p>{% trans "The user will be notified about his/her account approval" %}</p></div>
 							</div>
 						</div>
 					</div>
