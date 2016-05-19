@@ -116,6 +116,16 @@
 							<td>{{instance.pnode}}</td>
 						</tr>
 						{% endif %}
+						{% if user.is_superuser or perms.ganeti.view_instances %}
+						{% if instance.snodes %}
+						<tr>
+							<td class="">{% trans "Secondary Nodes" %}</td>
+							<td>
+								{% for node in instance.snodes %}{{node}} {%endfor%}
+							</td>
+						</tr>
+						{% endif %}
+						{% endif %}
 						<tr>
 							<td class="">{% trans "OS" %}</td>
 							<td>{{ instance.osname }}</td>

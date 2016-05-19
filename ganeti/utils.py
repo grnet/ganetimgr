@@ -152,6 +152,8 @@ def generate_json(instance, user, locked_nodes):
     if user.is_superuser or user.has_perm('ganeti.view_instances'):
         inst_dict['cluster'] = i.cluster.slug
         inst_dict['pnode'] = i.pnode
+        if i.snodes:
+            inst_dict['snodes'] = i.snodes
     else:
         inst_dict['cluster'] = i.cluster.description
         inst_dict['clusterslug'] = i.cluster.slug
