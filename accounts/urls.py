@@ -19,9 +19,10 @@ from accounts import views
 from accounts.forms import PasswordResetFormPatched, RegistrationForm
 from django.conf.urls import patterns, url, include
 from django.contrib.auth import views as auth_v
-from registration.views import RegistrationView
+# from registration.views import RegistrationView
+from regbackends.ganetimgr import GanetimgrBackend
 
-register = RegistrationView.as_view()
+# register = RegistrationView.as_view(form_class=RegistrationForm)
 
 urlpatterns = patterns(
     '',
@@ -34,7 +35,7 @@ urlpatterns = patterns(
         views.validate_email, name='validate_email'
     ),
     url(
-        r'^register/$', register,
+        r'^register/$', GanetimgrBackend.as_view(form_class=RegistrationForm),
         {
             'backend': 'regbackends.ganetimgr.GanetimgrBackend',
             'form_class': RegistrationForm

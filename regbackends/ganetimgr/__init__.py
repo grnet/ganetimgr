@@ -23,20 +23,20 @@ from apply.models import Organization
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
 from registration import signals
-from registration.backends.default import DefaultBackend
+from registration.views import RegistrationView as BaseRegistrationView
 
 
-class GanetimgrBackend(DefaultBackend):
+class GanetimgrBackend(BaseRegistrationView):
 
     def register(self, request, **kwargs):
 
-        username = kwargs['username']
-        email = kwargs['email']
-        password = kwargs['password1']
-        firstname = kwargs['name']
-        lastname = kwargs['surname']
-        organization = kwargs['organization']
-        telephone = kwargs['phone']
+        username = request.cleaned_data['username']
+        email = request.cleaned_data['email']
+        password = request.cleaned_data['password1']
+        firstname = request.cleaned_data['name']
+        lastname = request.cleaned_data['surname']
+        organization = request.cleaned_data['organization']
+        telephone = request.cleaned_data['phone']
 
         if Site._meta.installed:
             site = Site.objects.get_current()
