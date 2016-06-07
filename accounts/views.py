@@ -76,7 +76,7 @@ def activate_account(request, activation_key):
             }
         )
         send_mail(
-            _("%sUser account activated") % settings.EMAIL_SUBJECT_PREFIX,
+            _("%s User account activated") % settings.EMAIL_SUBJECT_PREFIX,
             email,
             settings.SERVER_EMAIL,
             [account.email]

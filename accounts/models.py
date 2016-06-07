@@ -34,6 +34,7 @@ from django.template import RequestContext, TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import six
 
+from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 
 try:
@@ -280,6 +281,14 @@ class CustomRegistrationProfile(RegistrationProfile):
     # sends an email to the admins to activate the user's account
     def send_admin_activation_email(self, site):
 
+        # messages sent from admin should have a fixed locale
+        # specified in settings
+        admin_locale = getattr(
+            settings, 'ADMIN_EMAIL_LOCALE', translation.get_language())
+
+        language = translation.get_language()
+        translation.activate(admin_locale)
+
         subject = render_to_string(
             'registration/admin_activation_email_subject.txt',
             {'site': site}
@@ -305,3 +314,4 @@ class CustomRegistrationProfile(RegistrationProfile):
             [addr[1] for addr in settings.MANAGERS])
 
         email_message.send()
+        translation.activate(language)
