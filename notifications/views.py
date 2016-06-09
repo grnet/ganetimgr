@@ -29,7 +29,6 @@ from django.core.exceptions import PermissionDenied
 from gevent.pool import Pool
 
 from util.client import GanetiApiError
-from django.db import close_connection
 from notifications.utils import get_mails, send_emails
 from notifications.models import NotificationArchive
 from ganeti.utils import format_ganeti_api_error

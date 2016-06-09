@@ -23,7 +23,7 @@ from operator import itemgetter
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.core.cache import cache
-from django.db import close_connection
+from django.db import close_old_connections
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
@@ -180,7 +180,7 @@ def stats(request):
                 except (GanetiApiError, Exception):
                     exclude_pks.append(cluster.pk)
                 finally:
-                    close_connection()
+                    close_old_connections()
             if not request.user.is_anonymous():
                 p.map(_get_instances, clusters)
             instances = len(instances)

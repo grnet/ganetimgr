@@ -24,7 +24,7 @@ from django.contrib import messages as djmessages
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.conf import settings
-from django.db import close_connection
+from django.db import close_old_connections
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _
@@ -32,6 +32,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
+
+from django.http import JsonResponse
 
 if 'oauth2_provider' in settings.INSTALLED_APPS:
     from oauth2_provider.decorators import protected_resource
@@ -68,6 +70,7 @@ from ganeti.decorators import (
 def user_index(request):
     if request.user.is_anonymous():
         return HttpResponseRedirect(reverse('login'))
+
     return render(
         request,
         'instances/user_instances_json.html',
@@ -145,7 +148,7 @@ def user_index_json(request):
             except Exception as e:
                 bad_clusters.append((cluster, e))
             finally:
-                close_connection()
+                close_old_connections()
     jresp = {}
     cache_key = "user:%s:index:instances" % request.user.username
     if cluster_slug:
@@ -173,7 +176,7 @@ def user_index_json(request):
         except Exception as e:
                 bad_clusters.append((cluster, e))
         finally:
-            close_connection()
+            close_old_connections()
     if res is None:
         if not request.user.is_anonymous():
             if cluster_slug:
@@ -264,7 +267,7 @@ def user_sum_stats(request):
             bad_clusters.append((cluster, e))
 
         finally:
-            close_connection()
+            close_old_connections()
     if not request.user.is_anonymous():
         # get only enabled clusters
         p.map(_get_instances, Cluster.objects.filter(disabled=False))
@@ -314,7 +317,7 @@ def user_sum_stats(request):
         except (GanetiApiError, Exception):
             pass
         finally:
-            close_connection()
+            close_old_connections()
     if res is None:
         j.map(_get_instance_details, instances)
         jresp['aaData'] = instancedetails

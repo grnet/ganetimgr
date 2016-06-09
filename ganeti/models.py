@@ -64,7 +64,7 @@ from util import beanstalkc
 
 import json
 
-from django.db import close_connection
+from django.db import close_old_connections
 
 
 class InstanceManager(object):
@@ -80,7 +80,7 @@ class InstanceManager(object):
             except (GanetiApiError, Exception):
                 pass
             finally:
-                close_connection()
+                close_old_connections()
 
         # get only enabled clusters
         clusters = Cluster.objects.filter(disabled=False)

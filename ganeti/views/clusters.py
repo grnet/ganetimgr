@@ -27,7 +27,6 @@ from django.contrib.messages import constants as msgs
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.db import close_connection
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.http import (
