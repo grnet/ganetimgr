@@ -16,7 +16,7 @@
 #
 import re
 import random
-import hashlib
+import sha
 import base64
 import os
 import ipaddr
@@ -62,7 +62,10 @@ else:
 
 from util import beanstalkc
 
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 from django.db import close_connection
 
@@ -81,7 +84,6 @@ class InstanceManager(object):
                 pass
             finally:
                 close_connection()
-
         # get only enabled clusters
         clusters = Cluster.objects.filter(disabled=False)
         p.map(_get_instances, clusters)
@@ -492,6 +494,7 @@ class Cluster(models.Model):
                         'name',
                         'tags',
                         'pnode',
+                        'snodes',
                         'disk.sizes',
                         'nic.modes',
                         'nic.ips',
@@ -802,6 +805,7 @@ class Cluster(models.Model):
                             'name',
                             'tags',
                             'pnode',
+                            'snodes',
                             'disk.sizes',
                             'nic.modes',
                             'nic.ips',
@@ -1178,9 +1182,9 @@ class InstanceActionManager(models.Manager):
             action=action
         ).exclude(activation_key='ALREADY_ACTIVATED'):
             oldaction.expire_now()
-        salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-        activation_key = hashlib.sha1(salt + user.username).hexdigest()
-        return self.create(
+        salt = sha.new(str(random.random())).hexdigest()[:5]
+        activation_key = sha.new(salt + user.username).hexdigest()
+        inst_action = self.create(
             applicant=user,
             instance=instance,
             cluster=cluster,
@@ -1189,6 +1193,7 @@ class InstanceActionManager(models.Manager):
             activation_key=activation_key,
             operating_system=operating_system
         )
+        return inst_action
 
 
 class InstanceAction(models.Model):
