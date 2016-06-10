@@ -8,6 +8,9 @@
 {{ application.admin_comments }}
 {% endif %}
 
+{% if reviewer %}Εγκρίθηκε από: {{reviewer}}
+{% endif %}
+
 Για περισσότερες πληροφορίες για την εικονική μηχανή σας ή για οποιοιδήποτε
 άλλο αίτημα αφορά την υπηρεσία, μπορείτε να επικοινωνήσετε με το Helpdesk του
 {{ BRANDING.SERVICE_PROVIDED_BY.NAME }}.
@@ -23,5 +26,7 @@ You can manipulate and view the data at the following address:
 {{ application.admin_comments }}
 {% endif %}
 
+{% if reviewer %}Approved by: {{reviewer}}
+{% endif %}
 For more information on the virtual machine or any
 other request regarding the service, you can contact the {{ BRANDING.SERVICE_PROVIDED_BY.NAME }} Helpdesk.

@@ -111,6 +111,9 @@ class InstanceApplication(models.Model):
                               default=generate_cookie)
     filed = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+    reviewer = models.ForeignKey(
+        User, null=True, blank=True, default=None,
+        related_name='application_reviewer')
 
     class Meta:
         permissions = (

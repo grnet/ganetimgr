@@ -49,7 +49,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     search_fields = ["hostname", "applicant", "organization", "cluster",
                     "status", "filed"]
     list_editable = ["organization"]
-    readonly_fields = ["job_id", "backend_message"]
+    readonly_fields = ["job_id", "backend_message", "reviewer"]
     ordering = ["-filed", "hostname"]
     actions = make_fast_create_actions()
     fieldsets = [
@@ -62,7 +62,7 @@ class ApplicationAdmin(admin.ModelAdmin):
                                           'admin_contact_phone',
                                           'admin_contact_email')}),
         ('Backend Information', {'fields': ('status', 'job_id',
-                                            'backend_message')})
+                                            'backend_message', 'reviewer')})
     ]
 
 admin.site.register(Organization)

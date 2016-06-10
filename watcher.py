@@ -247,6 +247,12 @@ def handle_creation(job):
                                               "instance_url": instance_url,
                                               "BRANDING": settings.BRANDING
                                             })
+                mail_body_managers = render_to_string("instances/emails/instance_created_mail.txt",
+                                             {"application": application,
+                                              "reviewer": application.reviewer,
+                                              "instance_url": instance_url,
+                                              "BRANDING": settings.BRANDING
+                                            })
                 try_log(send_mail, settings.EMAIL_SUBJECT_PREFIX +
                           "Instance %s is ready" % application.hostname,
                           mail_body, settings.SERVER_EMAIL,
@@ -254,7 +260,7 @@ def handle_creation(job):
                 logger.info("Mailing managers about %s" %
                              application.hostname)
                 try_log(mail_managers, "Instance %s is ready" % application.hostname,
-                              mail_body)
+                              mail_body_managers)
             job.delete()
             close_connection()
             break

@@ -378,6 +378,16 @@
                                     </div>
                                 </div>
                                 {%endif%}
+                                {% if application.reviewer.username %}
+                                <div class="control-group">
+                                    <label class="control-label required">{% trans "Reviewed by" %}</label>
+                                    <div class="controls padcontrol">
+                                        <a class="btn" href="{% url 'user-info' 'user' application.reviewer.username %}">
+                                            <i class="fa fa-user"></i> {{ application.reviewer.username }}
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endif %}
                             </fieldset>
                         </div>
                     </div>

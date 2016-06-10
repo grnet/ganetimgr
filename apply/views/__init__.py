@@ -199,6 +199,7 @@ def review_application(request, application_id=None):
     ).order_by('description')
     # There is a chance that the administrator has just filled a form
     # by himself, so the application does not actually exist (yet)
+    # import ipdb; ipdb.set_trace()
     if application_id:
         app = get_object_or_404(InstanceApplication, pk=application_id)
     else:
@@ -318,6 +319,7 @@ def review_application(request, application_id=None):
                     'vgs': form.cleaned_data['vgs'],
                     'disk_template': form.cleaned_data['disk_template'],
                 }
+                application.reviewer = request.user
                 application.save()
                 application.submit()
                 messages.add_message(request, messages.INFO,
