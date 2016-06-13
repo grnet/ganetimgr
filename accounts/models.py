@@ -44,11 +44,6 @@ except ImportError:
 
 from registration.models import RegistrationProfile
 
-if Site._meta.installed:
-    site = Site.objects.get_current()
-else:
-    site = ''
-
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -127,6 +122,12 @@ class CustomRegistrationManager(models.Manager):
 
                     # an e-mail is sent to the site managers to activate the
                     # user's account
+
+                    if Site._meta.installed:
+                        site = Site.objects.get_current()
+                    else:
+                        site = ''
+
                     profile.send_admin_activation_email(site)
 
                     return user
