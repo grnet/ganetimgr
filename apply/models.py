@@ -48,7 +48,8 @@ from ganeti.fields.jsonfield import JSONField
  STATUS_PROCESSING,
  STATUS_FAILED,
  STATUS_SUCCESS,
- STATUS_REFUSED) = range(100, 107)
+ STATUS_REFUSED,
+ STATUS_DISCARDED) = range(100, 108)
 
 APPLICATION_CODES = (
     (STATUS_PENDING, "pending"),
@@ -58,6 +59,9 @@ APPLICATION_CODES = (
     (STATUS_FAILED, "failed"),
     (STATUS_SUCCESS, "created successfully"),
     (STATUS_REFUSED, "refused"),
+    (STATUS_DISCARDED, "discarded"),            # this indicates application
+                                                # has been discarded silently
+                                                # by an admin
 )
 
 PENDING_CODES = [STATUS_PENDING, STATUS_APPROVED, STATUS_FAILED]
