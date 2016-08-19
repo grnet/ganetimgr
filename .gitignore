@@ -8,3 +8,4 @@ admin/
 django_markdown/
 .coverage
 analytics.html
+*.swp
