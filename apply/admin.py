@@ -46,8 +46,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     list_display = ["hostname", "applicant", "organization", "cluster",
                     "status", "filed"]
     list_filter = ["status", "organization"]
-    search_fields = ["hostname", "applicant", "organization", "cluster",
-                    "status", "filed"]
+    search_fields = ["hostname", "applicant__username", "organization__title"]
     list_editable = ["organization"]
     readonly_fields = ["job_id", "backend_message", "reviewer"]
     ordering = ["-filed", "hostname"]
