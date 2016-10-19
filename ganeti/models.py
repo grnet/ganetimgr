@@ -585,6 +585,23 @@ class Cluster(models.Model):
 
         return info
 
+    def get_extstorage_providers(self):
+        """
+        Fetches a cluster's tags and figures out the extstorage providers available.
+        Designated tag for extstorage is GANETI_TAG_PREFIX:ext:<provider_name>
+
+        This bypasses the cache completly
+
+        @return list with the available extstorage providers
+        """
+        ext_providers = []
+        tags = self._client.GetClusterTags()
+        ext_pfx = "%s:ext:" % GANETI_TAG_PREFIX
+        for tag in tags:
+            if tag.startswith(ext_pfx):
+                ext_providers.append(tag.replace(ext_pfx,'') + "[ext]")
+        return ext_providers
+
     def list_cluster_nodes(self):
         nodes = cache.get("cluster:%s:listnodes" % self.slug)
         if nodes is None:

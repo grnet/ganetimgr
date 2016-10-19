@@ -251,7 +251,16 @@ class InstanceApplication(models.Model):
                 osparams[key] = json.dumps(val)
         disk_template = self.instance_params['disk_template']
         nodes = None
-        disks = [{"size": self.disk_size * 1024}]
+        # Handle ExtStorage Providers
+        # provider name is included in the disks dictionary (along with any
+        # custom params) and disk_template is just ext
+        # Other disk_templates should remain untouched
+        if disk_template.endswith('[ext]'):
+                ext_provider = disk_template.replace('[ext]','')
+                disks = [{"size": self.disk_size * 1024, "provider": ext_provider}]
+                disk_template = 'ext'
+        else:
+                disks = [{"size": self.disk_size * 1024}]
         if self.instance_params['node_group'] != 'default':
             if self.instance_params['disk_template'] == 'drbd':
                 nodes = self.cluster.get_available_nodes(

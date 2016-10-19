@@ -620,6 +620,18 @@ def prepare_cluster_node_group_stack(cluster):
     res['num_inst'] = len_instances
     res['description'] = cluster.description
     res['disk_templates'] = cluster_info['ipolicy']['disk-templates']
+    # if extstorage template is enabled, lookup all enabled providers
+    for index, provider in enumerate(res['disk_templates']):
+        if provider == 'ext':
+            ext_providers = cluster.get_extstorage_providers()
+            # slice this list at index in order to preserve the template
+            # ordering
+            before_slice = res['disk_templates'][0:index]
+            after_slice = res['disk_templates'][index+1:]
+            # if get_extstorage_providers is empty (i.e. no or wrong tags have
+            # been configured) ext storage template without provider is useless
+            # so discard it
+            res['disk_templates'] = before_slice + ext_providers + after_slice
     res['node_groups'] = cluster.get_node_group_stack()
     return res
 
