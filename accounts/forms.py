@@ -20,6 +20,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_unicode
 
+from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import PasswordResetForm
 from recaptcha.client import captcha
 from registration.forms import RegistrationFormUniqueEmail as _RegistrationForm
@@ -75,7 +76,7 @@ class ReCaptchaField(forms.CharField):
             {}
         )
         if not check_captcha.is_valid:
-            raise forms.util.ValidationError(self.error_messages['captcha_invalid'])
+            raise ValidationError(self.error_messages['captcha_invalid'])
         return values[0]
 
 

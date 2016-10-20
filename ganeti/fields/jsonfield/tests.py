@@ -6,7 +6,7 @@ from django.test import TestCase
 import json
 
 from .fields import JSONField, JSONCharField
-from django.forms.util import ValidationError
+from django.core.exceptions import ValidationError
 
 from collections import OrderedDict
 
