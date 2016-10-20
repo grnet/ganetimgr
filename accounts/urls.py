@@ -48,5 +48,5 @@ urlpatterns = patterns(
         },
         name='password_reset'
     ),
-    (r'^', include('registration.backends.default.urls')),
+    (r'^', include('registration.backends.admin_approval.urls')),
 )
