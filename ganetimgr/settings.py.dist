@@ -353,8 +353,3 @@ if 'oauth2_provider' in INSTALLED_APPS and 'corsheaders' in INSTALLED_APPS:
     }
     CORS_ORIGIN_ALLOW_ALL = True
     MIDDLEWARE_CLASSES += ('corsheaders.middleware.CorsMiddleware',)
-
-# This url is used by updateorganizations cronjob. It returns a json object 
-# which contains the current active organizations and syncs the organizations
-# in ganetimgr database accordingly
-ORGANIZATIONS_SYNC_URL = <>
