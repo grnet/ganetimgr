@@ -28,10 +28,10 @@ class Migration(migrations.Migration):
                 ('admin_comments', models.TextField(null=True, blank=True)),
                 ('admin_contact_name', models.CharField(max_length=255, null=True, blank=True)),
                 ('admin_contact_phone', models.CharField(max_length=64, null=True, blank=True)),
-                ('admin_contact_email', models.EmailField(max_length=75, null=True, blank=True)),
+                ('admin_contact_email', models.EmailField(max_length=254, null=True, blank=True)),
                 ('instance_params', ganeti.fields.jsonfield.fields.JSONField(null=True, blank=True)),
                 ('job_id', models.IntegerField(null=True, blank=True)),
-                ('status', models.IntegerField(choices=[(100, b'pending'), (101, b'approved'), (102, b'submitted'), (103, b'processing'), (104, b'failed'), (105, b'created successfully'), (106, b'refused')])),
+                ('status', models.IntegerField(choices=[(100, b'pending'), (101, b'approved'), (102, b'submitted'), (103, b'processing'), (104, b'failed'), (105, b'created successfully'), (106, b'refused'), (107, b'discarded')])),
                 ('backend_message', models.TextField(null=True, blank=True)),
                 ('cookie', models.CharField(default=apply.models.generate_cookie, max_length=255, editable=False)),
                 ('filed', models.DateTimeField(auto_now_add=True)),
@@ -41,7 +41,6 @@ class Migration(migrations.Migration):
             options={
                 'permissions': (('view_applications', 'Can view all applications'),),
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Organization',
@@ -49,10 +48,9 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=255)),
                 ('website', models.CharField(max_length=255, null=True, blank=True)),
-                ('email', models.EmailField(max_length=75, null=True, blank=True)),
+                ('email', models.EmailField(max_length=254, null=True, blank=True)),
                 ('tag', models.SlugField(max_length=255, null=True, blank=True)),
                 ('phone', models.CharField(max_length=255, null=True, blank=True)),
-                ('synced', models.BooleanField(default=False)),
                 ('users', models.ManyToManyField(to=settings.AUTH_USER_MODEL, null=True, blank=True)),
             ],
             options={
@@ -60,7 +58,6 @@ class Migration(migrations.Migration):
                 'verbose_name': 'organization',
                 'verbose_name_plural': 'organizations',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='SshPublicKey',
@@ -75,12 +72,15 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['fingerprint'],
             },
-            bases=(models.Model,),
         ),
         migrations.AddField(
             model_name='instanceapplication',
             name='organization',
             field=models.ForeignKey(blank=True, to='apply.Organization', null=True),
-            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='instanceapplication',
+            name='reviewer',
+            field=models.ForeignKey(related_name='application_reviewer', default=None, blank=True, to=settings.AUTH_USER_MODEL, null=True),
         ),
     ]
