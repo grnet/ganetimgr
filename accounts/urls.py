@@ -15,32 +15,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from accounts import views
-from accounts.forms import PasswordResetFormPatched, RegistrationForm
+from accounts.forms import PasswordResetFormPatched
 from django.conf.urls import patterns, url, include
 from django.contrib.auth import views as auth_v
 # from registration.views import RegistrationView
-from regbackends.ganetimgr import GanetimgrBackend
 
 # register = RegistrationView.as_view(form_class=RegistrationForm)
 
 urlpatterns = patterns(
     '',
-    url(
-        r'^activate_account/(?P<activation_key>\w+)/$',
-        views.activate_account, name='activate_account'
-    ),
-    url(
-        r'^validate_email/(?P<validation_key>\w+)/$',
-        views.validate_email, name='validate_email'
-    ),
-    url(
-        r'^register/$', GanetimgrBackend.as_view(form_class=RegistrationForm),
-        {
-            'backend': 'regbackends.ganetimgr.GanetimgrBackend',
-            'form_class': RegistrationForm
-        }
-    ),
+    #  url(
+    #      r'^activate_account/(?P<activation_key>\w+)/$',
+    #      views.activate_account, name='activate_account'
+    #  ),
+    #  url(
+    #      r'^validate_email/(?P<validation_key>\w+)/$',
+    #      views.validate_email, name='validate_email'
+    #  ),
+    #  url(
+    #      r'^register/$', GanetimgrBackend.as_view(form_class=RegistrationForm),
+    #      {
+    #          'backend': 'regbackends.ganetimgr.GanetimgrBackend',
+    #          'form_class': RegistrationForm
+    #      }
+    #  ),
     url(
         r'^password/reset/$',
         auth_v.password_reset,
