@@ -1,12 +1,20 @@
-{% load i18n %}{% url 'activate_account' activation_key as activation_url %}{% blocktrans with full_name=user.get_full_name username=user.username email=user.email domain=site.domain %}{{ full_name }} has registered for a new account.
+{% load i18n %}{% url validate_email validation_key as validation_url %}{% blocktrans with full_name=user.get_full_name username=user.username email=user.email domain=site.domain %}You have registered for a new account.
 
 Username: {{ username }}
 E-mail: {{ email }}
 
-To activate the user's account and allow them to access the service, click on
-the following link:
+To proceed with with your account activation, you must first validate your email
+address. To do so, click on the following link or copy the address to your browser
+{% endblocktrans %}
 
-http://{{ domain }}{{ activation_url }}
+http://{{ site.domain }}{% url 'registration_activate' activation_key %}
 
-The user will be notified via mail about the account activation
+{% blocktrans %}
+The site's administrator will then be notified about your newly created account and
+proceed to approve it. 
+
+You have {{ expiration_days }} days to validate your email address. If you fail to 
+do so within the time limit, you will have to register again.
+
+Upon approval, you will receive a new email message.
 {% endblocktrans %}

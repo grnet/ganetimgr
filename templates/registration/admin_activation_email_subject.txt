@@ -1,1 +1,0 @@
-{% load i18n %}{% trans "New user account registered at" %} {{ site.name }}

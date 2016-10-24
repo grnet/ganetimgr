@@ -10,54 +10,54 @@
 <!-- change recaptcha theme -->
 <script type="text/javascript">
 var RecaptchaOptions = {
-   theme : 'white'
+  theme : 'white'
 };
 </script>
 
 <div class="container-fluid">
-	<div class="row-fluid">
-		<div class="span12">
-			<div class="row-fluid">
-				<div class="span2"></div>
-				<div class="span8 sidebar">
-					<div class="widget">
-						<div class="row-fluid">
-							<h2>
-								<i class="icon-user"></i> {% trans "Register new user" %}
-							</h2>
-							<div class="padwidget">
-								<form method="post" class="form-horizontal">
-									{% csrf_token %}
-									{% if form.non_field_errors %}
-                                        <div class="alert alert-error">
-                                            {{ form.non_field_errors|join:", "}}
-                                        </div>
-                                        {% endif %}
-										{% for field in form %}
-										<div class="control-group {% if field.errors %}error{% endif %}">
-	                <label class="control-label {% if field.field.required %}required{% endif %}" for="id_applier">
-	                	{% trans field.label|capfirst %}
-	                </label>
-                   <div class="controls">{{ field }}
-                    {% if field.errors %}
-                    <span class="help-inline" style="clear:both;">
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="row-fluid">
+        <div class="span2"></div>
+        <div class="span8 sidebar">
+          <div class="widget">
+            <div class="row-fluid">
+              <h2>
+                <i class="icon-user"></i> {% trans "Register new user" %}
+              </h2>
+              <div class="padwidget">
+                <form method="post" class="form-horizontal">
+                  {% csrf_token %}
+                  {% if form.non_field_errors %}
+                  <div class="alert alert-error">
+                    {{ form.non_field_errors|join:", "}}
+                  </div>
+                  {% endif %}
+                  {% for field in form %}
+                  <div class="control-group {% if field.errors %}error{% endif %}">
+                    <label class="control-label {% if field.field.required %}required{% endif %}" for="id_applier">
+                      {% trans field.label|capfirst %}
+                    </label>
+                    <div class="controls">{{ field }}
+                      {% if field.errors %}
+                      <span class="help-inline" style="clear:both;">
                         {{ field.errors|join:", " }}
-                    </span>
-                    {% endif %}
+                      </span>
+                      {% endif %}
                     </div>
                     <span class="help-block"> {{ field.help_text }}</span>
-                </div>
-										{% endfor %}
-									<input class="btn btn-primary" type="submit" value="{% trans "Register" %}" />
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="span2"></div>
-			</div>
-		</div>
-	</div>
+                  </div>
+                  {% endfor %}
+                  <input class="btn btn-primary" type="submit" value="{% trans "Register" %}" />
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="span2"></div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
@@ -66,8 +66,8 @@ var RecaptchaOptions = {
 {% block bottomblock %}
 <script src="{% static 'ganetimgr/js/includes/select2.js' %}"></script>
 <script>
-	$(document).ready( function(){
-		$("#id_organization").select2({dropdownAutoWidth : true});
-	});
+$(document).ready( function(){
+  $("#id_organization").select2({dropdownAutoWidth : true});
+});
 </script>
 {% endblock %}

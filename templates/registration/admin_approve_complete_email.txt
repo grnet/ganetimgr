@@ -1,0 +1,4 @@
+{% load i18n %}{% blocktrans %}Your account {% endblocktrans %} {% blocktrans %}has been approved.{% endblocktrans %}
+{% blocktrans %}You may login using the following URL:{% endblocktrans %}
+
+http://{{ site.domain }}{% url 'login' %}
