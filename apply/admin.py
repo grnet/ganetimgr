@@ -18,33 +18,7 @@ import functools
 
 from django.contrib import admin
 
-from django.db.utils import ProgrammingError, OperationalError
-from ganeti.models import Cluster
-from apply.models import Organization, InstanceApplication, \
-    STATUS_PENDING, STATUS_APPROVED
-
-
-def make_submit_applications(modeladmin, request, queryset, cluster):
-    for app in queryset:
-        if app.status == STATUS_PENDING:
-            app.approve()
-        if app.status == STATUS_APPROVED:
-            app.cluster = cluster
-            app.save()
-            app.submit()
-
-
-def make_fast_create_actions():
-    cluster_list = Cluster.objects.filter(fast_create=True)
-    try:
-        cluster_list.exists()
-    except (ProgrammingError, OperationalError):
-        return
-
-    for cluster in cluster_list:
-        fn = functools.partial(make_submit_applications, cluster=cluster)
-        fn.__name__ = "Approve and submit to %s" % (cluster.description,)
-        yield fn
+from apply.models import Organization, InstanceApplication
 
 
 class InstanceApplicationAdmin(admin.ModelAdmin):
@@ -57,11 +31,10 @@ class InstanceApplicationAdmin(admin.ModelAdmin):
     list_editable = ["organization"]
     readonly_fields = ["job_id", "backend_message", "reviewer"]
     ordering = ["-filed", "hostname"]
-    actions = list(make_fast_create_actions())
     fieldsets = [
         ('Instance Information', {'fields': ('hostname', 'memory', 'disk_size',
                                              'vcpus', 'operating_system',
-                                             'hosts_mail_server') }),
+                                             'hosts_mail_server')}),
         ('Placement', {'fields': ('instance_params',)}),
         ('Owner Information', {'fields': ('applicant', 'organization',
                                           'admin_contact_name',

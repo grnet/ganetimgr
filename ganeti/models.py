@@ -1084,7 +1084,7 @@ class Network(models.Model):
                                      ("routed", "Routed")))
     cluster_default = models.BooleanField(default=False)
     ipv6_prefix = models.CharField(max_length=255, null=True, blank=True)
-    groups = models.ManyToManyField(Group, blank=True, null=True)
+    groups = models.ManyToManyField(Group, blank=True)
 
     def __unicode__(self):
         return "%s (%s)" % (self.description, self.cluster.slug)
