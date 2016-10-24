@@ -16,33 +16,18 @@
 #
 
 import datetime
-import hashlib
-import random
-import re
 
 from apply.models import Organization
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
-from django.contrib.sites.models import Site
-from django.core.mail import EmailMultiAlternatives
 from django.db import models
-from django.db import transaction
 from django.db.models.signals import post_save
-from django.template import RequestContext, TemplateDoesNotExist
-from django.template.loader import render_to_string
-from django.utils import six
-
-from django.utils import translation
-from django.utils.translation import ugettext_lazy as _
 
 try:
     from django.utils.timezone import now as datetime_now
 except ImportError:
     datetime_now = datetime.datetime.now
-
-from registration.models import RegistrationProfile
 
 
 class UserProfile(models.Model):
@@ -73,7 +58,8 @@ class UserProfile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created and not kwargs.get('raw', False):
         UserProfile.objects.create(user=instance)
-post_save.connect(create_user_profile, sender=User, dispatch_uid='create_UserProfile')
+post_save.connect(
+    create_user_profile, sender=User, dispatch_uid='create_UserProfile')
 
 
 def update_session_last_login(sender, user, request, **kwargs):
