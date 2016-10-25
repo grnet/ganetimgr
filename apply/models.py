@@ -39,8 +39,8 @@ from util import beanstalkc
 from paramiko import RSAKey, DSSKey
 from binascii import hexlify
 
-from ganeti.fields.jsonfield import JSONField
-
+#  from ganeti.fields.jsonfield import JSONField
+from jsonfield import JSONField
 
 (STATUS_PENDING,
  STATUS_APPROVED,

@@ -80,7 +80,6 @@ MIDDLEWARE_CLASSES = (
     'middleware.UserMessages.UserMessageMiddleware',
 )
 
-TEST_RUNNER = 'django.test.simple.DjangoTestSuiteRunner'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 STATIC_URL = '/static/'

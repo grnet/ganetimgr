@@ -1114,7 +1114,7 @@ def preload_instance_data():
         cache.set('networklist', networks, 60)
     users = cache.get('userlist')
     if not users:
-        users = User.objects.select_related('groups').all()
+        users = User.objects.prefetch_related('groups').all()
         userdict = {}
         for user in users:
             userdict[user.username] = user
