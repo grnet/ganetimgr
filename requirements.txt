@@ -1,9 +1,8 @@
 gevent==0.13.6
-django==1.7.7
-redis==2.4.13
-django-registration-redux==1.2
+django==1.8
+# get master branch of django registration redux until a correct tag is released
+-e git+git://github.com/macropin/django-registration.git#egg=django-registration-redux
 paramiko==1.12.1
-simplejson==2.5.2
 python-daemon==1.5.5
 setproctitle==1.0.1
 pycurl==7.19.0
@@ -18,4 +17,4 @@ django-markdown==0.6.1
 
 # Optional requirements
 django-cors-headers==1.1.0
-django-oauth-toolkit==0.5.0
+django-oauth-toolkit==0.10.0
