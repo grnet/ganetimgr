@@ -1,3 +1,36 @@
+===========
+
+Django 1.8 RELEASE
+Features/Bugfixing/Django Upgrade release
+
+Requirements:
+
+    - Django 1.8 upgrade
+    - New registration package, django-registration-redux (master branch from
+    GitHub)
+    - New version of `django-oauth-toolkit` (0.5.0 ~> 0.10.0)
+
+New Features:
+    - Now uses Django 1.8
+    - New registration process:
+	1. User signs up for an account
+	2. User validates his email address
+	3. Admins activate the user's account
+    - Instance applications now show the admin that approved them
+    - A video is included in the front page
+    - Instance applications have an extra status, `STATUS_DISCARDED`
+
+
+Fixes/Improvements:
+    - Add disk-template in instance view page
+    - Improve translations (GR)
+    - Fix bug which needed restarting the server when changing a Cluster to "Disabled" for the change to be visible
+    - Allow https:// images (links) in boot from CDROM (iso)
+    - Display an instance's secondary node(s) in instance view page
+    - Correct search fields in `apply/admin.py` (Resulted in HTTP500 error when used)
+
+===========
+
 1.6 RELEASE
 Features/Bugfixing release
 
