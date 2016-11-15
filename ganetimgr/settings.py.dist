@@ -108,8 +108,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.staticfiles',
-    'accounts',
     'registration',
+    'accounts',
     'ganeti',
     'apply',
     'notifications',
@@ -124,7 +124,6 @@ INSTALLED_APPS = (
 # and want to use Redis for both, make sure you select a different db for each instance
 # Warning!!! Redis db should ALWAYS be an integer, denoting db index.
 # If memcache is your preferred cache, then select:
-CACHE_BACKEND="redis_cache.cache://127.0.0.1:6379?timeout=1500"
 #CACHES = {
 #     'default': {
 #         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -196,7 +195,6 @@ HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS = {
 
 COLLECTD_URL = "http://stats.example.com"
 # Graphs nodata image
-NODATA_IMAGE = 'static/nodata.gif'
 
 SERVER_MONITORING_URL = 'https://monitoring.example.com'
 
@@ -265,8 +263,7 @@ RECAPTCHA_PUBLIC_KEY = ''
 RECAPTCHA_PRIVATE_KEY = ''
 RECAPTCHA_USE_SSL = True
 
-MARKDOWN_EDITOR_SKIN = 'simple'
-
+REGISTRATION_FORM = 'accounts.forms.RegistrationForm'
 
 #########################
 #                       #
@@ -305,6 +302,7 @@ SNF_IMG_PROPERTIES = {
 }
 SNF_IMG_PASSWD = "example-passphrase-CHANGEME"
 
+TEST_RUNNER = 'django.test.simple.DjangoTestSuiteRunner'
 #########################
 #                       #
 #      Auditlog         #

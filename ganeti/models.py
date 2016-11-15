@@ -60,7 +60,7 @@ if hasattr(settings, 'BEANSTALK_TUBE'):
 else:
     BEANSTALK_TUBE = None
 
-from util import beanstalkc
+import beanstalkc
 
 import json
 
@@ -358,12 +358,6 @@ class Instance(object):
     def pending_rename(self):
         return self._pending_action_request(3)
 
-    class Meta:
-        permissions = (
-            ("can_isolate", "Can Isolate"),
-            ("can_lock", "Can Lock"),
-        )
-
 
 class Cluster(models.Model):
     hostname = models.CharField(max_length=128)
@@ -558,9 +552,7 @@ class Cluster(models.Model):
         if (user.is_superuser or user.has_perm('ganeti.view_instances')) and admin:
             return instances
         else:
-            user = User.objects.filter(pk=user.pk).select_related(
-                'groups'
-            ).get()
+            user = User.objects.get(pk=user.pk)
             ugroups = []
             for ug in user.groups.all():
                 ugroups.append(ug.pk)
@@ -1258,6 +1250,21 @@ class InstanceAction(models.Model):
         )
         self.user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
 
+
+class CustomPermission(models.Model):
+    """
+    Acts as a permission object that can be used to
+    assign permissions for non-models (e.g. graphs)
+    """
+
+    class Meta:
+        managed = False
+    
+        permissions = (
+            ('view_all_graphs', 'Can view all graphs'),
+            ("can_isolate", "Can Isolate"),
+            ("can_lock", "Can Lock"),
+        )
 
 def parseQuery(response):
     field_dict = {}

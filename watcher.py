@@ -34,10 +34,12 @@ from gevent import sleep, signal
 from gevent import reinit as gevent_reinit
 from gevent.pool import Pool
 
-from util import beanstalkc
+import beanstalkc
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ganetimgr.settings")
 from django.conf import settings
+import django
+django.setup()
 
 from ganeti.models import Cluster
 from apply.models import InstanceApplication, STATUS_FAILED, STATUS_SUCCESS

@@ -18,7 +18,6 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 
 from django.contrib import admin
-from django_markdown import flatpages
 
 # import urls
 from accounts import urls as accounts
@@ -29,7 +28,6 @@ from ganeti.views import discovery
 from notifications import urls as notifications
 from auditlog import urls as auditlog
 admin.autodiscover()
-flatpages.register()
 
 urlpatterns = patterns(
     '',
@@ -56,7 +54,6 @@ urlpatterns = patterns(
     (r'^accounts/', include(accounts)),
     (r'^graph/', include(graphs)),
     # get a list of the available operating systems
-    url(r'^markdown/', include('django_markdown.urls')),
     (r'^admin/', include(admin.site.urls)),
 )
 

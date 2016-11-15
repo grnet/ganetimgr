@@ -35,7 +35,7 @@ try:
 except ImportError:
     BEANSTALK_TUBE = None
 
-from util import beanstalkc
+import beanstalkc
 from paramiko import RSAKey, DSSKey
 from binascii import hexlify
 

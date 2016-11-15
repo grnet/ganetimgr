@@ -23,23 +23,20 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
-from ganeti.decorators import check_instance_auth
+from ganeti.decorators import check_graph_auth
 from ganeti.forms import GraphForm
 from ganeti.models import *
 from ganeti.utils import get_nodes_with_graphs
 
 
 @login_required
-@check_instance_auth
-def graph(
-    request,
-    cluster_slug,
-    instance,
-    graph_type,
-    start=None,
-    end=None,
-    nic=None
-):
+@check_graph_auth
+def graph(request, cluster_slug, instance, graph_type,
+          start=None, end=None, nic=None):
+    """
+    Queries `settings.COLLECTD_URL` to get a graph
+    for an instance
+    """
     if not start:
         start = "-1d"
     start = str(start)
@@ -75,11 +72,8 @@ def cluster_nodes_graphs(request, cluster_slug=None):
     else:
         nodes = None
     form = GraphForm(request.POST or None)
-    if (
-        request.user.is_superuser
-        or
-        request.user.has_perm('ganeti.view_instances')
-    ):
+    if (request.user.is_superuser or
+            request.user.has_perm('ganeti.view_instances')):
         if form.is_valid():
             cluster = form.cleaned_data['cluster']
             nodes_from_form = form.cleaned_data['nodes']

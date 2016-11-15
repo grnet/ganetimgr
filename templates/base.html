@@ -202,19 +202,19 @@
                 </li>
                 <li {% block statistics %}{% endblock %}><a href="{% url 'stats' %}"><i class="fa fa-bar-chart"></i> <span>{% trans "Statistics" %}</span></a></li>
                 <li {% block createtop %}{% endblock %}><a href="{% url 'apply' %}" ><i class="fa fa-plus"></i> <span>{% trans "Create Instance" %}</span></a></li>
+                {% if can_handle_applications or can_view_applications %}
+                <li {% block applications %}{% endblock %}>
+                <a href="{% url 'application-list' %}">
+                    <i class="fa fa-inbox"></i>
+                    <span>{% trans "Applications" %}
+                        {% if pending_count %}
+                        <span class="label label-important">{{ pending_count }}</span>
+                        {% endif %}
+                    </span>
+                </a>
+                </li>
+                {% endif %}
                 {% if user.is_superuser or perms.ganeti.view_instances %}
-                    {% if can_handle_applications or can_view_applications %}
-                    <li {% block applications %}{% endblock %}>
-                        <a href="{% url 'application-list' %}">
-                            <i class="fa fa-inbox"></i>
-                            <span>{% trans "Applications" %}
-                            {% if pending_count %}
-                                <span class="label label-important">{{ pending_count }}</span>
-                            {% endif %}
-                            </span>
-                        </a>
-                    </li>
-                    {% endif %}
                     <li {% block idle %}{% endblock %}><a href="{% url 'idle_accounts' %}"><i class="fa fa-moon-o"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
                 {% endif %}
                 {% if FEED_URL %}
