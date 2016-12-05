@@ -76,7 +76,7 @@ Create database and user::
 
     mysql> CREATE DATABASE ganetimgr CHARACTER SET utf8;
     mysql> CREATE USER 'ganetimgr'@'localhost' IDENTIFIED BY <PASSWORD>;
-    mysql> GRANT ALL PRIVILEGES ON ganetimgr.* TO 'ganetimgr';
+    mysql> GRANT ALL PRIVILEGES ON ganetimgr.* TO 'ganetimgr'@'localhost';
     mysql> flush privileges;
 
 Requirements.txt
