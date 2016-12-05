@@ -32,7 +32,7 @@ We have created a fabric sript in order to set up and deploy ganetimgr. It is in
 
 You will need to have fabric installed though.
 
-This scrip will connect to the specified server and try to set up ganetimgr under "/srv/ganetimgr" which will be a symlink to the actual directory.
+This script will connect to the specified server and try to set up ganetimgr under "/srv/ganetimgr" which will be a symlink to the actual directory.
 
 In general it performs the following steps:
 
