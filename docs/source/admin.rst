@@ -1,8 +1,9 @@
+*******************
 Administrator guide
-===================
+*******************
 
 Cluster Setup
--------------
+#############
 
 ganetimgr needs a set of RAPI credentials to communicate with a cluster. These need to be created manually.
 The next steps need to be repeated for every cluster you wish to administer with ganetimgr.
@@ -39,7 +40,7 @@ An explanation about some of the settings:
 - ``Cluster uses gnt-network`` is a soon to be deprecated option about network options for new instances. If you use routed networks (though gnt-network) this should be on.
 
 Network Setup
--------------
+#############
 
 ganetimgr autodiscovers any network available through gnt-network on the cluster during the instance creation. You can also hardcode any other networks (e.g. bridged vlans) from the admin interface
 
@@ -51,11 +52,12 @@ ganetimgr autodiscovers any network available through gnt-network on the cluster
 - Groups ties the network to a specific user group. When a user from that group submits an application this network is autoselected.
 
 
-Using Oauth2
-------------
+Oauth2
+######
 We have integrated oauth2 support.
+
 API
-+++
+***
 The endpoints the api provides are::
 
 	/instances/list/
@@ -76,7 +78,7 @@ which lists user details (username, email, password, id)
 
 
 Configuring oauth2
-------------------
+******************
 In order to add oauth2 you have to install:
 
 * django-cors-headers==1.1.0
@@ -87,8 +89,9 @@ And insert in installed apps:
 * oauth2_provider
 * corsheaders
 
-Usage
------
+Using oauth2
+************
+
 * Hit /o/applications and create a new one.
 * Create a new application with implicit authorization grant type
 * Set the redirect urls to the desired ones
@@ -96,7 +99,7 @@ Usage
 * by adding the access_token in the request to /instances/lists/?access_token=<token> you get a list of all the user instances.
 
 Translations
-------------
+############
 ganetimgr uses Django's translation system. We have created translations in Greek. In order to create translations
 to another language you have to follow these instructions_.
 
