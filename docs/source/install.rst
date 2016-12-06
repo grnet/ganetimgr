@@ -284,7 +284,9 @@ Create a gunicorn configuration file (/etc/gunicorn.d/ganetimgr)::
         ),
     }
 
-You can find an example in the contrib/gunicorn directory.
+You can find an example in the contrib/gunicorn directory::
+
+    cp contrib/gunicorn/ganetimgr /etc/gunicorn.d
 
 .. note::
     A logrotate script is recommended to keep the logfile from getting too big.
