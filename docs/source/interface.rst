@@ -4,8 +4,14 @@ Interface Guide
 
 This document showcases some of ganetimgr's features from the user's and administrator's perspective.
 
-ganetimgr is the frontend to a VPS service, albeit without a pricing component. A regular user has access to administrer only the vms assigned to them. An administrator can view and administer every resource. There is a permissions system that can be configured to provide seperate access levels.
-A user can't create a vm by themself, they needs to submit an instance application which needs to be approved by an administrator for the vm to be created.
+- ganetimgr is the frontend to a VPS service, albeit without a billing/accounting component. 
+- Regular users have access to manage only the VMs assigned to them or to their group.
+- An administrator can view and manage every resource.
+- There is a permissions system that can be configured to provide refined access levels (helpdesk views).
+
+Instance creation workflow
+--------------------------
+A user can't directly create a VM since there are no quotas assigned to the users. A user needs to submit an *instance application* which then needs to be *approved* by an administrator of the service for the VM to be created.
 
 
 User View
@@ -13,7 +19,7 @@ User View
 
 Main view
 ---------
-The Home view presents a table with every vm owned by the user with some basic information for quick sorting. There are also actions shortcuts for basic interaction.
+The Home view presents a table with every VM owned by the user with some basic information for quick sorting. There are also actions shortcuts for basic interaction.
 
 .. image:: _static/images/ss_02_user_main_view.png
 	:scale: 50 %
@@ -28,7 +34,7 @@ There is a statistics view that shows graphs and data about the user (stats , ac
 Profile
 -------
 This is the profile settings page. The user can change the profile full name, the password or the registered email address. Also SSH key management.
-The SSH keys defined here are auto-injected to the vms when an instance application is approved by the admins.
+The SSH keys defined here are auto-injected to the VMs when an instance application is approved by the admins.
 
 .. image:: _static/images/ss_04_user_profile.png
 	:scale: 50 %
@@ -72,7 +78,7 @@ The administrator has access to quite a few more views.
 
 Main view
 ---------
-The admin main view lists all the vms from all the clusters ganetimgr knows about. The interaction with the vm is the same as a regular users.
+The admin main view lists all the VMs from all the clusters ganetimgr knows about. The interaction with the VM is the same as a regular users.
 
 Cluster Info
 ------------
@@ -93,7 +99,7 @@ List of all available hardware nodes with important resources for easy sorting. 
 Batch Graphs
 ------------
 
-List all instances Cpu and nerwork graphs, per cluster or per node. You can collapse and expand the graphs per instance and one can select graphs between a specific time period.
+List all instances cpu and network graphs, per cluster or per node. You can collapse and expand the graphs per instance and one can select graphs between a specific time period.
 
 .. image:: _static/images/graphs.png
 	:scale: 50 %
@@ -123,7 +129,7 @@ Applications
 
 Statistics
 ----------
-The statistics page shows data from all the clusters that ganetimgr knows about. There is a view for administrering applications (approving/denying the pending ones, viewing past ones), viewing interesting users (users and vm associations, inactive users, etc...).
+The statistics page shows data from all the clusters that ganetimgr knows about. There is a view for administering applications (approving/denying the pending ones, viewing past ones), viewing interesting users (users and VM associations, inactive users, etc...).
 
 .. image:: _static/images/ss_11_admin_stats.png
 	:scale: 50 %
@@ -140,9 +146,9 @@ A user has permission to make some actions to the instances he or the groups he 
 
 - Can have console access (VNC/NoVNC):
 	A vnc console (java applet) and a novnc console can be given to the user
-	in order to use the vm remotely through ganetimgr. There is also a text
+	in order to use the VM remotely through ganetimgr. There is also a text
 	area (NoVNC) in case one needs to paste some commands and easily send them to the
-	virtuall machine
+	virtual machine
 
 - Rename Instance
 
@@ -159,7 +165,7 @@ Fatal actions require email verification.
 
 Notifications
 -------------
-An administrator can direclty send mail to vm owners. The Recipient field is dynamic. It can lookup a usernames email address dynamically and also fetch all the emails associated with a vm or even all the vms the reside on a cluster.
+An administrator can directly send mail to VM owners. The Recipient field is dynamic. It can lookup a usernames email address dynamically and also fetch all the emails associated with a VM or even all the VMs the reside on a cluster.
 We have added the variable `instances` in the context of the message (where applicable, eg clusters) in order to show the names of a users affected instances.
 In this section there is also the archive where one can see all the previous notifications sent by the admins.
 
