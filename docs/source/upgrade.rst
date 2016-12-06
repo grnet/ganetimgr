@@ -2,7 +2,7 @@
 Upgrading
 =========
 
-This article describes the actions that are needed when upgrading from a previous version of Gametimgr.
+This article describes the actions that are needed when upgrading from a previous version of ganetimgr.
 
 Migrating to v.1.6
 ------------------
@@ -17,7 +17,7 @@ Migrating to v.1.6
 
 Requirements
 ++++++++++++
-Ganetimgr v.1.6 comes with a requirements.txt file, which lists all requirements.
+ganetimgr v.1.6 comes with a requirements.txt file, which lists all requirements.
 Make sure all of these requirements have been installed on your system.
 
 
@@ -30,10 +30,10 @@ Migrating to v.1.5.3
 - Collect static files:
     python manage.py collectstatic
 
-- Update settings.py to settings.py.dist. A new context proccessor is deployed
+- Update settings.py to settings.py.dist. A new context processor is deployed
 - Update urls.py to urls.py.dist. The graph url has been updated
 - New dependencies: ``python-bs4``, ``python-requests`` and ``python-markdown``. All packaged in Debian.
-- We reccomend changing gunicorn logging to the system logging path (i.e. /var/log/) and not /tmp.
+- We recommend changing gunicorn logging to the system logging path (i.e. /var/log/) and not /tmp.
 - Also create a logrotate script for the logfile.
 - After upgrade is done make sure to restart the watcher process
 
