@@ -11,7 +11,7 @@ What is ganetimgr?
 ##################
 
 ganetimgr is a Django project that serves as an administration frontend for (multiple) Ganeti clusters. It is developed as
-the frontend of a VPS service.
+the frontend of a VPS service. There's an introduction page for the project at https://grnet.github.io/ganetimgr/
 
 .. image:: _static/images/ganetimgr_create_instance.png
 	:scale: 50 %
@@ -44,7 +44,11 @@ Compatibility
 #############
 ganetimgr has been tested with ganeti versions 2.4-2.15. Due to the nature of the Ganeti RAPI, ganetimgr should be able to communicate with any Ganeti v.2.X cluster.
 
-While most of the functionality is available with vanila Ganeti setups, there are some features that require changes to Ganeti in order to work properly, see :doc:`Ganeti Patches <ganeti>`
+While most of the functionality is available with vanilla Ganeti setups, there are some features that require changes to Ganeti in order to work properly, see :doc:`patched software <patches>`
+
+Development
+###########
+If you're interested in development/testing ganetimgr you might find useful information in the :doc:`Development documentation <devel>`.
 
 Table of Contents
 #################
@@ -55,6 +59,7 @@ Table of Contents
    install
    vnc
    admin
-   ganeti
+   patches
    upgrade
    interface
+   devel
