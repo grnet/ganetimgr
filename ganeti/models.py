@@ -701,14 +701,7 @@ class Cluster(models.Model):
             for group in net['group_list']:
                 group_dict = {}
                 if group[0] == nodegroup:
-                    #Let's try to link with database saved networks.
-                    # Get the description
-                    try:
-                        nd = Network.objects.get(
-                            cluster=self, link=group[2]
-                        ).description
-                    except Network.DoesNotExist:
-                        nd = net['name']
+                    nd = net['name']
                     group_dict['defaultnet'] = False
                     # TODO: For the time get the default network from the
                     # database. Later on we can get it from the cluster.
