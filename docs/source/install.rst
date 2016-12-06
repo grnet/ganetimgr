@@ -234,6 +234,7 @@ Initialize Django
 
 Run the following commands to create the database entries::
 
+    cd /srv/ganetimgr
     python manage.py syncdb --noinput
     python manage.py migrate
 
@@ -260,7 +261,9 @@ and then start the daemon with::
 
 To enable processing of asynchronous jobs you need to run the watcher.py as a service. There is an init script for that provided in the contrib/init.d directory and a default file in the contrib/default. You can test that everything is OK before running the service issuing a::
 
-    ./watcher.py
+    cp contrib/default/ganetimgr-watcher /etc/default
+    cp contrib/init.d/ganetimgr-watcher /etc/init.d
+    service ganetimgr-watcher start
 
 Setup gunicorn
 ##############
@@ -296,7 +299,7 @@ Setup Web Server
 Create (or edit) an nginx vhost with at least the following::
 
    location /static {
-          root   /srv/www/ganetimgr;
+          root   /srv/ganetimgr;
    }
 
    location / {
