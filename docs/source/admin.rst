@@ -58,7 +58,7 @@ We have integrated oauth2 support.
 
 API
 ***
-The endpoints the api provides are::
+The endpoints the API provides are::
 
 	/instances/list/
 
@@ -79,24 +79,26 @@ which lists user details (username, email, password, id)
 
 Configuring oauth2
 ******************
-In order to add oauth2 you have to install:
+In order to add oauth2 you have to install::
 
-* django-cors-headers==1.1.0
-* django-oauth-toolkit==0.5.0
+    django-cors-headers==1.1.0
+    django-oauth-toolkit==0.5.0
 
-And insert in installed apps:
+And insert in installed apps::
 
-* oauth2_provider
-* corsheaders
+    oauth2_provider
+    corsheaders
 
 Using oauth2
 ************
 
-* Hit /o/applications and create a new one.
-* Create a new application with implicit authorization grant type
-* Set the redirect urls to the desired ones
-* by hitting /o/authorize?redirect_uri=<redirect_uri>&client_id=<client_id>&response_type=token&scope=read you get a response with the token.
-* by adding the access_token in the request to /instances/lists/?access_token=<token> you get a list of all the user instances.
+* Create a new application using URL::
+    /o/applications
+* Use implicit authorization grant type
+* Set the redirect URLs to the desired ones
+* To get a response with the access_token, use::
+    /o/authorize?redirect_uri=<redirect_uri>&client_id=<client_id>&response_type=token&scope=read
+* by adding the access_token in the request to ``/instances/lists/?access_token=<token>`` you get a list of all the user instances.
 
 Translations
 ############
