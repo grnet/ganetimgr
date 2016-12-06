@@ -165,7 +165,8 @@ Fatal actions require email verification.
 
 Notifications
 -------------
-An administrator can directly send mail to VM owners. The Recipient field is dynamic. It can lookup a usernames email address dynamically and also fetch all the emails associated with a VM or even all the VMs the reside on a cluster.
+
+An administrator can directly send mail to VM owners. The Recipient field is dynamic. It can lookup a username's email address dynamically and also fetch all the emails associated with a VM or even all the VMs the reside on a cluster.
 We have added the variable `instances` in the context of the message (where applicable, eg clusters) in order to show the names of a users affected instances.
 In this section there is also the archive where one can see all the previous notifications sent by the admins.
 

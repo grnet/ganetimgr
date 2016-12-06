@@ -36,7 +36,7 @@ This is a forked version of the [ganeti-instance-image](https://code.osuosl.org/
 
 
 It uses the Ganeti OS API v20 to specify runtime osparams so we can specify the instance os during instance creation. It also injects the ssh key of the user inside the instance.
-The code from which the package is build can be found [here](https://github.com/grnet/ganeti-instance-image).
+The code from which the package is built can be found [here](https://github.com/grnet/ganeti-instance-image).
 You can find a sample Debian 7 Wheezy image [here](http://repo.noc.grnet.gr/debian-wheezy-x86_64.tgz)
 
 
