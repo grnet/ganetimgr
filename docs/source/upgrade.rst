@@ -59,7 +59,8 @@ settings.py:
  - If migrating from a squeeze installation pay attention to
    Django 1.4 changes as depicted in settings.py file, especially the
    introduction of the staticfiles django app
- - Set the FEED_URL to an RSS news feed if desired
+ - Set BRANDING.FEED_URL to an RSS news feed if desired
+ - Set BRANDING.ANALYTICS_FILE_PATH to point to an analytics script file if desired
  - Setup WebSockets VNCAuthProxy if desired
  - If WebSockets NoVNC is setup, set the WEBSOCK_VNC_ENABLED to True
    and the NOVNC_PROXY and NOVNC_USE_TLS to match your setup

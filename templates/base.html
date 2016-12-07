@@ -217,7 +217,7 @@
                     {% endif %}
                     <li {% block idle %}{% endblock %}><a href="{% url idle_accounts %}"><i class="fa fa-moon-o"></i> <span>{% trans "Idle Accounts" %}</span></a></li>
                 {% endif %}
-                {% if FEED_URL %}
+                {% if BRANDING.FEED_URL %}
                 <li {% block news %}{% endblock %}><a href="{% url news %}"><i class="fa fa-bullhorn"></i> <span>{% trans "Latest News" %}</span></a></li>
                 {% endif %}
             </ul>
@@ -309,7 +309,9 @@
     </footer>
     {% block video %}
     {% endblock %}
-    {% include "includes/analytics.html" %}
+    {% if BRANDING.ANALYTICS_FILE_PATH %}
+    {% include BRANDING.ANALYTICS_FILE_PATH %}
+    {% endif %}
     <script src="{% static 'ganetimgr/js/includes/nprogress.js' %}"></script>
     <script src="{% static 'ganetimgr/js/messages.js' %}"></script>
     {% block postfooter %}{% endblock %}

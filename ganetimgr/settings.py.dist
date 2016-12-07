@@ -201,8 +201,6 @@ NODATA_IMAGE = 'static/nodata.gif'
 WHITELIST_IP_MAX_SUBNET_V4 = 26
 WHITELIST_IP_MAX_SUBNET_V6 = 64
 
-# RSS Feed for the login page
-FEED_URL = "http://lists.noc.grnet.gr/sympa/rss/latest_arc/vima-users?count=20&for=30"
 
 # Choose whether to support websockets console or not.
 WEBSOCK_VNC_ENABLED = True
@@ -238,6 +236,10 @@ BRANDING = {
     "SHOW_ADMINISTRATIVE_FORM": True,
     "SHOW_ORGANIZATION_FORM": True,
     "TITLE": "GanetiMGR",
+    # RSS Feed for the login page
+    "FEED_URL": "http://lists.noc.grnet.gr/sympa/rss/latest_arc/vima-users?count=20&for=30",
+    # Analytics script path. See 'templates/includes/analytics.html.dist'
+    "ANALYTICS_FILE_PATH": ""
 }
 
 # Set the email subject prefix:

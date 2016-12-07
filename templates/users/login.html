@@ -18,7 +18,7 @@
 <script>
 	$(document).ready(function () {
 		$('#divRss').FeedEk({
-			FeedUrl: '{{FEED_URL}}',
+      FeedUrl: '{{BRANDING.FEED_URL}}',
 			MaxCount: 5,
 			DateFormat: 'DD MMMM YYYY',
 			DateFormatLang: 'en'
@@ -52,12 +52,12 @@
         	<div class="row-fluid">
 				<div class="span12">
 					<div class="row-fluid">
-					{% if FEED_URL %}
+					{% if BRANDING.FEED_URL %}
 						<div class="span1"></div>
 					{% else %}
 						<div class="span2"></div>
 					{% endif %}
-					{% if FEED_URL %}
+					{% if BRANDING.FEED_URL %}
 						<div class="span3 sidebar">
 							<div class="widget">
 								<div class="row-fluid">
@@ -67,7 +67,7 @@
 							</div>
 						</div>
 					{% endif %}
-						<div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
+						<div class="{% if BRANDING.FEED_URL %}span3{% else %}span4{% endif %} sidebar">
 							<div class="widget">
 								<div class="row-fluid">
 									<h2><i class="fa fa-cloud"></i> {% trans "Welcome" %}</h2>
@@ -90,7 +90,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="{% if FEED_URL %}span3{% else %}span4{% endif %} sidebar">
+						<div class="{% if BRANDING.FEED_URL %}span3{% else %}span4{% endif %} sidebar">
 							<div class="widget">
 								<div class="row-fluid">
 									<h2><i class="fa fa-sign-in"></i> {% trans "Login" %}</h2>
@@ -134,7 +134,7 @@
 							</div>
 						</div>
 					</div>
-				{% if FEED_URL %}
+				{% if BRANDING.FEED_URL %}
 					<div class="span1"></div>
 				{% else %}
 					<div class="span2"></div>

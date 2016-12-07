@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% load i18n %}
 {% block extrahead %}
-	{% if FEED_URL %}
+	{% if BRANDING.FEED_URL %}
 		<script type="text/javascript" src="{% static 'ganetimgr/js/includes/feedek.js' %}"></script>
 		<script type="text/javascript" src="{% static 'ganetimgr/js/includes/moment.min.js' %}"></script>
 		<link rel="stylesheet" href="{% static 'ganetimgr/css/includes/feedek.css' %}">
@@ -10,7 +10,7 @@
 		<script>
 			$(document).ready(function () {
 				$('#divRss').FeedEk({
-		  FeedUrl: '{{FEED_URL}}',
+		  FeedUrl: '{{BRANDING.FEED_URL}}',
 		  MaxCount: 5,
 		  DateFormat: 'DD MMMM YYYY',
 		  DateFormatLang: 'en'
@@ -36,7 +36,7 @@
     <div class="row-fluid">
         <div class="row-fluid">
 			<h2>{% trans "Latest News" %}</h2>
-			{% if FEED_URL %}<div id="divRss"></div>{% else %}No news channel set.{% endif %}
+			{% if BRANDING.FEED_URL %}<div id="divRss"></div>{% else %}No news channel set.{% endif %}
 		</div>
 	</div>
 </div>

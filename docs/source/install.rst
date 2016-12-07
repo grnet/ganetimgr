@@ -114,7 +114,8 @@ Below are explanations for most of the settings:
 - Set ``STATIC_URL`` to the relative URL where Django expects the static resources (e.g. '/static/')
 - The ``BRANDING`` dictionary allows you to customize stuff like logos and social profiles.
   You can create your own logo starting with the static/branding/logo.* files.
-- ``FEED_URL`` is an RSS feed that is displayed in the user login page.
+- ``BRANDING.FEED_URL`` is an RSS feed that is displayed in the user login page.
+- ``BRANDING.ALNALYTICS_FILE_PATH`` is a file included in every page for analytics.
 - ``SHOW_ADMINISTRATIVE_FORM`` toggles the admin info panel for the instance application form.
 - ``SHOW_ORGANIZATION_FORM`` does the same for the Organization dropdown menu.
 - You can use use an analytics service (Piwik, Google Analytics) by editing ``templates/analytics.html`` and adding the JS code that is generated for you by the service. This is souruced from all the project's pages.
