@@ -48,14 +48,14 @@ Create database and user::
 Get the code
 ############
 
-Get the source and checkout to latest stable::
+Get the source and checkout master branch::
 
     mkdir /srv/
     mkdir /var/log/ganetimgr
     cd /srv/
     git clone https://github.com/grnet/ganetimgr.git
+    git checkout master
     cd ganetimgr
-    git checkout stable
 
 You can also checkout a tag if you prefer::
     git checkout tags/v1.6.0
