@@ -58,7 +58,7 @@ server {
     }
 
     location /static {
-         root   /srv/www/ganetimgr;
+         root   /srv/ganetimgr;
     }
 
     location /admin {
@@ -72,7 +72,7 @@ server {
     }
 
 #    location / {
-#         root   /srv/www/maintenance/;
+#         root   /srv/maintenance/;
 #    }
 
 }
