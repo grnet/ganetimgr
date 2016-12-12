@@ -1,6 +1,6 @@
 CONFIG = { 
     'mode': 'django',
-    'working_dir': '/srv/www/ganetimgr',
+    'working_dir': '/srv/ganetimgr',
     'user': 'www-data',
     'group': 'www-data',
     'args': (
@@ -8,6 +8,6 @@ CONFIG = {
         '--workers=2',
         '--worker-class=egg:gunicorn#gevent',
         '--timeout=30',
-        '--log-file=/var/log/ganetimgr.log',
+        '--log-file=/var/log/ganetimgr/ganetimgr.log',
     ),  
 }
