@@ -98,9 +98,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.staticfiles',
+    'registration',
     'accounts',
     'south',
-    'registration',
     'ganeti',
     'apply',
     'notifications',
@@ -115,16 +115,14 @@ INSTALLED_APPS = (
 # and want to use Redis for both, make sure you select a different db for each instance
 # Warning!!! Redis db should ALWAYS be an integer, denoting db index.
 # If memcache is your preferred cache, then select:
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-    }
-    # 'default': {
-    #     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-    #     'LOCATION': '127.0.0.1:11211',
-    #     'TIMEOUT': 1,
-    # }
-}
+CACHE_BACKEND="redis_cache.cache://127.0.0.1:6379?timeout=1500"
+#CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'LOCATION': '127.0.0.1:11211',
+#         'TIMEOUT': 1,
+#     }
+#}
 
 LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
@@ -172,7 +170,7 @@ ACCOUNT_ACTIVATION_DAYS = 10
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+#SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_COOKIE_AGE = 10800
 
 IDLE_ACCOUNT_NOTIFICATION_DAYS = '180'
@@ -200,7 +198,6 @@ NODATA_IMAGE = 'static/nodata.gif'
 
 WHITELIST_IP_MAX_SUBNET_V4 = 26
 WHITELIST_IP_MAX_SUBNET_V6 = 64
-
 
 # Choose whether to support websockets console or not.
 WEBSOCK_VNC_ENABLED = True
@@ -230,20 +227,20 @@ BRANDING = {
     "LOGO": "/static/ganetimgr/img/logo.png",
     "FAVICON": "/static/ganetimgr/img/favicon.ico",
     "MOTTO": "virtual private servers",
-    "FOOTER_ICONS_IFRAME": True,
+    "FOOTER_ICONS_IFRAME": False,
     # show the administrative contact
     # option when creating a new vm
     "SHOW_ADMINISTRATIVE_FORM": True,
     "SHOW_ORGANIZATION_FORM": True,
-    "TITLE": "GanetiMGR",
+    "TITLE": "ganetimgr",
     # RSS Feed for the login page
-    "FEED_URL": "http://lists.noc.grnet.gr/sympa/rss/latest_arc/vima-users?count=20&for=30",
+    "FEED_URL": "",
     # Analytics script path. See 'templates/includes/analytics.html.dist'
     "ANALYTICS_FILE_PATH": ""
 }
 
 # Set the email subject prefix:
-EMAIL_SUBJECT_PREFIX = "[GANETIMGR SERVICE] "
+EMAIL_SUBJECT_PREFIX = "[ganetimgr SERVICE] "
 SERVER_EMAIL = "no-reply@example.com"
 DEFAULT_FROM_EMAIL = "no-reply@example.com"
 
@@ -284,8 +281,8 @@ OPERATING_SYSTEMS = {
 
 
 # the urls of the available os images
-OPERATING_SYSTEMS_URLS = ['http://example.com/images']
-SNF_OPERATING_SYSTEMS_URLS = ['http://example.com/snf-images/']
+OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/']
+SNF_OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/snf-image/']
 
 
 # the provider and ssh key param
@@ -296,7 +293,7 @@ OPERATING_SYSTEMS_SSH_KEY_PARAM = 'img_ssh_key_url'
 SNF_IMG_PROPERTIES = {
         "SWAP": "2:512"
 }
-SNF_IMG_PASSWD = "example-passphrase"
+SNF_IMG_PASSWD = "example-passphrase-CHANGEME"
 
 #########################
 #                       #
