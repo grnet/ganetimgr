@@ -342,3 +342,58 @@ if 'oauth2_provider' in INSTALLED_APPS and 'corsheaders' in INSTALLED_APPS:
     CORS_ORIGIN_ALLOW_ALL = True
     MIDDLEWARE_CLASSES += ('corsheaders.middleware.CorsMiddleware',)
 
+#########################
+#                       #
+#       Logging         #
+#                       #
+#########################
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    }
+}
+
+#########################
+#                       #
+#       Sentry          #
+#                       #
+#########################
+SENTRY = {
+    'activate': False,
+    'sentry_dsn': ''
+}
+if SENTRY['activate']:
+    import raven
+    sentry_dsn = os.getenv("SENTRY_DSN") or SENTRY['sentry_dsn']
+    if not sentry_dsn:
+        raise RuntimeError("Sentry dsn not configured neither as environmental"
+                           " variable nor in the settings.py file")
+
+    RAVEN_CONFIG = {
+        'dsn': sentry_dsn,
+        'release': raven.fetch_git_sha(BASE_DIR)
+    }
+    INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
+    LOGGING['handlers']['sentry'] = {
+        'class': 'raven.contrib.django.handlers.SentryHandler'
+    }
+    LOGGING['loggers']['django.request']['handlers'] = ['sentry']
