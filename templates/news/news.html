@@ -9,13 +9,15 @@
 
 		<script>
 			$(document).ready(function () {
-				$('#divRss').FeedEk({
-		  FeedUrl: '{{BRANDING.FEED_URL}}',
-		  MaxCount: 5,
-		  DateFormat: 'DD MMMM YYYY',
-		  DateFormatLang: 'en'
-		});
-			});
+        $('#divRss').FeedEk({
+          FeedUrl: '{{BRANDING.FEED_URL}}',
+          MaxCount: 5,
+          DateFormat: 'DD MMMM YYYY',
+          DateFormatLang: 'en',
+          ShowDesc: false,
+          ShowPubDate: false
+        });
+      });
 		</script>
 	{% endif %}
 {% endblock %}

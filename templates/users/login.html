@@ -16,13 +16,15 @@
 <link rel="stylesheet" href="{% static 'ganetimgr/css/includes/resp-modal.css' %}">
 <link rel="stylesheet" href="{% static 'ganetimgr/css/includes/img-on-top.css' %}">
 <script>
-	$(document).ready(function () {
-		$('#divRss').FeedEk({
+  $(document).ready(function () {
+    $('#divRss').FeedEk({
       FeedUrl: '{{BRANDING.FEED_URL}}',
-			MaxCount: 5,
-			DateFormat: 'DD MMMM YYYY',
-			DateFormatLang: 'en'
-		});
+      MaxCount: 5,
+      DateFormat: 'DD MMMM YYYY',
+      DateFormatLang: 'en',
+      ShowDesc: false,
+      ShowPubDate: false
+    });
 
 		$('#id_username').focus();
 

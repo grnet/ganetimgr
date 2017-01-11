@@ -1,11 +1,7 @@
-/*FeedEk jQuery RSS/ATOM Feed Plugin v2.0
+/*
+* FeedEk jQuery RSS/ATOM Feed Plugin v3.0 with YQL API
+* http://jquery-plugins.net/FeedEk/FeedEk.html  https://github.com/enginkizil/FeedEk
+* Author : Engin KIZIL http://www.enginkizil.com   
+*/
 
-* http://jquery-plugins.net/FeedEk/FeedEk.html
-
-* https://github.com/enginkizil/FeedEk
-
-* Author : Engin KIZIL http://www.enginkizil.com */
-
-
-
-(function($){$.fn.FeedEk=function(opt){var def=$.extend({FeedUrl:"http://rss.cnn.com/rss/edition.rss",MaxCount:5,ShowDesc:true,ShowPubDate:true,CharacterLimit:0,TitleLinkTarget:"_blank",DateFormat:"",DateFormatLang:"en"},opt);var id=$(this).attr("id"),i,s="",dt;$("#"+id).empty().append('<img src="/static/ganetimgr/img/gifs/ajax-loader.gif" />');$.ajax({url:"//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num="+def.MaxCount+"&output=json&q="+encodeURIComponent(def.FeedUrl)+"&hl=en&callback=?",dataType:"json",success:function(data){$("#"+id).empty();$.each(data.responseData.feed.entries,function(e,item){s+='<li><div class="itemTitle"><a href="'+item.link+'" target="'+def.TitleLinkTarget+'" >'+item.title+"</a></div>";if(def.ShowPubDate){dt=new Date(item.publishedDate);if($.trim(def.DateFormat).length>0){try{moment.lang(def.DateFormatLang);s+='<div class="itemDate">'+moment(dt).format(def.DateFormat)+"</div>"}catch(e){s+='<div class="itemDate">'+dt.toLocaleDateString()+"</div>"}}else{s+='<div class="itemDate">'+dt.toLocaleDateString()+"</div>"}}if(def.ShowDesc){if(def.DescCharacterLimit>0&&item.content.length>def.DescCharacterLimit){s+='<div class="itemContent">'+item.content.substr(0,def.DescCharacterLimit)+"...</div>"}else{s+='<div class="itemContent">'+item.content+"</div>"}}});$("#"+id).append('<ul class="feedEkList">'+s+"</ul>")}})}})(jQuery);
+!function (a) { a.fn.FeedEk = function (b) { var g, c = a.extend({ MaxCount: 5, ShowDesc: !0, ShowPubDate: !0, DescCharacterLimit: 0, TitleLinkTarget: "_blank", DateFormat: "", DateFormatLang: "en" }, b), d = a(this).attr("id"), f = ""; if (a("#" + d).empty(), void 0 != c.FeedUrl) { a("#" + d).append('<img src="loader.gif" />'); var h = 'SELECT channel.item FROM feednormalizer WHERE output="rss_2.0" AND url ="' + c.FeedUrl + '" LIMIT ' + c.MaxCount; a.ajax({ url: "https://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent(h) + "&format=json&diagnostics=false&callback=?", dataType: "json", success: function (b) { a("#" + d).empty(), b.query.results.rss instanceof Array || (b.query.results.rss = [b.query.results.rss]), a.each(b.query.results.rss, function (b, d) { if (f += '<li><div class="itemTitle"><a href="' + d.channel.item.link + '" target="' + c.TitleLinkTarget + '" >' + d.channel.item.title + "</a></div>", c.ShowPubDate) { if (g = new Date(d.channel.item.pubDate), f += '<div class="itemDate">', a.trim(c.DateFormat).length > 0) try { moment.lang(c.DateFormatLang), f += moment(g).format(c.DateFormat) } catch (b) { f += g.toLocaleDateString() } else f += g.toLocaleDateString(); f += "</div>" } c.ShowDesc && (f += '<div class="itemContent">', f += c.DescCharacterLimit > 0 && d.channel.item.description.length > c.DescCharacterLimit ? d.channel.item.description.substring(0, c.DescCharacterLimit) + "..." : d.channel.item.description, f += "</div>") }), a("#" + d).append('<ul class="feedEkList">' + f + "</ul>") } }) } } }(jQuery); 
