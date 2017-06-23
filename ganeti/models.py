@@ -613,57 +613,59 @@ class Cluster(models.Model):
             cache.set("cluster:%s:listnodes" % self.slug, nodes, 180)
         return nodes
 
+    def refresh_nodes(self):
+        def update_info_used(node_info, iused, itotal, ifree):
+            try:
+                node_info[iused] = 100 * (
+                    node_info[itotal] - node_info[ifree]
+                ) / node_info[itotal]
+            except ZeroDivisionError:
+                '''this is the case where the node is offline and reports
+                none, thus it is 0'''
+                node_info[iused] = 0
+
+        def update_node_info(node_info):
+            node_info['cluster'] = self.slug
+            for info_key in ("mfree", "mtotal", "dtotal", "dfree"):
+                if node_info[info_key] is None:
+                    node_info[info_key] = 0
+
+            for keys in (("mem_used", "mtotal", "mfree"),
+                         ("disk_used", "dtotal", "dfree")):
+                update_info_used(node_info, *keys)
+
+            node_info['shared_storage'] = False
+
+        cachenodes = []
+        nodes = parseQuery(
+            self._client.Query(
+                'node',
+                [
+                    'name',
+                    'role',
+                    'mfree',
+                    'mtotal',
+                    'dtotal',
+                    'dfree',
+                    'ctotal',
+                    'group',
+                    'pinst_cnt',
+                    'offline',
+                    'vm_capable',
+                    'pinst_list'
+                ]))
+
+        for info in nodes:
+            update_node_info(info)
+            cachenodes.append(info)
+        nodes = cachenodes
+        cache.set("cluster:%s:nodes" % self.slug, nodes, 180)
+        return nodes
+
     def get_cluster_nodes(self):
         nodes = cache.get("cluster:%s:nodes" % self.slug)
         if nodes is None:
-            cachenodes = []
-            nodes = parseQuery(
-                self._client.Query(
-                    'node',
-                    [
-                        'name',
-                        'role',
-                        'mfree',
-                        'mtotal',
-                        'dtotal',
-                        'dfree',
-                        'ctotal',
-                        'group',
-                        'pinst_cnt',
-                        'offline',
-                        'vm_capable',
-                        'pinst_list'
-                    ]))
-            for info in nodes:
-                info['cluster'] = self.slug
-                if info['mfree'] is None:
-                    info['mfree'] = 0
-                if info['mtotal'] is None:
-                    info['mtotal'] = 0
-                if info['dtotal'] is None:
-                    info['dtotal'] = 0
-                if info['dfree'] is None:
-                    info['dfree'] = 0
-                try:
-                    info['mem_used'] = 100 * (
-                        info['mtotal'] - info['mfree']
-                    ) / info['mtotal']
-                except ZeroDivisionError:
-                    '''this is the case where the node is offline and reports
-                    none, thus it is 0'''
-                    info['mem_used'] = 0
-                try:
-                    info['disk_used'] = 100 * (
-                        info['dtotal'] - info['dfree']
-                    ) / info['dtotal']
-                except ZeroDivisionError:
-                    '''this is the case where the node is offline and reports
-                    none, thus it is 0'''
-                    info['disk_used'] = 0
-                info['shared_storage'] = False
-                cachenodes.append(info)
-            nodes = cachenodes
-            cache.set("cluster:%s:nodes" % self.slug, nodes, 180)
+            nodes = self.refresh_nodes()
         return nodes
 
     def get_available_nodes(self, node_group, number_of_nodes):
