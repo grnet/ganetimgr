@@ -483,32 +483,36 @@ class Cluster(models.Model):
             else:
                 raise
 
+    def refresh_instances(self):
+        instances = parseQuery(
+            self._client.Query(
+                'instance',
+                [
+                    'name',
+                    'tags',
+                    'pnode',
+                    'snodes',
+                    'disk.sizes',
+                    'nic.modes',
+                    'nic.ips',
+                    'nic.links',
+                    'status',
+                    'admin_state',
+                    'beparams',
+                    'oper_state',
+                    'hvparams',
+                    'nic.macs',
+                    'ctime',
+                    'mtime'
+                ]))
+        cache.set("cluster:{0}:instances".format(self.slug), instances, 180)
+        return instances
+
     def get_instances(self):
-        retinstances = []
         instances = cache.get("cluster:%s:instances" % self.slug)
         if instances is None:
-            instances = parseQuery(
-                self._client.Query(
-                    'instance',
-                    [
-                        'name',
-                        'tags',
-                        'pnode',
-                        'snodes',
-                        'disk.sizes',
-                        'nic.modes',
-                        'nic.ips',
-                        'nic.links',
-                        'status',
-                        'admin_state',
-                        'beparams',
-                        'oper_state',
-                        'hvparams',
-                        'nic.macs',
-                        'ctime',
-                        'mtime'
-                    ]))
-            cache.set("cluster:%s:instances" % self.slug, instances, 180)
+            instances = self.refresh_instances()
+
         users, orgs, groups, instanceapps, networks = preload_instance_data()
         retinstances = [
             Instance(
