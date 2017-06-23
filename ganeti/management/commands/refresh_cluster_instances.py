@@ -18,3 +18,4 @@ class Command(BaseCommand):
         for cluster in self.fetch_clusters(options.get("clusters")):
             print("Refreshing cache for cluster: {0}".format(cluster))
             cluster.refresh_instances()
+            cluster.refresh_nodes()
