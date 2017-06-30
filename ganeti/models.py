@@ -483,7 +483,7 @@ class Cluster(models.Model):
             else:
                 raise
 
-    def refresh_instances(self):
+    def refresh_instances(self, seconds=180):
         instances = parseQuery(
             self._client.Query(
                 'instance',
@@ -505,7 +505,8 @@ class Cluster(models.Model):
                     'ctime',
                     'mtime'
                 ]))
-        cache.set("cluster:{0}:instances".format(self.slug), instances, 180)
+        cache.set("cluster:{0}:instances".format(self.slug),
+                  instances, seconds)
         return instances
 
     def get_instances(self):
@@ -613,7 +614,7 @@ class Cluster(models.Model):
             cache.set("cluster:%s:listnodes" % self.slug, nodes, 180)
         return nodes
 
-    def refresh_nodes(self):
+    def refresh_nodes(self, seconds=180):
         def update_info_used(node_info, iused, itotal, ifree):
             try:
                 node_info[iused] = 100 * (
@@ -659,7 +660,7 @@ class Cluster(models.Model):
             update_node_info(info)
             cachenodes.append(info)
         nodes = cachenodes
-        cache.set("cluster:%s:nodes" % self.slug, nodes, 180)
+        cache.set("cluster:%s:nodes" % self.slug, nodes, seconds)
         return nodes
 
     def get_cluster_nodes(self):
