@@ -1286,13 +1286,3 @@ def parseQuerysimple(response):
             res_list.append(result[1])
         reslist.append(res_list)
     return reslist
-
-
-@receiver(pre_save, sender=Cluster)
-def check_if_cluster_is_disabled(sender, **kwargs):
-    instance = kwargs.get('instance')
-    # if instance is disabled
-    # we need to clear cache
-    if instance.disabled:
-        cache.delete("cluster:%s:instances" % instance.slug)
-
