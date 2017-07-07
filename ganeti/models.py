@@ -414,10 +414,10 @@ class Cluster(models.Model):
         return self.hostname
 
     def _instance_cache_key(self, instance):
-        return "cluster:%s:instance:%s" % (self.slug, instance)
+        return "cluster:{0}:instance:{1}".format(self.hostname, instance)
 
     def _instance_lock_key(self, instance):
-        return "cluster:%s:instance:%s:lock" % (self.slug, instance)
+        return "cluster:{0}:instance:{1}:lock".format(self.hostname, instance)
 
     def _lock_instance(self, instance, reason="locked",
                        timeout=30, job_id=None):
@@ -505,12 +505,12 @@ class Cluster(models.Model):
                     'ctime',
                     'mtime'
                 ]))
-        cache.set("cluster:{0}:instances".format(self.slug),
+        cache.set("cluster:{0}:instances".format(self.hostname),
                   instances, seconds)
         return instances
 
     def get_instances(self):
-        instances = cache.get("cluster:%s:instances" % self.slug)
+        instances = cache.get("cluster:{0}:instances".format(self.hostname))
         if instances is None:
             instances = self.refresh_instances()
 
@@ -539,7 +539,7 @@ class Cluster(models.Model):
         for i in instances:
             if i['name'] == instance:
                 i['action_lock'] = True
-        cache.set("cluster:%s:instances" % self.slug, instances, 45)
+        cache.set("cluster:{0}:instances".format(self.hostname), instances, 45)
         users, orgs, groups, instanceapps, networks = preload_instance_data()
         retinstances = [
             Instance(
@@ -578,7 +578,7 @@ class Cluster(models.Model):
             ]
 
     def get_cluster_info(self):
-        info = cache.get("cluster:%s:info" % self.slug)
+        info = cache.get("cluster:{0}:info".format(self.hostname))
 
         if info is None:
             info = self._client.GetInfo()
@@ -586,7 +586,7 @@ class Cluster(models.Model):
                 info['ctime'] = datetime.fromtimestamp(info['ctime'])
             if 'mtime' in info and info['mtime']:
                 info['mtime'] = datetime.fromtimestamp(info['mtime'])
-            cache.set("cluster:%s:info" % self.slug, info, 180)
+            cache.set("cluster:{0}:info".format(self.hostname), info, 180)
 
         return info
 
@@ -608,10 +608,11 @@ class Cluster(models.Model):
         return ext_providers
 
     def list_cluster_nodes(self):
-        nodes = cache.get("cluster:%s:listnodes" % self.slug)
+        nodes = cache.get("cluster:{0}:listnodes".format(self.hostname))
         if nodes is None:
             nodes = self._client.GetNodes()
-            cache.set("cluster:%s:listnodes" % self.slug, nodes, 180)
+            cache.set("cluster:{0}:listnodes".format(self.hostname),
+                      nodes, 180)
         return nodes
 
     def refresh_nodes(self, seconds=180):
@@ -626,7 +627,7 @@ class Cluster(models.Model):
                 node_info[iused] = 0
 
         def update_node_info(node_info):
-            node_info['cluster'] = self.slug
+            node_info['cluster'] = self.hostname
             for info_key in ("mfree", "mtotal", "dtotal", "dfree"):
                 if node_info[info_key] is None:
                     node_info[info_key] = 0
@@ -660,11 +661,11 @@ class Cluster(models.Model):
             update_node_info(info)
             cachenodes.append(info)
         nodes = cachenodes
-        cache.set("cluster:%s:nodes" % self.slug, nodes, seconds)
+        cache.set("cluster:{0}:nodes".format(self.hostname), nodes, seconds)
         return nodes
 
     def get_cluster_nodes(self):
-        nodes = cache.get("cluster:%s:nodes" % self.slug)
+        nodes = cache.get("cluster:{0}:nodes".format(self.hostname))
         if nodes is None:
             nodes = self.refresh_nodes()
         return nodes
@@ -683,18 +684,19 @@ class Cluster(models.Model):
         return ret_nodes[0:number_of_nodes]
 
     def get_node_groups(self):
-        info = cache.get('cluster:%s:nodegroups' % self.slug)
+        info = cache.get('cluster:{0}:nodegroups'.format(self.hostname))
         if info is None:
             #info = parseQuery(self._client.Query('group',['name', 'tags']))
             info = self._client.GetGroups(bulk=True)
-            cache.set('cluster:%s:nodegroups' % self.slug, info, 180)
+            cache.set('cluster:{0}:nodegroups'.format(self.hostname),
+                      info, 180)
         return info
 
     def get_networks(self):
-        info = cache.get('cluster:%s:networks' % self.slug)
+        info = cache.get('cluster:{0}:networks'.format(self.hostname))
         if info is None:
             info = self._client.GetNetworks(bulk=True)
-            cache.set('cluster:%s:networks' % self.slug, info, 180)
+            cache.set('cluster:{0}:networks'.format(self.hostname), info, 180)
         return info
 
     def get_node_group_networks(self, nodegroup):
@@ -787,25 +789,22 @@ class Cluster(models.Model):
         return self._client.GetInstances(bulk=True)
 
     def get_node_group_info(self, nodegroup):
-        info = cache.get("cluster:%s:nodegroup:%s" % (self.slug, nodegroup))
+        info = cache.get("cluster:{0}:nodegroup:{1}"
+                         .format(self.hostname, nodegroup))
         if info is None:
             info = self._client.GetGroup(nodegroup)
-            info['cluster'] = self.slug
-            cache.set("cluster:%s:nodegroup:%s" % (
-                self.slug,
-                nodegroup
-            ), info, 180)
+            info['cluster'] = self.hostname
+            cache.set("cluster:{0}:nodegroup:{1}"
+                      .format(self.hostname, nodegroup), info, 180)
         return info
 
     def get_node_info(self, node):
-        info = cache.get("cluster:%s:node:%s" % (self.slug, node))
+        info = cache.get("cluster:{0}:node:{1}".format(self.hostname, node))
         if info is None:
             for info in self.get_cluster_nodes():
                 if info['name'] == node:
-                    cache.set("cluster:%s:node:%s" % (
-                        self.slug,
-                        node
-                    ), info, 180)
+                    cache.set("cluster:{0}:node:{1}"
+                              .format(self.hostname, node), info, 180)
                     return info
         return info
 
@@ -959,7 +958,8 @@ class Cluster(models.Model):
         '''
         gets all locked nodegroups and finds all their nodes.
         '''
-        locked = cache.get('cluster:%s:lockednodegroups:nodes')
+        locked = cache.get('cluster:{0}:lockednodegroups:nodes'
+                           .format(self.hostname))
         if locked:
             return locked
         locked = []
@@ -967,7 +967,8 @@ class Cluster(models.Model):
         for group in groups:
             if 'locked' in group.get('tags'):
                 locked.extend(group.get('node_list'))
-        cache.set('cluster:%s:lockednodegroups:nodes' % self.slug, locked)
+        cache.set('cluster:{0}:lockednodegroups:nodes'.format(self.hostname),
+                  locked)
         return locked
 
     def destroy_instance(self, instance):
