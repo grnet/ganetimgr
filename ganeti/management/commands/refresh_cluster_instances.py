@@ -1,5 +1,10 @@
+import sys
+import logging
 from django.core.management.base import BaseCommand
 from ganeti.models import Cluster
+
+
+logger = logging.getLogger('django.request')
 
 
 class Command(BaseCommand):
@@ -26,6 +31,14 @@ class Command(BaseCommand):
             cluster.refresh_nodes()
 
     def handle(self, *args, **options):
+        exit_code = 0
         for cluster in self.fetch_clusters(options.get("clusters")):
             print("Refreshing cache for cluster: {0}".format(cluster))
-            self.refresh(cluster, options.get("seconds"))
+            try:
+                self.refresh(cluster, options.get("seconds"))
+            except Exception as err:
+                logger.error("Error while refreshing cache for cluster {0}: "
+                             "{1}".format(cluster, err))
+                exit_code = 1
+
+        sys.exit(exit_code)
