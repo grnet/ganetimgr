@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from ganeti.models import Cluster
 
 
-logger = logging.getLogger('django.request')
+logger = logging.getLogger('refresh_logger')
 
 
 class Command(BaseCommand):
@@ -37,7 +37,7 @@ class Command(BaseCommand):
             try:
                 self.refresh(cluster, options.get("seconds"))
             except Exception as err:
-                logger.error("Error while refreshing cache for cluster {0}: "
+                logger.debug("Error while refreshing cache for cluster {0}: "
                              "{1}".format(cluster, err))
                 exit_code = 1
 
