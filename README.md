@@ -12,7 +12,8 @@ In essence, ganetimgr aims to be the frontend of a VPS service.
 - 2010-2012 Apollon Oikonomopoulos (@apoikos)
 - 2011-2014 Leonidas Poulopoulos (@leopoul)
 - 2014-2015 Stavros Kroustouris (@kroustou)
-- 2015 Sergios Aftsidis (@sergafts)
+- 2015-2017 Sergios Aftsidis (@sergafts)
+- 2017 John Paraskevopoulos (@ioparaskev)
 
 ## Contribution
 
@@ -38,7 +39,7 @@ User discussions: ganetimgr-users@lists.grnet.gr
 
 ## Copyright and license
 
-Copyright © 2010-2015 Greek Research and Technology Network (GRNET S.A.)
+Copyright © 2010-2017 Greek Research and Technology Network (GRNET S.A.)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
