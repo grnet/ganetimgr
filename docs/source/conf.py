@@ -44,7 +44,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'ganetimgr'
-copyright = u'2016, GRNET NOC, GRNET S.A'
+copyright = u'2017, GRNET NOC, GRNET S.A'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
