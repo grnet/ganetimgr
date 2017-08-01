@@ -172,6 +172,7 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 #SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_COOKIE_AGE = 10800
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 IDLE_ACCOUNT_NOTIFICATION_DAYS = '180'
 
