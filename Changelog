@@ -1,3 +1,24 @@
+1.7 RELEASE
+Features/Bugfixing release
+
+Requirements:
+    - South migration: python manage.py migrate
+    - Update settings.py to settings.py.dist
+
+New features:
+
+    - Registration now requires both email validation (from the user) & admin
+    approval
+    - Management command that refreshes the cached instances / clusters
+    - Display an instance's secondary node(s)
+    - Add an extra status for instance applications (STATUS_DISCARDED)
+    - Support (optional) error logging on Sentry
+
+Fixes/Improvements
+    - Fixes in docs
+    - Fix wrong network name in instance creation
+    - Better handling of subject prefixes, locale & other in email messages
+
 1.6 RELEASE
 Features/Bugfixing release
 
