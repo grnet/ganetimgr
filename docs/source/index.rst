@@ -60,6 +60,7 @@ Table of Contents
    vnc
    admin
    patches
+   version2
    upgrade
    interface
    devel
