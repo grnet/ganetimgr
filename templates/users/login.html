@@ -100,6 +100,15 @@
 												<img src="{% static 'ganetimgr/img/video-crop.png' %}" style="">
 											</div>
 										{% endif %}
+                                        {% with about_link=BRANDING.ABOUT_LINK  %}
+                                            {% if about_link %}
+                                                <a href="{{ about_link }}" target="_blank">
+                                                    {% blocktrans %}
+                                                        <p>Learn more about the educational content for the service ViMa</p>
+                                                    {% endblocktrans %}
+                                                </a>
+                                            {% endif %}
+                                        {% endwith %}
 									</div>
 								</div>
 							</div>
