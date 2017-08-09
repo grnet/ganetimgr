@@ -1,19 +1,25 @@
-gevent==0.13.6
+## dependencies for the ganetimgr project
 django==1.8
-# get master branch of django registration redux until a correct tag is released
--e git+git://github.com/macropin/django-registration.git#egg=django-registration-redux
+# we target the latest LTS release
+gevent==1.1.1
+# gevent is used to pool cluster RAPI communication
+django-registration-redux==1.6
+# used for our registration workflow
 paramiko==1.12.1
+# used for user SSH key management
 python-daemon==1.5.5
+# used by watcher
 setproctitle==1.0.1
+# used by watcher to set it's process name
 pycurl==7.19.0
+# depenency for ganeti client library
 recaptcha-client==1.0.6
+# used in the registration form
 ipaddr==2.1.10
+# used to calculate Instance ipv6addresses
 beautifulsoup4==4.1.0
-requests==2.7.0
-requests-oauthlib==0.5.0
-requests-toolbelt==0.4.0
+# used by the image autodiscovery mechanism
+requests==2.4.3
+# used by the image autodiscovery mechanism
 beanstalkc==0.4.0
-
-# Optional requirements
-django-cors-headers==1.1.0
-django-oauth-toolkit==0.10.0
+# used to pass messages between watcher and django
