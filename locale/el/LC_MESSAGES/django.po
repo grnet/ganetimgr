@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-21 16:58+0300\n"
+"POT-Creation-Date: 2017-08-10 12:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Leonidas Poulopoulos <alex@noc.grnet.gr>\n"
 "Language-Team: GRNET NOC <noc@noc.grnet.gr>\n"
@@ -236,11 +236,6 @@ msgstr "Τα ακόλουθα κλειδιά υπήρχαν ήδη και δεν
 msgid "Password changed!"
 msgstr "Ο κωδικός άλλαξε!"
 
-#: ganeti/fields/jsonfield/fields.py:24 ganeti/fields/jsonfield/fields.py:36
-#: ganeti/fields/jsonfield/fields.py:74
-msgid "Enter valid JSON"
-msgstr "Εισάγετε έγκυρο JSON"
-
 #: ganeti/forms.py:34
 msgid "Type a username or group name"
 msgstr "Πληκτρολογήστε ένα όνομα χρήστη ή το όνομα ομάδας"
@@ -321,7 +316,7 @@ msgstr "Ανεργό, θα έπρεπε να είναι ενεργό"
 msgid "modifying"
 msgstr "γίνεται τροποποίηση των παραμέτρων της μηχανής"
 
-#: ganeti/models.py:1065
+#: ganeti/models.py:1075
 msgid "creating"
 msgstr "η μηχανή δημιουργείται"
 
@@ -437,7 +432,7 @@ msgstr "Δημιουργία νέας εικονικής μηχανής"
 #: templates/clusters/clusters.html:9 templates/flatpages/faq.html:28
 #: templates/graphs/nodes-graphs.html:18 templates/instances/instance.html:63
 #: templates/instances/novnc.html:259 templates/instances/vnc.html:12
-#: templates/jobs/jobs.html:35 templates/news/news.html:30
+#: templates/jobs/jobs.html:35 templates/news/news.html:32
 #: templates/notifications/create.html:8
 #: templates/notifications/detail.html:10 templates/stats/statistics.html:264
 #: templates/users/idle_accounts.html:59 templates/users/profile.html:38
@@ -836,7 +831,7 @@ msgstr "Το προφίλ μου"
 msgid "Logout"
 msgstr "Έξοδος"
 
-#: templates/base.html:173 templates/base.html.py:210
+#: templates/base.html:173 templates/base.html.py:209
 #: templates/stats/statistics.html:326
 msgid "Applications"
 msgstr "Αιτήσεις"
@@ -879,9 +874,9 @@ msgstr "Στατιστικά"
 msgid "Idle Accounts"
 msgstr "Αδρανείς Λογαριασμοί"
 
-#: templates/base.html:221 templates/news/news.html:24
-#: templates/news/news.html.py:31 templates/news/news.html:38
-#: templates/users/login.html:76
+#: templates/base.html:221 templates/news/news.html:26
+#: templates/news/news.html.py:33 templates/news/news.html:40
+#: templates/users/login.html:78
 msgid "Latest News"
 msgstr "Τελευταία Νέα"
 
@@ -1572,6 +1567,7 @@ msgid "You may login using the following URL:"
 msgstr "Μπορείτε να συνδεθείτε χρησιμοποιώντας το παρακάτω URL: "
 
 #: templates/registration/admin_approve_email.txt:1
+#, python-format
 msgid ""
 "User %(full_name)s has registered for a new account.\n"
 "\n"
@@ -1585,7 +1581,8 @@ msgstr ""
 "Όνομα χρήστη: %(username)s\n"
 "E-mail: %(email)s\n"
 "\n"
-"Για να εγκρίνετε το λογαριασμό του χρήστη, χρησιμοποιείστε τον ακόλουθο σύνδεσμο:\n"
+"Για να εγκρίνετε το λογαριασμό του χρήστη, χρησιμοποιείστε τον ακόλουθο "
+"σύνδεσμο:\n"
 
 #: templates/registration/admin_approve_email.txt:11
 msgid ""
@@ -1922,16 +1919,16 @@ msgstr "E-mail"
 msgid "Last Login"
 msgstr "Τελευταία Είσοδος"
 
-#: templates/users/login.html:8 templates/users/login.html.py:108
-#: templates/users/login.html:138
+#: templates/users/login.html:8 templates/users/login.html.py:119
+#: templates/users/login.html:149
 msgid "Login"
 msgstr "Είσοδος"
 
-#: templates/users/login.html:85
+#: templates/users/login.html:87
 msgid "Welcome"
 msgstr "Καλωσήλθατε"
 
-#: templates/users/login.html:87
+#: templates/users/login.html:89
 #, python-format
 msgid ""
 "\n"
@@ -1948,7 +1945,7 @@ msgstr ""
 "τρέχουσας σελίδας και στη συνέχεια αιτηθείτε ένα νέο λογαριασμό χρήστη.</p>\n"
 "\t\t\t\t\t\t\t\t\t\t"
 
-#: templates/users/login.html:91
+#: templates/users/login.html:93
 #, python-format
 msgid ""
 "\n"
@@ -1965,15 +1962,27 @@ msgstr ""
 "</p>\n"
 "\t\t\t\t\t\t\t\t\t\t"
 
-#: templates/users/login.html:111
+#: templates/users/login.html:106
+msgid ""
+"\n"
+"                                                        <p>Learn more about "
+"the educational content for the service ViMa</p>\n"
+"                                                    "
+msgstr ""
+"\n"
+"<p>Περισσότερες πληροφορίες σχετικά με το εκπαιδευτικό περιεχόμενο για την "
+"υπηρεσία ViMa</p>\n"
+"                                            "
+
+#: templates/users/login.html:122
 msgid "Your username and password didn't match. Please try again."
 msgstr "Ο συνδυασμός ονόματος χρήστη και κωδικού δεν είναι έγκυρος"
 
-#: templates/users/login.html:143
+#: templates/users/login.html:154
 msgid "Forgot password?"
 msgstr "Ξεχάσατε τον κωδικό σας;"
 
-#: templates/users/login.html:144
+#: templates/users/login.html:155
 msgid "Register a new account"
 msgstr "Εγγραφή νέου χρήστη"
 
@@ -2129,3 +2138,6 @@ msgstr "Προσθήκη νέου κλειδιού"
 #: templates/users/user_keys.html:116
 msgid "Add key"
 msgstr "Προσθήκη κλειδιού"
+
+#~ msgid "Enter valid JSON"
+#~ msgstr "Εισάγετε έγκυρο JSON"
