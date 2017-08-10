@@ -53,9 +53,13 @@ We need Django, gunicorn and gevent from backports:
     
     apt-get install -t jessie-backports python-django gunicorn python-gevent
 
-We prefer to target Django's LTS releases for the project, and we found a bug
-with gevent and Jessie's python base.
+We prefer to target Django's LTS releases for the project, so we used Django
+v1.8 from backports. Moreover, we found a bug with gevent on Jessie's python
+base & another one with gevent, so we used the ones available from backports again
 
+Further Info:
+ - [ssl broken for python > 2.7.9](https://github.com/gevent/gevent/issues/477)
+ - [gunicorn StopIteration](https://github.com/benoitc/gunicorn/issues/790)
 
 We replaced `django-registration` with `django-registration-redux`.
 There is no official Debian package for registration-redux, so for this package
