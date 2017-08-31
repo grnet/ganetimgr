@@ -214,6 +214,10 @@ WEBSOCK_VNC_ENABLED = True
 NOVNC_PROXY = "vnc.proxy.com:8888"
 NOVNC_USE_TLS = True
 
+# Legacy VNC refers to the Java applet console.
+# We consider this deprecated so from now on will default to off.
+LEGACY_VNC_ENABLED = False
+
 BRANDING = {
     "SERVICE_PROVIDED_BY": {
         "NAME": "EXAMPLE",

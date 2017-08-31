@@ -15,6 +15,7 @@
 {% endblock %}
 
 {% block content %}
+{% if LEGACY_VNC_ENABLED %}
 <div class="span11 main-content">
     <div class="row-fluid">
         <div class="row-fluid">
@@ -30,4 +31,10 @@
 		</div>
 	</div>
 </div>
+{% else %}
+<div class="span11 main-content">
+	<div class="row-fluid">
+		Java VNC is not enabled.
+	</div>
+{% endif %}
 {% endblock %}

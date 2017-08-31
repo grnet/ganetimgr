@@ -27,6 +27,7 @@ def settings_vars(context):
         'HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS': settings.HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS if hasattr(settings, 'HELPDESK_INTEGRATION_JAVASCRIPT_PARAMS') else '',
         'VERSION': settings.SW_VERSION if hasattr(settings, 'SW_VERSION') else '',
         'WEBSOCK_VNC_ENABLED': settings.WEBSOCK_VNC_ENABLED if hasattr(settings, 'WEBSOCK_VNC_ENABLED') else '',
+        'LEGACY_VNC_ENABLED': getattr(settings, 'LEGACY_VNC_ENABLED', ''),
         'BRANDING': settings.BRANDING if hasattr(settings, 'BRANDING') else '',
         'FLATPAGES': settings.FLATPAGES if hasattr(settings, 'FLATPAGES') else '',
         'COLLECTD_URL': settings.COLLECTD_URL if hasattr(settings, 'COLLECTD_URL') else ''
