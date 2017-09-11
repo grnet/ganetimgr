@@ -1184,12 +1184,10 @@ class InstanceActionManager(models.Manager):
     ):
         # create a new action and expireany older actions
         for oldaction in self.filter(
-            applicant=user,
-            instance=instance,
-            cluster=cluster,
-            action=action
-        ).exclude(activation_key='ALREADY_ACTIVATED'):
-            action.expire_now()
+                applicant=user, instance=instance, cluster=cluster,
+                action=action).exclude(activation_key='ALREADY_ACTIVATED'):
+            oldaction.expire_now()
+
         salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
         activation_key = hashlib.sha1(salt + user.username).hexdigest()
         return self.create(
