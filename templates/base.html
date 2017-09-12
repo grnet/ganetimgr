@@ -106,21 +106,23 @@
                 <div class="navbar-inner">
                     <ul class="nav pull-right">
                     {% if user.is_authenticated %}
-                        {% if request.user.is_superuser %}
-                        <li ><a href="#" id="clearcache"> <i class="fa fa-adjust"></i> {% trans "Clear Cache" %}</a></li>
-                        {% endif %}
                         {% if FLATPAGES.FAQ %}
                         <li class="hidden-phone">
                             <a href="/about/faq/{{ LANGUAGE_CODE }}">{% trans "FAQ" %}</a>
                         </li>
                         {% endif %}
-                        {% if user.is_superuser %}
-                            <li ><a href="{% url 'admin:index' %}" ><i class="fa fa-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
-                        {% endif %}
                     {% endif %}
-                        <li class="dropdown pull-right hidden-phone">
+                    <!-- language dropdown -->
+                    <li class="dropdown pull-right hidden-phone">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                {% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<i class="fa fa-caret-down"></i>
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                                {% trans "Language" %}: 
+                                {% for lang in LANGUAGES %}
+                                    {% ifequal LANGUAGE_CODE lang.0 %}
+                                        {% trans lang.1 %}
+                                    {% endifequal %}
+                                {% endfor %}
+                                <i class="fa fa-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu ">
                             <form action="{% url 'setlang' %}" method="post" style="display:inline;" id="langform" >
@@ -135,19 +137,27 @@
                           {% endfor %}
                         </ul>
                     </li>
+                    <!-- language dropdown -->
+                    <!-- user profile dropdown -->
                     {% if user.is_authenticated %}
-                    <li id="fat-menu" class="dropdown">
-                        <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-user"></i> {{user}}
-                            <i class="fa fa-caret-down"></i>
-                        </a>
+                            <li id="fat-menu" class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-user"></i> {{user}}
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
 
-                        <ul class="dropdown-menu">
-                            <li><a tabindex="-1" href="{% url 'profile' %}">{% trans "My Profile" %}</a></li>
-                            <li class="divider visible-phone"></li>
-                            <li><a tabindex="-1" href="{% url 'logout' %}">{% trans "Logout" %}</a></li>
-                        </ul>
-                    </li>
+                                <ul class="dropdown-menu">
+                                    {% if request.user.is_superuser %}
+                                            <li ><a href="#" id="clearcache"> <i class="fa fa-adjust"></i> {% trans "Clear Cache" %}</a></li>
+                                            <li ><a href="{% url 'admin:index' %}" ><i class="fa fa-cogs"></i> <span>{% trans "Admin" %}</span></a></li>
+                                            <li class="divider"></li>
+                                    {% endif %}
+
+
+                                    <li><a tabindex="-1" href="{% url 'profile' %}"><i class="fa fa-sliders" aria-hidden="true"></i>{% trans "My Profile" %}</a></li>
+                                    <li><a tabindex="-1" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i> {% trans "Logout" %}</a></li>
+                                </ul>
+                            </li>
                     {% endif %}
                 </ul>
                 <a  href="{% url 'user-instances' %}">
