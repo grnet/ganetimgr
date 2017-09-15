@@ -37,8 +37,8 @@ class Command(BaseCommand):
             try:
                 self.refresh(cluster, options.get("seconds"))
             except Exception as err:
-                logger.warning("Error while refreshing cache for cluster {0}: "
-                               "{1}".format(cluster, err))
+                logger.info("Error while refreshing cache for cluster {0}: {1}"
+                            .format(cluster, err))
                 exit_code = 1
 
         sys.exit(exit_code)
