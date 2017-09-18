@@ -90,7 +90,7 @@ Make sure you update the following on `settings.py`:
  - Remove south from `INSTALLED_APPS` from `settings.py`
  - Change `NODATA_IMAGE` to this:
     ```
-    NODATA_IMAGE = 'static/ganetimgr/img/nodata.jpg
+    NODATA_IMAGE = 'static/ganetimgr/img/nodata.jpg'
     ```
   - Add these anywhere:
     ```
