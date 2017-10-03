@@ -23,3 +23,5 @@ requests==2.4.3
 # used by the image autodiscovery mechanism
 beanstalkc==0.4.0
 # used to pass messages between watcher and django
+django-redis-cache==1.7.1
+# used to cache cluster nodes/instances info
