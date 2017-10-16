@@ -96,7 +96,8 @@ def clusternodes_json(request, cluster=None):
                 ", ".join(bad_nodes)
             )
         for node in nodes:
-            if not cluster or (cluster and node['cluster'] == cluster.slug):
+            if (not cluster or
+                    (cluster and node['cluster'] == cluster.hostname)):
                 node_dict = {}
                 node_dict['name'] = node['name']
                 # node_dict['node_group'] = node['node_group']
