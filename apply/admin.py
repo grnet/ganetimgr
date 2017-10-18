@@ -25,7 +25,7 @@ class InstanceApplicationAdmin(admin.ModelAdmin):
                     "status", "filed"]
     list_filter = ["status", "organization"]
     search_fields = [
-        "hostname", "applicant", "organization", "cluster", "status", "filed"
+        "hostname", "applicant__username", "organization__title", "status", "filed"
     ]
     list_editable = ["organization"]
     readonly_fields = ["job_id", "backend_message", "reviewer"]
