@@ -618,6 +618,7 @@ class Cluster(models.Model):
 
         def update_node_info(node_info):
             node_info['cluster'] = self.hostname
+            node_info['cluster_slug'] = self.slug
             for info_key in ("mfree", "mtotal", "dtotal", "dfree"):
                 if node_info[info_key] is None:
                     node_info[info_key] = 0
