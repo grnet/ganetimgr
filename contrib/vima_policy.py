@@ -27,6 +27,7 @@ import sys
 import argparse
 import logging
 import requests
+from collections import defaultdict
 
 sys.path.insert(1, "/srv/ganetimgr")
 os.environ['DJANGO_SETTINGS_MODULE'] = 'ganetimgr.settings'
@@ -45,7 +46,6 @@ exclude_tag='vima:policy:exclude'
 logging.basicConfig(level=logging.INFO, filename=LOGFILE, filemode="a+",
                     format="%(asctime)-15s %(levelname)-8s %(message)s")
 
-broken_link_vms=[]
 users={}
 
 DAYS=180
@@ -106,7 +106,7 @@ BrokenMessage = u"""
     ενεργα.
     Παρακαλούμε αφαιρέστε τα ή αντικαταστείστε τα με ενεργά URL.
 
-%s
+{info}
 
     Για οποιαδήποτε απορία, παρακαλώ επικοινωνήστε με το Γραφείο Αρωγής Χρηστών
     της ΕΔΕΤ  support@grnet.gr
@@ -129,13 +129,8 @@ def find_vm_owner(vm):
     return owners
 
 
-def sendemail(rcpt,sender,message, subj):
-    if not dry_run:
-        send_mail(subj, message, sender, rcpt)
-
-
 def user_vms(usr):
-    '''Return a list with usr's vms'''
+    """Return a list with usr's vms"""
     vms = Instance.objects.filter(user=usr.username)
     return vms
 
@@ -161,68 +156,37 @@ def only_active_owner(vm, user):
             return False
 
 
-def main():
-    logging.info("#### The dry mode is %s", "ON" if dry_run else "OFF")
-    logging.info("#### Script is checking for %s", "Broken URLS" if \
-                  broken_url else "Inactive Users")
-    if broken_url:
-        for i in Instance.objects.all():
-            if i.hvparams['cdrom_image_path']:
-                u=i.hvparams['cdrom_image_path']
-                try:
-                    h=requests.head(u)
-                    if not h.ok:
-                        broken_link_vms.append(i)
-                except requests.ConnectionError:
-                    broken_link_vms.append(i)
+def check_broken_urls():
+    def is_broken(url):
+        try:
+            return not requests.head(url).ok
+        except requests.ConnectionError:
+            return True
 
-        for vm in broken_link_vms:
-            for vima_user in find_vm_owner(vm):
-                if users.has_key(vima_user.email):
-                    users[vima_user.email].append(vm)
-                else:
-                    users.update({vima_user.email: [vm]})
+    logging.info("#### Script is checking for Broken URLS")
+    broken = filter(lambda x: is_broken(x),
+                    filter(
+                        lambda instance: instance.hvparams['cdrom_image_path'],
+                        Instance.objects.all()))
 
-        for vima_user in users:
-            urls= ""
-            for v in users[vima_user]:
-                urls += "\t%s cdrom url: %s\n" % (v.name,
-                                                  v.hvparams['cdrom_image_path'])
-            if not dry_run:
-                sendemail([vima_user], 'noreply@grnet.gr',  BrokenMessage % urls, BrokenSbj)
-            logging.info("Sent mail to %s for urls: %s" , vima_user,  urls)
+    vms_per_user = defaultdict(list)
+    for users, instance in map(lambda vm: (find_vm_owner(vm), vm), broken):
+        for user in users:
+            vms_per_user[user].append(instance)
+
+    return vms_per_user
 
 
-    if check_inactive:
-        for group in find_groups('shut_', SHUTDAYS):
-            logging.info("Checking group: %s", group)
-            check_group(group)
+def send_broken_url_mails(user, vms):
+    urls = "\n".join(map(
+        lambda x: "\t{vm} cdrom url: {url}\n".format(
+            vm=x.name, url=x.hvparams['cdrom_image_path']),
+        vms))
 
-        for group in find_groups('warn_', IDLEDAYS):
-            logging.info("Checking group: %s", group)
-            check_group(group)
+    send_mail(BrokenSbj, BrokenMessage.format(info=urls),
+              "noreply@grnet.gr", (user.email,))
 
-        for group in find_groups('idle_', IDLEDAYS):
-            logging.info("Checking group: %s", group)
-            check_group(group)
-
-        inactive = User.objects.filter(is_active=True,
-        last_login__lt=login_before).exclude(groups__name__startswith='idle_').\
-        exclude(groups__name__startswith='shut_').exclude(groups__name__startswith='warn_')
-        idlegrp='idle_' + today
-        for user in inactive:
-            if not dry_run:
-                grp=Group.objects.get_or_create(name='idle_' + today)[0]
-                user.groups.add(grp)
-            logging.info("Sending mail to %s, last login at %s and adding him to %s \
-                    group", user.username, user.last_login, idlegrp)
-            if not user.email:
-                logging.info("Error, user %s has no email address defined", user.username)
-            else:
-                sendemail([user.email], 'noreply@grnet.gr', IdleMessage % (
-                    user.username, IDLEDAYS, IDLEDAYS, SHUTDAYS), IdleSbj)
-
-    logging.info("##### End")
+    logging.info("Sent mail to {0} for urls: {1}".format(user.email, urls))
 
 
 def find_groups(text, days):
@@ -323,19 +287,34 @@ def check_group(grp):
         grp.delete()
 
 
+def main(dry_run=True, check_inactive=False, check_urls=False):
+
+    logging.info("#### The dry mode is %s", "ON" if dry_run else "OFF")
+
+    broken_urls = check_broken_urls() if check_urls else dict()
+
+    inactive_users = check_inactive_users() if check_inactive else tuple()
+
+    if not dry_run:
+        logging.info("Sending emails")
+        for user, vms in broken_urls.items():
+            send_broken_url_mails(user, vms)
+        for user in inactive_users:
+            send_inactive_user_email(user)
+
+    logging.info("##### End")
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", help="Test script",
+                        action="store_true", default=True)
+    parser.add_argument("--broken-url",
+                        help="Find users with broken cdrom URL",
                         action="store_true")
-    parser.add_argument("--broken-url", help="Find users with broken"\
-                        "cdrom URL", action="store_true")
     parser.add_argument("--check-inactive", help="Find idle vim users",
                         action="store_true")
     args = parser.parse_args()
-    dry_run = args.dry_run
-    check_inactive = args.check_inactive
-    broken_url = args.broken_url
 
-    main()
-    sys.exit(0)
+    main(args.dry_run, args.check_inactive, args.broken_url)
