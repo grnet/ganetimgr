@@ -28,6 +28,9 @@ import argparse
 import logging
 import requests
 from collections import defaultdict
+from itertools import chain
+from functools import partial
+from datetime import datetime, timedelta
 
 sys.path.insert(1, "/srv/ganetimgr")
 os.environ['DJANGO_SETTINGS_MODULE'] = 'ganetimgr.settings'
@@ -36,39 +39,42 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'ganetimgr.settings'
 import django
 django.setup()
 
-from ganeti.models import Instance
 from django.contrib.auth.models import User,Group
 from django.core.mail import send_mail
-from datetime import datetime, timedelta
+from django.conf import settings
+from ganeti.models import Instance
 
-LOGFILE='/var/log/vima_policy.log'
-exclude_tag='vima:policy:exclude'
+
+LOGFILE = '/var/log/vima_policy.log'
 logging.basicConfig(level=logging.INFO, filename=LOGFILE, filemode="a+",
                     format="%(asctime)-15s %(levelname)-8s %(message)s")
 
-users={}
+IDLEDAYS = datetime.now() - timedelta(days=7)
+WARNDAYS = datetime.now() - timedelta(weeks=180)
+DESTROYDAYS = datetime.now() - timedelta(days=270)
 
-DAYS=180
-IDLEDAYS=15 # Shutdown VMS 15 days after first email
-WARNDAYS=15 # send warning email 15 days after shutdown
-SHUTDAYS=15 # destroy vms 15 dayes after last warning
 
-IdleSbj='Ανενεργός Λογαριασμός στην υπηρεσία ViMa της ΕΔΕΤ'
-IdleMessage= u"""
-Λαμβάνετε αυτό το email γιατί ο λογαριασμός σας στην ViMa με username %s
-εμφανίζεται ανενεργός για περίοδο μεγαλύτερη των 6 μηνών.
+WEEKLY_WARNING_1 = "warn_1"
+WEEKLY_WARNING_2 = "warn_2"
+WEEKLY_WARNING_3 = "warn_3"
+EXPIRATION_WARNING = "warn_6"
+DESTRUCTION_WARNING = "warn_9"
+
+IdleSbj = 'Ανενεργός Λογαριασμός στην υπηρεσία ViMa της ΕΔΕΤ'
+IdleMessage = u"""
+Λαμβάνετε αυτό το email γιατί ο λογαριασμός σας στην ViMa με username {username}
+εμφανίζεται ανενεργός από {last_login}.
 
 Προκειμένου να διατηρήσετε ενεργό τον λογαριασμό σας, παρακαλώ επισκεφτείτε το
-web portal της ViMa (https://vima.grnet.gr) και κάντε login με το username σας
-εντός των επόμενων %s ημερολογιακών ημερών -- και στην συνέχεια τουλάχιστον μια
-φορά κάθε έξι μήνες. Βεβαιωθείτε επίσης πως τα στοιχεία που έχετε δηλώσει στο
-προφίλ σας είναι ενημερωμένα και ακριβή και απενεργοποιήστε η διαγράψτε VMs που
-τυχόν δεν χρειάζεστε πλέον.
+web portal της ViMa (https://vima.grnet.gr) και κάντε login με το username σας 
+και στην συνέχεια τουλάχιστον μια φορά κάθε έξι μήνες. Βεβαιωθείτε επίσης πως 
+τα στοιχεία που έχετε δηλώσει στο προφίλ σας είναι ενημερωμένα και ακριβή και 
+απενεργοποιήστε η διαγράψτε VMs που τυχόν δεν χρειάζεστε πλέον.
 
 Σε περίπτωση που δεν επιβεβαιώσετε τον λογαριασμό σας μέσα στο προβλεπόμενο
-διάστημα των %s ημερών, ο λογαριασμός θα απενεργοποιηθεί. VMs χωρίς ενεργούς
+διάστημα, ο λογαριασμός θα απενεργοποιηθεί. VMs χωρίς ενεργούς
 διαχειριστές θα απενεργοποιούνται (shutdown) αμέσως και θα διαγράφονται μόνιμα
-μετά την πάροδο %s ακόμα ημερολογιακών ημερών.
+μετά την πάροδο 270 ημερολογιακών ημερών.
 
 Για οποιαδήποτε ερώτηση ή πληροφορία παρακαλούμε απευθυνθείτε στο support@grnet.gr.
 
@@ -77,17 +83,17 @@ web portal της ViMa (https://vima.grnet.gr) και κάντε login με το
 
 Για το NOC της ΕΔΕΤ,
 """
-WarnSbj='URGENT: Ανενεργός Λογαριασμός στην υπηρεσία ViMa της ΕΔΕΤ'
-WarnMessage= u"""
-Λαμβάνετε αυτό το email γιατι ο λογαριασμός σας στην ViMa με username %s
+
+WarnSbj = 'URGENT: Ανενεργός Λογαριασμός στην υπηρεσία ViMa της ΕΔΕΤ'
+WarnMessage = u"""
+Λαμβάνετε αυτό το email γιατι ο λογαριασμός σας στην ViMa με username {username}
 εμφανίζεται ανενεργός για περίοδο μεγαλύτερη των 6 μηνών. Σε συνέχεια της
-προηγούμενης ειδοποίησης που σας είχαμε στείλει πρίν απο %s ημέρες, τα VMs
-σας, αν έχετε, απενεργοποιήθηκαν (shutdown) πρίν απο %s ημέρες.
+προηγούμενης ειδοποίησης που σας είχαμε στείλει, τα VMs
+σας, αν έχετε, απενεργοποιήθηκαν (shutdown).
 
 Παρακαλούμε επιβεβαιώστε τον λογαριασμό σας κάνοντας ενα απλο login στο
-web portal της υπηρεσίας ViMa μέσα στις επόμενες %s ημέρες. Σε αντίθετη
-περίπτωση, μετα απο αυτό το χρονικό διάστημα,
-τα VMs σας θα διαγραφούν οριστικά (delete).
+web portal της υπηρεσίας ViMa μέσα στις επόμενες ημέρες. Σε αντίθετη
+περίπτωση, μετα απο αυτό το χρονικό διάστημα, τα VMs σας θα διαγραφούν οριστικά (delete).
 
 Για οποιαδήποτε ερώτηση ή πληροφορία παρακαλούμε απευθυνθείτε στο
 support@grnet.gr.
@@ -96,6 +102,31 @@ support@grnet.gr.
 πόρων της υπηρεσίας ViMa.
 
 Για το NOC της ΕΔΕΤ,
+"""
+
+
+ReactivateSubj = 'Ανανέωση tickets σχετικά με VMs της υπηρεσίας ViMa'
+ReactivateMessage = u"""
+Τα tickets σχετικά με τα ακόλουθα vms μπορούν να κλείσουν καθώς ένας από τους χρήστες 
+είναι πλέον ενεργός:
+
+{vms}
+"""
+
+ShutdownSubj = 'Άνοιγμα νέων tickets σχετικά με VMs της υπηρεσίας ViMa'
+ShutdownMessage = u"""
+Για τα ακόλουθα vms όλοι οι χρήστες πλέον θεωρούνται expired. Τα vms έγιναν 
+shutdown και θα πρέπει να ανοιχτούν αντίστοιχα tickets:
+
+{vms}
+"""
+
+DestroySubj = 'Ανανέωση tickets σχετικά με VMs της υπηρεσίας ViMa'
+DestroyMessage = u"""
+Τα tickets σχετικά με τα ακόλουθα vms μπορούν να κλείσουν καθώς όλοι οι χρήστες πλέον 
+είναι ανενεργοί. Τα vms θα πρέπει να καταστραφούν: 
+
+{vms}
 """
 
 BrokenSbj = 'Ανενεργά URLs σε vms της υπηρεσίας ViMA'
@@ -112,48 +143,33 @@ BrokenMessage = u"""
     της ΕΔΕΤ  support@grnet.gr
 """
 
-login_before = datetime.now() - timedelta(days=DAYS)
-today = datetime.now().strftime('%Y%m%d')
+exclude_tag = 'vima:policy:exclude'
+expired_tag = "policy:expired"
+destroy_tag = "policy:destroy"
+
 
 def find_vm_owner(vm):
     """ Return a list with vm owners """
-    owners=[]
+    owners = []
+
     for u in vm.users:
         owners.append(u)
         for g in vm.groups:
-            gusers=g.user_set.all()
+            gusers = g.user_set.all()
             for i in gusers:
                 owners.append(i)
 
-    owners=list(set(owners))
-    return owners
+    return set(owners)
 
 
 def user_vms(usr):
     """Return a list with usr's vms"""
-    vms = Instance.objects.filter(user=usr.username)
-    return vms
+    return Instance.objects.filter(user=usr.username)
 
 
 def deactivate_user(usr):
-    '''Inactivate a django user'''
-    if usr.is_active:
-        usr.is_active=False
-        usr.save()
-    else:
-        logging.info("User %s already inactive", usr.username)
-
-
-def only_active_owner(vm, user):
-    owners=find_vm_owner(vm)
-    if len(owners) > 1 or len(owners) <1:
-        return False
-    else:
-        if owners[0] == user:
-            return True
-        else:
-            logging.info("Error, user %s not the owner of %s", user, vm)
-            return False
+    usr.is_active = False
+    usr.save()
 
 
 def check_broken_urls():
@@ -189,118 +205,227 @@ def send_broken_url_mails(user, vms):
     logging.info("Sent mail to {0} for urls: {1}".format(user.email, urls))
 
 
-def find_groups(text, days):
-    groups=[]
-    allgroups = [i.name for i in Group.objects.filter(name__startswith=text)]
-    for tmpgroup in allgroups:
-        tmp=datetime.strptime(tmpgroup[len(text):], '%Y%m%d') +timedelta(
-            days=days)
-        if tmp < datetime.now():
-            groups.append(tmpgroup)
-        else:
-            logging.info("Ignoring Group %s", tmpgroup)
-    return groups
+def fetch_idle_users(users_base):
+    return users_base.filter(last_login__lte=IDLEDAYS, last_login__gt=WARNDAYS)
 
 
-def check_group(grp):
-    users= [i for i in User.objects.filter(groups__name=grp)]
-    for user in users:
-        logging.info("Info: User %s last login %s before %s", user.username,
-                     user.last_login, login_before)
-        if user.last_login < login_before:
-            logging.info("User %s loggeid before %s, checking", user.username,
-                         login_before)
-            vms = user_vms(user)
-            if len(vms) > 0:
-                if grp.startswith('idle_'):
-                    logging.info("Added user %s in group %s", user.username,
-                                 'warn_' + today)
-                    if not dry_run:
-                        tmpgrp=Group.objects.get_or_create(name="warn_" + today)[0]
-                        user.groups.add(tmpgrp)
-                    logging.info("User %s has vms, shut them down", user.username)
-                    #- shutdown vms
-                    for vm in vms:
-                        if not exclude_tag in vm.tags:
-                            if only_active_owner(vm, user):
-                                if not dry_run:
-                                    vm.cluster.shutdown_instance(vm.name)
-                                logging.info("Shutting down vm %s", vm.name)
-                            else:
-                                logging.info("%s Not the only owner of vm %s",
-                                             user.username, vm.name)
-                        else:
-                                logging.info("VM %s tagged with %s and ignored"\
-                                "from vima_policy", vm.name, exclude_tag)
+def fetch_expired_users(users_base):
+    return users_base.filter(last_login__lte=WARNDAYS,
+                             last_login__gt=DESTROYDAYS)
 
-                elif grp.startswith('warn_'):
-                    logging.info("Info: Send warning  mail to user %s (group=%s)",
-                    user.username, grp)
-                    logging.info("Info: Add user %s to group %s",
-                    user.username, 'shut_' + today)
-                    if not dry_run:
-                        ### send email
-                        sendemail([user.email],
-                                  'support@grnet.gr',
-                                  WarnMessage % (user.username, IDLEDAYS + WARNDAYS, WARNDAYS, SHUTDAYS),
-                                  WarnSbj)
-                        ### Add to group shut_today
-                        tmpgrp=Group.objects.get_or_create(name="shut_" + today)[0]
-                        user.groups.add(tmpgrp)
 
-                elif grp.startswith('shut_'):
-                    for vm in vms:
-                        if not exclude_tag in vm.tags:
-                            if only_active_owner(vm, user):
-                                if not dry_run:
-                                    vm.cluster.destroy_instance(vm.name)
-                                logging.info("VM %s with owner %s has been "\
-                                "destroyed", vm.name, user.username)
-                            else:
-                                logging.info("%s Not the only owner of vm %s",
-                                             user.username, vm.name)
-                        else:
-                                logging.info("VM %s tagged with %s and ignored"\
-                                "from vima_policy", vm.name, exclude_tag)
+def fetch_tbdestroyed_users(users_base):
+    return users_base.filter(last_login__lte=DESTROYDAYS)
 
-                    if not dry_run:
-                        deactivate_user(user)
-                    logging.info("Deactivating user %s", user.username)
-            else: #User has no vms
-                logging.info("User %s  deactivated. Last login: %s, Last "\
-                             "notified on %s", user.username, user.last_login,
-                             grp)
-                if not dry_run:
-                    deactivate_user(user)
 
-        ''' Remove user from group '''
-        logging.info("Remove %s from group %s", user.username, grp)
-        if not dry_run:
-            group=Group.objects.get(name=grp)
-            group.user_set.remove(user)
-            group.save()
+def fetch_inactive_users():
+    logging.info("#### Script is checking for Inactive Users")
 
-    ''' Delete group '''
-    logging.info("Deleting group %s ", grp)
-    if not dry_run:
-        grp=Group.objects.get(name=grp)
-        grp.delete()
+    active_users = User.objects.filter(is_active=True)
+
+    return tuple(map(
+        lambda x: x(active_users),
+        (fetch_idle_users, fetch_expired_users, fetch_tbdestroyed_users)))
+
+
+def categorize_inactive_users(inactive_users):
+    def weekly_categorize(u):
+        weeks = (datetime.now() - u.last_login).days // 7
+        return "warn_{0}".format(weeks) if weeks < 3 else "warn_3"
+
+    categorized_users = defaultdict(list)
+    weekly, expired, tbdeactivated = inactive_users
+
+    for user in weekly:
+        categorized_users[weekly_categorize(user)].append(user)
+
+    categorized_users[EXPIRATION_WARNING].extend(expired)
+    categorized_users[DESTRUCTION_WARNING].extend(tbdeactivated)
+
+    return categorized_users
+
+
+def update_groups(categorized_inactive):
+    logging.info("Updating groups with current inactive users")
+    for category, users in categorized_inactive.items():
+        Group.objects.get(name=category).user_set.clear()
+        Group.objects.get(name=category).user_set.add(*users)
+
+
+def get_fresh_categorized_users(categorized_inactive):
+    tbnotified = defaultdict(list)
+    for category, users in categorized_inactive.items():
+        tbnotified[category].extend(
+            set(users)
+            - set(Group.objects.get(name=category).user_set.exclude(
+                id__in=[u.id for u in users])))
+    return tbnotified
+
+
+def notify_freshly_inactive(fresh_inactive):
+    def notify(u, subject, message):
+        if u.email:
+            send_mail(subject,
+                      message.format(username=u.username,
+                                     last_login=u.last_login.ctime()),
+                      "noreply@grnet.gr", [u.email])
+
+    for user in chain(*map(
+            lambda x: fresh_inactive[x],
+            (WEEKLY_WARNING_1, WEEKLY_WARNING_2, WEEKLY_WARNING_3))):
+        notify(user, IdleSbj, IdleMessage)
+
+    for user in fresh_inactive[EXPIRATION_WARNING]:
+        notify(user, WarnSbj, WarnMessage)
+
+
+def activated_users(categorized_inactive):
+    return (set(Group.objects.get(name=EXPIRATION_WARNING).user_set.all())
+            - (set(categorized_inactive[EXPIRATION_WARNING]).union(
+                set(categorized_inactive[DESTRUCTION_WARNING]))))
+
+
+def fetch_filtered_vms(users, filter_func):
+    return filter(lambda x: filter_func(x),
+                  chain(*map(
+                      lambda user: Instance.objects.filter(user=user.username),
+                      users)))
+
+
+def notify_internal(subject, message, vms):
+    if vms:
+        send_mail(subject,
+                  message.format(vms="\n".join(
+                      map(lambda vm: vm.name, vms))),
+                  "noreply@grnet.gr",
+                  ["support@grnet.gr"]
+                  + [x[-1] for x in getattr(settings, "MANAGERS", [])])
+
+
+def should_activate(vm):
+    return expired_tag in vm.tags
+
+
+def activate(vms):
+    for vm in vms:
+        vm.cluster.untag_instance(vm, [expired_tag])
+
+
+def should_shutdown(vm, expired_users):
+    return (set(vm.users).issubset(expired_users)
+            and exclude_tag not in vm.tags)
+
+
+def shutdown(vms):
+    for vm in vms:
+        vm.cluster.tag_instance(vm, [expired_tag])
+        vm.cluster.shutdown_instance(vm)
+
+
+def should_destroy(vm, expired_users):
+    return (set(vm.users).issubset(expired_users)
+            and exclude_tag not in vm.tags)
+
+
+def destroy(vms):
+    for vm in vms:
+        vm.cluster.tag_instance(vm, [destroy_tag])
+
+
+def create_user_groups():
+    logging.info("Creating (if not already) user groups")
+    for x in (WEEKLY_WARNING_1, WEEKLY_WARNING_2, WEEKLY_WARNING_3,
+              EXPIRATION_WARNING, DESTRUCTION_WARNING):
+        Group.objects.get_or_create(name=x)
+
+
+def fetch_inactivity_actions(categorized_inactive):
+    def craft_action_pending_vms(users, action_func):
+        return tuple(fetch_filtered_vms(users, action_func))
+
+    fresh_inactive = get_fresh_categorized_users(categorized_inactive)
+
+    expired_users = set(
+        chain(*map(lambda group: categorized_inactive[group],
+                   [EXPIRATION_WARNING, DESTRUCTION_WARNING]))
+    ).union(set(User.objects.filter(is_active=False)))
+
+    return {
+        "users": {
+            "fresh-inactive": [
+                fresh_inactive,
+                [("notifying inactive users", notify_freshly_inactive)]
+            ]
+        },
+        "vms": {
+            "activation": [
+                craft_action_pending_vms(activated_users(categorized_inactive),
+                                         should_activate),
+                [("activating vms", activate),
+                 ("sending internal emails",
+                  lambda vms: notify_internal(
+                      subject=ReactivateSubj,
+                      message=ReactivateMessage, vms=vms))]
+            ],
+            "shutdown": [
+                craft_action_pending_vms(
+                    fresh_inactive[EXPIRATION_WARNING],
+                    partial(should_shutdown, expired_users=expired_users)),
+                [("shutting down vms", shutdown),
+                 ("sending internal emails",
+                  lambda vms: notify_internal(
+                      subject=ShutdownSubj, message=ShutdownMessage, vms=vms))]
+            ],
+            "destruction": [
+                craft_action_pending_vms(
+                    fresh_inactive[DESTRUCTION_WARNING],
+                    partial(should_destroy, expired_users=expired_users)),
+                [("marking vms for destruction", destroy),
+                 ("sending internal emails",
+                  lambda vms: notify_internal(
+                      subject=DestroySubj, message=DestroyMessage, vms=vms))]
+            ]
+        }
+    }
 
 
 def main(dry_run=True, check_inactive=False, check_urls=False):
+    def run_actions():
+        if not dry_run:
+            logging.info("Running actions about {0}".format(name))
+            for info, action in actions:
+                logging.info(info)
+                action(affected)
+
+    def report_actions():
+        if dry_run:
+            print("For the group {grp}, the {name} findings are the "
+                  "following:\n{aff}"
+                  .format(grp=group, name=name, aff=affected))
+
+    def notify_broken_urls():
+        if not dry_run and broken_urls:
+            logging.info("Sending broken url emails")
+            for user, vms in broken_urls.items():
+                send_broken_url_mails(user, vms)
 
     logging.info("#### The dry mode is %s", "ON" if dry_run else "OFF")
 
     broken_urls = check_broken_urls() if check_urls else dict()
 
-    inactive_users = check_inactive_users() if check_inactive else tuple()
+    create_user_groups()
+    inactive_users = fetch_inactive_users() if check_inactive else [[], [], []]
+    categorized_inactive_users = categorize_inactive_users(inactive_users)
+    groupped_actions = fetch_inactivity_actions(categorized_inactive_users)
+
+    notify_broken_urls()
+    for group in groupped_actions.keys():
+        for name, (affected, actions) in groupped_actions[group].items():
+            report_actions()
+            run_actions()
 
     if not dry_run:
-        logging.info("Sending emails")
-        for user, vms in broken_urls.items():
-            send_broken_url_mails(user, vms)
-        for user in inactive_users:
-            send_inactive_user_email(user)
+        update_groups(categorized_inactive_users)
 
     logging.info("##### End")
 
@@ -309,7 +434,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", help="Test script",
-                        action="store_true", default=True)
+                        action="store_true", default=False)
     parser.add_argument("--broken-url",
                         help="Find users with broken cdrom URL",
                         action="store_true")
