@@ -173,16 +173,15 @@ def deactivate_user(usr):
 
 
 def check_broken_urls():
-    def is_broken(url):
-        try:
-            return not requests.head(url).ok
-        except requests.ConnectionError:
-            return True
+    def has_broken_url(vm):
+        if vm.hvparams['cdrom_image_path']:
+            try:
+                return not requests.head(vm.hvparams['cdrom_image_path']).ok
+            except requests.ConnectionError:
+                return True
 
     logging.info("#### Script is checking for Broken URLS")
-    broken = filter(lambda x: is_broken(x),
-                    filter(lambda vm: vm.hvparams['cdrom_image_path'],
-                           Instance.objects.all()))
+    broken = filter(lambda vm: has_broken_url(vm), Instance.objects.all())
 
     vms_per_user = defaultdict(list)
     for users, instance in map(lambda vm: (find_vm_owner(vm), vm), broken):
