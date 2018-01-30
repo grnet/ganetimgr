@@ -388,42 +388,49 @@ def fetch_inactivity_actions(categorized_inactive):
 
 
 def main(dry_run=True, check_inactive=False, check_urls=False):
+    def run_if(func, checker):
+        if checker:
+            func()
+
     def run_actions():
-        if not dry_run:
-            logging.info("Running actions about {0}".format(name))
-            for info, action in actions:
-                logging.info(info)
-                action(affected)
+        logging.info("Running actions about {0}".format(name))
+        for info, action in actions:
+            logging.info(info)
+            action(affected)
 
     def report_actions():
-        if dry_run:
-            print("For the group {grp}, the {name} findings are the "
-                  "following:\n{aff}"
-                  .format(grp=group, name=name, aff=affected))
+        print("For the group {grp}, the {name} findings are the "
+              "following:\n{aff}"
+              .format(grp=group, name=name, aff=affected))
+
+    def report_broken_urls():
+        print("VMs that have broken urls are the following (per user): {0}"
+              .format(broken_urls.items()))
 
     def notify_broken_urls():
-        if not dry_run and broken_urls:
-            logging.info("Sending broken url emails")
-            for user, vms in broken_urls.items():
-                send_broken_url_mails(user, vms)
+        logging.info("Sending broken url emails")
+        for user, vms in broken_urls.items():
+            send_broken_url_mails(user, vms)
 
     logging.info("#### The dry mode is %s", "ON" if dry_run else "OFF")
 
-    broken_urls = check_broken_urls() if check_urls else dict()
+    if check_urls:
+        broken_urls = check_broken_urls()
+        run_if(report_broken_urls, dry_run)
+        run_if(notify_broken_urls, not dry_run)
 
-    create_user_groups()
-    inactive_users = fetch_inactive_users() if check_inactive else [[], [], []]
-    categorized_inactive_users = categorize_inactive_users(inactive_users)
-    groupped_actions = fetch_inactivity_actions(categorized_inactive_users)
+    if check_inactive:
+        run_if(create_user_groups, not dry_run)
+        categorized_inactive_users = categorize_inactive_users(
+            fetch_inactive_users())
+        groupped_actions = fetch_inactivity_actions(categorized_inactive_users)
 
-    notify_broken_urls()
-    for group in groupped_actions.keys():
-        for name, (affected, actions) in groupped_actions[group].items():
-            report_actions()
-            run_actions()
+        for group, action_group in groupped_actions.items():
+            for name, (affected, actions) in action_group.items():
+                run_if(report_actions, dry_run)
+                run_if(run_actions, not dry_run)
 
-    if not dry_run:
-        update_groups(categorized_inactive_users)
+        run_if(lambda: update_groups(categorized_inactive_users), not dry_run)
 
     logging.info("##### End")
 
