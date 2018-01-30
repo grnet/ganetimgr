@@ -181,9 +181,8 @@ def check_broken_urls():
 
     logging.info("#### Script is checking for Broken URLS")
     broken = filter(lambda x: is_broken(x),
-                    filter(
-                        lambda instance: instance.hvparams['cdrom_image_path'],
-                        Instance.objects.all()))
+                    filter(lambda vm: vm.hvparams['cdrom_image_path'],
+                           Instance.objects.all()))
 
     vms_per_user = defaultdict(list)
     for users, instance in map(lambda vm: (find_vm_owner(vm), vm), broken):
