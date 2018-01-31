@@ -49,8 +49,8 @@ LOGFILE = '/var/log/vima_policy.log'
 logging.basicConfig(level=logging.INFO, filename=LOGFILE, filemode="a+",
                     format="%(asctime)-15s %(levelname)-8s %(message)s")
 
-IDLEDAYS = datetime.now() - timedelta(days=7)
-WARNDAYS = datetime.now() - timedelta(weeks=180)
+WARNDAYS = datetime.now() - timedelta(days=180)
+IDLEDAYS = WARNDAYS + timedelta(weeks=3)
 DESTROYDAYS = datetime.now() - timedelta(days=270)
 
 
@@ -222,7 +222,7 @@ def fetch_inactive_users():
 
 def categorize_inactive_users(inactive_users):
     def weekly_categorize(u):
-        weeks = (datetime.now() - u.last_login).days // 7
+        weeks = (u.last_login - IDLEDAYS).days // 7
         return "warn_{0}".format(weeks) if weeks < 3 else "warn_3"
 
     categorized_users = defaultdict(list)
