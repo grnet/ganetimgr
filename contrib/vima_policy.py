@@ -3,11 +3,11 @@
 """
 vima_policy.py is a ganetimgr helper script
 
-It has two main functions: 
- - broken-url 
+It has two main functions:
+ - broken-url
  - and check-inactive
 
-broken-url iterates all Ganeti instances that have an HTTP ISO attached and 
+broken-url iterates all Ganeti instances that have an HTTP ISO attached and
 then checks if the URL is valid (i.e. if the ISO is accessible). If it isn't it
 notifies the owner to fix it.
 
@@ -39,7 +39,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'ganetimgr.settings'
 import django
 django.setup()
 
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import User, Group
 from django.core.mail import send_mail
 from django.conf import settings
 from ganeti.models import Instance
@@ -160,11 +160,6 @@ def find_vm_owner(vm):
                 owners.append(i)
 
     return set(owners)
-
-
-def user_vms(usr):
-    """Return a list with usr's vms"""
-    return Instance.objects.filter(user=usr.username)
 
 
 def deactivate_users(users):
@@ -390,7 +385,7 @@ def fetch_inactivity_actions(categorized_inactive):
     }
 
 
-def main(dry_run=True, check_inactive=False, check_urls=False):
+def main(dry_run=False, check_inactive=False, check_urls=False):
     def run_if(func, checker):
         if checker:
             func()
