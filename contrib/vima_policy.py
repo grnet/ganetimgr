@@ -167,9 +167,8 @@ def user_vms(usr):
     return Instance.objects.filter(user=usr.username)
 
 
-def deactivate_user(usr):
-    usr.is_active = False
-    usr.save()
+def deactivate_users(users):
+    User.objects.filter(id__in=[x.id for x in users]).update(is_active=False)
 
 
 def check_broken_urls():
@@ -353,6 +352,10 @@ def fetch_inactivity_actions(categorized_inactive):
             "fresh-inactive": [
                 fresh_inactive,
                 [("notifying inactive users", notify_freshly_inactive)]
+            ],
+            "for-deactivation": [
+                fresh_inactive[DESTRUCTION_WARNING],
+                [("deactivating inactive users", deactivate_users)]
             ]
         },
         "vms": {
