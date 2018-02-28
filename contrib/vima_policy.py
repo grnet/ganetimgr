@@ -247,10 +247,11 @@ def update_groups(categorized_inactive):
 def get_fresh_categorized_users(categorized_inactive):
     tbnotified = defaultdict(list)
     for category, users in categorized_inactive.items():
-        tbnotified[category].extend(
-            set(users)
-            - set(Group.objects.get(name=category).user_set.exclude(
-                id__in=[u.id for u in users])))
+        user_ids = [u.id for u in users]
+        aff_users = (set(users)
+                     - set(Group.objects.get(name=category).user_set.exclude(
+                                                            id__in=user_ids)))
+        tbnotified[category].extend([x.username for x in aff_users])
     return tbnotified
 
 
@@ -280,7 +281,7 @@ def activated_users(categorized_inactive):
 def fetch_filtered_vms(users, filter_func):
     return filter(lambda x: filter_func(x),
                   chain(*map(
-                      lambda user: Instance.objects.filter(user=user.username),
+                      lambda username: Instance.objects.filter(user=username),
                       users)))
 
 
