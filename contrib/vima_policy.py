@@ -148,6 +148,36 @@ expired_tag = "vima:policy:expired"
 destroy_tag = "vima:policy:destroy"
 
 
+class MiniInstance(object):
+    def __init__(self, tags, users, groups, cluster, name):
+        self.tags = tags
+        self.users = users
+        self.groups = groups
+        self.cluster = cluster
+        self.name = name
+
+    def __repr__(self):
+        return self.name
+
+
+def group_user_instances():
+    """
+    Create a dictionary with usernames as keys and custom instances as values
+    to provide fast user-vms lookup
+    """
+    user_grp_instances = defaultdict(list)
+    for vm in Instance.objects.all():
+        for user in vm.users:
+            user_grp_instances[user.username].append(
+                MiniInstance(vm.tags, vm.users, vm.groups,
+                             vm.cluster, vm.name))
+
+    return user_grp_instances
+
+
+user_groupped_instances = group_user_instances()
+
+
 def find_vm_owner(vm):
     """ Return a list with vm owners """
     owners = []
@@ -279,10 +309,9 @@ def activated_users(categorized_inactive):
 
 
 def fetch_filtered_vms(users, filter_func):
-    return filter(lambda x: filter_func(x),
-                  chain(*map(
-                      lambda username: Instance.objects.filter(user=username),
-                      users)))
+    return filter(
+        lambda x: filter_func(x),
+        chain(*map(lambda username: user_groupped_instances[username], users)))
 
 
 def notify_internal(subject, message, vms):
@@ -301,7 +330,7 @@ def should_activate(vm):
 
 def activate(vms):
     for vm in vms:
-        vm.cluster.untag_instance(vm, [expired_tag])
+        vm.cluster.untag_instance(vm.name, [expired_tag])
 
 
 def should_shutdown(vm, expired_users):
@@ -311,8 +340,8 @@ def should_shutdown(vm, expired_users):
 
 def shutdown(vms):
     for vm in vms:
-        vm.cluster.tag_instance(vm, [expired_tag])
-        vm.cluster.shutdown_instance(vm)
+        vm.cluster.tag_instance(vm.name, [expired_tag])
+        vm.cluster.shutdown_instance(vm.name)
 
 
 def should_destroy(vm, expired_users):
@@ -322,7 +351,7 @@ def should_destroy(vm, expired_users):
 
 def destroy(vms):
     for vm in vms:
-        vm.cluster.tag_instance(vm, [destroy_tag])
+        vm.cluster.tag_instance(vm.name, [destroy_tag])
 
 
 def create_user_groups():
