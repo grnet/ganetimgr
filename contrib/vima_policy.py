@@ -144,8 +144,8 @@ BrokenMessage = u"""
 """
 
 exclude_tag = 'vima:policy:exclude'
-expired_tag = "policy:expired"
-destroy_tag = "policy:destroy"
+expired_tag = "vima:policy:expired"
+destroy_tag = "vima:policy:destroy"
 
 
 def find_vm_owner(vm):
