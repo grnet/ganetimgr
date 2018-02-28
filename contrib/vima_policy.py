@@ -222,7 +222,7 @@ def fetch_inactive_users():
 
 def categorize_inactive_users(inactive_users):
     def weekly_categorize(u):
-        weeks = (u.last_login - IDLEDAYS).days // 7
+        weeks = ((IDLEDAYS - u.last_login).days // 7) + 1
         return "warn_{0}".format(weeks) if weeks < 3 else "warn_3"
 
     categorized_users = defaultdict(list)
