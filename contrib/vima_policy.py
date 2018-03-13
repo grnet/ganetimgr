@@ -331,25 +331,22 @@ def should_activate(vm):
     return expired_tag in vm.tags
 
 
+def is_vm_expired(vm, expired_users):
+    return (all(map(lambda x: x.issubset(expired_users),
+                    (set(vm.users),
+                     set(chain(*map(lambda g: g.user_set.all(), vm.groups))))))
+            and exclude_tag not in vm.tags)
+
+
 def activate(vms):
     for vm in vms:
         vm.cluster.untag_instance(vm.name, [expired_tag])
-
-
-def should_shutdown(vm, expired_users):
-    return (set(vm.users).issubset(expired_users)
-            and exclude_tag not in vm.tags)
 
 
 def shutdown(vms):
     for vm in vms:
         vm.cluster.tag_instance(vm.name, [expired_tag])
         vm.cluster.shutdown_instance(vm.name)
-
-
-def should_destroy(vm, expired_users):
-    return (set(vm.users).issubset(expired_users)
-            and exclude_tag not in vm.tags)
 
 
 def destroy(vms):
@@ -399,7 +396,7 @@ def fetch_inactivity_actions(categorized_inactive):
             "shutdown": [
                 craft_action_pending_vms(
                     fresh_inactive[EXPIRATION_WARNING],
-                    partial(should_shutdown, expired_users=expired_users)),
+                    partial(is_vm_expired, expired_users=expired_users)),
                 [("shutting down vms", shutdown),
                  ("sending internal emails",
                   lambda vms: notify_internal(
@@ -408,7 +405,7 @@ def fetch_inactivity_actions(categorized_inactive):
             "destruction": [
                 craft_action_pending_vms(
                     fresh_inactive[DESTRUCTION_WARNING],
-                    partial(should_destroy, expired_users=expired_users)),
+                    partial(is_vm_expired, expired_users=expired_users)),
                 [("marking vms for destruction", destroy),
                  ("sending internal emails",
                   lambda vms: notify_internal(
