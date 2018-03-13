@@ -193,7 +193,8 @@ def find_vm_owner(vm):
 
 
 def deactivate_users(users):
-    User.objects.filter(id__in=[x.id for x in users]).update(is_active=False)
+    User.objects.filter(
+        username__in=[x for x in users]).update(is_active=False)
 
 
 def check_broken_urls():
@@ -286,20 +287,20 @@ def get_fresh_categorized_users(categorized_inactive):
 
 
 def notify_freshly_inactive(fresh_inactive):
-    def notify(u, subject, message):
-        if u.email:
-            send_mail(subject,
-                      message.format(username=u.username,
-                                     last_login=u.last_login.ctime()),
-                      "noreply@grnet.gr", [u.email])
+    def notify(uname, subject, message):
+        user = User.objects.get(username=uname)
+        send_mail(subject,
+                  message.format(username=uname,
+                                 last_login=user.last_login.ctime()),
+                  "noreply@grnet.gr", [user.email])
 
-    for user in chain(*map(
+    for username in chain(*map(
             lambda x: fresh_inactive[x],
             (WEEKLY_WARNING_1, WEEKLY_WARNING_2, WEEKLY_WARNING_3))):
-        notify(user, IdleSbj, IdleMessage)
+        notify(username, IdleSbj, IdleMessage)
 
-    for user in fresh_inactive[EXPIRATION_WARNING]:
-        notify(user, WarnSbj, WarnMessage)
+    for username in fresh_inactive[EXPIRATION_WARNING]:
+        notify(username, WarnSbj, WarnMessage)
 
 
 def activated_users(categorized_inactive):
