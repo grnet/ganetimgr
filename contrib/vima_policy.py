@@ -41,6 +41,7 @@ django.setup()
 
 from django.contrib.auth.models import User, Group
 from django.core.mail import send_mail
+from django.db import close_old_connections
 from django.conf import settings
 from ganeti.models import Instance
 
@@ -269,6 +270,7 @@ def categorize_inactive_users(inactive_users):
 
 
 def update_groups(categorized_inactive):
+    close_old_connections()
     logging.info("Updating groups with current inactive users")
     for category, users in categorized_inactive.items():
         Group.objects.get(name=category).user_set.clear()
