@@ -426,10 +426,15 @@ def main(dry_run=False, check_inactive=False, check_urls=False):
             logging.info(info)
             action(affected)
 
+    def findings_msg():
+        return ("For the group {grp}, the {name} findings are the following:\n"
+                "{aff}".format(grp=group, name=name, aff=affected))
+
+    def log_actions():
+        logging.info(findings_msg())
+
     def report_actions():
-        print("For the group {grp}, the {name} findings are the "
-              "following:\n{aff}"
-              .format(grp=group, name=name, aff=affected))
+        print(findings_msg())
 
     def report_broken_urls():
         print("VMs that have broken urls are the following (per user): {0}"
@@ -455,7 +460,7 @@ def main(dry_run=False, check_inactive=False, check_urls=False):
 
         for group, action_group in groupped_actions.items():
             for name, (affected, actions) in action_group.items():
-                run_if(report_actions, dry_run)
+                report_actions() if dry_run else log_actions()
                 run_if(run_actions, not dry_run)
 
         run_if(lambda: update_groups(categorized_inactive_users), not dry_run)
