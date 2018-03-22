@@ -580,6 +580,34 @@ class Cluster(models.Model):
 
         return info
 
+    def get_extstorage_disk_params(self, provider):
+        """
+        Fetches a cluster's tags and figures out disk parameters for a given
+        extstorage provider.
+
+        Some extstorage providers need to pass to Ganeti additional disk
+        parameters in order to work correctly. Designated tag for extstorage
+        parameters is GANETI_TAG_PREFIX:ext:<provider_name>:params:key1:val1
+
+        This bypasses the cache completely.
+
+        @return: dict with all parameters for given extstorage provider
+        """
+
+        ext_pfx = '{}:ext:'.format(GANETI_TAG_PREFIX)
+        provider_tag = '{}{}'.format(ext_pfx, provider)
+        tag_regex = r'{}:params:([\w+*/@-]+):([\w+*/@-]+)\Z'.format(provider_tag)
+        params = {}
+
+        tags = self._client.GetClusterTags()
+
+        return {
+            par: val for (par, val) in [
+                re.match(tag_regex, tag).groups() for tag in tags
+                    if re.match(tag_regex, tag)
+            ]
+        }
+
     def get_extstorage_providers(self):
         """
         Fetches a cluster's tags and figures out the extstorage providers available.
@@ -591,10 +619,16 @@ class Cluster(models.Model):
         """
         ext_providers = []
         tags = self._client.GetClusterTags()
-        ext_pfx = "%s:ext:" % GANETI_TAG_PREFIX
+        ext_pfx = '{}:ext:'.format(GANETI_TAG_PREFIX)
+        tag_regex = r'{}[\w.+*/@-]+\Z'.format(ext_pfx)
+
         for tag in tags:
-            if tag.startswith(ext_pfx):
-                ext_providers.append(tag.replace(ext_pfx,'') + "[ext]")
+            # extstorage parameters are also Ganeti tags in the
+            # form of GANETI_TAG_PREFIX:ext:provider:key:value.
+            # Ignore parameters and match available providers only
+            m = re.match(tag_regex, tag)
+            if m:
+                ext_providers.append('{}[ext]'.format(tag.replace(ext_pfx,'')))
         return ext_providers
 
     def list_cluster_nodes(self):
