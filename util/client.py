@@ -1081,9 +1081,7 @@ class GanetiRapiClient(object): # pylint: disable=R0904
     return self._SendRequest(HTTP_PUT,
                              ("/%s/instances/%s/startup" %
                               (GANETI_RAPI_VERSION, instance)), query, None)
-
-  def ReinstallInstance(self, instance, os=None, no_startup=False,
-                        osparams=None):
+  def ReinstallInstance(self, instance, reinstall_params, no_startup=False):
     """Reinstalls an instance.
 
     @type instance: str
@@ -1099,10 +1097,11 @@ class GanetiRapiClient(object): # pylint: disable=R0904
     """
     if _INST_REINSTALL_REQV1 in self.GetFeatures():
       body = {
-        "start": not no_startup,
-        }
-      _SetItemIf(body, os is not None, "os", os)
-      _SetItemIf(body, osparams is not None, "osparams", osparams)
+          "start": not no_startup,
+      }
+      for key, value in reinstall_params.items():
+        if value is not None:
+          body[key] = value
       return self._SendRequest(HTTP_POST,
                                ("/%s/instances/%s/reinstall" %
                                 (GANETI_RAPI_VERSION, instance)), None, body)

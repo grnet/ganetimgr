@@ -20,7 +20,6 @@ import hashlib
 import base64
 import os
 import ipaddr
-
 from datetime import datetime, timedelta
 from gevent.pool import Pool
 from socket import gethostbyname
@@ -36,12 +35,13 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.conf import settings
-
 from util import vapclient
 from util.client import GanetiRapiClient, GanetiApiError, GenericCurlConfig
 from apply.models import Organization, InstanceApplication
+from distutils.version import LooseVersion
 
 GANETI_TAG_PREFIX = settings.GANETI_TAG_PREFIX
+GANETI_VERSION_OSPARAMS = "2.16.0"
 
 REQUEST_ACTIONS = (
     (1, 'reinstall'),
@@ -961,22 +961,35 @@ class Cluster(models.Model):
                             "mode": 0600,
                         })
             osparams.update(details.get('osparams'))
+            reinstall_params = {}
             for (key, val) in osparams.iteritems():
             # Encode nested JSON. See
             # <https://code.google.com/p/ganeti/issues/detail?id=835>
                 if not isinstance(val, basestring):
                     osparams[key] = json.dumps(val)
-            job_id = self._client.ReinstallInstance(
-                instance,
-                os=details.get('provider'),
-                osparams=osparams
-            )
-            # manually change os params because client has a bug
-            self._client.ModifyInstance(instance, osparams=osparams)
-            self._lock_instance(instance, reason="reinstalling", job_id=job_id)
-            return job_id
+            reinstall_params['os'] = details.get('provider')
+            reinstall_params['osparams'] = osparams
+            if LooseVersion(self.get_version()) >= LooseVersion(GANETI_VERSION_OSPARAMS):
+                reinstall_params['clear_osparams'] = True
+                job_id = self._client.ReinstallInstance(
+                    instance,
+                    reinstall_params
+                )
+                self._lock_instance(instance, reason="reinstalling",job_id=job_id)
+                return job_id
+            else:
+                job_id = self._client.ReinstallInstance(
+                    instance,
+                    reinstall_params
+                )
+                self._client.ModifyInstance(instance, osparams=osparams)
+                self._lock_instance(instance, reason="reinstalling",job_id=job_id)
+                return job_id
         else:
             return False
+    def get_version(self):
+        return cache.get_or_set("{0}/version".format(self.hostname),
+                                lambda: self.get_cluster_info().get("software_version", "0"))
 
     def locked_nodes_from_nodegroup(self):
         '''
@@ -986,6 +999,7 @@ class Cluster(models.Model):
                            .format(self.hostname))
         if locked:
             return locked
+
         locked = []
         groups = self.get_node_groups()
         for group in groups:
