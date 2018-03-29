@@ -39,7 +39,7 @@ User discussions: ganetimgr-users@lists.grnet.gr
 
 ## Copyright and license
 
-Copyright © 2010-2017 Greek Research and Technology Network (GRNET S.A.)
+Copyright © 2010-2018 Greek Research and Technology Network (GRNET S.A.)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
