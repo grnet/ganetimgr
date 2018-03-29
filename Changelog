@@ -1,3 +1,22 @@
+2.1 RELEASE
+Features/Bugfixing release
+
+Requirements:
+
+    - Install django-redis-cache to use since in-house Redis client is removed
+
+New Features:
+    - Support custom disk params for extstorage providers
+    - Support clear_osparams when reinstalling instances between OS providers
+
+Fixes/Improvements:
+    - Updates in vima policy rules and implementation
+    - Fix InstanceApplicationAdmin searching
+    - Fix rename message regarding button's label
+
+===========
+
+2.0 RELEASE
 Django 1.8 RELEASE
 Features/Bugfixing/Django Upgrade release
 
