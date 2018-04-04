@@ -141,7 +141,7 @@ def user_index_json(request):
                 cluster_locked_nodes = cluster.locked_nodes_from_nodegroup()
                 if cluster_locked_nodes:
                     locked_clusters.append(str(cluster.description))
-                    locked_nodes.extend(cluster_locked_node_groups)
+                    locked_nodes.extend(cluster_locked_nodes)
                 instances.extend(cluster.get_user_instances(request.user))
             except GanetiApiError as e:
                 bad_clusters.append((cluster, format_ganeti_api_error(e)))
@@ -172,9 +172,9 @@ def user_index_json(request):
                 instance.joblock = False
             instancedetails.extend(generate_json(instance, request.user, locked_nodes))
         except GanetiApiError as e:
-            bad_clusters.append((cluster, format_ganeti_api_error(e)))
+            bad_clusters.append((instance.cluster, format_ganeti_api_error(e)))
         except Exception as e:
-                bad_clusters.append((cluster, e))
+                bad_clusters.append((instance.cluster, e))
         finally:
             close_old_connections()
     if res is None:

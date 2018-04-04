@@ -70,7 +70,6 @@ from django.db import close_old_connections
 class InstanceManager(object):
 
     def all(self):
-        users, orgs, groups, instanceapps, networks = preload_instance_data()
         p = Pool(20)
         instances = []
 
@@ -88,9 +87,8 @@ class InstanceManager(object):
         return instances
 
     def filter(self, **kwargs):
-        users, orgs, groups, instanceapps, networks = preload_instance_data()
+        cached_data = preload_instance_data()
         if 'cluster' in kwargs:
-            results = []
             if isinstance(kwargs['cluster'], Cluster):
                 cluster = kwargs['cluster']
             else:
@@ -110,14 +108,14 @@ class InstanceManager(object):
             if arg == 'user':
                 if not isinstance(val, User):
                     try:
-                        val = users[val]
+                        val = cached_data["users"][val]
                     except:
                         return []
                 results = [result for result in results if val in result.users]
             elif arg == 'group':
                 if not isinstance(val, Group):
                     try:
-                        val = groups[val]
+                        val = cached_data["groups"][val]
                     except:
                         return []
                 results = [result for result in results if val in result.groups]
@@ -153,19 +151,11 @@ class Instance(object):
         cluster,
         name,
         info=None,
-        listusers=None,
-        listorganizations=None,
-        listgroups=None,
-        listinstanceapplications=None,
-        networks=None
+        cached_data=None
     ):
         self.cluster = cluster
         self.name = name
-        self.listusers = listusers
-        self.listorganizations = listorganizations
-        self.listgroups = listgroups
-        self.listinstanceapplications = listinstanceapplications
-        self.networks = networks
+        self.networks = []
         self.organization = None
         self.application = None
         self.services = []
@@ -179,69 +169,39 @@ class Instance(object):
         self.needsreboot = False
         self.whitelistip = None
         self.joblock = False
-        self._update(info)
+        self._update(info, cached_data)
 
-    def _update(self, info=None):
-        user_cache = {}
-        group_cache = {}
-        org_cache = {}
-        app_cache = {}
+    def _update(self, info=None, cached_data=None):
         serv_cache = {}
         if not info:
             info = self.cluster.get_instance_info(self.name)
         for attr in info:
             self.__dict__[attr.replace(".", "_")] = info[attr]
+
+        group_pfx = "%s:group:" % GANETI_TAG_PREFIX
+        user_pfx = "%s:user:" % GANETI_TAG_PREFIX
+        org_pfx = "%s:org:" % GANETI_TAG_PREFIX
+        app_pfx = "%s:application:" % GANETI_TAG_PREFIX
+        serv_pfx = "%s:service:" % GANETI_TAG_PREFIX
+        adminlock_tag = "%s:adminlock" % GANETI_TAG_PREFIX
+        isolate_tag = "%s:isolate" % GANETI_TAG_PREFIX
+        needsreboot_tag = "%s:needsreboot" % GANETI_TAG_PREFIX
+        whitelist_pfx = "%s:whitelist_ip:" % GANETI_TAG_PREFIX
+
+        extra_data = cached_data or preload_instance_data()
+
+        self.groups = list(tag_prefix_resolver(info, group_pfx,
+                                               extra_data["groups"]))
+        self.users = list(tag_prefix_resolver(info, user_pfx,
+                                              extra_data["users"]))
+        self.organization = next(iter(tag_prefix_resolver(
+            info, org_pfx, extra_data["orgs"])), None)
+        self.application = next(iter(tag_prefix_resolver(
+            info, app_pfx, extra_data["instanceapps"])), None)
+        self.networks = extra_data["networks"]
+
         for tag in self.tags:
-            group_pfx = "%s:group:" % GANETI_TAG_PREFIX
-            user_pfx = "%s:user:" % GANETI_TAG_PREFIX
-            org_pfx = "%s:org:" % GANETI_TAG_PREFIX
-            app_pfx = "%s:application:" % GANETI_TAG_PREFIX
-            serv_pfx = "%s:service:" % GANETI_TAG_PREFIX
-            adminlock_tag = "%s:adminlock" % GANETI_TAG_PREFIX
-            isolate_tag = "%s:isolate" % GANETI_TAG_PREFIX
-            needsreboot_tag = "%s:needsreboot" % GANETI_TAG_PREFIX
-            whitelist_pfx = "%s:whitelist_ip:" % GANETI_TAG_PREFIX
-            if tag.startswith(group_pfx):
-                group = tag.replace(group_pfx, '')
-                if group not in group_cache:
-                    try:
-                        g = self.listgroups[group]
-                    except:
-                        g = None
-                    group_cache[group] = g
-                if group_cache[group] is not None:
-                    self.groups.append(group_cache[group])
-            elif tag.startswith(user_pfx):
-                user = tag.replace(user_pfx, '')
-                if user not in user_cache:
-                    try:
-                        u = self.listusers[user]
-                    except:
-                        u = None
-                    user_cache[user] = u
-                if user_cache[user] is not None:
-                    self.users.append(user_cache[user])
-            elif tag.startswith(org_pfx):
-                org = tag.replace(org_pfx, '')
-                if org not in org_cache:
-                    try:
-                        o = self.listorganizations[org]
-                    except:
-                        o = None
-                    org_cache[org] = o
-                if org_cache[org] is not None:
-                    self.organization = org_cache[org]
-            elif tag.startswith(app_pfx):
-                app = tag.replace(app_pfx, '')
-                if app not in app_cache:
-                    try:
-                        a = self.listinstanceapplications[app]
-                    except:
-                        a = None
-                    app_cache[app] = a
-                if app_cache[app] is not None:
-                    self.application = app_cache[app]
-            elif tag.startswith(serv_pfx):
+            if tag.startswith(serv_pfx):
                 serv = tag.replace(serv_pfx, '')
                 if serv not in serv_cache:
                     serv_cache[serv] = serv
@@ -445,25 +405,17 @@ class Cluster(models.Model):
 
     @classmethod
     def get_all_instances(cls):
-        instances = []
-        for cluster in cls.objects.all():
-            instances.extend(cluster.get_instances())
-        return instances
+        return [cluster.get_instances() for cluster in cls.objects.all()]
 
     def get_instance(self, name):
         info = self.get_instance_info(name)
         if info is None:
             raise Http404()
-        users, orgs, groups, instanceapps, networks = preload_instance_data()
         return Instance(
             self,
             info["name"],
             info,
-            listusers=users,
-            listorganizations=orgs,
-            listgroups=groups,
-            listinstanceapplications=instanceapps,
-            networks=networks
+            preload_instance_data()
         )
 
     def get_instance_or_404(self, name):
@@ -501,51 +453,25 @@ class Cluster(models.Model):
                   instances, seconds)
         return instances
 
-    def get_instances(self):
-        instances = cache.get("cluster:{0}:instances".format(self.hostname))
-        if instances is None:
-            instances = self.refresh_instances()
+    def get_client_struct_instances(self):
+        return (cache.get("cluster:{0}:instances".format(self.hostname))
+                or self.refresh_instances())
 
-        users, orgs, groups, instanceapps, networks = preload_instance_data()
-        retinstances = [
-            Instance(
-                self,
-                info['name'],
-                info,
-                listusers=users,
-                listorganizations=orgs,
-                listgroups=groups,
-                listinstanceapplications=instanceapps,
-                networks=networks
-            ) for info in instances
-        ]
-        return retinstances
+    def get_instances(self):
+        cached_extra_info = preload_instance_data()
+        return [Instance(self, info['name'], info, cached_extra_info)
+                for info in self.get_client_struct_instances()]
 
     def force_cluster_cache_refresh(self, instance):
         '''Used in cases of actions that could potentially lock the cluster
         thus preventing users from listing, even for some seconds, their
         instances and delay node listing for admins
         '''
-        retinstances = []
         instances = self._client.GetInstances(bulk=True)
         for i in instances:
             if i['name'] == instance:
                 i['action_lock'] = True
         cache.set("cluster:{0}:instances".format(self.hostname), instances, 45)
-        users, orgs, groups, instanceapps, networks = preload_instance_data()
-        retinstances = [
-            Instance(
-                self,
-                info['name'],
-                info,
-                listusers=users,
-                listorganizations=orgs,
-                listgroups=groups,
-                listinstanceapplications=instanceapps,
-                networks=networks
-            ) for info in instances
-        ]
-        return retinstances
 
     def get_user_instances(self, user, admin=True):
         instances = self.get_instances()
@@ -1203,7 +1129,8 @@ def preload_instance_data():
             instappdict[str(instapp.pk)] = instapp
         instanceapps = instappdict
         cache.set('instaceapplist', instanceapps, 60)
-    return users, orgs, groups, instanceapps, networks
+    return {"users": users, "orgs": orgs, "groups": groups,
+            "instanceapps": instanceapps, "networks": networks}
 
 
 class InstanceActionManager(models.Manager):
@@ -1336,3 +1263,18 @@ def parseQuerysimple(response):
             res_list.append(result[1])
         reslist.append(res_list)
     return reslist
+
+
+def tag_prefix_resolver(instance_struct, tag_prefix, association_data):
+    def tag_prefix_matcher(tag):
+        return tag.startswith(tag_prefix)
+
+    def associate_data_with_tag(tag):
+        return association_data.get(tag.replace(tag_prefix, ""))
+
+    return filter(lambda x: x is not None,
+                  map(associate_data_with_tag,
+                      filter(tag_prefix_matcher,
+                             instance_struct.get("tags", tuple()))
+                      )
+                  )
