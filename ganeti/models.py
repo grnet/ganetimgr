@@ -454,8 +454,8 @@ class Cluster(models.Model):
         return instances
 
     def get_client_struct_instances(self):
-        return cache.get_or_set("cluster:{0}:instances".format(self.hostname),
-                                self.refresh_instances)
+        return (cache.get("cluster:{0}:instances".format(self.hostname))
+                or self.refresh_instances())
 
     def get_instances(self):
         cached_extra_info = preload_instance_data()
