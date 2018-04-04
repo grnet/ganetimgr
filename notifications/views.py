@@ -15,7 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
@@ -26,10 +25,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import json
 from django.core.exceptions import PermissionDenied
-from gevent.pool import Pool
 
 from util.client import GanetiApiError
-from notifications.utils import get_mails, send_emails
+from notifications.utils import get_mails, send_emails, get_all_instances
 from notifications.models import NotificationArchive
 from ganeti.utils import format_ganeti_api_error
 
@@ -162,12 +160,10 @@ def get_user_group_list(request):
                     groupd['type'] = "group"
                     ret_list.append(groupd)
             elif type_of_search == 'instances':
-                notif_instances = Instance.objects.filter(name__icontains=q_params)
-                for instance in notif_instances:
-                    instd = {}
-                    instd['text'] = instance.name
-                    instd['id'] = "i_%s" % instance.name
-                    instd['type'] = "vm"
+                for iname, _ in filter(lambda (name, inst): q_params in name,
+                                       get_all_instances().items()):
+                    instd = {'text': iname,
+                             'id': "i_%s" % iname, 'type': "vm"}
                     ret_list.append(instd)
             elif type_of_search == 'nodes':
                 # get only enabled clusters

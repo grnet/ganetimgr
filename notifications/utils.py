@@ -14,13 +14,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
+from itertools import chain
+from django.core.cache import cache
 from ganeti.models import Cluster, Instance
 from django.template import Context, Template
 from django.conf import settings
 from django.core.mail.message import EmailMessage
 from django.contrib.auth.models import User, Group
 from gevent.pool import Pool
+
+
+def get_all_instances():
+    return cache.get_or_set(
+        "all:instances",
+        lambda: {y.get("name", ""): y
+                 for y in chain(*map(lambda x: x.get_client_struct_instances(),
+                                     Cluster.objects.all()))}
+    )
 
 
 def send_emails(subject, body, emails):
@@ -63,20 +73,14 @@ def notify_instance_owners(instances, subject, message):
 
 
 def find_instances_emails(instances):
-    mails = {}
-    for instance in instances:
-        users = instance.users
-        if instance.groups:
-            for group in instance.groups:
-                for user in group.userset:
-                    users.append(user)
+    def find_instance_emails(instance):
+        return chain(instance.users, [u for group in instance.groups
+                                      for u in group.user_set.all()])
 
-        mails.update(
-            {
-                instance.name: [u.email for u in users]
-            }
-        )
-    return mails
+    return {
+        inst.name: [user.email for user in find_instance_emails(inst)]
+        for inst in instances
+    }
 
 
 def get_mails(itemlist):
@@ -116,7 +120,11 @@ def get_mails(itemlist):
 
         #Instance
         if i.startswith('i'):
-            instance = Instance.objects.get(name=i.replace('i_', ''))
+            instance_info = get_all_instances().get(i.replace('i_', ''))
+
+            # we don't really need to pass a cluster object here in our init
+            instance = Instance(None, instance_info["name"], instance_info)
+
             if mails.get('instances'):
                 mails['instances'].update(find_instances_emails([instance]))
             else:
