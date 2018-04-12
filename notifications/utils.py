@@ -29,7 +29,7 @@ def get_all_instances():
         "all:instances",
         lambda: {y.get("name", ""): y
                  for y in chain(*map(lambda x: x.get_client_struct_instances(),
-                                     Cluster.objects.all()))}
+                                     Cluster.objects.filter(disabled=False)))}
     )
 
 
