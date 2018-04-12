@@ -913,9 +913,10 @@ class Cluster(models.Model):
                 return job_id
         else:
             return False
+
     def get_version(self):
-        return cache.get_or_set("{0}/version".format(self.hostname),
-                                lambda: self.get_cluster_info().get("software_version", "0"))
+        return (cache.get("{0}/version".format(self.hostname))
+                or self.get_cluster_info().get("software_version", "0"))
 
     def locked_nodes_from_nodegroup(self):
         '''

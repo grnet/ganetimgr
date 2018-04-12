@@ -25,12 +25,13 @@ from gevent.pool import Pool
 
 
 def get_all_instances():
-    return cache.get_or_set(
-        "all:instances",
-        lambda: {y.get("name", ""): y
-                 for y in chain(*map(lambda x: x.get_client_struct_instances(),
-                                     Cluster.objects.filter(disabled=False)))}
-    )
+    return (cache.get("all:instances")
+            or
+            {y.get("name", ""): y
+             for y in chain(*map(lambda x: x.get_client_struct_instances(),
+                                 Cluster.objects.filter(disabled=False)))}
+            )
+
 
 
 def send_emails(subject, body, emails):
