@@ -328,7 +328,7 @@ def notify_internal(subject, message, vms):
 
 
 def should_activate(vm):
-    return expired_tag in vm.tags
+    return any(filter(lambda t: t in vm.tags, [expired_tag, destroy_tag]))
 
 
 def is_vm_expired(vm, expired_users):
@@ -340,7 +340,7 @@ def is_vm_expired(vm, expired_users):
 
 def activate(vms):
     for vm in vms:
-        vm.cluster.untag_instance(vm.name, [expired_tag])
+        vm.cluster.untag_instance(vm.name, [expired_tag, destroy_tag])
 
 
 def shutdown(vms):
