@@ -22,7 +22,6 @@ from .views import CustomRegistrationView as RegistrationView
 
 
 urlpatterns = [
-    '',
     url(
         r'^register/$',
         RegistrationView.as_view(),
@@ -45,5 +44,5 @@ urlpatterns = [
         auth_views.password_reset_done,
         name='password_reset_done'
     ),
-    (r'^', include('registration.backends.admin_approval.urls')),
+    url(r'^', include('registration.backends.admin_approval.urls')),
 ]

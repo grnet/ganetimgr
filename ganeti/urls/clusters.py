@@ -19,7 +19,6 @@ from django.conf.urls import url
 from ganeti import views
 
 urlpatterns = [
-    '',
     # this view lives in jobs.py
     url(r'^jobdetails/?$', views.job_details, name="jobdets-popup"),
     url(r'^popup/?', views.instance_popup, name="instance-popup"),

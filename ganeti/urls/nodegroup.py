@@ -15,11 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import  url
+from django.conf.urls import url
 from ganeti import views
 
 urlpatterns = [
-    '',
     url(r'^fromnet/$', views.get_nodegroups_fromnet, name='ng_from_net'),
     url(r'^cluster/$', views.get_cluster_node_group_stack, name='cluster_ng_stack'),
 

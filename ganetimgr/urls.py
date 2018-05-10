@@ -34,7 +34,6 @@ from django.views.i18n import set_language
 admin.autodiscover()
 
 urlpatterns = [
-    '',
     url(r'^setlang/?$', set_language, name='set-language'),
     url(r'^$', 'ganeti.views.user_index', name="user-instances"),
     url(r'^news/?$', 'ganeti.views.news', name="news"),
@@ -46,24 +45,23 @@ urlpatterns = [
     url(r'^tagusergrps/?$', 'ganeti.views.get_user_groups', name="tagusergroups"),
 
     # mount apps
-    (r'^application/', include(application)),
-    (r'^history/', include(auditlog)),
-    (r'^nodegroups/', include(nodegroup)),
-    (r'^notifications/', include(notifications)),
-    (r'^user/', include(user)),
-    (r'^stats/', include(stats_urls)),
-    (r'^jobs/', include(jobs)),
-    (r'^cluster/', include(clusters)),
-    (r'^instances/', include(instances)),
-    (r'^accounts/', include(accounts)),
-    (r'^graph/', include(graphs)),
-    (r'^admin/', include(admin.site.urls)),
+    url(r'^application/', include(application)),
+    url(r'^history/', include(auditlog)),
+    url(r'^nodegroups/', include(nodegroup)),
+    url(r'^notifications/', include(notifications)),
+    url(r'^user/', include(user)),
+    url(r'^stats/', include(stats_urls)),
+    url(r'^jobs/', include(jobs)),
+    url(r'^cluster/', include(clusters)),
+    url(r'^instances/', include(instances)),
+    url(r'^accounts/', include(accounts)),
+    url(r'^graph/', include(graphs)),
+    url(r'^admin/', include(admin.site.urls)),
 ]
 
 # oauth
 if 'oauth2_provider' in settings.INSTALLED_APPS:
     urlpatterns += [
-        '',
         url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
     ]

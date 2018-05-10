@@ -20,7 +20,6 @@ from apply import views
 from django.contrib.auth.views import login, logout, password_change, password_change_done
 
 urlpatterns = [
-    '',
     url(r'^info/(?P<type>\w+)/(?P<usergroup>[\w\.\@-]+)/?$', views.user_info, name="user-info"),
     url(r'^details/$', views.detail_api, name="user-details-json"),
     url(r'^idle/$', views.idle_accounts, name="idle_accounts"),

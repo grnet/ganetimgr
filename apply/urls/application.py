@@ -19,7 +19,6 @@ from django.conf.urls import  url
 from apply import views
 
 urlpatterns = [
-    '',
     url(r'^apply/?$', views.apply, name="apply"),
     url(r'^list/?$', views.application_list, name="application-list"),
     # this url is accessible only if a superuser tries to create

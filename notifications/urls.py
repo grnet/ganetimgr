@@ -19,7 +19,6 @@ from django.conf.urls import  url
 from notifications import views
 
 urlpatterns = [
-    '',
     url(r'^usergrps/$', views.get_user_group_list, name="usergroups"),
     url(r'^(?P<instance>[^/]+)/$', views.notify, name="notify"),
     url(r'^archive/(?P<notification>\w+)/$', views.archive, name="notification-details"),

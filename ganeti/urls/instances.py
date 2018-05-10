@@ -20,7 +20,6 @@ from django.conf.urls import  url
 from ganeti import views
 
 urlpatterns = [
-    '',
     url(r'^list/$', views.list_user_instances, name='instances-list'),
     url(r'^tags/(?P<instance>[^/]+)?$', views.tagInstance, name="instance-tags"),
     url(r'^json/$', views.user_index_json, name="user-instances-json"),

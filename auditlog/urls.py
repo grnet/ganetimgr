@@ -19,7 +19,6 @@ from django.conf.urls import url
 from auditlog import views
 
 urlpatterns = [
-    '',
     url(r'^$', views.auditlog, name='auditlog'),
     url(r'^json/$', views.auditlog_json, name='auditlog_json'),
 ]

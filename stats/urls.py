@@ -19,7 +19,6 @@ from django.conf.urls import  url
 from stats import views
 
 urlpatterns = [
-    '',
     url(r'^applications/?', views.stats_ajax_applications, name="stats_ajax_apps"),
     url(r'^instances/?', views.stats_ajax_instances, name="stats_ajax_instances"),
     url(r'^vms_cluster/(?P<cluster_slug>[^/]+)/?', views.stats_ajax_vms_per_cluster, name="stats_ajax_vms_pc"),
