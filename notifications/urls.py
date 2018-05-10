@@ -15,13 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import patterns, url
+from django.conf.urls import  url
 from notifications import views
 
-urlpatterns = patterns(
+urlpatterns = [
     '',
     url(r'^usergrps/$', views.get_user_group_list, name="usergroups"),
     url(r'^(?P<instance>[^/]+)/$', views.notify, name="notify"),
     url(r'^archive/(?P<notification>\w+)/$', views.archive, name="notification-details"),
     url(r'^$', views.notify, name="notify"),
-)
+]

@@ -15,10 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from ganeti import views
 
-urlpatterns = patterns(
+urlpatterns = [
     '',
     # this view lives in jobs.py
     url(r'^jobdetails/?$', views.job_details, name="jobdets-popup"),
@@ -31,4 +31,4 @@ urlpatterns = patterns(
     url(r'^detail/$', views.clusterdetails, name="clusterdetails"),
     url(r'^detail/json/$', views.clusterdetails_json, name="clusterdetails_json"),
 
-)
+]

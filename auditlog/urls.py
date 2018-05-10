@@ -15,11 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from auditlog import views
 
-urlpatterns = patterns(
+urlpatterns = [
     '',
     url(r'^$', views.auditlog, name='auditlog'),
     url(r'^json/$', views.auditlog_json, name='auditlog_json'),
-)
+]

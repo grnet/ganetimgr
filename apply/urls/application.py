@@ -15,10 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import patterns, url
+from django.conf.urls import  url
 from apply import views
 
-urlpatterns = patterns(
+urlpatterns = [
     '',
     url(r'^apply/?$', views.apply, name="apply"),
     url(r'^list/?$', views.application_list, name="application-list"),
@@ -27,4 +27,4 @@ urlpatterns = patterns(
     url(r'^save/', views.review_application, name="application-save"),
     url(r'^(?P<application_id>\d+)/review/$', views.review_application, name="application-review"),
     url(r'^(?P<application_id>\d+)/(?P<cookie>\w+)/ssh_keys', views.instance_ssh_keys, name="instance-ssh-keys"),
-)
+]

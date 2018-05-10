@@ -16,12 +16,12 @@
 #
 
 from accounts.forms import PasswordResetFormPatched
-from django.conf.urls import patterns, url, include
+from django.conf.urls import  url, include
 from django.contrib.auth import views as auth_views
 from .views import CustomRegistrationView as RegistrationView
 
 
-urlpatterns = patterns(
+urlpatterns = [
     '',
     url(
         r'^register/$',
@@ -46,4 +46,4 @@ urlpatterns = patterns(
         name='password_reset_done'
     ),
     (r'^', include('registration.backends.admin_approval.urls')),
-)
+]
