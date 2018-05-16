@@ -847,8 +847,6 @@ class Cluster(models.Model):
             return user, group, path
 
         action_os = action.operating_system
-        if action.operating_system == 'noop':
-            action_os = "none"
         details = get_os_details(action_os)
         if details:
             cache_key = self._instance_cache_key(instance)

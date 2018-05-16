@@ -1,5 +1,6 @@
+import re
 import requests
-from requests.exceptions import ConnectionError
+from requests.exceptions import RequestException
 from bs4 import BeautifulSoup
 import json
 from gevent.pool import Pool
@@ -9,7 +10,6 @@ from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
-from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.db import close_old_connections
 from django.shortcuts import get_object_or_404
@@ -19,6 +19,9 @@ from django.utils.translation import ugettext as _
 from ganeti.models import Cluster, Instance, InstanceAction
 
 from util.client import GanetiApiError
+
+IMAGES_URL = getattr(settings, "IMAGES_URL", tuple())
+IMG_META_SFX = getattr(settings, "IMG_META_SFX", ".meta")
 
 
 def memsize(value):
@@ -366,205 +369,59 @@ def notifyuseradvancedactions(
     return action
 
 
-try:
-    from ganetimgr.settings import OPERATING_SYSTEMS_URLS
-except ImportError:
-    OPERATING_SYSTEMS_URLS = False
-else:
-    from ganetimgr.settings import OPERATING_SYSTEMS_PROVIDER, OPERATING_SYSTEMS_SSH_KEY_PARAM
-
-try:
-    from ganetimgr.settings import SNF_OPERATING_SYSTEMS_URLS
-except ImportError:
-    SNF_OPERATING_SYSTEMS_URLS = False
-else:
-    from ganetimgr.settings import OPERATING_SYSTEMS_PROVIDER, OPERATING_SYSTEMS_SSH_KEY_PARAM
-
-try:
-    from ganetimgr.settings import OPERATING_SYSTEMS
-except ImportError:
-    OPERATING_SYSTEMS = False
-
-try:
-    from ganetimgr.settings import SNF_IMG_PROPERTIES
-except ImportError:
-    SNF_IMG_PROPERTIES = False
-
-try:
-    from ganetimgr.settings import SNF_IMG_PASSWD
-except ImportError:
-    SNF_IMG_PASSWD = None
+def find_links(response):
+    return map(lambda link: link.get("href"),
+               filter(lambda x: re.search(r"(?<==[\"|\']).*(?=[\"|\']>)",
+                                          str(x)),
+                      BeautifulSoup(response.text).findAll("a")))
 
 
-def discover_snf_images():
-    snf_images = {}
-    if SNF_OPERATING_SYSTEMS_URLS:
-        for url in SNF_OPERATING_SYSTEMS_URLS:
-            try:
-                raw_response = requests.get(url)
-            except ConnectionError:
-                # fail silently if url is unreachable
-                break
-            else:
-                if raw_response.ok:
-                    soup = BeautifulSoup(raw_response.text)
-                    extensions = {
-                        'img': 'diskdump',
-                    }
-                    for link in soup.findAll('a'):
-                        try:
-                            # lets see if the link we've got is an image
-                            extension = link.attrs.get('href').split('.')[-1]
-                        except IndexError:
-                            continue
-                        else:
-                            if extension in extensions.keys():
-                                # in case we have an images lets store it
-                                img = '%s%s' % (url, link.attrs.get('href'))
-                            else:
-                                continue
-                            re = requests.get(
-                                '%s%s.dsc' % (
-                                    url,
-                                    link.attrs.get('href')
-                                )
-                            )
-                            if re.ok:
-                                description = re.text.strip()
-                            else:
-                                description = link.attrs.get('href')
-                            snf_images.update(
-                                {
-                                    img: {
-                                        'description': description,
-                                        'provider': 'snf-image+default',
-                                        'osparams': {
-                                            'img_id': img,
-                                            'img_format': extensions.get(extension),
-                                        },
-                                        'ssh_key_users': 'root',
-                                    },
-                                }
-                            )
-                            if SNF_IMG_PROPERTIES:
-                                snf_images.get(img).get('osparams').update(
-                                    {
-                                        'img_properties': SNF_IMG_PROPERTIES
-                                    }
-                                )
-                            if SNF_IMG_PASSWD is not None:
-                                snf_images.get(img).get('osparams').update(
-                                    {
-                                        'img_passwd': SNF_IMG_PASSWD
-                                    }
-                                )
+def find_image_meta_links(url):
+    def get_meta_links():
+        try:
+            return filter(
+                lambda x: re.search(r"(?=" + IMG_META_SFX + r").*", x),
+                find_links(requests.get(url)))
+        except RequestException:
+            return ()
 
-        return snf_images
-    else:
-        return {}
+    return map(lambda link: "{schema}{link}"
+                            .format(schema=url if url not in link else "",
+                                    link=link),
+               get_meta_links())
 
 
-def discover_available_operating_systems():
-    operating_systems = {}
-    if OPERATING_SYSTEMS_URLS:
-        for url in OPERATING_SYSTEMS_URLS:
-            try:
-                raw_response = requests.get(url)
-            except ConnectionError:
-                # fail silently if url is unreachable
-                continue
-            else:
-                if raw_response.ok:
-                    soup = BeautifulSoup(raw_response.text)
-                    extensions = {
-                        '.tar.gz': 'tarball',
-                        '.img': 'qemu',
-                        '-root.dump': 'dump',
-                    }
-                    architectures = ['-x86_', '-amd' '-i386']
-                    for link in soup.findAll('a'):
-                        try:
-                            if '.' + '.'.join(link.attrs.get('href').split('.')[-2:]) == '.tar.gz':
-                                extension = '.tar.gz'
-                            elif '.' + '.'.join(link.attrs.get('href').split('.')[-1:]) == '.img':
-                                extension = '.img'
-                            else:
-                                extension = '.' + '.'.join(link.attrs.get('href').split('.')[-1:])
-                        # in case of false link
-                        except IndexError:
-                            pass
-                        else:
-                            # if the file is tarball, qemu or dump then it is valid
-                            if extension in extensions.keys() or '-root.dump' in link.attrs.get('href'):
-                                re = requests.get(url + link.attrs.get('href') + '.dsc')
-                                if re.ok:
-                                    name = re.text
-                                else:
-                                    name = link.attrs.get('href')
-                                for arch in architectures:
-                                    if arch in link.attrs.get('href'):
-                                        img_id = link.attrs.get('href').replace(extension, '').split(arch)[0]
-                                        architecture = arch
-                                        break
-                                description = name
-                                img_format = extensions[extension]
-                                if link.attrs.get('href').split('-')[0] == 'nomount':
-                                    operating_systems.update({
-                                        img_id: {
-                                            'description': description,
-                                            'provider': OPERATING_SYSTEMS_PROVIDER,
-                                            'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
-                                            'arch': architecture,
-                                            'osparams': {
-                                                'img_id': img_id,
-                                                'img_format': img_format,
-                                                'img_nomount': 'yes',
-                                            }
-                                        }
-                                    })
-                                else:
-                                    operating_systems.update({
-                                        img_id: {
-                                            'description': description,
-                                            'provider': OPERATING_SYSTEMS_PROVIDER,
-                                            'ssh_key_param': OPERATING_SYSTEMS_SSH_KEY_PARAM,
-                                            'arch': architecture,
-                                            'osparams': {
-                                                'img_id': img_id,
-                                                'img_format': img_format,
-                                            }
-                                        }
-                                    })
-        return operating_systems
-    else:
-        return {}
+def meta_info_to_json(meta_link):
+    try:
+        return json.loads(requests.get(meta_link).text)
+    except (ValueError, RequestException):
+        pass
 
 
-def get_operating_systems_dict():
-    if OPERATING_SYSTEMS:
-        return OPERATING_SYSTEMS
-    else:
-        return {}
+def craft_images_structure(meta_links):
+    def craft_image_struct(temp_struct):
+        return temp_struct.get("osparams", {}).get("img_id"), temp_struct
+
+    return filter(lambda (img, _): img is not None,
+                  map(craft_image_struct,
+                      filter(lambda x: x, map(meta_info_to_json, meta_links))))
+
+
+def discover_images():
+    return tuple(*map(craft_images_structure,
+                      map(find_image_meta_links, IMAGES_URL)))
 
 
 def operating_systems():
-    # check if results exist in cache
     response = cache.get('operating_systems')
-    # if no items in cache
     if not response:
-        dictionary = get_operating_systems_dict()
-        discovery = discover_available_operating_systems()
-        snf_discovery = discover_snf_images()
-        operating_systems = sorted(dict(
-            discovery.items() + dictionary.items() + snf_discovery.items()
-        ).items())
-        # move 'none' on the top of the list for ui purposes.
-        for os in operating_systems:
-            if os[0] == 'none':
-                operating_systems.remove(os)
-                operating_systems.insert(0, os)
-        response = json.dumps({'status': 'success', 'operating_systems': operating_systems})
-        # add results to cache for one day
+        response = json.dumps(
+            {'status': 'success',
+             # sort so that "no-operating" system is shown first
+             'operating_systems': sorted(
+                 discover_images(), key=lambda (path, struct): path != "none")}
+        )
+
         cache.set('operating_systems', response, timeout=86400)
     return response
 

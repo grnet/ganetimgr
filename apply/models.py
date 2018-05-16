@@ -194,7 +194,7 @@ class InstanceApplication(models.Model):
         nic_dict = dict(link=self.instance_params['network'],
                         mode=self.instance_params['mode'])
 
-        if ((self.instance_params['mode'] == 'routed') and (uses_gnt_network)):
+        if self.instance_params['mode'] == 'routed' and uses_gnt_network:
             nic_dict = dict(network=self.instance_params['network'])
 
         if self.instance_params['mode'] == "routed":
@@ -203,27 +203,12 @@ class InstanceApplication(models.Model):
         from ganeti.utils import operating_systems
         fetch_op_systems = operating_systems()
         op_systems = json.loads(fetch_op_systems).get('operating_systems')
-        op_systems_dict = dict(op_systems)
-        sel_os = self.operating_system
-        if self.operating_system == 'noop':
-            sel_os = "none"
-        os = op_systems_dict.get(sel_os)
-        # Os shoul have been found. There are two cases that could cause
-        # Ganetimgr is not configured properly (500 ImproperlyConfigured)
-        if os is None:
-            raise ImproperlyConfigured(
-                'OPERATING_SYSTEMS is not configured properly (key must be same as img_id)'
-            )
+        os = dict(op_systems).get(self.operating_system)
         provider = os.get('provider')
-        osparams = {}
-
-        if "osparams" in os:
-            osparams.update(os["osparams"])
+        osparams = os.get("osparams", {})
         if "ssh_key_param" in os:
             fqdn = "https://" + Site.objects.get_current().domain
-            key_url = self.get_ssh_keys_url(fqdn)
-            if os["ssh_key_param"]:
-                osparams[os["ssh_key_param"]] = key_url
+            osparams[os["ssh_key_param"]] = self.get_ssh_keys_url(fqdn)
         # For snf-image: copy keys to ssh_key_users using img_personality
         if "ssh_key_users" in os and os["ssh_key_users"]:
             ssh_keys = self.applicant.sshpublickey_set.all()

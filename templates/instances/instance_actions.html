@@ -165,17 +165,20 @@
 							options += '<option value="" selected>Keep it as it is - No operating system</option>';
 							oldos = false;
 						}
-					for (var i=0; i < response.operating_systems.length; i++) {
-						if (response.operating_systems[i][1].osparams.img_id === os) {
-							options += '<option value="' + response.operating_systems[i][1].osparams.img_id + '" selected>Keep the same os (' + os + ')</option>';
-							oldos = false;
-						}
-						if (response.operating_systems[i][1].osparams.img_id) {
-							options += '<option value="' +  response.operating_systems[i][1].osparams.img_id + '" >' + response.operating_systems[i][1].description + '</option>';
-						} else {
-							options += '<option value="' +  response.operating_systems[i][1].provider + '" >' + response.operating_systems[i][1].description + '</option>';
-						}
-					}
+                  for (var i=0; i < response.operating_systems.length; i++) {
+                    if (response.operating_systems[i][0] === os) {
+                      options += '<option value="' + response.operating_systems[i][0]
+                        + '" selected>Keep the same os ('
+                        + response.operating_systems[i][1].description
+                        + ')</option>';
+                      oldos = false;
+                    }
+                    options += '<option value="'
+                      + response.operating_systems[i][0]
+                      + '">'
+                      + response.operating_systems[i][1].description
+                      + '</option>';
+                  }
 
 				}
 				operatingSystemsInput.html(options);
