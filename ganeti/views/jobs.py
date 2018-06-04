@@ -25,7 +25,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages as djmessages
 from django.db import close_old_connections
 from django.http import HttpResponseRedirect, HttpResponse, Http404
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
@@ -48,20 +48,14 @@ def job_details(request):
                 raise Http404
             cluster = get_object_or_404(Cluster, slug=cluster_slug)
             try:
-                job = cluster.get_job(jobid)
+                return render(request, 'jobs/job_details.html',
+                              {'job': pprint.pformat(cluster.get_job(jobid))})
             except Exception as e:
                 try:
                     error = tuple(x for x in e.args[0][1:-1].split(","))[1]
-                except:
+                except Exception:
                     error = _('Could not connect to api')
                 return HttpResponse(error.replace('"', ''))
-        return render_to_response(
-            'jobs/job_details.html',
-            {
-                'job': pprint.pformat(job)
-            },
-            context_instance=RequestContext(request)
-        )
     else:
         return HttpResponseRedirect(reverse('user-instances'))
 
@@ -125,9 +119,6 @@ def jobs_index_json(request):
 @login_required
 def jobs(request):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):
-        return render_to_response(
-            'jobs/jobs.html',
-            context_instance=RequestContext(request)
-        )
+        return render(request, 'jobs/jobs.html',)
     else:
         raise PermissionDenied()
