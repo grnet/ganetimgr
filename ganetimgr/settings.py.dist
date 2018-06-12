@@ -20,7 +20,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, 'ganetimgr')
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 # This setting is mandatory when DEBUG is set to False.
 ALLOWED_HOSTS = [
@@ -61,12 +60,6 @@ USE_L10N = True
 MEDIA_ROOT = ''
 MEDIA_URL = ''
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -95,18 +88,15 @@ STATICFILES_FINDERS = (
 
 ROOT_URLCONF = 'ganetimgr.urls'
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
-)
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.messages',
-    'django.contrib.admin',
     'django.contrib.staticfiles',
     'registration',
     'accounts',
@@ -117,7 +107,34 @@ INSTALLED_APPS = (
     'auditlog',
 #    'oauth2_provider',
 #    'corsheaders',
+    'nocaptcha_recaptcha'
 )
+
+
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'APP_DIRS': True,
+    'DIRS': [os.path.join(BASE_DIR, 'templates')],
+    'OPTIONS': {
+        'context_processors':(
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.template.context_processors.request',
+                'context.pending_notifications.notify',
+                'context.session_remaining.seconds',
+                'context.global_vars.settings_vars',
+                'django.contrib.messages.context_processors.messages'
+            ),
+        'debug': DEBUG
+    },
+}]
+
+
+
 
 # Caching is a vital part of ganetimgr.
 # If you deploy more than one ganetimgr instances on the same server,
@@ -135,17 +152,6 @@ INSTALLED_APPS = (
 LOGIN_URL = '/user/login'
 LOGIN_REDIRECT_URL = '/'
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "context.pending_notifications.notify",
-    "context.session_remaining.seconds",
-    "context.global_vars.settings_vars",
-    "django.core.context_processors.request",
-    "django.contrib.messages.context_processors.messages"
-)
 
 EMAIL_HOST = "127.0.0.1"
 EMAIL_PORT = 25
