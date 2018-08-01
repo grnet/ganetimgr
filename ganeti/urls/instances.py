@@ -15,12 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import patterns, url
+from django.conf.urls import  url
 
 from ganeti import views
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^list/$', views.list_user_instances, name='instances-list'),
     url(r'^tags/(?P<instance>[^/]+)?$', views.tagInstance, name="instance-tags"),
     url(r'^json/$', views.user_index_json, name="user-instances-json"),
@@ -37,4 +36,4 @@ urlpatterns = patterns(
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/reinstalldestroy/(?P<action_id>\d+)/(?P<action_value>[^/]+)?$', views.reinstalldestroy, name="instance-reinstall-destroy"),
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/rename/(?P<action_id>\d+)(/(?P<action_value>[^/]+))?$', views.rename_instance, name="instance-rename"),
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/?', views.instance, name="instance-detail"),
-)
+]

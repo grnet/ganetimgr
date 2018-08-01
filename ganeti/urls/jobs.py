@@ -15,11 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from ganeti import views
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^json/$', views.jobs_index_json, name="jobs_json"),
     url(r'^$', views.jobs, name="jobs"),
-)
+]

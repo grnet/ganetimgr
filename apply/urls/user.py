@@ -15,11 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from apply import views
+from django.contrib.auth.views import login, logout, password_change, password_change_done
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^info/(?P<type>\w+)/(?P<usergroup>[\w\.\@-]+)/?$', views.user_info, name="user-info"),
     url(r'^details/$', views.detail_api, name="user-details-json"),
     url(r'^idle/$', views.idle_accounts, name="idle_accounts"),
@@ -29,9 +29,9 @@ urlpatterns = patterns(
     url(r'^other_change/$', views.other_change, name="other-change"),
     url(r'^keys/$', views.user_keys, name="user-keys"),
     url(r'^keys/delete/(?P<key_id>\d+)?$', views.delete_key, name="delete-key"),
-    url(r'^login/', 'django.contrib.auth.views.login', {'template_name': 'users/login.html'}, name="login"),
-    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}, name="logout"),
-    url(r'^pass_change/$', 'django.contrib.auth.views.password_change', {'template_name':'users/pass_change.html', 'post_change_redirect':'pass_change_done'}, name="pass_change"),
-    url(r'^pass_change/done/$', 'django.contrib.auth.views.password_change_done', {'template_name':'users/pass_change_done.html'}, name="pass_change_done" ),
+    url(r'^login/', login, {'template_name': 'users/login.html'}, name="login"),
+    url(r'^logout/', logout, {'next_page': '/'}, name="logout"),
+    url(r'^pass_change/$', password_change, {'template_name':'users/pass_change.html', 'post_change_redirect':'pass_change_done'}, name="pass_change"),
+    url(r'^pass_change/done/$', password_change_done, {'template_name':'users/pass_change_done.html'}, name="pass_change_done" ),
     url(r'^pass_change/notify/$', views.pass_notify, name="pass_change_notify"),
-)
+]

@@ -14,7 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from django.conf.urls import patterns, include, url
+#>from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
+from django.views.static import serve
+
 from django.conf import settings
 
 from django.contrib import admin
@@ -24,50 +27,50 @@ from accounts import urls as accounts
 from ganeti.urls import graphs, instances, jobs, clusters, nodegroup
 from stats import urls as stats_urls
 from apply.urls import application, user
-from ganeti.views import discovery
+from ganeti.views import get_user_groups, discovery, user_index, news
+from ganeti.views import clear_cache, get_messages
 from notifications import urls as notifications
 from auditlog import urls as auditlog
+from django.views.i18n import set_language
 admin.autodiscover()
 
-urlpatterns = patterns(
-    '',
-    url(r'^setlang/?$', 'django.views.i18n.set_language', name='setlang'),
-    url(r'^$', 'ganeti.views.user_index', name="user-instances"),
-    url(r'^news/?$', 'ganeti.views.news', name="news"),
+urlpatterns = [ 
+    url(r'^setlang/?$', set_language, name='setlang'),
+    url(r'^$', user_index, name="user-instances"),
+    url(r'^news/?$', news, name="news"),
 
     # unique, helper urls
-    url(r'^clearcache/?$', 'ganeti.views.clear_cache', name="clearcache"),
-    url(r'^get_messages/$', 'ganeti.views.get_messages', name="get_messages"),
+    url(r'^clearcache/?$', clear_cache, name="clearcache"),
+    url(r'^get_messages/$', get_messages, name="get_messages"),
     url(r'^operating_systems/$', discovery.get_operating_systems, name='operating_systems_json'),
-    url(r'^tagusergrps/?$', 'ganeti.views.get_user_groups', name="tagusergroups"),
+    url(r'^tagusergrps/?$', get_user_groups, name="tagusergroups"),
 
     # mount apps
-    (r'^application/', include(application)),
-    (r'^history/', include(auditlog)),
-    (r'^nodegroups/', include(nodegroup)),
-    (r'^notifications/', include(notifications)),
-    (r'^user/', include(user)),
-    (r'^stats/', include(stats_urls)),
-    (r'^jobs/', include(jobs)),
-    (r'^cluster/', include(clusters)),
-    (r'^instances/', include(instances)),
-    (r'^accounts/', include(accounts)),
-    (r'^graph/', include(graphs)),
+    url(r'^application/', include(application)),
+    url(r'^history/', include(auditlog)),
+    url(r'^nodegroups/', include(nodegroup)),
+    url(r'^notifications/', include(notifications)),
+    url(r'^user/', include(user)),
+    url(r'^stats/', include(stats_urls)),
+    url(r'^jobs/', include(jobs)),
+    url(r'^cluster/', include(clusters)),
+    url(r'^instances/', include(instances)),
+    url(r'^accounts/', include(accounts)),
+    url(r'^graph/', include(graphs)),
     # get a list of the available operating systems
-    (r'^admin/', include(admin.site.urls)),
-)
+    url(r'^admin/', include(admin.site.urls)),
+]
 
 # oauth
 if 'oauth2_provider' in settings.INSTALLED_APPS:
-    urlpatterns += patterns(
-        '',
+    urlpatterns += [
         url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
-    )
+    ]
 
 if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)', 'django.views.static.serve',\
+    urlpatterns += [
+        url(r'^static/(?P<path>.*)', serve,
             {'document_root':  settings.STATIC_URL}),
-    )
+    ]
 

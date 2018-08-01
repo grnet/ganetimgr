@@ -25,7 +25,7 @@ monkey.patch_all()
 import atexit
 import daemon
 import logging
-import daemon.pidlockfile
+import daemon.pidfile
 import setproctitle
 from lockfile import LockError
 from signal import SIGINT, SIGTERM
@@ -315,7 +315,7 @@ def fatal_signal_handler(signame):
 
 def main():
     opts, args = parse_arguments(sys.argv[1:])
-    pidf = daemon.pidlockfile.TimeoutPIDLockFile(opts.pid_file, 3)
+    pidf = daemon.pidfile.TimeoutPIDLockFile(opts.pid_file, 3)
 
     lvl = logging.DEBUG if opts.debug else logging.INFO
 
