@@ -97,58 +97,57 @@ settings that need modification before using the software.
     Setting the ``DEBUG`` option to True, implies to explicitly set the
     ``ALLOWED_HOSTS`` options.
 
-Image Handling
-**************
+Operating System Image Handling
+*******************************
 
-There are two ways to define available images:
+As of v2.2.0 the way to define available images is the following:
 
-Manual image definition
-=======================
+Add IMAGES_URL = ["http://example.com/images/"] to your settings.py.
 
-From the OPERATING_SYSTEMS dictionary (e.g. for a Debian Wheezy image)::
+This URL should be an HTTP endpoint that contains metadata files. Each file
+with a .meta suffix should be valid JSON describing that available image and
+it's properties.
 
-    OPERATING_SYSTEMS = {
-    "debian-wheezy": {
-        "description": "Debian Wheezy 64 bit",
-        "provider": "image+default",
+Images can be in the same or different location.
+
+The structure of the images/files served by it should be the following:
+
+- image-title.img residing @ http://example.com/images_path/
+- meta-title-for-image.meta residing @ http://example.com/images/
+
+Meta files are used to point to an image and provide parameters for that image.
+
+You can have multiple meta files for the same image if you want to provide
+instances of the same image with different parameters such as SWAP etc.
+
+If an image file, does not have a meta file pointing there, the image will not be shown as an available option.
+
+Example .meta file::
+
+    {
+        "description":"Debian Jessie 8.10",
+        "provider":"snf-image+default",
         "osparams": {
-            "img_id": "debian-wheezy",
-            "img_format": "tarball",
-        },
-        "ssh_key_param": "img_ssh_key_url",
-        },
+        "img_format":"diskdump",
+        "img_id": "http://example.com/images_path/image-title.img",
+        "img_properties": {"SWAP": "2:512"},
+        "img_passwd":"somepass"},
+        "ssh_key_users": "user"
     }
 
-Automatic image discovery
-=========================
+- Description: Name of the image to appear in the UI
+- Provider: Ganeti OS definition to be used
+- osparams: Dictionary of attributes of the image such as its format,location,root password etc.
 
-As of v.1.5.0 there is an auto-discovery mechanism for the images. You just have to insert the following settings variable::
+Optionally, the suffix for the meta files can be customized by defining "IMG_META_SFX" in settings.py.
 
-    OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/', 'http://example.com/images/']
+If not defined, the value defaults to ".meta".
 
-All the given HTTP URLs from OPERATING_SYSTEMS_URLS will be searched for images. This discovers all images found on these URLs and makes them
-available for usage.
+The following keys in settings.py are deprecated and no longer used:
 
-The description of the images can be automatically fetched from the contents of a .dsc file with the same name as the image. For example, if an
-image named debian-wheezy-x86_64.tar.gz, ganetimgr will look for a debian-wheezy-x86_64.tar.gz.dsc file in the same directory and read it's
-contents (e.g. Debian Wheezy) and display it accordingly.
-
-You also need to set OPERATING_SYSTEMS_PROVIDER and OPERATING_SYSTEMS_SSH_KEY_PARAM::
-
-    OPERATING_SYSTEMS_PROVIDER = 'image+default'
-    OPERATING_SYSTEMS_SSH_KEY_PARAM = 'img_ssh_key_url'
-
-ganetimgr will look for available images from both sources. None of the above settings is mandatory.
-
-snf-image integration
-=======================
-
-There is also an auto-discovery mechanism for images to be used by snf-image, just set the following::
-
-    SNF_OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/snf-image/']
-
-The process is identical with the one above.
-
+- OPERATING_SYSTEMS
+- OPERATING_SYSTEMS_URLS
+- SNF_OPERATING_SYSTEMS_URLS
 
 Flat pages
 **********
