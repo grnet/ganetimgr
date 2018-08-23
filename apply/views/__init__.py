@@ -216,9 +216,7 @@ def review_application(request, application_id=None):
             form = InstanceApplicationReviewForm(
                 instance=app,
                 initial={
-                    "cluster": Cluster.objects.get(
-                        slug=app.instance_params['cluster']
-                    ).pk,
+                    "cluster": app.instance_params['cluster'],
                     'operating_system': app.operating_system
                 })
         return render(
