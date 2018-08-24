@@ -16,6 +16,7 @@
 #
 
 import os
+import context
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, 'ganetimgr')
 
@@ -59,6 +60,29 @@ USE_L10N = True
 
 MEDIA_ROOT = ''
 MEDIA_URL = ''
+
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'APP_DIRS': True,
+    'DIRS': [os.path.join(BASE_DIR, 'templates')],
+    'OPTIONS': {
+        'context_processors':(
+        'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.template.context_processors.request',
+                'context.pending_notifications.notify',
+                'context.session_remaining.seconds',
+                'context.global_vars.settings_vars',
+                'django.contrib.messages.context_processors.messages'
+            ),
+    'debug': DEBUG
+
+    },
+}]
 
 
 MIDDLEWARE_CLASSES = (
@@ -109,32 +133,6 @@ INSTALLED_APPS = (
 #    'corsheaders',
     'nocaptcha_recaptcha'
 )
-
-
-TEMPLATES = [{
-    'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'APP_DIRS': True,
-    'DIRS': [os.path.join(BASE_DIR, 'templates')],
-    'OPTIONS': {
-        'context_processors':(
-                'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.template.context_processors.tz',
-                'django.template.context_processors.request',
-                'context.pending_notifications.notify',
-                'context.session_remaining.seconds',
-                'context.global_vars.settings_vars',
-                'django.contrib.messages.context_processors.messages'
-            ),
-        'debug': DEBUG
-    },
-}]
-
-
-
 
 # Caching is a vital part of ganetimgr.
 # If you deploy more than one ganetimgr instances on the same server,
@@ -286,31 +284,9 @@ REGISTRATION_FORM = 'accounts.forms.RegistrationForm'
 GANETI_TAG_PREFIX = "ganetimgr"
 RAPI_CONNECT_TIMEOUT = 8
 RAPI_RESPONSE_TIMEOUT = 15
-# List of operating system images you provide...
-OPERATING_SYSTEMS = {
-    "none": {
-        "description": "No operating system",
-        "provider": "noop",
-        "osparams": {},
-        "ssh_key_param": "",
-    },
-}
 
-
-# the urls of the available os images
-OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/']
-SNF_OPERATING_SYSTEMS_URLS = ['http://repo.noc.grnet.gr/images/snf-image/']
-
-
-# the provider and ssh key param
-# We assume that they have the same configuration
-OPERATING_SYSTEMS_PROVIDER = 'image+default'
-OPERATING_SYSTEMS_SSH_KEY_PARAM = 'img_ssh_key_url'
-
-SNF_IMG_PROPERTIES = {
-        "SWAP": "2:512"
-}
-SNF_IMG_PASSWD = "example-passphrase-CHANGEME"
+# URL with the available operating system images
+IMAGES_URL = ["http://repo.noc.grnet.gr/images/"]
 
 TEST_RUNNER = 'django.test.simple.DjangoTestSuiteRunner'
 #########################
@@ -340,7 +316,7 @@ DATABASES = {
         'PASSWORD': '',          # Not used with sqlite3.
         'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',             # Set to empty string for default. Not used with sqlite3.
-        'OPTIONS': {'init_command': 'SET storage_engine=MYISAM;'}
+        'OPTIONS': { 'init_command': 'SET default_storage_engine=INNODB', }
     }
 }
 
