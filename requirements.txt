@@ -1,27 +1,30 @@
 ## dependencies for the ganetimgr project
-django==1.8
+django==1.11
 # we target the latest LTS release
-gevent==1.1.1
+gevent==1.1.2
 # gevent is used to pool cluster RAPI communication
-django-registration-redux==1.6
+django-registration-redux==2.4
 # used for our registration workflow
-paramiko==1.12.1
+paramiko==2.0.0
 # used for user SSH key management
-python-daemon==1.5.5
+python-daemon==2.1.2
 # used by watcher
-setproctitle==1.0.1
+setproctitle==1.1.10
 # used by watcher to set it's process name
-pycurl==7.19.0
+pycurl==7.43.0
 # depenency for ganeti client library
 django-nocaptcha-recaptcha==0.0.20
 # used in the registration form
-ipaddr==2.1.10
+ipaddr==2.1.11
 # used to calculate Instance ipv6addresses
-beautifulsoup4==4.1.0
+beautifulsoup4==4.5.3
 # used by the image autodiscovery mechanism
-requests==2.4.3
+requests==2.12.4
 # used by the image autodiscovery mechanism
 beanstalkc==0.4.0
 # used to pass messages between watcher and django
 django-redis-cache==1.7.1
 # used to cache cluster nodes/instances info
+pyyaml==3.12
+# used by beanstalkc
+django-jsonfield==1.0.1
