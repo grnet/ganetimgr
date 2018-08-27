@@ -836,10 +836,6 @@ msgstr "Έξοδος"
 msgid "Applications"
 msgstr "Αιτήσεις"
 
-#: templates/base.html:187
-msgid "Nofications"
-msgstr "Ειδοποιήσεις"
-
 #: templates/base.html:188 templates/clusters/clusters.html:10
 #: templates/clusters/clusters.html:41
 msgid "Cluster Info"
@@ -1415,6 +1411,7 @@ msgstr "εργασίες"
 #: templates/notifications/create.html:11
 #: templates/notifications/detail.html:6
 #: templates/notifications/detail.html:13
+#: templates/base.html:187
 msgid "Notifications"
 msgstr "Ειδοποιήσεις"
 

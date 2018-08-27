@@ -194,7 +194,7 @@
             <ul id="dashboard-menu" class="nav nav-list">
                 <li {% block homepage %}{% endblock %}><a href="{% url 'user-instances' %}"><i class="fa fa-home"></i> <span>{% trans "Home" %}</span></a></li>
                 {% if user.is_superuser or perms.ganeti.view_instances %}
-                    <li {% block notify %}{% endblock %}><a href="{% url 'notify' %}"><i class="fa fa-envelope"></i> <span>{% trans "Nofications" %}</span></a></li>
+                    <li {% block notify %}{% endblock %}><a href="{% url 'notify' %}"><i class="fa fa-envelope"></i> <span>{% trans "Notifications" %}</span></a></li>
                     <li {% block clusterinfo %}{% endblock %}><a href="{% url 'clusterdetails' %}"><i class="fa fa-puzzle-piece"></i> <span>{% trans "Cluster Info" %}</span></a></li>
                     <li {% block clusternodes %}{% endblock %}><a href="{% url 'cluster-nodes' %}"><i class="fa fa-tasks"></i> <span>{% trans "Nodes" %}</span></a></li>
                     <li {% block clusterjobs %}{% endblock %}><a href="{% url 'jobs' %}"><i class="fa fa-coffee"></i> <span>{% trans "Jobs" %}</span></a></li>

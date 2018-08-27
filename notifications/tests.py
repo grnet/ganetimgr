@@ -14,7 +14,7 @@ class LoginTestCase(TestCase):
         return self.client.login(username=self.superuser_username, password=self.superuser_password)
 
 
-class NoficationsTestCase(LoginTestCase):
+class NotificationsTestCase(LoginTestCase):
 
     def setUp(self):
         self.client = Client()
