@@ -53,8 +53,7 @@ def check_auth(view_fn, custom_perm, request, *args, **kwargs):
         cache.set(cache_key, user_permitted, 180)
     if not user_permitted:
         template = get_template("403.html")
-        return HttpResponseForbidden(content=template.render(
-            RequestContext(request)))
+        return HttpResponseForbidden(content=template.render(request=request))
     else:
         return view_fn(request, *args, **kwargs)
 
@@ -86,7 +85,7 @@ def check_admin_lock(view_fn):
             return view_fn(request, *args, **kwargs)
         else:
             t = get_template("403.html")
-            return HttpResponseForbidden(content=t.render(RequestContext(request)))
+            return HttpResponseForbidden(content=t.render(request=request))
     return check_lock
 
 
@@ -125,7 +124,7 @@ def check_instance_readonly(view_fn):
         if not res:
             t = get_template("403.html")
             return HttpResponseForbidden(
-                content=t.render(RequestContext(request))
+                content=t.render(request=request)
             )
         else:
             return view_fn(request, *args, **kwargs)

@@ -357,7 +357,7 @@ def instance_ssh_keys(request, application_id, cookie):
     app = get_object_or_404(InstanceApplication, pk=application_id)
     if cookie != app.cookie:
         t = get_template("403.html")
-        return HttpResponseForbidden(content=t.render(RequestContext(request)))
+        return HttpResponseForbidden(content=t.render(request=request))
 
     output = StringIO()
     output.writelines([k.key_line() for k in

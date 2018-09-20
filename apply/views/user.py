@@ -110,7 +110,7 @@ def idle_accounts(request):
         )
     else:
         t = get_template("403.html")
-        return HttpResponseForbidden(content=t.render(RequestContext(request)))
+        return HttpResponseForbidden(content=t.render(request=request))
 
 
 @login_required
@@ -281,7 +281,7 @@ def delete_key(request, key_id):
     key = get_object_or_404(SshPublicKey, pk=key_id)
     if key.owner != request.user:
         t = get_template("403.html")
-        return HttpResponseForbidden(content=t.render(RequestContext(request)))
+        return HttpResponseForbidden(content=t.render(request=request))
     key.delete()
     return HttpResponseRedirect(reverse("user-keys"))
 
