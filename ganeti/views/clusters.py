@@ -37,7 +37,6 @@ from django.http import (
     Http404
 )
 from django.shortcuts import get_object_or_404, render
-from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import mail_managers
 
 from util.client import GanetiApiError
@@ -231,7 +230,6 @@ def get_clusternodes_pjax(request):
 
 
 @login_required
-@csrf_exempt
 def reinstalldestreview(request, application_hash, action_id):
     action_id = int(action_id)
     instance = None

@@ -15,7 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
@@ -32,7 +31,6 @@ from notifications.models import NotificationArchive
 from ganeti.utils import format_ganeti_api_error
 
 
-@csrf_exempt
 @login_required
 def notify(request, instance=None):
     if request.user.is_superuser or request.user.has_perm('ganeti.view_instances'):

@@ -116,7 +116,6 @@ def clear_cache(request):
     return HttpResponse(json.dumps(result), content_type='application/json')
 
 
-@csrf_exempt
 @login_required
 def tagInstance(request, instance):
     '''

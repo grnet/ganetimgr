@@ -28,7 +28,6 @@ from django.db import close_old_connections
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext as _
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate
@@ -440,7 +439,7 @@ def vnc(request, cluster_slug, instance):
 @check_instance_auth
 def novnc(request, cluster_slug, instance):
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
-    use_tls = settings.NOVNC_USE_TLS
+    use_tls = getattr(settings, "NOVNC_USE_TLS", False)
     return render(
         request,
         'instances/novnc.html',
@@ -452,18 +451,18 @@ def novnc(request, cluster_slug, instance):
     )
 
 
+@require_http_methods(["POST"])
 @login_required
 @check_instance_auth
 def novnc_proxy(request, cluster_slug, instance):
-    use_tls = False
     cluster = get_object_or_404(Cluster, slug=cluster_slug)
-    use_tls = settings.NOVNC_USE_TLS
+    use_tls = getattr(settings, "NOVNC_USE_TLS", False)
     result = json.dumps(cluster.setup_novnc_forwarding(instance, tls=use_tls))
     return HttpResponse(result, content_type='application/json')
 
 
+@require_http_methods(["POST"])
 @login_required
-@csrf_exempt
 @check_instance_auth
 @check_admin_lock
 def shutdown(request, cluster_slug, instance):
@@ -478,8 +477,8 @@ def shutdown(request, cluster_slug, instance):
     return HttpResponse(json.dumps(action))
 
 
+@require_http_methods(["POST"])
 @login_required
-@csrf_exempt
 @check_instance_auth
 @check_admin_lock
 def startup(request, cluster_slug, instance):
@@ -494,8 +493,8 @@ def startup(request, cluster_slug, instance):
     return HttpResponse(json.dumps(action))
 
 
+@require_http_methods(["POST"])
 @login_required
-@csrf_exempt
 @check_instance_auth
 @check_admin_lock
 def reboot(request, cluster_slug, instance):
@@ -511,30 +510,31 @@ def reboot(request, cluster_slug, instance):
 
 
 @login_required
-@csrf_exempt
 @check_instance_auth
 @check_admin_lock
 @require_http_methods(['POST'])
-def reinstalldestroy(
-    request,
-    cluster_slug,
-    instance,
-    action_id,
-    action_value=None
-):
-    new_operating_system = request.POST.get('operating_system', 'none') or None
+def reinstall(request, cluster_slug, instance):
+    new_operating_system = request.POST.get('operating_system', 'none')
     user = request.user
     action = notifyuseradvancedactions(
-        user,
-        cluster_slug,
-        instance,
-        action_id,
-        action_value,
-        new_operating_system
-    )
+        user, cluster_slug, instance, action_id=1, action_value=None,
+        new_operating_system=new_operating_system)
     return HttpResponse(json.dumps(action))
 
 
+@login_required
+@check_instance_auth
+@check_admin_lock
+@require_http_methods(['DELETE'])
+def destroy(request, cluster_slug, instance):
+    user = request.user
+    action = notifyuseradvancedactions(
+        user, cluster_slug, instance, action_id=2, action_value=None,
+        new_operating_system=None)
+    return HttpResponse(json.dumps(action))
+
+
+@require_http_methods(["POST"])
 @login_required
 @check_admin_lock
 @check_instance_auth
@@ -770,7 +770,6 @@ def instance(request, cluster_slug, instance):
     )
 
 
-@csrf_exempt
 @login_required
 @permission_required('ganeti.can_lock')
 def lock(request, instance):
@@ -841,7 +840,6 @@ def lock(request, instance):
         return HttpResponseRedirect(reverse('user-instances'))
 
 
-@csrf_exempt
 @login_required
 @permission_required('ganeti.can_isolate')
 def isolate(request, instance):

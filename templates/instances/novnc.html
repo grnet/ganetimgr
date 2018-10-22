@@ -52,7 +52,7 @@
 			pasteButton.addClass('disabled').prop('disabled', true);
 			toggleAltButton.addClass('disabled');
 
-			function stop() {
+            function stop() {
 				var rfb;
 				if (rfb != undefined) {
 					rfb.disconnect();
@@ -61,14 +61,12 @@
 			}
 
 			function start() {
-				data = {}
 				$.ajax({
-					"async" : false,
-					"url" : PROXY_REQUEST_URI,
-					"type" : "POST",
-					"data" : data,
-					"dataType" : "json",
-					"success" : function(data) {
+					async : false,
+					url : PROXY_REQUEST_URI,
+					type : "POST",
+					dataType : "json",
+					success : function(data) {
 						host = data[0];
 						port = data[1];
 						password = data[2];

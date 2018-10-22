@@ -1,8 +1,10 @@
 {% load i18n %}
 {% load staticfiles %}
-
+{% csrf_token %}
+<script type="text/javascript" src="{% static 'ganetimgr/js/jquery_csrf_protect.js' %}"></script>
 <script type="text/javascript">
 	var fqdnRegex = new RegExp("^[a-z0-9-_]+(\\.[a-z0-9-_]+)*\\.([a-z]{2,4})$");
+
 	$(function(){
 		$( "#start" )
 		.button({
@@ -88,7 +90,7 @@
 			clearTimeout(polltimer);
 			$.ajax({
 		        type: 'POST',
-		        url: "{% url 'instance-reinstall-destroy' cluster.slug instance.name 1 %}",
+		        url: "{% url 'instance-reinstall' cluster.slug instance.name %}",
 		        data: {
 		        	operating_system: $('#operating_system select').val()
 		        },
@@ -111,8 +113,8 @@
 		$(this).html('Sending Email...');
 		clearTimeout(polltimer);
 		$.ajax({
-        type: 'POST',
-        url: "{% url 'instance-reinstall-destroy' cluster.slug instance.name 2 %}",
+        type: 'DELETE',
+        url: "{% url 'instance-destroy' cluster.slug instance.name %}",
         dataType: 'json',
         success: function(data) {
         	$( "#instdestbody" ).html("<div class='span4 alert alert-success'>"+data.action+"</div>");
