@@ -534,30 +534,17 @@ def destroy(request, cluster_slug, instance):
     return HttpResponse(json.dumps(action))
 
 
-@require_http_methods(["POST"])
 @login_required
 @check_admin_lock
 @check_instance_auth
-def rename_instance(
-    request,
-    cluster_slug,
-    instance,
-    action_id,
-    action_value=None
-):
+def rename_instance(request, cluster_slug, instance):
     user = request.user
     form = InstanceRenameForm(request.POST or None)
     if form.is_valid():
         data = form.cleaned_data
-        action_value = data['hostname']
         action = notifyuseradvancedactions(
-            user,
-            cluster_slug,
-            instance,
-            action_id,
-            action_value,
-            None
-        )
+            user, cluster_slug, instance, action_id=3,
+            action_value=data['hostname'], new_operating_system=None)
         return HttpResponse(json.dumps(action))
     else:
         return render(

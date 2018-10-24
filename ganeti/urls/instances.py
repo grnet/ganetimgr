@@ -35,6 +35,6 @@ urlpatterns = [
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/reboot/?$', views.reboot, name="instance-reboot"),
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/reinstalldestroy/?$', views.destroy, name="instance-destroy"),
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/reinstall/?$', views.reinstall, name="instance-reinstall"),
-    url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/rename/(?P<action_id>\d+)(/(?P<action_value>[^/]+))?$', views.rename_instance, name="instance-rename"),
+    url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/rename/?$', views.rename_instance, name="instance-rename"),
     url(r'^(?P<cluster_slug>[^/]+)/(?P<instance>[^/]+)/?', views.instance, name="instance-detail"),
 ]

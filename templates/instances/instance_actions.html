@@ -129,7 +129,7 @@
 		$( "#instrenerr" ).modal('show');
 		{% else %}
 		$( "#instrenbody" ).html( "" );
-		$( "#instrenbody" ).load("{% url 'instance-rename' cluster.slug instance.name 3 %}");
+		$( "#instrenbody" ).load("{% url 'instance-rename' cluster.slug instance.name %}");
 		$( "#instren" ).modal('show');
 		{% endif %}
 		return false; });
