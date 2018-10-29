@@ -159,7 +159,7 @@ USE_X_FORWARDED_HOST = True
 # If you plan to deploy LDAP modify according to your needs
 AUTHENTICATION_BACKENDS = (
     #'django_auth_ldap.backend.LDAPBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    'django.contrib.auth.backends.AllowAllUsersModelBackend',
 )
 
 #import ldap

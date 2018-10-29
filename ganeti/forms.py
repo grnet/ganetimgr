@@ -19,6 +19,7 @@ import re
 import urllib2
 
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.utils.safestring import mark_safe
@@ -27,6 +28,15 @@ from ganeti.models import Instance, Cluster
 from ipaddr import IPNetwork
 
 _VALID_NAME_RE = re.compile("^[a-z0-9.-]{1,255}$")
+
+
+class PickyAuthenticationForm(AuthenticationForm):
+    def confirm_login_allowed(self, user):
+        if not user.is_active:
+            raise forms.ValidationError(
+                _("This account is inactive."),
+                code='inactive',
+            )
 
 
 class tagsForm(forms.Form):

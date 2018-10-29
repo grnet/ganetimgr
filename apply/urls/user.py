@@ -18,6 +18,7 @@
 from django.conf.urls import url
 from apply import views
 from django.contrib.auth.views import login, logout, password_change, password_change_done
+from ganeti.forms import PickyAuthenticationForm
 
 urlpatterns = [
     url(r'^info/(?P<type>\w+)/(?P<usergroup>[\w\.\@-]+)/?$', views.user_info, name="user-info"),
@@ -29,7 +30,9 @@ urlpatterns = [
     url(r'^other_change/$', views.other_change, name="other-change"),
     url(r'^keys/$', views.user_keys, name="user-keys"),
     url(r'^keys/delete/(?P<key_id>\d+)?$', views.delete_key, name="delete-key"),
-    url(r'^login/', login, {'template_name': 'users/login.html'}, name="login"),
+    url(r'^login/', login, {'template_name': 'users/login.html',
+                            'authentication_form': PickyAuthenticationForm},
+        name="login"),
     url(r'^logout/', logout, {'next_page': '/'}, name="logout"),
     url(r'^pass_change/$', password_change, {'template_name':'users/pass_change.html', 'post_change_redirect':'pass_change_done'}, name="pass_change"),
     url(r'^pass_change/done/$', password_change_done, {'template_name':'users/pass_change_done.html'}, name="pass_change_done" ),

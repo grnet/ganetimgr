@@ -118,9 +118,9 @@
 								<div class="row-fluid">
 									<h2><i class="fa fa-sign-in"></i> {% trans "Login" %}</h2>
 									<div id="pass_change_placeholder" class="padwidget">
-									{% if form.errors %}
-										<p  class="error" style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>
-									{% endif %}
+                                        {% for error in form.non_field_errors %}
+                                            <p  class="error" style="color:red">{% trans error %}</p>
+                                        {% endfor %}
 									<form method="POST" class="form" action="{% url 'login' %}">
 										<input type="hidden" name="next" value="{{ next }}" />
 										{% csrf_token %}
