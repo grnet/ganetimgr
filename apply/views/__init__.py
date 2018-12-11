@@ -289,7 +289,6 @@ def review_application(request, application_id=None):
                 mail_body = render_to_string(
                     "apply/emails/application_rejected_mail.txt",
                     {"application": application, },
-                    context_instance=RequestContext(request)
                 )
                 send_mail(
                     settings.EMAIL_SUBJECT_PREFIX + "Application for %s rejected" % (
